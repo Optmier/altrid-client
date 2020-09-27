@@ -1,0 +1,84 @@
+/********************* 폰트 초기화 *************************/
+/********************* Montserrat ***********************/
+@font-face {
+    font-family: 'Montserrat';
+    font-weight: 200;
+    src: url('./fonts/Montserrat/Montserrat-Light.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    font-weight: 400;
+    src: url('./fonts/Montserrat/Montserrat-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    font-weight: 600;
+    src: url('./fonts/Montserrat/Montserrat-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    font-weight: 800;
+    src: url('./fonts/Montserrat/Montserrat-Black.ttf');
+}
+/********************* Montserrat ***********************/
+
+/******************** Noto Sans KR **********************/
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-weight: 200;
+    src: url('./fonts/Noto_Sans_KR/NotoSansKR-Light.otf');
+}
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-weight: 400;
+    src: url('./fonts/Noto_Sans_KR/NotoSansKR-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-weight: 600;
+    src: url('./fonts/Noto_Sans_KR/NotoSansKR-Bold.otf');
+}
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-weight: 800;
+    src: url('./fonts/Noto_Sans_KR/NotoSansKR-Black.otf');
+}
+/******************** Noto Sans KR **********************/
+// def. pixel size: 16
+// nav, footer, font 등 구현하시면 됩니다.
+html,
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Montserrat', 'Noto Sans KR';
+
+    a {
+    }
+
+    h1 {
+    }
+
+    h2 {
+    }
+
+    h3 {
+    }
+
+    h4 {
+    }
+
+    h5 {
+    }
+
+    @media all and (min-width: 769px) and (max-width: 1280) {
+    }
+
+    @media all and (max-width: 768px) {
+    }
+}
