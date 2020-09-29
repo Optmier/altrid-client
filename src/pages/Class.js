@@ -4,10 +4,12 @@ import '../styles/class.scss';
 
 function Class() {
     return (
-        <div className="class-page-root">
+        <>
             <LeftNav />
-            클래스페이지입니다.
-        </div>
+            <div className="class-page-root">
+                <div className="class-page-wrapper">클래스페이지입니다.</div>
+            </div>
+        </>
     );
 }
 
