@@ -1,0 +1,19 @@
+$menuPrimary: #2e2c2c;
+$menuSecondary: #ffffff;
+
+a {
+    background: transparent;
+    text-decoration: none;
+    color: inherit;
+}
+.left-nav-root {
+    background-color: #3b168a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    width: 256px;
+    height: 100%;
+    position: fixed;
+    z-index: 1000;
+}
