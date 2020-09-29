@@ -52,28 +52,94 @@
 /******************** Noto Sans KR **********************/
 // def. pixel size: 16
 // nav, footer, font 등 구현하시면 됩니다.
+
+$primaryColor: #13e2a1;
+$greenTintGrey: #f7f9f8;
+
 html,
 body {
+    background-color: $greenTintGrey;
     padding: 0;
     margin: 0;
     font-family: 'Montserrat', 'Noto Sans KR';
+    word-break: keep-all;
 
     a {
     }
 
     h1 {
+        font-size: 2.25rem;
+        line-height: 2.5rem;
     }
 
     h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 2.25rem;
     }
 
     h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 2rem;
     }
 
     h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.5rem;
     }
 
     h5 {
+        font-size: 1.125rem;
+        font-weight: 500;
+        line-height: 1.5rem;
+    }
+
+    p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    & .header-bar {
+        color: #ffffff;
+        display: flex;
+        position: fixed;
+        width: 100%;
+        height: 80px;
+        z-index: 9999;
+        transition: all 0.3s;
+
+        &.scrolled {
+            background-color: $primaryColor;
+            box-shadow: 0 0.2rem 0.25rem rgba(0, 0, 0, 0.15);
+        }
+
+        & .container {
+            align-items: center;
+            display: flex;
+
+            &.left {
+                margin: 0 auto 0 5%;
+
+                & img {
+                    height: 40px;
+                }
+            }
+
+            &.center {
+            }
+
+            &.right {
+                margin: 0 5% 0 auto;
+
+                & p {
+                    & span {
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
     }
 
     @media all and (min-width: 769px) and (max-width: 1280) {

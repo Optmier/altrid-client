@@ -1,0 +1,103 @@
+$primaryColor: #13e2a1;
+$greenTintGrey: #f7f9f8;
+
+.cards-contents-root {
+    display: flex;
+    flex-direction: column;
+    padding: 80px 16px;
+    margin: 0 auto;
+    position: relative;
+
+    &.m-c-5 {
+        max-width: 1452px;
+    }
+
+    &.m-c-4 {
+        max-width: 1288px;
+    }
+
+    &.m-c-3 {
+        max-width: 960px;
+    }
+
+    & .card-lists {
+        & .card-root-grid {
+            width: initial;
+
+            & .card-root {
+                background: #ffffff;
+                box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                cursor: pointer;
+                border-radius: 10px;
+                width: 304px;
+                height: 240px;
+
+                &.wider {
+                    width: 468px;
+                    height: 280px;
+                }
+            }
+        }
+    }
+
+    .add-new-root {
+        color: $primaryColor;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & .container {
+            & .icon-container {
+                display: flex;
+                justify-content: center;
+
+                & svg {
+                    font-size: 2.25rem;
+                }
+            }
+        }
+    }
+
+    @media all and (min-width: 992px) and (max-width: 1483px) {
+        width: 960px;
+    }
+
+    @media all and (min-width: 663px) and (max-width: 991px) {
+        width: 632px;
+
+        & .card-lists {
+            & .card-root-grid {
+                width: initial;
+
+                &.wider {
+                    width: 100%;
+                }
+
+                & .card-root {
+                    &.wider {
+                        width: initial;
+                    }
+                }
+            }
+        }
+    }
+
+    @media all and (max-width: 662px) {
+        width: initial;
+
+        & .card-lists {
+            & .card-root-grid {
+                width: 100%;
+
+                & .card-root {
+                    width: initial;
+
+                    &.wider {
+                        width: initial;
+                    }
+                }
+            }
+        }
+    }
+}

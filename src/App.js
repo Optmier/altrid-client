@@ -4,6 +4,7 @@ import Class from './pages/Class';
 import Main from './pages/Main';
 import { Route } from 'react-router-dom';
 import ScrollTop from './components/essentials/ScrollTop';
+import Footer from './components/essentials/Footer';
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
                 <Route path="/" component={Main} exact />
                 <Route path="/class" component={Class} />
             </ScrollTop>
+            <Footer />
         </>
     );
 }

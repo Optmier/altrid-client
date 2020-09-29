@@ -1,0 +1,28 @@
+.main-page {
+    width: 100%;
+    min-height: 100vh;
+
+    & .decorator-root {
+        background-image: url('/bg_images/frame_0.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: absolute;
+        width: 100%;
+        height: 380px;
+    }
+
+    & .introduce {
+        color: #ffffff;
+        margin-top: 48px;
+        width: 100%;
+
+        & h2 {
+            text-align: center;
+        }
+    }
+
+    & .academy-name {
+        color: #ffffff;
+    }
+}
