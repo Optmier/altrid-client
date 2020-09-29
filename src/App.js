@@ -1,14 +1,16 @@
 import React from 'react';
 import './styles/common.scss';
-import ScrollTop from './components/essentials/ScrollTop';
+import Class from './pages/Class';
+import Main from './pages/Main';
 import { Route } from 'react-router-dom';
-import ClassManagePage from './pages/ClassManagePage';
+import ScrollTop from './components/essentials/ScrollTop';
 
 function App() {
     return (
         <>
             <ScrollTop>
-                <Route path="/" component={ClassManagePage} />
+                <Route path="/" component={Main} exact />
+                <Route path="/class" component={Class} />
             </ScrollTop>
         </>
     );
