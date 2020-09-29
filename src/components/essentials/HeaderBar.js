@@ -1,7 +1,7 @@
 import React from 'react';
 
-function NavMenu() {
+function HeaderBar() {
     return <div></div>;
 }
 
-export default NavMenu;
+export default HeaderBar;
