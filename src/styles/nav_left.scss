@@ -1,5 +1,4 @@
-$menuPrimary: #2e2c2c;
-$menuSecondary: #ffffff;
+$LeftMenuPrimary: #2e2c2c;
 
 a {
     background: transparent;
@@ -16,4 +15,32 @@ a {
     height: 100%;
     position: fixed;
     z-index: 1000;
+
+    & .left-nav-wrapper {
+        & .left-nav-box {
+            padding: 24px;
+        }
+        & .left-nav-box + .left-nav-box {
+            border-top: 0.5px solid white;
+            border-width: 120%;
+        }
+
+        & .logo-wrapper {
+            & > img {
+                width: 100%;
+            }
+        }
+
+        & .info {
+            & .info-header {
+                color: white;
+                h3 {
+                    margin-bottom: 8px;
+                }
+                h4 {
+                    margin-bottom: 8px;
+                }
+            }
+        }
+    }
 }
