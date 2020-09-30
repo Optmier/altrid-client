@@ -37,6 +37,7 @@ function HeaderBar() {
                     <AnimScrollTo className="scroll-to-top" to="main_top_start" spy={true} smooth={true} duration={700}></AnimScrollTo>
                     <Link
                         to="/"
+                        style={{ height: 40 }}
                         onClick={() => {
                             document.getElementsByClassName('scroll-to-top')[0].click();
                         }}
