@@ -66,7 +66,9 @@ function Main() {
                         upperDeck={
                             <>
                                 <div className="introduce">
-                                    <h2>에듀이티 클래스 관리 솔루션.</h2>
+                                    <h2>
+                                        에듀이티 클래스 관리<br></br>솔루션에 오신것을 환영합니다.
+                                    </h2>
                                 </div>
                                 <div className="academy-name">
                                     <h4>{academyName} 클래스</h4>
