@@ -1,19 +1,64 @@
 import React, { useState, useEffect } from 'react';
 import HeaderBar from '../components/essentials/HeaderBar';
 import { Element } from 'react-scroll';
-import { Grid } from '@material-ui/core';
+import { Grid, Drawer } from '@material-ui/core';
 import '../styles/main_page.scss';
 import CardRoot from '../components/essentials/CardRoot';
 import CardLists from '../components/essentials/CardLists';
-import CardAddNew from '../components/MainPage/CardAddNew';
+import CardAddNew from '../components/essentials/CardAddNew';
+import CardEntry from '../components/MainPage/CardEntry';
+import CreateNewEntry from '../components/MainPage/CreateNewEntry';
+
+const testDatas = [
+    {
+        id: 0,
+        title: 'Class 01011101101110100101011',
+        description:
+            '에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반',
+        assignmentOnProgress: true,
+        teacherName: '최세인',
+        totalStudents: 30000000000000,
+        totalAssignments: 3,
+    },
+    {
+        id: 1,
+        title: 'Class 2',
+        description:
+            '에듀이티학원 토플 900점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반',
+        assignmentOnProgress: true,
+        teacherName: '최세인2',
+        totalStudents: 25,
+        totalAssignments: 5,
+    },
+    {
+        id: 2,
+        title: 'Class 3',
+        description:
+            '에듀이티학원 토플 800점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반',
+        assignmentOnProgress: false,
+        teacherName: '최세인3',
+        totalStudents: 17,
+        totalAssignments: 4,
+    },
+];
 
 function Main() {
     const [academyName, setAcademyName] = useState('에듀이티학원');
+    const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
+    const toggleDrawer = (open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        setOpenCreateNewDrawer(open);
+    };
 
     return (
         <>
             <Element name="main_top_start" />
             <HeaderBar />
+            <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
+                <CreateNewEntry handleClose={toggleDrawer(false)} />
+            </Drawer>
             <main className="main-page">
                 <section className="decorator-root"></section>
                 <section className="cards-uppder-deck">
@@ -31,10 +76,23 @@ function Main() {
                         maxColumn={3}
                     >
                         <CardRoot>
-                            <CardAddNew />
+                            <CardAddNew onClick={toggleDrawer(true)}>클래스 추가</CardAddNew>
                         </CardRoot>
-                        <CardRoot>class1</CardRoot>
-                        <CardRoot>class2</CardRoot>
+                        {testDatas.map(({ id, title, description, assignmentOnProgress, teacherName, totalStudents, totalAssignments }) => (
+                            <CardRoot key={id}>
+                                <CardEntry
+                                    title={title}
+                                    description={description}
+                                    assignmentOnProgress={assignmentOnProgress}
+                                    teacherName={teacherName}
+                                    totalStudents={totalStudents}
+                                    totalAssignments={totalAssignments}
+                                    onClick={() => {
+                                        console.log(id);
+                                    }}
+                                />
+                            </CardRoot>
+                        ))}
                     </CardLists>
                 </section>
             </main>

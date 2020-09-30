@@ -24,5 +24,91 @@
 
     & .academy-name {
         color: #ffffff;
+
+        & h4 {
+            margin-bottom: 1rem;
+        }
+    }
+}
+
+.create-new-entry-root {
+    padding: 72px 84px;
+    min-width: 100px;
+    max-width: 480px;
+
+    & .close-icon {
+        cursor: pointer;
+    }
+
+    & .title {
+        margin-top: 64px;
+
+        & h2 {
+            max-width: 20rem;
+        }
+    }
+
+    & .form-container {
+        margin-top: 42px;
+
+        & input {
+            background-color: #f6f7f9;
+            border: none;
+            border-radius: 10px;
+            box-sizing: border-box;
+            color: #474747;
+            font-size: 1rem;
+            line-height: 2.625rem;
+            width: 100%;
+            height: 60px;
+            outline: none;
+            padding: 0px 30px;
+
+            &.error {
+                color: #ff4646;
+
+                &::placeholder {
+                    color: #ff8383;
+                }
+
+                &:focus {
+                    box-shadow: 0 0 0 2px #ff8383;
+                }
+            }
+
+            &::placeholder {
+                color: #969393;
+            }
+
+            &:focus {
+                background-color: darken($color: #f6f7f9, $amount: 1.333);
+                box-shadow: 0 0 0 2px #8f8f8f;
+            }
+
+            & + input {
+                margin-top: 24px;
+            }
+        }
+    }
+
+    & .create-button {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 42px;
+    }
+
+    @media all and (min-width: 769px) and (max-width: 1280) {
+    }
+
+    @media all and (max-width: 768px) {
+        padding: 32px;
+
+        & .title {
+            margin-top: 48px;
+
+            & h2 {
+                max-width: 20rem;
+            }
+        }
     }
 }

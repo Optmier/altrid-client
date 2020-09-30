@@ -1,5 +1,9 @@
 $primaryColor: #13e2a1;
 $greenTintGrey: #f7f9f8;
+$normalDisabled: #bfbebc;
+$secondaryText: #969393;
+$accentOn: #ffbe2f;
+$cardHover: #f6f7f9;
 
 .cards-contents-root {
     display: flex;
@@ -31,10 +35,15 @@ $greenTintGrey: #f7f9f8;
                 border-radius: 10px;
                 width: 304px;
                 height: 240px;
+                transition: background-color 0.1s;
 
                 &.wider {
                     width: 468px;
                     height: 280px;
+                }
+
+                &:hover {
+                    background-color: $cardHover;
                 }
             }
         }
@@ -56,6 +65,78 @@ $greenTintGrey: #f7f9f8;
                     font-size: 2.25rem;
                 }
             }
+        }
+    }
+
+    .main-card-entry-root {
+        padding: 24px;
+        height: calc(100% - 48px);
+
+        & .header {
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+
+            & .title {
+                margin-right: auto;
+                width: calc(100% - 90px);
+
+                & h4 {
+                    margin: 0;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                }
+            }
+
+            & .on-progress {
+                color: $normalDisabled;
+                display: flex;
+                align-items: center;
+                font-size: 0.75rem;
+                font-weight: 600;
+                margin-left: auto;
+
+                & .indicator {
+                    background-color: $normalDisabled;
+                    border-radius: 50%;
+                    width: 8px;
+                    height: 8px;
+                    margin-left: 8px;
+                }
+
+                &.on {
+                    color: $primaryColor;
+
+                    & .indicator {
+                        background-color: $accentOn;
+                    }
+                }
+            }
+        }
+
+        & .descriptor {
+            color: $secondaryText;
+            margin-top: 24px;
+            height: calc(100% - 70px);
+
+            & h5 {
+                margin: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+            }
+        }
+
+        & .footer-info {
+            color: $secondaryText;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
     }
 
@@ -96,6 +177,17 @@ $greenTintGrey: #f7f9f8;
                     &.wider {
                         width: initial;
                     }
+                }
+            }
+        }
+    }
+
+    @media all and (max-width: 768px) {
+        & .main-card-entry-root {
+            & .descriptor {
+                & h5 {
+                    // -webkit-line-clamp: 4;
+                    // height: 5.8rem;
                 }
             }
         }
