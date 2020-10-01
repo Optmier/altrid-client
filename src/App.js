@@ -12,7 +12,7 @@ function App() {
 
             <main>
                 <Route path="/" component={Main} exact />
-                <Route path="/class" component={Class} />
+                <Route path="/class/:id" component={Class} />
             </main>
         </>
     );
