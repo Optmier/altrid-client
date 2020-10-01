@@ -78,7 +78,7 @@ function Main() {
                         maxColumn={3}
                     >
                         <CardRoot>
-                            <CardAddNew onClick={toggleDrawer(true)}>클래스 추가</CardAddNew>
+                            <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
                         </CardRoot>
                         {testDatas.map(({ id, title, description, assignmentOnProgress, teacherName, totalStudents, totalAssignments }) => (
                             <CardRoot key={id}>
