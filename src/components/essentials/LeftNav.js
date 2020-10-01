@@ -3,9 +3,6 @@ import '../../styles/nav_left.scss';
 import { NavLink, withRouter } from 'react-router-dom';
 import NavLogoWhite from '../../images/nav_logo_white.png';
 import Avatar from '../../images/avatar.png';
-//import ManageSrc from '../../images/manage.png';
-import DraftSrc from '../../images/draft.png';
-import ShareSrc from '../../images/share.png';
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
