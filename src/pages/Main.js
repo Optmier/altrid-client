@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HeaderBar from '../components/essentials/HeaderBar';
 import { Element } from 'react-scroll';
-import { Grid, Drawer } from '@material-ui/core';
+import { Grid, Drawer, Divider } from '@material-ui/core';
 import '../styles/main_page.scss';
 import CardRoot from '../components/essentials/CardRoot';
 import CardLists from '../components/essentials/CardLists';
@@ -61,7 +61,7 @@ function Main() {
             </Drawer>
             <main className="main-page">
                 <section className="decorator-root"></section>
-                <section className="cards-uppder-deck">
+                <section className="contents-root">
                     <CardLists
                         upperDeck={
                             <>
@@ -96,6 +96,8 @@ function Main() {
                             </CardRoot>
                         ))}
                     </CardLists>
+
+                    <Divider className="main-divider" />
                 </section>
             </main>
         </>
