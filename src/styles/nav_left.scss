@@ -30,7 +30,22 @@ a {
                 width: 70%;
             }
         }
+        & .avatar-wrapper {
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
 
+            & > h4 p {
+                margin: 0;
+                display: inline;
+                font-weight: 600;
+            }
+            & > img {
+                width: 32px;
+                margin-right: 13px;
+            }
+        }
         & .info-wrapper {
             & .info-header {
                 color: white;
@@ -40,6 +55,7 @@ a {
                 }
                 & > h5 {
                     padding-bottom: 4px;
+                    color: #f6f7f9;
                 }
                 & .info-num {
                     display: flex;
@@ -50,6 +66,7 @@ a {
                         font-weight: 500;
                     }
                     & > img {
+                        width: 20px;
                         margin-right: 16px;
                     }
                 }

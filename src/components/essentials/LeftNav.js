@@ -2,6 +2,7 @@ import React from 'react';
 import '../../styles/nav_left.scss';
 import { NavLink, withRouter } from 'react-router-dom';
 import NavLogoWhite from '../../images/nav_logo_white.png';
+import People from '../../images/people.png';
 import Avatar from '../../images/avatar.png';
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
@@ -19,12 +20,19 @@ function LeftNav({ history }) {
                 <div className="left-nav-box logo-wrapper">
                     <img src={NavLogoWhite} alt="logo_white"></img>
                 </div>
+                <div className="left-nav-box avatar-wrapper">
+                    <img alt="avatar" src={Avatar} />
+                    <h4>
+                        <p>최준영</p> 선생님
+                    </h4>
+                </div>
+
                 <div className="left-nav-box info-wrapper">
                     <div className="info-header">
                         <h4>Class 02반</h4>
                         <h5>에듀이티학원 도플 700점 목표반입니다.</h5>
                         <div className="info-num">
-                            <img alt="student_num" src={Avatar} />
+                            <img alt="student_num" src={People} />
                             <h5>학생 수 30명</h5>
                         </div>
                     </div>
