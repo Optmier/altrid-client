@@ -52,58 +52,292 @@
 /******************** Noto Sans KR **********************/
 // def. pixel size: 16
 // nav, footer, font 등 구현하시면 됩니다.
+
+$primaryColor: #13e2a1;
+$greenTintGrey: #f7f9f8;
+$backgroundFooter: #eaeaea;
+$textFooterInfo: #8a8a8a;
+$textFooterMenu: #3a3a3a;
+
 html,
 body {
+    background-color: $greenTintGrey;
     padding: 0;
     margin: 0;
     font-family: 'Montserrat', 'Noto Sans KR';
+    word-break: keep-all;
 
     a {
     }
 
     h1 {
-        margin: 0;
-        margin: 0;
         font-size: 2.25rem;
-        font-weight: 600;
-        line-height: 2.75rem;
-        word-break: keep-all;
+        line-height: 2.5rem;
+        margin: 0;
     }
 
     h2 {
-        margin: 0;
         font-size: 2rem;
         font-weight: 600;
-        line-height: 2.625rem;
-        word-break: keep-all;
+        line-height: 2.25rem;
+        margin: 0;
     }
 
     h3 {
-        margin: 0;
         font-size: 1.5rem;
         font-weight: 600;
         line-height: 2rem;
-        word-break: keep-all;
+        margin: 0;
     }
 
     h4 {
-        margin: 0;
-        font-size: 1.125rem;
-        font-weight: 400;
+        font-size: 1.25rem;
+        font-weight: 600;
         line-height: 1.5rem;
-        word-break: keep-all;
+        margin: 0;
     }
     h5 {
-        margin: 0;
-        font-size: 1rem;
-        font-weight: 400;
+        font-size: 1.125rem;
+        font-weight: 500;
         line-height: 1.5rem;
-        word-break: keep-all;
+        margin: 0;
+    }
+
+    p {
+        font-size: 1rem;
+        line-height: 1.5rem;
+        margin: 0;
+    }
+
+    & .header-bar {
+        color: #ffffff;
+        display: flex;
+        position: fixed;
+        width: 100%;
+        height: 80px;
+        z-index: 1299;
+        transition: all 0.3s;
+
+        &.scrolled {
+            background-color: $primaryColor;
+            box-shadow: 0 0.2rem 0.25rem rgba(0, 0, 0, 0.15);
+        }
+
+        & .container {
+            align-items: center;
+            display: flex;
+
+            &.left {
+                margin: 0 auto 0 5%;
+
+                & img {
+                    height: 40px;
+                }
+            }
+
+            &.center {
+            }
+
+            &.right {
+                margin: 0 5% 0 auto;
+
+                & p {
+                    cursor: pointer;
+                    & span {
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    }
+
+    & .main-divider {
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    & footer {
+        background-color: $backgroundFooter;
+        color: $textFooterInfo;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 144px;
+        font-size: 12px;
+
+        & .contents {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 960px;
+
+            & .left {
+                & .menus {
+                    display: flex;
+                    margin: 16px;
+                    margin-left: 0;
+
+                    & .item {
+                        & a {
+                            text-decoration: none;
+                            color: $textFooterMenu;
+                        }
+
+                        & + .item {
+                            margin-left: 48px;
+                        }
+                    }
+                }
+
+                & .infos {
+                    margin: 16px;
+                    margin-left: 0;
+                    word-break: keep-all;
+
+                    & a {
+                        text-decoration: none;
+                        color: inherit;
+                    }
+                }
+            }
+
+            & .right {
+                & .logo {
+                    margin: 16px;
+                    margin-right: 0;
+
+                    & img {
+                        height: 36px;
+                        filter: invert(1) brightness(0.6);
+                    }
+                }
+
+                & .copyright {
+                    margin: 16px;
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+
+    & .nav-popover-acc-name {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-top: 1em;
+    }
+
+    & .MuiDrawer-root.MuiDrawer-modal {
+        & .MuiBackdrop-root {
+            background-color: transparent;
+        }
     }
 
     @media all and (min-width: 769px) and (max-width: 1280) {
     }
 
     @media all and (max-width: 768px) {
+        a {
+        }
+
+        h1 {
+            font-size: 2rem;
+            line-height: 2.25rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            line-height: 2rem;
+        }
+
+        h3 {
+            font-size: 1.44rem;
+            font-weight: 600;
+            line-height: 1.75rem;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.44rem;
+        }
+
+        h5 {
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.44rem;
+        }
+
+        p {
+            font-size: 0.9rem;
+            line-height: 1.44rem;
+        }
+
+        & .header-bar {
+            & .container {
+                &.left {
+                    margin: 0 auto 0 16px;
+
+                    & img {
+                        height: 40px;
+                    }
+                }
+
+                &.center {
+                }
+
+                &.right {
+                    margin: 0 16px 0 auto;
+                }
+            }
+        }
+
+        & footer {
+            & .contents {
+                flex-direction: column;
+
+                & .left {
+                    & .menus {
+                        margin-left: 16px;
+                    }
+
+                    & .infos {
+                        margin-left: 16px;
+                    }
+                }
+
+                & .right {
+                    & .logo {
+                        display: none;
+                    }
+
+                    & .copyright {
+                        margin-top: -4px;
+                    }
+                }
+            }
+        }
+    }
+
+    @media all and (min-width: 992px) and (max-width: 1483px) {
+    }
+
+    @media all and (min-width: 663px) and (max-width: 991px) {
+        & .main-divider {
+            max-width: 632px;
+        }
+        & footer {
+            & .contents {
+                max-width: 632px;
+            }
+        }
+    }
+
+    @media all and (max-width: 662px) {
+        & .main-divider {
+            margin: 16px;
+        }
     }
 }

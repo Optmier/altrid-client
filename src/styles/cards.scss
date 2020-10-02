@@ -1,0 +1,195 @@
+$primaryColor: #13e2a1;
+$greenTintGrey: #f7f9f8;
+$normalDisabled: #bfbebc;
+$secondaryText: #969393;
+$accentOn: #ffbe2f;
+$cardHover: #f6f7f9;
+
+.cards-contents-root {
+    display: flex;
+    flex-direction: column;
+    padding: 80px 16px;
+    margin: 0 auto;
+    position: relative;
+
+    &.m-c-5 {
+        max-width: 1452px;
+    }
+
+    &.m-c-4 {
+        max-width: 1288px;
+    }
+
+    &.m-c-3 {
+        max-width: 960px;
+    }
+
+    & .card-lists {
+        & .card-root-grid {
+            width: initial;
+
+            & .card-root {
+                background: #ffffff;
+                box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                cursor: pointer;
+                border-radius: 10px;
+                width: 304px;
+                height: 240px;
+                transition: background-color 0.1s;
+
+                &.wider {
+                    width: 468px;
+                    height: 280px;
+                }
+
+                &:hover {
+                    background-color: $cardHover;
+                }
+            }
+        }
+    }
+
+    .add-new-root {
+        color: $primaryColor;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & .container {
+            & .icon-container {
+                display: flex;
+                justify-content: center;
+
+                & svg {
+                    font-size: 2.25rem;
+                }
+            }
+        }
+    }
+
+    .main-card-entry-root {
+        padding: 24px;
+        height: calc(100% - 48px);
+
+        & .header {
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+
+            & .title {
+                margin-right: auto;
+                width: calc(100% - 90px);
+
+                & h4 {
+                    margin: 0;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                }
+            }
+
+            & .on-progress {
+                color: $normalDisabled;
+                display: flex;
+                align-items: center;
+                font-size: 0.75rem;
+                font-weight: 600;
+                margin-left: auto;
+
+                & .indicator {
+                    background-color: $normalDisabled;
+                    border-radius: 50%;
+                    width: 8px;
+                    height: 8px;
+                    margin-left: 8px;
+                }
+
+                &.on {
+                    color: $primaryColor;
+
+                    & .indicator {
+                        background-color: $accentOn;
+                    }
+                }
+            }
+        }
+
+        & .descriptor {
+            color: $secondaryText;
+            margin-top: 24px;
+            height: calc(100% - 70px);
+
+            & h5 {
+                margin: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+            }
+        }
+
+        & .footer-info {
+            color: $secondaryText;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    }
+
+    @media all and (min-width: 992px) and (max-width: 1483px) {
+        width: 960px;
+    }
+
+    @media all and (min-width: 663px) and (max-width: 991px) {
+        width: 632px;
+
+        & .card-lists {
+            & .card-root-grid {
+                width: initial;
+
+                &.wider {
+                    width: 100%;
+                }
+
+                & .card-root {
+                    &.wider {
+                        width: initial;
+                    }
+                }
+            }
+        }
+    }
+
+    @media all and (max-width: 662px) {
+        width: initial;
+
+        & .card-lists {
+            & .card-root-grid {
+                width: 100%;
+
+                & .card-root {
+                    width: initial;
+
+                    &.wider {
+                        width: initial;
+                    }
+                }
+            }
+        }
+    }
+
+    @media all and (max-width: 768px) {
+        & .main-card-entry-root {
+            & .descriptor {
+                & h5 {
+                    // -webkit-line-clamp: 4;
+                    // height: 5.8rem;
+                }
+            }
+        }
+    }
+}

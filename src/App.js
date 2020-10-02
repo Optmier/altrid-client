@@ -4,16 +4,20 @@ import { Element } from 'react-scroll';
 import Class from './pages/Class';
 import Main from './pages/Main';
 import { Route } from 'react-router-dom';
+import ScrollTop from './components/essentials/ScrollTop';
+import Footer from './components/essentials/Footer';
 
 function App() {
     return (
         <>
             <Element name="main_top_start" />
-
-            <main>
-                <Route path="/" component={Main} exact />
-                <Route path="/class/:id" component={Class} />
-            </main>
+            <ScrollTop>
+                <main>
+                    <Route path="/" component={Main} exact />
+                    <Route path="/class/:id" component={Class} />
+                </main>
+            </ScrollTop>
+            <Footer />
         </>
     );
 }
