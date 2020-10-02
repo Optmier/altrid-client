@@ -4,6 +4,9 @@ import '../styles/class.scss';
 import Draft from '../components/ClassDraft/Draft';
 import Manage from '../components/ClassManage/Manage';
 import Share from '../components/ClassShare/Share';
+import SearchInput from '../components/essentials/SearchInput';
+import ClassWrapper from '../components/essentials/ClassWrapper';
+import FilterButton from '../components/essentials/FilterButton';
 
 const ClassPageSwitcher = ({ classPageName }) => {
     switch (classPageName) {
@@ -30,10 +33,15 @@ function Class({ history }) {
         <>
             <LeftNav />
             <div className="class-page-root">
-                <div className="class-page-wrapper">
-                    <p>클래스페이지입니다.</p>
-                    <ClassPageSwitcher classPageName={classPageName} />
+                <div style={{ width: '100%', borderBottom: '1.5px solid #e5e5e5' }}>
+                    <ClassWrapper>
+                        <div className="class-header-wrapper">
+                            <SearchInput />
+                            <FilterButton />
+                        </div>
+                    </ClassWrapper>
                 </div>
+                <ClassPageSwitcher classPageName={classPageName} />
             </div>
         </>
     );

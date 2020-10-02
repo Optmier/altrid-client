@@ -18,7 +18,7 @@ a {
 
     & .left-nav-wrapper {
         & .left-nav-box {
-            padding: 24px;
+            padding: 18px 24px;
         }
         & .left-nav-box + .left-nav-box {
             border-top: 0.5px solid white;
@@ -27,7 +27,7 @@ a {
 
         & .logo-wrapper {
             & > img {
-                width: 70%;
+                height: 28px;
             }
         }
         & .avatar-wrapper {

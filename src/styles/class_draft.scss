@@ -1,0 +1,27 @@
+.class-draft-root {
+    padding: 34px 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    & .class-cardView-wrapper {
+        display: inline-block;
+
+        & .draft-cardview-root {
+            width: calc(315px - 24px);
+            height: calc(280px - 24px);
+
+            border-radius: 11px;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            & .draft-cardview-header {
+                background-color: #e5e5e5;
+                padding: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+    }
+}
