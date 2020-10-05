@@ -10,8 +10,9 @@
         display: inline-block;
 
         & .draft-cardview-root {
-            width: calc(315px - 24px);
-            height: calc(280px - 24px);
+            // width: calc(315px - 24px);
+            // height: calc(280px - 24px);
+            width: 33%;
 
             border-radius: 11px;
             box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
