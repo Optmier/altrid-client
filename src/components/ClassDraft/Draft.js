@@ -3,8 +3,6 @@ import '../../styles/class_draft.scss';
 import ClassWrapper from '../essentials/ClassWrapper';
 import ClassTitle from '../essentials/ClassTitle';
 import DraftCardView from './DraftCardView';
-import CardLists from '../essentials/CardLists';
-import CardRoot from '../essentials/CardRoot';
 
 function Draft() {
     return (
@@ -17,8 +15,6 @@ function Draft() {
                     </ClassTitle>
 
                     <div className="class-cardView-wrapper">
-                        <DraftCardView />
-                        <DraftCardView />
                         <DraftCardView />
                     </div>
                 </div>

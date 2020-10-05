@@ -7,7 +7,6 @@ const styleWrapper = {
     display: 'flex',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    width: 'calc( 100% - 240px )',
 };
 
 function ClassWrapper({ children }) {
