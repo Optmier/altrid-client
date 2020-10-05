@@ -1,5 +1,7 @@
-import { CircularProgress, TextField, withStyles } from '@material-ui/core';
+import { Checkbox, CircularProgress, TextField, withStyles } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import classNames from 'classnames';
 import React from 'react';
 
@@ -60,6 +62,9 @@ const EdTextField = withStyles((theme) => ({
     },
 }))(TextField);
 
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
 function MultipleAutocomplete({ id, onChange, value, defaultValue, options, getOptionLabel, loading, error, placeholder }) {
     return (
         <Autocomplete
@@ -67,11 +72,17 @@ function MultipleAutocomplete({ id, onChange, value, defaultValue, options, getO
             id={id}
             onChange={onChange}
             defaultValue={defaultValue}
+            disableCloseOnSelect
             value={value}
             options={options}
             getOptionLabel={getOptionLabel}
-            filterSelectedOptions
             loading={loading}
+            renderOption={(option, { selected }) => (
+                <React.Fragment>
+                    <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
+                    {option.name} - {option.email}
+                </React.Fragment>
+            )}
             renderInput={(params) => (
                 <EdTextField
                     {...params}
