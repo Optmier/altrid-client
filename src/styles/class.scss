@@ -1,7 +1,7 @@
 .class-page-root {
     padding-left: 240px;
 
-    & .class-header-wrapper {
+    & .class-input-header {
         padding: 18.5px 0;
         width: 100%;
         display: flex;
@@ -16,6 +16,27 @@
         padding: 34px 0;
         & > b {
             font-weight: 600;
+        }
+    }
+
+    & .class-trash {
+        width: 100%;
+        height: 10vh;
+        padding: 24px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    & .class-draft-root {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+
+        & .class-draft-card {
+            width: 100%;
         }
     }
 }

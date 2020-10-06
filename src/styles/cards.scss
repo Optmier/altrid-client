@@ -8,7 +8,7 @@ $cardHover: #f6f7f9;
 .cards-contents-root {
     display: flex;
     flex-direction: column;
-    padding: 80px 16px;
+    padding: 0 16px;
     margin: 0 auto;
     position: relative;
 
@@ -34,7 +34,7 @@ $cardHover: #f6f7f9;
                 cursor: pointer;
                 border-radius: 10px;
                 width: 304px;
-                height: 240px;
+
                 transition: background-color 0.1s;
 
                 &.wider {

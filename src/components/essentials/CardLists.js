@@ -44,7 +44,7 @@ function CardLists({ upperDeck, maxColumn, children }) {
 
     return (
         <>
-            <section className={classNames('cards-contents-root', `m-c-${maxColumn}`)}>
+            <section style={{ border: '1px solid red' }} className={classNames('cards-contents-root', `m-c-${maxColumn}`)}>
                 {upperDeck}
                 <div className="card-lists">
                     <Grid container spacing={3}>

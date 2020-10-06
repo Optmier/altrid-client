@@ -35,7 +35,7 @@ function Class({ history }) {
             <div className="class-page-root">
                 <div style={{ width: '100%', borderBottom: '1.5px solid #e5e5e5' }}>
                     <ClassWrapper>
-                        <div className="class-header-wrapper">
+                        <div className="class-input-header">
                             <SearchInput />
                             <FilterButton />
                         </div>

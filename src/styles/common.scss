@@ -109,6 +109,31 @@ body {
         margin: 0;
     }
 
+    .card-title-p {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #2e2c2c;
+    }
+    .card-subTitle-p {
+        font-size: 1rem;
+        font-weight: 400;
+        color: #2e2c2c;
+    }
+    .card-content-title-p {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #706d6d;
+    }
+    .card-content-p {
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: #706d6d;
+    }
+    .card-bottom-p {
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
     & .header-bar {
         color: #ffffff;
         display: flex;
@@ -234,7 +259,7 @@ body {
         }
     }
 
-    @media all and (min-width: 769px) and (max-width: 1280px) {
+    @media all and (min-width: 769px) and (max-width: 1280) {
     }
 
     @media all and (max-width: 768px) {

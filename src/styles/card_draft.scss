@@ -1,0 +1,57 @@
+.draft-card-root {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    & .draft-card-wrapper {
+        padding: 12px;
+    }
+
+    & .draft-card-header {
+        background-color: #e5e5e5;
+        border-radius: 10px 10px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        & .card-option {
+            cursor: pointer;
+        }
+    }
+    & .draft-card-contents {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    & .draft-card-bottom {
+        height: 100%;
+        padding: 0 12px 12px 12px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        & > span + span {
+            padding-left: 20px;
+        }
+    }
+
+    /** card 공용css **/
+    & .contents-block + .contents-block {
+        padding-top: 20px;
+    }
+    & .card-item + .card-item {
+        padding-top: 6px;
+    }
+    & .contents-block {
+        width: 100%;
+
+        & .card-item {
+            display: flex;
+
+            & > .card-content-title-p {
+                width: 71px;
+            }
+        }
+    }
+}
