@@ -4,6 +4,7 @@ import { Grid } from '@material-ui/core';
 import classNames from 'classnames';
 import '../../styles/cards.scss';
 
+/** 카드뷰 자동 정렬 */
 window.$ = $;
 
 $.fn.changeSize = function (handleFunction) {
