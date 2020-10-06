@@ -2,7 +2,6 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const StyleWrapper = styled.div`
-    border: 1px solid red;
     max-width: 960px;
     padding: 0 16px;
     margin: 0 auto;
@@ -10,9 +9,8 @@ const StyleWrapper = styled.div`
     align-items: flex-start;
     justify-content: flex-start;
 
-    @media (min-width: 633px) and (max-width: 960px) {
-    }
-    @media (min-width: 632px) and (max-width: 960px) {
+    @media (min-width: 0px) and (max-width: 1231px) {
+        max-width: 632px;
     }
 `;
 
