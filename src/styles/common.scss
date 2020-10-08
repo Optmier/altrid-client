@@ -72,6 +72,11 @@ body {
     input:focus {
         outline: none;
     }
+    button {
+        outline: 0;
+        border: 0;
+        cursor: pointer;
+    }
 
     h1 {
         font-size: 2.25rem;

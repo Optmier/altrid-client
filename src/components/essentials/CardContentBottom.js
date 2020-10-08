@@ -1,15 +1,28 @@
 import React from 'react';
 
 const OnOffCircle = ({ fill }) => {
-    return <div style={{ width: '8px', height: '8px', borderRadius: '5px', backgroundColor: fill, marginRight: '5px' }}> </div>;
+    return <div style={{ width: '8px', height: '8px', borderRadius: '5px', backgroundColor: fill }}> </div>;
 };
 const BottomSpan = ({ color, fill, children, align }) => {
-    console.log(align);
     return (
         <span className="card-bottom-p" style={{ color: color, display: 'flex', alignItems: 'center' }}>
-            {align === 'right' ? <OnOffCircle fill={fill} /> : ''}
+            {align === 'right' ? (
+                <>
+                    <OnOffCircle fill={fill} />
+                    <span style={{ marginRight: '5px' }}></span>
+                </>
+            ) : (
+                ''
+            )}
             {children}
-            {align === 'left' ? <OnOffCircle fill={fill} /> : ''}
+            {align === 'left' ? (
+                <>
+                    <span style={{ marginLeft: '5px' }}></span>
+                    <OnOffCircle fill={fill} />
+                </>
+            ) : (
+                ''
+            )}
         </span>
     );
 };

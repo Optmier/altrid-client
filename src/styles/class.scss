@@ -1,3 +1,5 @@
+$primaryColor: #13e2a1;
+
 .class-page-root {
     padding-left: 240px;
 
@@ -15,6 +17,10 @@
         width: 100%;
         padding: 34px 0;
         & > b {
+            font-weight: 600;
+        }
+        & > span {
+            color: $primaryColor;
             font-weight: 600;
         }
     }
