@@ -1,73 +1,11 @@
 import React, { useState } from 'react';
 import '../../styles/class_card.scss';
 import CardContentBottom from '../essentials/CardContentBottom';
-import { withStyles } from '@material-ui/core/styles';
-import Switch from '@material-ui/core/Switch';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { IoIosArrowForward } from 'react-icons/io';
 import ModifyButton from '../essentials/ModifyButton';
 import StudentNum from '../essentials/StudentNum';
-
-const dummyDatas = {};
-
-const IOSSwitch = withStyles((theme) => ({
-    root: {
-        width: 42,
-        height: 26,
-        padding: 0,
-        margin: theme.spacing(1),
-    },
-    switchBase: {
-        padding: 1,
-        backgroundColor: '#d4d1d1',
-        '& + $track': {
-            backgroundColor: '#bdbaba',
-            border: 'none',
-        },
-        '&$checked': {
-            transform: 'translateX(16px)',
-            color: theme.palette.common.white,
-            '& + $track': {
-                backgroundColor: '#13e2a1',
-                opacity: 1,
-                border: 'none',
-            },
-        },
-        '&$focusVisible $thumb': {
-            color: '#52d869',
-            border: '5px solid #fff',
-        },
-    },
-    thumb: {
-        width: 24,
-        height: 24,
-    },
-    track: {
-        borderRadius: 26 / 2,
-        border: `1px solid ${theme.palette.grey[400]}`,
-        backgroundColor: theme.palette.grey[50],
-        opacity: 1,
-        transition: theme.transitions.create(['background-color', 'border']),
-    },
-    checked: {},
-    focusVisible: {},
-}))(({ classes, ...props }) => {
-    return (
-        <Switch
-            focusVisibleClassName={classes.focusVisible}
-            disableRipple
-            classes={{
-                root: classes.root,
-                switchBase: classes.switchBase,
-                thumb: classes.thumb,
-                track: classes.track,
-                checked: classes.checked,
-            }}
-            {...props}
-        />
-    );
-});
+import classNames from 'classnames';
+import ToggleSwitch from '../essentials/ToggleSwitch';
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -90,31 +28,32 @@ const DateItems = ({ title, start, end }) => {
     );
 };
 
-function CardShare() {
-    const [state, setState] = useState({
-        checkedB: false,
+function CardShare({ dummy }) {
+    const [toggleState, setToggleState] = useState({
+        checked: dummy['progress'],
     });
     const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
+        setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
     };
 
     return (
         <div className="class-card-root">
-            <div className="class-card-header class-card-wrapper">
+            <div
+                className={classNames(
+                    { 'class-card-header': !toggleState['checked'] },
+                    { 'class-card-header-on': toggleState['checked'] },
+                    'class-card-wrapper',
+                )}
+            >
                 <div className="card-title-p">과제 TITLE</div>
                 <span className="card-option">
-                    <FormGroup>
-                        <FormControlLabel
-                            control={<IOSSwitch checked={state.checkedB} onChange={handleChange} name="checkedB" />}
-                            label=""
-                        />
-                    </FormGroup>
+                    <ToggleSwitch toggleState={toggleState} handleChange={handleChange} />
                 </span>
             </div>
 
             <div></div>
 
-            <dic className="class-card-flex">
+            <div className="class-card-flex">
                 <div className="class-card-left">
                     <div className="class-card-contents class-card-wrapper">
                         <div className="contents-block">
@@ -135,6 +74,7 @@ function CardShare() {
                 <div className="class-card-right">
                     <div className="class-card-contents class-card-wrapper">
                         <StudentNum completeNum={14} totalNum={30} />
+                        <div className="student-complete-text">제출한 학생</div>
                     </div>
 
                     <div className="class-card-bottom-right card-bottom-p">
@@ -143,7 +83,7 @@ function CardShare() {
                         </div>
                     </div>
                 </div>
-            </dic>
+            </div>
         </div>
     );
 }

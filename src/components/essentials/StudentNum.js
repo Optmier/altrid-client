@@ -41,7 +41,7 @@ function StudentNum({ totalNum, completeNum }) {
                         y2="-2"
                         transform="matrix(-0.716409 0.69768 -0.731229 -0.682132 49.4805 0)"
                         stroke="#2E2C2C"
-                        stroke-width="4"
+                        strokeWidth="4"
                     />
                 </svg>
             </div>

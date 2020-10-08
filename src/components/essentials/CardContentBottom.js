@@ -4,7 +4,6 @@ const OnOffCircle = ({ fill }) => {
     return <div style={{ width: '8px', height: '8px', borderRadius: '5px', backgroundColor: fill }}> </div>;
 };
 const BottomSpan = ({ color, fill, children, align }) => {
-    console.log(align);
     return (
         <span className="card-bottom-p" style={{ color: color, display: 'flex', alignItems: 'center' }}>
             {align === 'right' ? (
