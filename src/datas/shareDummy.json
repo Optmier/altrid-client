@@ -1,7 +1,7 @@
 {
     "1": {
         "progress": true,
-        "title": "과제 TITL 01 과제 TITL 01 과제 TITL 01",
+        "title": "과제 TITL 01 과제 TITL 01 과제 TITL 01 과제 TITL 01",
         "desc": "과제 01 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
         "age": "에듀이티 고1 에듀이티 고1 에듀이티 고1 에듀이티 고1",
         "question_num": "3set / 15문제",
@@ -14,7 +14,7 @@
     },
     "2": {
         "progress": false,
-        "title": "과제 TITL 02 과제 TITL 02 과제 TITL 02",
+        "title": "과제 TITL 02 과제 TITL 02 과제 TITL 02 과제 TITL 02",
         "desc": "과제 02 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
         "age": "에듀이티 고2 에듀이티 고2 에듀이티 고2 에듀이티 고2",
         "question_num": "3set / 18문제",
@@ -27,7 +27,7 @@
     },
     "3": {
         "progress": true,
-        "title": "과제 TITL 03 과제 TITL 03 과제 TITL 03",
+        "title": "과제 TITL 03 과제 TITL 03 과제 TITL 03 과제 TITL 03",
         "desc": "과제 03 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
         "age": "에듀이티 고3 에듀이티 고3 에듀이티 고3 에듀이티 고3",
         "question_num": "3set / 20문제",
