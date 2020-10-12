@@ -1,0 +1,73 @@
+export default [
+    {
+        id: 1,
+        name: '문장 요약',
+        eng: 'Sentence Simplification',
+        desc: '지문에서 음영 처리된 문장의 핵심 정보를 간략하게 재진술한 문장을 고르는 문제',
+        nums: '0 ~ 1',
+    },
+    {
+        id: 2,
+        name: '세부 정보 찾기',
+        eng: 'Detailed Fact',
+        desc: '지문에 언급된 세부 정보를 가장 정확하게 재진술한 선택지를 찾는 문제',
+        nums: '3 ~ 4',
+    },
+    {
+        id: 3,
+        name: '틀린 정보 찾기',
+        eng: 'Negative Fact',
+        desc: '지문에 명시된 내용을 근거로 사실이 아닌 선택지를 찾는 문제',
+        nums: '3 ~ 4',
+    },
+    {
+        id: 4,
+        name: '어휘',
+        eng: 'Vocabulary',
+        desc: '지문에 등장하는 특정 어휘나 어구의 의미를 묻는 문제',
+        nums: '3 ~ 5',
+    },
+    {
+        id: 5,
+        name: '지시 대상',
+        eng: 'Reference',
+        desc: '지문에서 음영 처리된 어휘 혹은 어구와 다른 단어 간의 상호 지시 관계를 묻는 문제',
+        nums: '0 ~ 1',
+    },
+    {
+        id: 6,
+        name: '수사학적 의도 파악',
+        eng: 'Rhetorical Purpose',
+        desc: '글쓴이가 지문에서 특정 대상을 언급한 이유나 단락 간의 관계를 묻는 문제',
+        nums: '1 ~ 2',
+    },
+    {
+        id: 7,
+        name: '추론',
+        eng: 'Inference',
+        desc: '지문에 암시되어 있기는 하나 명백하게 드러나지 않은 주장이나 생각을 이해했는지 확인하는 문제',
+        nums: '1 ~ 2',
+    },
+    {
+        id: 8,
+        name: '문장 삽입',
+        eng: 'Text Insertion',
+        desc: '문제에서 주어진 문장을 지문 어느 곳에 삽입하는 것이 가장 적절한지 묻는 문제',
+        nums: '1',
+    },
+    {
+        id: 9,
+        name: '지문 요약',
+        eng: 'Prose Summary',
+        desc:
+            '지문의 핵심 정보를 선택하여 지문을 요약하는 문제로 상대적으로 중요한 정보와 그렇지 않은 정보를 구분할 수 있는 능력을 평가하는 문제',
+        nums: '0 ~ 1',
+    },
+    {
+        id: 10,
+        name: '정보 분류',
+        eng: 'Category Chart',
+        desc: '지문의 비교/대조 개념과 정보를 알맞은 범주로 분류하는 능력을 평가하는 문제',
+        nums: '0 ~ 1',
+    },
+];

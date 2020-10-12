@@ -6,6 +6,7 @@ import Main from './pages/Main';
 import { Route } from 'react-router-dom';
 import ScrollTop from './components/essentials/ScrollTop';
 import Footer from './components/essentials/Footer';
+import TofelEditorTemp from './pages/TofelEditorTemp';
 
 function App() {
     return (
@@ -15,9 +16,9 @@ function App() {
                 <main>
                     <Route path="/" component={Main} exact />
                     <Route path="/class/:id" component={Class} />
+                    <Route path="/temp" component={TofelEditorTemp} />
                 </main>
             </ScrollTop>
-            <Footer />
         </>
     );
 }

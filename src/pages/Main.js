@@ -8,6 +8,7 @@ import CardLists from '../components/essentials/CardLists';
 import CardAddNew from '../components/essentials/CardAddNew';
 import CardEntry from '../components/MainPage/CardEntry';
 import CreateNewEntry from '../components/MainPage/CreateNewEntry';
+import Footer from '../components/essentials/Footer';
 
 const testDatas = [
     {
@@ -102,6 +103,7 @@ function Main() {
                     <Divider className="main-divider" />
                 </section>
             </main>
+            <Footer />
         </>
     );
 }
