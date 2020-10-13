@@ -69,9 +69,19 @@ body {
 
     a {
     }
+    input {
+        border: none;
+        font-size: 0.8rem;
+    }
     input:focus {
         outline: none;
     }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
     button {
         outline: 0;
         border: 0;
@@ -82,6 +92,7 @@ body {
         font-size: 2.25rem;
         line-height: 2.5rem;
         margin: 0;
+        font-weight: 600;
     }
 
     h2 {
@@ -272,15 +283,40 @@ body {
     }
 
     @media all and (min-width: 769px) and (max-width: 1280) {
+        input {
+            border: none;
+            font-size: 0.8rem;
+        }
+        input:focus {
+            outline: none;
+        }
+        button {
+            outline: 0;
+            border: 0;
+            cursor: pointer;
+        }
     }
 
     @media all and (max-width: 768px) {
         a {
         }
+        input {
+            border: none;
+            font-size: 1.1rem;
+        }
+        input:focus {
+            outline: none;
+        }
+        button {
+            outline: 0;
+            border: 0;
+            cursor: pointer;
+        }
 
         h1 {
             font-size: 2rem;
             line-height: 2.25rem;
+            font-weight: 600;
         }
 
         h2 {

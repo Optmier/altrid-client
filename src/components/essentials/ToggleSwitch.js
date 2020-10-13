@@ -22,7 +22,7 @@ const StyleToggle = styled.div`
     }
 `;
 
-const AntSwitch = withStyles((theme) => ({
+const ShareSwitch = withStyles((theme) => ({
     root: {
         width: 28,
         height: 16,
@@ -60,13 +60,59 @@ const AntSwitch = withStyles((theme) => ({
     },
     checked: {},
 }))(Switch);
+const DrawerSwitch = withStyles((theme) => ({
+    root: {
+        width: 28,
+        height: 16,
+        padding: 0,
+        display: 'flex',
+    },
+    switchBase: {
+        padding: 2,
+        color: 'white',
+        '&$checked': {
+            transform: 'translateX(12px)',
+            color: 'white',
+            '& + $track': {
+                opacity: 1,
+                backgroundColor: '#13E2A1',
+                border: 'none',
+            },
+        },
 
-function ToggleSwitch({ toggleState, handleChange }) {
+        '& + $track': {
+            backgroundColor: '#C4C4C4',
+            border: 'none',
+        },
+    },
+    thumb: {
+        width: 12,
+        height: 12,
+        boxShadow: 'none',
+    },
+    track: {
+        border: `1px solid ${theme.palette.grey[500]}`,
+        borderRadius: 16 / 2,
+        opacity: 1,
+        backgroundColor: theme.palette.common.white,
+    },
+    checked: {},
+}))(Switch);
+
+function ToggleSwitch({ toggle, handleChange, type, name }) {
     return (
-        <StyleToggle>
-            <AntSwitch checked={toggleState.checked} onChange={handleChange} name="checked" />
-            {toggleState.checked ? <div className="toggle-on-ment">과제 진행중</div> : <div className="toggle-off-ment">과제 완료됨</div>}
-        </StyleToggle>
+        <div style={{ display: 'inline' }}>
+            <StyleToggle>
+                {type === 'share' ? (
+                    <>
+                        <ShareSwitch checked={toggle} onChange={handleChange} name={name} />
+                        {toggle ? <div className="toggle-on-ment">과제 진행중</div> : <div className="toggle-off-ment">과제 완료됨</div>}
+                    </>
+                ) : (
+                    <DrawerSwitch checked={toggle} onChange={handleChange} name={name} />
+                )}
+            </StyleToggle>
+        </div>
     );
 }
 
