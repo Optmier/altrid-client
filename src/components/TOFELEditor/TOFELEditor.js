@@ -10,6 +10,7 @@ import TofelEditorTemp from '../../pages/TofelEditorTemp';
 import CreateNewProblem from './CreateNewProblem';
 import QuillEditorToolbarOption from './QuillEditorToolbarOption';
 import ProblemCard from './ProblemCard';
+import SmartTOFELRender from '../TOFELRenderer/SmartTOFELRender';
 
 $.fn.changeSize = function (handleFunction) {
     let element = this;
@@ -74,6 +75,14 @@ const EdTextField = withStyles((theme) => ({
     },
 }))(TextField);
 
+const PreviewDialog = withStyles((theme) => ({
+    root: {
+        '& .MuiPaper-root.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm.MuiPaper-rounded': {
+            maxWidth: 1280,
+        },
+    },
+}))(Dialog);
+
 const Root = styled.div`
     /* padding: 16px; */
 `;
@@ -117,6 +126,12 @@ const NoContentsProblemWarning = styled.div`
         margin-right: 4px;
     }
 `;
+const PreviewContainer = styled.div`
+    max-width: 1280px;
+    max-height: 750px;
+    width: 1280px;
+    height: 750px;
+`;
 
 function TOFELEditor({ id, datas, children, ...rest }) {
     const quillRef = useRef();
@@ -131,7 +146,7 @@ function TOFELEditor({ id, datas, children, ...rest }) {
     const [problemEditIdx, setProblemEditIdx] = useState(0);
 
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
-    const [openPreview, setOpenPreview] = React.useState(false);
+    const [openPreview, setOpenPreview] = useState(true);
 
     const onTextFieldChange = ({ target }) => {
         const { name, value } = target;
@@ -258,9 +273,16 @@ function TOFELEditor({ id, datas, children, ...rest }) {
 
     return (
         <Root className="tofel-editor-root">
-            <Dialog open={openPreview} onClose={handlePreviewClose}>
-                여기에 미리보기가 표시될 예정입니다.
-            </Dialog>
+            <PreviewDialog open={openPreview} onClose={handlePreviewClose}>
+                <PreviewContainer>
+                    <SmartTOFELRender
+                        preview
+                        title={contentsTitle}
+                        passageForRender={contentsPassage.render}
+                        problemDatas={contentsProblemDatas}
+                    />
+                </PreviewContainer>
+            </PreviewDialog>
             <Drawer anchor="right" open={openCreateNewDrawer}>
                 <CreateNewProblem
                     problemDatas={currentProblemData}
