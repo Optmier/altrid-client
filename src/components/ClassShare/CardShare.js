@@ -45,7 +45,7 @@ function CardShare({ dummy }) {
                     'class-card-wrapper',
                 )}
             >
-                <div className="card-title-p">과제 TITLE</div>
+                <div className="card-title-p">{dummy['title']}</div>
                 <span className="card-option">
                     <ToggleSwitch toggleState={toggleState} handleChange={handleChange} />
                 </span>
