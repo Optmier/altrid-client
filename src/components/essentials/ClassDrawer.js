@@ -12,6 +12,7 @@ function ClassDrawer() {
         eyetrack: true,
         timeAttack: true,
     });
+    const { hh, mm } = timeInputs;
 
     const handleChange = (event) => {
         setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
@@ -28,8 +29,6 @@ function ClassDrawer() {
             });
         }
     };
-
-    const { hh, mm } = timeInputs;
 
     const onChange = (e) => {
         const { value, name } = e.target;
@@ -73,16 +72,16 @@ function ClassDrawer() {
 
                         <div className="time-inputs">
                             <input
-                                type="number"
+                                type="text"
                                 name="hh"
                                 value={hh}
                                 readOnly={hh === '--' ? true : false}
                                 onChange={onChange}
                                 placeholder="00"
-                            />{' '}
-                            :{' '}
+                            />
+                            :
                             <input
-                                type="number"
+                                type="text"
                                 name="mm"
                                 value={mm}
                                 readOnly={mm === '--' ? true : false}
