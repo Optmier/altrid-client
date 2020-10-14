@@ -19,7 +19,7 @@ function CardDraft() {
     /** pop-over 메소드 */
     const [anchorEl, setAnchorEl] = useState(null);
 
-    const handleClick = (event) => {
+    const handleOptionClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleOptionClose = () => {
