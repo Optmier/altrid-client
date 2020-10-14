@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function CardPopOver({ handleClose, anchorEl, handleModify }) {
+function CardPopOver({ handleModalOpen, handleOptionClose, anchorEl, handleModify }) {
     const classes = useStyles();
 
     const open = Boolean(anchorEl);
@@ -50,7 +50,7 @@ function CardPopOver({ handleClose, anchorEl, handleModify }) {
             id={id}
             open={open}
             anchorEl={anchorEl}
-            onClose={handleClose}
+            onClose={handleOptionClose}
             anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'center',
@@ -64,13 +64,13 @@ function CardPopOver({ handleClose, anchorEl, handleModify }) {
                 <PopOverList>
                     <div className="popover-section">
                         <div className="popover-list">과제 확인</div>
-                        <div className="popover-list">과제 공유</div>
+                        <div className="popover-list" onClick={handleModalOpen}>
+                            과제 공유
+                        </div>
                     </div>
                     <div className="popover-section">
                         <div className="popover-list">복사하기</div>
-                        <div className="popover-list" onClick={handleModify}>
-                            수정하기
-                        </div>
+                        <div className="popover-list">수정하기</div>
                     </div>
                     <div className="popover-section">
                         <div className="popover-list">삭제하기</div>

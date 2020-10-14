@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../../styles/class_card.scss';
 import CardContentBottom from '../essentials/CardContentBottom';
 import CardPopOver from '../essentials/CardPopOver';
+import ClassModal from '../essentials/ClassModal';
 
 const dummyDatas = {};
 
@@ -21,12 +22,13 @@ function CardDraft() {
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
-    const handleClose = () => {
+    const handleOptionClose = () => {
         setAnchorEl(null);
     };
     /*====================*/
 
-    /** modal 메소드 */
+    /** class-modal 메소드 */
+    // type 3가지 : share, complete, date_modify
     const [open, setOpen] = useState(false);
 
     const handleModalOpen = () => {
@@ -40,11 +42,17 @@ function CardDraft() {
 
     return (
         <>
-            <CardPopOver handleClick={handleClick} handleClose={handleClose} anchorEl={anchorEl} />
+            <CardPopOver
+                handleModalOpen={handleModalOpen}
+                handleOptionClick={handleOptionClick}
+                handleOptionClose={handleOptionClose}
+                anchorEl={anchorEl}
+            />
+            <ClassModal type="share" open={open} handleModalClose={handleModalClose} />
             <div className="class-card-root">
                 <div className="class-card-header class-card-wrapper">
                     <div className="card-title-p">과제 TITLE</div>
-                    <span className="card-option" onClick={handleClick}>
+                    <span className="card-option" onClick={handleOptionClick}>
                         <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
                             <circle cx="16.5" cy="2.5" r="2.5" fill="#C4C4C4" />
