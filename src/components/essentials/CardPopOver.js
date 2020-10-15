@@ -1,16 +1,16 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Popover from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
-const PopOverList = styled.div`
+const StylePopOverList = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 0.8rem;
     font-weight: 400;
+    background-color: #222222;
+    color: white;
 
     & .popover-section {
         cursor: pointer;
@@ -31,17 +31,7 @@ const PopOverList = styled.div`
     }
 `;
 
-const useStyles = makeStyles((theme) => ({
-    typography: {
-        padding: theme.spacing(0),
-        backgroundColor: '#222222',
-        color: 'white',
-    },
-}));
-
 function CardPopOver({ handleModalOpen, handleOptionClose, anchorEl, handleModify }) {
-    const classes = useStyles();
-
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
 
@@ -60,23 +50,21 @@ function CardPopOver({ handleModalOpen, handleOptionClose, anchorEl, handleModif
                 horizontal: 'center',
             }}
         >
-            <Typography className={classes.typography}>
-                <PopOverList>
-                    <div className="popover-section">
-                        <div className="popover-list">과제 확인</div>
-                        <div className="popover-list" onClick={handleModalOpen}>
-                            과제 공유
-                        </div>
+            <StylePopOverList>
+                <div className="popover-section">
+                    <div className="popover-list">과제 확인</div>
+                    <div className="popover-list" onClick={handleModalOpen}>
+                        과제 공유
                     </div>
-                    <div className="popover-section">
-                        <div className="popover-list">복사하기</div>
-                        <div className="popover-list">수정하기</div>
-                    </div>
-                    <div className="popover-section">
-                        <div className="popover-list">삭제하기</div>
-                    </div>
-                </PopOverList>
-            </Typography>
+                </div>
+                <div className="popover-section">
+                    <div className="popover-list">복사하기</div>
+                    <div className="popover-list">수정하기</div>
+                </div>
+                <div className="popover-section">
+                    <div className="popover-list">삭제하기</div>
+                </div>
+            </StylePopOverList>
         </Popover>
     );
 }

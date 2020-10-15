@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 const DateTextField = withStyles((theme) => ({
     root: {
         fontFamily: 'inherit',
-        width: 230,
+        width: 220,
         outline: 'none',
         '& .MuiInputBase-root': {
             fontSize: '0.9rem',
