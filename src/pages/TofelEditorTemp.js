@@ -4,7 +4,7 @@ import TOFELEditor from '../components/TOFELEditor/TOFELEditor';
 function TofelEditorTemp() {
     return (
         <div style={{ height: '100vh' }}>
-            <TOFELEditor datas={testData} title="" timeLimit={60} />
+            <TOFELEditor datas={testData} />
         </div>
     );
 }
@@ -24,40 +24,44 @@ const testData = {
                 '<p>1.&nbsp;Which of the following best expresses the essential information in the highlighted sentence? Incorrect answer choices change the meaning in important ways or leave out essential information.</p><p>While the very creation of such monoliths – most out of volcanic ash with stone hand chisels – is an impressive feat, what is more remarkable (not to mention mysterious) is how they were transported to their resting places.</p>',
             textForEditor:
                 '{"ops":[{"insert":"1. Which of the following best expresses the essential information in the highlighted sentence? Incorrect answer choices change the meaning in important ways or leave out essential information.\\nWhile the very creation of such monoliths – most out of volcanic ash with stone hand chisels – is an impressive feat, what is more remarkable (not to mention mysterious) is how they were transported to their resting places.\\n"}]}',
+            commentsForRender: '',
+            commentsForEditor: `{"ops":[{"insert":"\n"}]}`,
             selections: {
-                1:
-                    'The transportation of the moai is both remarkable and mysterious, but not as impressive as the actual creation of the statutes.',
-                2:
-                    'The moai were carved with stone hand chisels, which is an impressive accomplishment, but it is still unknown whether the people actually transported them.',
+                1: 'The transportation of the moai is both remarkable and mysterious, but not as impressive as the actual creation of the statutes.',
+                2: 'The moai were carved with stone hand chisels, which is an impressive accomplishment, but it is still unknown whether the people actually transported them.',
                 3: 'The creation of the moai is amazing, but not as amazing as how they were transported.',
                 4: 'The transportation of the moai is remarkable, mysterious, and as impressive as their creation with simple hand tools.',
                 5: '',
             },
             answer: 2,
+            score: 1,
         },
         {
-            category: 4,
-            type: 'multiple-choice',
+            category: 9,
+            type: 'short-answer',
             textForRender:
                 '<p>2.&nbsp;In paragraph 2, what does the author say about past theories of how the moai were transported from quarries to their resting places?</p>',
             textForEditor:
                 '{"ops":[{"insert":"2. In paragraph 2, what does the author say about past theories of how the moai were transported from quarries to their resting places?\\n"}]}',
+            commentsForRender: '',
+            commentsForEditor: `{"ops":[{"insert":"\n"}]}`,
             selections: {
-                1:
-                    'The theories claimed that that use of natural resources for transporting moai had devastating effects on the land and society.',
+                1: 'The theories claimed that that use of natural resources for transporting moai had devastating effects on the land and society.',
                 2: 'The theories relied on evidence of log roadways that remained long after the Rapa Nui people had disappeared.',
-                3:
-                    'The theories were supported by oral accounts of the use of wood by the Rapa Nui peoples at the time the moai were constructed and transported.',
+                3: 'The theories were supported by oral accounts of the use of wood by the Rapa Nui peoples at the time the moai were constructed and transported.',
                 4: 'The theories were based on inaccurate estimates of the amount of wood required to transport moai over long distances.',
                 5: '',
             },
-            answer: 1,
+            answer: 'ACB',
+            score: 2,
         },
         {
             category: 6,
             type: 'multiple-choice',
             textForRender: "<p>3.&nbsp;The word 'they' in paragraph&nbsp;2&nbsp;refers to:</p>",
             textForEditor: '{"ops":[{"insert":"3. The word \'they\' in paragraph 2 refers to:\\n"}]}',
+            commentsForRender: '',
+            commentsForEditor: `{"ops":[{"insert":"\n"}]}`,
             selections: {
                 1: 'proponents.',
                 2: 'the people.',
@@ -66,6 +70,7 @@ const testData = {
                 5: '',
             },
             answer: 4,
+            score: 1,
         },
     ],
 };

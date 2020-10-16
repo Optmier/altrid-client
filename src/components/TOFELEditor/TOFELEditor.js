@@ -148,6 +148,8 @@ function TOFELEditor({ id, datas, children, ...rest }) {
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const [openPreview, setOpenPreview] = useState(true);
 
+    const [tempTimer, setTempTimer] = useState(10);
+
     const onTextFieldChange = ({ target }) => {
         const { name, value } = target;
         switch (name) {
@@ -269,6 +271,13 @@ function TOFELEditor({ id, datas, children, ...rest }) {
                 // addParagraphSplitter();
             }
         });
+
+        const testtimer = setInterval(() => {
+            setTempTimer((tempTimer) => {
+                if (tempTimer < 1) clearInterval(testtimer);
+                return tempTimer - 1;
+            });
+        }, 1000);
     }, []);
 
     return (
@@ -280,6 +289,8 @@ function TOFELEditor({ id, datas, children, ...rest }) {
                         title={contentsTitle}
                         passageForRender={contentsPassage.render}
                         problemDatas={contentsProblemDatas}
+                        timer={tempTimer}
+                        onEnd={handlePreviewClose}
                     />
                 </PreviewContainer>
             </PreviewDialog>
@@ -342,6 +353,7 @@ function TOFELEditor({ id, datas, children, ...rest }) {
                                         textForRender={data.textForRender}
                                         selections={data.selections}
                                         answer={data.answer}
+                                        score={data.score}
                                         handleEdit={onProblemEdit(idx)}
                                         handleDelete={onProblemDelete(idx)}
                                     />
@@ -372,6 +384,8 @@ TOFELEditor.defaultProps = {
                 type: 'multiple-choice',
                 textForRender: '',
                 textForEditor: `{"ops":[{"insert":"\n"}]}`,
+                commentsForRender: '',
+                commentsForEditor: `{"ops":[{"insert":"\n"}]}`,
                 selections: {
                     1: '',
                     2: '',
@@ -380,6 +394,7 @@ TOFELEditor.defaultProps = {
                     5: '',
                 },
                 answer: 3,
+                score: 0,
             },
         ],
     },

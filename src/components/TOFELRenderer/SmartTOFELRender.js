@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HtmlParser from 'react-html-parser';
 import styled from 'styled-components';
 import TimerIcon from '@material-ui/icons/Timer';
@@ -14,7 +14,9 @@ const pad = (n, width) => {
 };
 
 const timeValueToTimer = (seconds) => {
-    return `${pad(parseInt(seconds / 60), 2)}:${pad(seconds % 60, 2)}`;
+    const secs = seconds < 0 ? 0 : seconds;
+    if (seconds === -2) return '제한 없음';
+    else return `${pad(parseInt(secs / 60), 2)}:${pad(secs % 60, 2)}`;
 };
 
 const RenderRoot = styled.div`
@@ -85,14 +87,47 @@ const HeaderMasterSWs = styled.div`
     justify-content: space-between;
 `;
 
-function SmartTOFELRender({ preview, title, passageForRender, problemDatas, timer, onPrev, onNext, onEnd }) {
-    const [currentProblemIdx, setCurrentProblemIdx] = useState(0);
+function SmartTOFELRender({ preview, title, passageForRender, problemDatas, userDatas, timer, onPrev, onNext, onEnd }) {
+    const [currentProblemIdx, setCurrentProblemIdx] = useState(userDatas.lastProblem);
+    const [userSelectionDatas, setUserSelectionDatas] = useState(userDatas.selections);
+    const [currentLog, setCurrentLog] = useState({
+        pid: 0,
+        action: null,
+        startTime: 0,
+        endTime: 0,
+        answerBefore: 0,
+        answerAfter: 0,
+        correct: false,
+    });
+    const [metadata, setMetadata] = useState(userDatas);
 
     const handlePrev = () => {
+        setCurrentLog((currentLog) => {
+            const state = {
+                ...currentLog,
+                action: 'end',
+                answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
+                correct: userSelectionDatas[currentProblemIdx].correct,
+            };
+            // console.log(state);
+            onPrev();
+            return state;
+        });
         setCurrentProblemIdx(currentProblemIdx - 1);
     };
 
     const handleNext = () => {
+        setCurrentLog((currentLog) => {
+            const state = {
+                ...currentLog,
+                action: 'end',
+                answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
+                correct: userSelectionDatas[currentProblemIdx].correct,
+            };
+            // console.log(state);
+            onNext();
+            return state;
+        });
         if (currentProblemIdx >= problemDatas.length - 1) {
             onEnd();
             return;
@@ -100,9 +135,123 @@ function SmartTOFELRender({ preview, title, passageForRender, problemDatas, time
         setCurrentProblemIdx(currentProblemIdx + 1);
     };
 
-    const handleEnd = () => {
-        onEnd();
+    const onSelectionSelected = (userAnswer, isCorrect) => {
+        // console.log(userAnswer, isCorrect);
+        // if (preview && isCorrect) {
+        //     alert('정답입니다.');
+        // }
+        setCurrentLog((currentLog) => {
+            const state = {
+                ...currentLog,
+                action: 'changed',
+                answerBefore: userSelectionDatas[currentProblemIdx].answerUser,
+                answerAfter: userAnswer,
+                correct: isCorrect,
+            };
+            // console.log(state);
+            return state;
+        });
+        setUserSelectionDatas(
+            userSelectionDatas.map((data, idx) =>
+                idx === currentProblemIdx
+                    ? {
+                          ...data,
+                          type: problemDatas[currentProblemIdx].type,
+                          answerUser: userAnswer,
+                          answerCorrect: problemDatas[currentProblemIdx].answer,
+                          correct: isCorrect,
+                          score: isCorrect ? problemDatas[currentProblemIdx].score : 0,
+                      }
+                    : data,
+            ),
+        );
     };
+
+    const handleEnd = () => {
+        console.log(timer, metadata);
+        onEnd(timer, metadata);
+    };
+
+    useEffect(() => {
+        if (!userSelectionDatas[currentProblemIdx]) {
+            if (preview) {
+                setUserSelectionDatas([
+                    ...userSelectionDatas,
+                    {
+                        type: problemDatas[currentProblemIdx].type,
+                        answerUser: problemDatas[currentProblemIdx].answer,
+                        answerCorrect: problemDatas[currentProblemIdx].answer,
+                        correct: false,
+                        score: 0,
+                    },
+                ]);
+            } else {
+                setUserSelectionDatas([
+                    ...userSelectionDatas,
+                    {
+                        type: problemDatas[currentProblemIdx].type,
+                        answerUser: problemDatas[currentProblemIdx].type === 'short-answer' ? '' : 0,
+                        answerCorrect: problemDatas[currentProblemIdx].answer,
+                        correct: false,
+                        score: 0,
+                    },
+                ]);
+            }
+            setCurrentLog((currentLog) => {
+                const state = {
+                    pid: currentProblemIdx,
+                    action: 'begin',
+                    startTime: 0,
+                    endTime: 0,
+                    answerBefore: 0,
+                    answerAfter: 0,
+                    correct: false,
+                };
+                // console.log(state);
+                return state;
+            });
+        } else {
+            setCurrentLog((currentLog) => {
+                const state = {
+                    pid: currentProblemIdx,
+                    action: 'begin',
+                    startTime: 0,
+                    endTime: 0,
+                    answerBefore: userSelectionDatas[currentProblemIdx].answerUser,
+                    answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
+                    correct: userSelectionDatas[currentProblemIdx].correct,
+                };
+                // console.log(state);
+                return state;
+            });
+        }
+        setMetadata({
+            ...metadata,
+            lastProblem: currentProblemIdx,
+        });
+    }, [currentProblemIdx]);
+
+    useEffect(() => {
+        console.log(userSelectionDatas);
+        setMetadata({
+            ...metadata,
+            selections: userSelectionDatas,
+            lastProblem: currentProblemIdx,
+            logs: currentLog.action === null ? [...metadata.logs] : [...metadata.logs, currentLog],
+        });
+    }, [currentProblemIdx, userSelectionDatas, currentLog]);
+
+    useEffect(() => {
+        console.log(metadata);
+    }, [metadata]);
+
+    useEffect(() => {
+        if (preview) return;
+        if (timer < 0) {
+            handleEnd();
+        }
+    }, [timer]);
+
     return (
         <RenderRoot>
             <HeaderToolbar>
@@ -123,7 +272,6 @@ function SmartTOFELRender({ preview, title, passageForRender, problemDatas, time
                     <IconButton size="small" disabled={currentProblemIdx >= problemDatas.length - 1} onClick={handleNext}>
                         <NavigateNextIcon />
                     </IconButton>
-
                     <HeaderMasterSWs>
                         <Button size="small" endIcon={<ExitToAppIcon />} color="secondary" onClick={handleEnd}>
                             종료
@@ -140,6 +288,14 @@ function SmartTOFELRender({ preview, title, passageForRender, problemDatas, time
                         textForRender={problemDatas[currentProblemIdx].textForRender}
                         selections={problemDatas[currentProblemIdx].selections}
                         answer={problemDatas[currentProblemIdx].answer}
+                        currentSelection={
+                            userSelectionDatas[currentProblemIdx]
+                                ? userSelectionDatas[currentProblemIdx].answerUser
+                                : problemDatas[currentProblemIdx].type === 'short-answer'
+                                ? ''
+                                : 0
+                        }
+                        onSelect={onSelectionSelected}
                     />
                 </ProblemsContainer>
             </ContentsContainer>
@@ -152,6 +308,11 @@ SmartTOFELRender.defaultProps = {
     title: '타이틀',
     passageForRender: '',
     problemDatas: [],
+    userDatas: {
+        selections: [],
+        lastProblem: 0,
+        logs: [],
+    },
     timer: 90,
     onPrev() {},
     onNext() {},

@@ -8,6 +8,7 @@ import {
     Button,
     Collapse,
     FormControl,
+    Grid,
     IconButton,
     InputAdornment,
     InputLabel,
@@ -29,7 +30,7 @@ const jsonParse = (string) => {
 };
 
 const Root = styled.div`
-    padding: 72px 84px;
+    padding: 48px 72px;
     max-width: 600px;
 
     @media all and (max-width: 768px) {
@@ -40,7 +41,7 @@ const CloseIconRoot = styled.div`
     width: calc(100vw - 64px);
 `;
 const TitleContainer = styled.div`
-    margin-top: 48px;
+    margin-top: 32px;
 
     @media all and (max-width: 768px) {
         margin-top: 24px;
@@ -60,7 +61,7 @@ const CategoryMenuItemContents = styled.div`
     }
 `;
 const SelectorsContainer = styled.div`
-    margin-top: 24px;
+    margin-top: 16px;
 `;
 const CreateButtonContainer = styled.div`
     display: flex;
@@ -85,6 +86,15 @@ const UCOutlinedInput = withStyles((theme) => ({
     },
 }))(OutlinedInput);
 
+const CategorySelect = withStyles((theme) => ({
+    root: {
+        '&.MuiOutlinedInput-inputMarginDense': {
+            paddingTop: 11,
+            paddingBottom: 7,
+        },
+    },
+}))(Select);
+
 function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     const rootRef = useRef();
     const [createButtonEnabled, setCreateButtonEnabled] = useState(false);
@@ -93,7 +103,12 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     const [problemCategory, setProblemCategory] = useState(problemDatas.category);
     const [problemType, setProblemType] = useState(problemDatas.type);
     const [problemTexts, setProblemTexts] = useState({ render: problemDatas.textForRender, editor: problemDatas.textForEditor });
+    const [problemComments, setProblemComments] = useState({
+        render: problemDatas.commentsForRender,
+        editor: problemDatas.commentsForEditor,
+    });
     const [problemAnswer, setProblemAnswer] = useState(problemDatas.answer);
+    const [problemScore, setProblemScore] = useState(problemDatas.score);
     const [problemSelections, setProblemSelections] = useState(problemDatas.selections);
 
     const handleChangeCategory = (e) => {
@@ -120,6 +135,9 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                 if (typeof value === 'string' && problemCategory === 9) setProblemAnswer(value.toUpperCase());
                 else setProblemAnswer(value);
                 break;
+            case 'score_input':
+                setProblemScore(value);
+                break;
             default:
                 setProblemSelections({
                     ...problemSelections,
@@ -129,8 +147,11 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
         }
     };
 
-    const onQuillEditorChange = (content, delta, source, editor) => {
-        setProblemTexts({ render: content, editor: JSON.stringify(editor.getContents()) });
+    const onQuillEditorChange = (id) => (content, delta, source, editor) => {
+        // console.log(id, content, delta, source, editor);
+        if (id === 'texts_editor') setProblemTexts({ render: content, editor: JSON.stringify(editor.getContents()) });
+        else if (id === 'comments_editor');
+        setProblemComments({ render: content, editor: JSON.stringify(editor.getContents()) });
     };
 
     const handleOnCreate = () => {
@@ -157,9 +178,24 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     useEffect(() => {
         setMetadata({
             ...metadata,
+            commentsForRender: problemComments.render,
+            commentsForEditor: problemComments.editor,
+        });
+    }, [problemComments]);
+
+    useEffect(() => {
+        setMetadata({
+            ...metadata,
             answer: problemAnswer,
         });
     }, [problemAnswer]);
+
+    useEffect(() => {
+        setMetadata({
+            ...metadata,
+            score: problemScore,
+        });
+    }, [problemScore]);
 
     useEffect(() => {
         setMetadata({
@@ -186,45 +222,69 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                 <h2>{editmode ? '문제 수정' : '새 문제 만들기'}</h2>
             </TitleContainer>
             <FormBox>
-                <FormControl variant="outlined" fullWidth size="small">
-                    <InputLabel id="problem_category-label">문제유형 선택</InputLabel>
-                    <Select
-                        labelId="problem_category-label"
-                        id="problem_category"
-                        value={problemCategory}
-                        onChange={handleChangeCategory}
-                        label="category"
-                    >
-                        <MenuItem value={0}>
-                            <em style={{ color: '#999999' }}>없음 (기타)</em>
-                        </MenuItem>
-                        {ProblemCategories.map(({ id, name, eng, desc, nums }) => (
-                            <MenuItem value={id} key={id}>
-                                <Tooltip
-                                    enterDelay={2000}
-                                    title={
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            {desc}
-                                            <span style={{ paddingTop: '0.5rem', fontWeight: 600 }}>지문 당 문항 수: {nums}</span>
-                                        </div>
-                                    }
-                                    key={id}
-                                >
-                                    <CategoryMenuItemContents>
-                                        {name}
-                                        <span>{eng}</span>
-                                    </CategoryMenuItemContents>
-                                </Tooltip>
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <Collapse in={problemCategory !== ''} style={{ marginTop: 24 }}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl variant="outlined" fullWidth size={problemCategory < 1 ? 'medium' : 'small'}>
+                            <InputLabel id="problem_category-label">유형 선택</InputLabel>
+                            <CategorySelect
+                                labelId="problem_category-label"
+                                id="problem_category"
+                                value={problemCategory}
+                                onChange={handleChangeCategory}
+                                label="category"
+                            >
+                                <MenuItem value={0}>
+                                    <em style={{ color: '#999999' }}>없음 (기타)</em>
+                                </MenuItem>
+                                {ProblemCategories.map(({ id, name, eng, desc, nums }) => (
+                                    <MenuItem value={id} key={id}>
+                                        <Tooltip
+                                            enterDelay={2000}
+                                            title={
+                                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    {desc}
+                                                    <span style={{ paddingTop: '0.5rem', fontWeight: 600 }}>지문 당 문항 수: {nums}</span>
+                                                </div>
+                                            }
+                                            key={id}
+                                        >
+                                            <CategoryMenuItemContents>
+                                                {name}
+                                                <span>{eng}</span>
+                                            </CategoryMenuItemContents>
+                                        </Tooltip>
+                                    </MenuItem>
+                                ))}
+                            </CategorySelect>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            type="number"
+                            variant="outlined"
+                            label="배점"
+                            fullWidth
+                            value={problemScore}
+                            name="score_input"
+                            onChange={onTextFieldChange}
+                        />
+                    </Grid>
+                </Grid>
+                <Collapse in={problemCategory !== ''} style={{ marginTop: 16 }}>
                     <ReactQuill
+                        id="texts_editor"
                         modules={{ toolbar: QuillEditorToolbarOption }}
                         placeholder="여기에 문제 내용을 입력해 주세요."
                         defaultValue={jsonParse(problemDatas.textForEditor)}
-                        onChange={onQuillEditorChange}
+                        onChange={onQuillEditorChange('texts_editor')}
+                    />
+                    <ReactQuill
+                        id="comments_editor"
+                        modules={{ toolbar: QuillEditorToolbarOption }}
+                        placeholder="여기에 헤설을 입력해 주세요."
+                        defaultValue={jsonParse(problemDatas.commentsForEditor)}
+                        onChange={onQuillEditorChange('comments_editor')}
+                        style={{ marginTop: 8 }}
                     />
                     <SelectorsContainer>
                         {problemCategory === 9 ? (
@@ -251,7 +311,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                                     onChange={onTextFieldChange}
                                     endAdornment={
                                         <InputAdornment position="end">
-                                            <Tooltip title="정답으로 선택">
+                                            <Tooltip title="1번 선택지를 정답으로 선택">
                                                 <IconButton onClick={onSelectionButtonClick(1)} edge="end">
                                                     {problemAnswer === 1 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
                                                 </IconButton>
@@ -270,7 +330,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                                     onChange={onTextFieldChange}
                                     endAdornment={
                                         <InputAdornment position="end">
-                                            <Tooltip title="정답으로 선택">
+                                            <Tooltip title="2번 선택지를 정답으로 선택">
                                                 <IconButton onClick={onSelectionButtonClick(2)} edge="end">
                                                     {problemAnswer === 2 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
                                                 </IconButton>
@@ -289,7 +349,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                                     onChange={onTextFieldChange}
                                     endAdornment={
                                         <InputAdornment position="end">
-                                            <Tooltip title="정답으로 선택">
+                                            <Tooltip title="3번 선택지를 정답으로 선택">
                                                 <IconButton onClick={onSelectionButtonClick(3)} edge="end">
                                                     {problemAnswer === 3 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
                                                 </IconButton>
@@ -308,7 +368,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                                     onChange={onTextFieldChange}
                                     endAdornment={
                                         <InputAdornment position="end">
-                                            <Tooltip title="정답으로 선택">
+                                            <Tooltip title="4번 선택지를 정답으로 선택">
                                                 <IconButton onClick={onSelectionButtonClick(4)} edge="end">
                                                     {problemAnswer === 4 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
                                                 </IconButton>
@@ -327,7 +387,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                                     onChange={onTextFieldChange}
                                     endAdornment={
                                         <InputAdornment position="end">
-                                            <Tooltip title="정답으로 선택">
+                                            <Tooltip title="5번 선택지를 정답으로 선택">
                                                 <IconButton onClick={onSelectionButtonClick(5)} edge="end">
                                                     {problemAnswer === 5 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
                                                 </IconButton>
@@ -355,6 +415,8 @@ CreateNewProblem.defaultProps = {
         type: 'multiple-choice',
         textForRender: '',
         textForEditor: `{"ops":[{"insert":"\n"}]}`,
+        commentsForRender: '',
+        commentsForEditor: `{"ops":[{"insert":"\n"}]}`,
         selections: {
             1: '',
             2: '',
@@ -363,6 +425,7 @@ CreateNewProblem.defaultProps = {
             5: '',
         },
         answer: '',
+        score: '',
     },
     editmode: false,
 };

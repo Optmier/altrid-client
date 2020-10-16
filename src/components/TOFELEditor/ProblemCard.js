@@ -77,7 +77,7 @@ const Contents = styled.div`
     }
 `;
 
-function ProblemCard({ category, type, textForRender, selections, answer, handleEdit, handleDelete }) {
+function ProblemCard({ category, type, textForRender, selections, answer, score, handleEdit, handleDelete }) {
     const rootRef = useRef();
     const hiddenMenuRef = useRef();
     const contentsRef = useRef();
@@ -109,13 +109,18 @@ function ProblemCard({ category, type, textForRender, selections, answer, handle
                 <div className="ql-container ql-snow" style={{ marginBottom: '0.5rem' }}>
                     {ReactHtmlParser(textForRender)}
                 </div>
-                <p className="selection">{selections[1]}</p>
-                <p className="selection">{selections[2]}</p>
-                <p className="selection">{selections[3]}</p>
-                <p className="selection">{selections[4]}</p>
-                <p className="selection">{selections[5]}</p>
+                {type === 'short-answer' ? null : (
+                    <>
+                        <p className="selection">{selections[1]}</p>
+                        <p className="selection">{selections[2]}</p>
+                        <p className="selection">{selections[3]}</p>
+                        <p className="selection">{selections[4]}</p>
+                        <p className="selection">{selections[5]}</p>
+                    </>
+                )}
                 <p style={{ marginTop: '0.5rem' }}>유형: {category ? ProblemCategories[category - 1].name : '기타'}</p>
                 <p style={{ marginTop: '0.375rem' }}>정답: {answer}</p>
+                <p style={{ marginTop: '0.375rem' }}>배점: {score}</p>
             </Contents>
         </Root>
     );
@@ -133,6 +138,7 @@ ProblemCard.defaultProps = {
         5: '',
     },
     answer: '',
+    score: 0,
 };
 
 export default ProblemCard;
