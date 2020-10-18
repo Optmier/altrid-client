@@ -59,31 +59,51 @@ function ProblemComponent({ category, type, textForRender, selections, answer, s
                 <SelectionsContainer>
                     {selections[1] ? (
                         <Selection onClick={handleSelection(1)}>
-                            {currentSelection === 1 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
+                            {currentSelection === 1 ? (
+                                <CheckCircleIcon htmlColor="#757575" />
+                            ) : (
+                                <RadioButtonUncheckedIcon htmlColor="#757575" />
+                            )}
                             <p>{selections[1]}</p>
                         </Selection>
                     ) : null}
                     {selections[2] ? (
                         <Selection onClick={handleSelection(2)}>
-                            {currentSelection === 2 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
+                            {currentSelection === 2 ? (
+                                <CheckCircleIcon htmlColor="#757575" />
+                            ) : (
+                                <RadioButtonUncheckedIcon htmlColor="#757575" />
+                            )}
                             <p>{selections[2]}</p>
                         </Selection>
                     ) : null}
                     {selections[3] ? (
                         <Selection onClick={handleSelection(3)}>
-                            {currentSelection === 3 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
+                            {currentSelection === 3 ? (
+                                <CheckCircleIcon htmlColor="#757575" />
+                            ) : (
+                                <RadioButtonUncheckedIcon htmlColor="#757575" />
+                            )}
                             <p>{selections[3]}</p>
                         </Selection>
                     ) : null}
                     {selections[4] ? (
                         <Selection onClick={handleSelection(4)}>
-                            {currentSelection === 4 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
+                            {currentSelection === 4 ? (
+                                <CheckCircleIcon htmlColor="#757575" />
+                            ) : (
+                                <RadioButtonUncheckedIcon htmlColor="#757575" />
+                            )}
                             <p>{selections[4]}</p>
                         </Selection>
                     ) : null}
                     {selections[5] ? (
                         <Selection onClick={handleSelection(5)}>
-                            {currentSelection === 5 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
+                            {currentSelection === 5 ? (
+                                <CheckCircleIcon htmlColor="#757575" />
+                            ) : (
+                                <RadioButtonUncheckedIcon htmlColor="#757575" />
+                            )}
                             <p>{selections[5]}</p>
                         </Selection>
                     ) : null}
