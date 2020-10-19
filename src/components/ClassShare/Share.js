@@ -6,6 +6,7 @@ import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
 import TrashButton from '../essentials/TrashButton';
 import shareDummy from '../../datas/shareDummy.json';
+import ClassDrawer from '../essentials/ClassDrawer';
 
 //console.log(shareDummy['1']['progress']);
 // Object.keys(shareDummy).map((key) => {
@@ -23,7 +24,7 @@ function Share() {
     return (
         <>
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
-                asdfasdfasdf
+                <ClassDrawer />
             </Drawer>
 
             <div className="class-draft-root">

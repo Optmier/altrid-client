@@ -47,7 +47,7 @@ function CardShare({ dummy }) {
             >
                 <div className="card-title-p">{dummy['title']}</div>
                 <span className="card-option">
-                    <ToggleSwitch toggleState={toggleState} handleChange={handleChange} />
+                    <ToggleSwitch toggle={toggleState['checked']} handleChange={handleChange} type="share" name="checked" />
                 </span>
             </div>
 
