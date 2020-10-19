@@ -59,13 +59,22 @@ const StyleModalShare = styled.div`
     }
 `;
 
-function ClassModalDate() {
+function ClassDialoglDate({ subType }) {
     const classes = useStyles();
 
     return (
         <StyleModalShare>
-            <h4 className="modal-share-title">과제를 공유하시겠습니까?</h4>
-            <p className="modal-share-subTitle">과제 공유 후에도 수정이 가능합니다.</p>
+            {subType === 'init' ? (
+                <>
+                    <h4 className="modal-share-title">과제를 공유하시겠습니까?</h4>
+                    <p className="modal-share-subTitle">과제 공유 후에도 수정이 가능합니다.</p>
+                </>
+            ) : (
+                <>
+                    <h4 className="modal-share-title">과제 기한을 수정하시겠습니까?</h4>
+                    <p className="modal-share-subTitle">수정한 기한은 바로 적용됩니다.</p>
+                </>
+            )}
 
             <div className="modal-share-date">
                 <p>기한 설정</p>
@@ -85,4 +94,4 @@ function ClassModalDate() {
     );
 }
 
-export default ClassModalDate;
+export default ClassDialoglDate;
