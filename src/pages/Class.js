@@ -7,15 +7,24 @@ import Share from '../components/ClassShare/Share';
 import SearchInput from '../components/essentials/SearchInput';
 import ClassWrapper from '../components/essentials/ClassWrapper';
 import FilterButton from '../components/essentials/FilterButton';
+import { Route } from 'react-router-dom';
+import TestReport from '../components/ClassShare/TestReport';
 
-const ClassPageSwitcher = ({ classPageName }) => {
-    switch (classPageName) {
-        case '/class/draft':
+const ClassPageSwitcher = ({ match }) => {
+    let { id } = match.params;
+
+    switch (id) {
+        case 'draft':
             return <Draft />;
-        case '/class/manage':
+        case 'manage':
             return <Manage />;
-        case '/class/share':
-            return <Share />;
+        case 'share':
+            return (
+                <>
+                    <Route path={`${match.path}`} exact component={Share} />
+                    <Route path={`${match.path}/:classNum`} component={TestReport} />
+                </>
+            );
 
         default:
             return (
@@ -26,22 +35,26 @@ const ClassPageSwitcher = ({ classPageName }) => {
     }
 };
 
-function Class({ history }) {
-    const classPageName = history.location['pathname'];
+function Class({ history, match }) {
+    let { id } = match.params;
 
     return (
         <>
             <LeftNav />
             <div className="class-page-root">
-                <div style={{ width: '100%', borderBottom: '1.5px solid #e5e5e5' }}>
-                    <ClassWrapper>
-                        <div className="class-input-header">
-                            <SearchInput />
-                            <FilterButton />
-                        </div>
-                    </ClassWrapper>
-                </div>
-                <ClassPageSwitcher classPageName={classPageName} />
+                {
+                    id === 'manage' ? '' : ''
+                    // <div style={{ width: '100%', borderBottom: '1.5px solid #e5e5e5' }}>
+                    //     <ClassWrapper>
+                    //         <div className="class-input-header">
+                    //             <SearchInput />
+                    //             <FilterButton />
+                    //         </div>
+                    //     </ClassWrapper>
+                    // </div>
+                }
+
+                <ClassPageSwitcher match={match} />
             </div>
         </>
     );

@@ -7,6 +7,7 @@ import StudentNum from '../essentials/StudentNum';
 import classNames from 'classnames';
 import ToggleSwitch from '../essentials/ToggleSwitch';
 import ClassDialog from '../essentials/ClassDialog';
+import { Link, withRouter } from 'react-router-dom';
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -29,7 +30,9 @@ const DateItems = ({ title, start, end, handleDateChange }) => {
     );
 };
 
-function CardShare({ dummy }) {
+function CardShare({ classNum, dummy, history, match }) {
+    let path = history.location.pathname;
+
     /** class-modal 메소드 */
     // type 4가지 : date-init(과제 공유), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateModalopen, setDateModalOpen] = useState(false);
@@ -112,9 +115,11 @@ function CardShare({ dummy }) {
                         </div>
 
                         <div className="class-card-bottom-right card-bottom-p">
-                            <div className="share-report">
-                                과제별 리포트 보기 <IoIosArrowForward />
-                            </div>
+                            <Link to={`${path}/${classNum}`}>
+                                <div className="share-report">
+                                    과제별 리포트 보기 <IoIosArrowForward />
+                                </div>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -123,4 +128,4 @@ function CardShare({ dummy }) {
     );
 }
 
-export default CardShare;
+export default withRouter(CardShare);

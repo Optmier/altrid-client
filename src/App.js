@@ -3,10 +3,9 @@ import './styles/common.scss';
 import { Element } from 'react-scroll';
 import Class from './pages/Class';
 import Main from './pages/Main';
-import { Route } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import ScrollTop from './components/essentials/ScrollTop';
 import Footer from './components/essentials/Footer';
-import { withRouter } from 'react-router-dom';
 import TrashButton from './components/essentials/TrashButton';
 
 function App({ history }) {

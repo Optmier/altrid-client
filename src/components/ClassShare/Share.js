@@ -6,10 +6,6 @@ import { Drawer } from '@material-ui/core';
 import shareDummy from '../../datas/shareDummy.json';
 import ClassDrawer from '../essentials/ClassDrawer';
 
-//console.log(shareDummy['1']['progress']);
-// Object.keys(shareDummy).map((key) => {
-//     console.log(shareDummy[key]['progress']);
-// });
 function Share() {
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const toggleDrawer = (open) => (event) => {
@@ -36,7 +32,7 @@ function Share() {
                     >
                         {Object.keys(shareDummy).map((key) => (
                             <CardRoot key={key} wider cardHeight="300px">
-                                <CardShare dummy={shareDummy[key]} />
+                                <CardShare classNum={key} dummy={shareDummy[key]} />
                             </CardRoot>
                         ))}
                     </CardLists>

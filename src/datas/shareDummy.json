@@ -1,5 +1,5 @@
 {
-    "1": {
+    "01": {
         "progress": true,
         "title": "과제 TITL 01 과제 TITL 01 과제 TITL 01 과제 TITL 01",
         "desc": "과제 01 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
@@ -12,7 +12,7 @@
         "complete_student": 14,
         "total_student": 30
     },
-    "2": {
+    "02": {
         "progress": false,
         "title": "과제 TITL 02 과제 TITL 02 과제 TITL 02 과제 TITL 02",
         "desc": "과제 02 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
@@ -25,7 +25,7 @@
         "complete_student": 24,
         "total_student": 40
     },
-    "3": {
+    "03": {
         "progress": true,
         "title": "과제 TITL 03 과제 TITL 03 과제 TITL 03 과제 TITL 03",
         "desc": "과제 03 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
