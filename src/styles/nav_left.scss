@@ -21,7 +21,7 @@ a {
             padding: 18px 24px;
         }
         & .left-nav-box + .left-nav-box {
-            border-top: 0.5px solid white;
+            border-top: 1.4px solid #6c4cb1;
             border-width: 120%;
         }
 
@@ -35,12 +35,8 @@ a {
             display: flex;
             align-items: center;
             justify-content: flex-start;
+            padding-bottom: 20px;
 
-            & > h4 p {
-                margin: 0;
-                display: inline;
-                font-weight: 600;
-            }
             & > img {
                 width: 32px;
                 margin-right: 13px;
@@ -51,11 +47,10 @@ a {
                 color: white;
                 & > h4 {
                     padding-bottom: 4px;
-                    font-weight: 600;
                 }
                 & > h5 {
                     padding-bottom: 4px;
-                    color: #f6f7f9;
+                    font-weight: 500;
                 }
                 & .info-num {
                     display: flex;
@@ -66,7 +61,7 @@ a {
                         font-weight: 500;
                     }
                     & > img {
-                        width: 20px;
+                        width: 18px;
                         margin-right: 16px;
                     }
                 }
@@ -76,7 +71,6 @@ a {
         & .left-nav-wrapper {
             color: white;
             padding: 24px 0;
-            border-top: 0.5px solid white;
 
             & .left-nav-item {
                 padding: 8px 24px;

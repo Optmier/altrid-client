@@ -20,24 +20,25 @@ function LeftNav({ history }) {
                 <div className="left-nav-box logo-wrapper">
                     <img src={NavLogoWhite} alt="logo_white"></img>
                 </div>
-                <div className="left-nav-box avatar-wrapper">
-                    <img alt="avatar" src={Avatar} />
-                    <h4>
-                        <p>최준영</p> 선생님
-                    </h4>
-                </div>
 
-                <div className="left-nav-box info-wrapper">
-                    <div className="info-header">
-                        <h4>Class 02반</h4>
-                        <h5>에듀이티학원 도플 700점 목표반입니다.</h5>
-                        <div className="info-num">
-                            <img alt="student_num" src={People} />
-                            <h5>학생 수 30명</h5>
+                <div className="left-nav-box">
+                    <div className="avatar-wrapper">
+                        <img alt="avatar" src={Avatar} />
+                        <h4>최준영 선생님</h4>
+                    </div>
+
+                    <div className="info-wrapper">
+                        <div className="info-header">
+                            <h5>Class 02반</h5>
+                            <p>에듀이티학원 도플 700점 목표반입니다.</p>
+                            <div className="info-num">
+                                <img alt="student_num" src={People} />
+                                <p>학생 수 30명</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="left-nav-wrapper">
+                <div className="left-nav-box  left-nav-wrapper">
                     <LeftNavItem linkTo="/class/manage">
                         <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path

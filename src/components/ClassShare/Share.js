@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import CardShare from './CardShare';
-import CardAddNew from '../essentials/CardAddNew';
 import CardLists from '../essentials/CardLists';
 import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
-import TrashButton from '../essentials/TrashButton';
 import shareDummy from '../../datas/shareDummy.json';
 import ClassDrawer from '../essentials/ClassDrawer';
 
@@ -42,9 +40,6 @@ function Share() {
                             </CardRoot>
                         ))}
                     </CardLists>
-                </div>
-                <div className="class-trash">
-                    <TrashButton />
                 </div>
             </div>
         </>

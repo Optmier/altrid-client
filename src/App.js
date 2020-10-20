@@ -6,8 +6,10 @@ import Main from './pages/Main';
 import { Route } from 'react-router-dom';
 import ScrollTop from './components/essentials/ScrollTop';
 import Footer from './components/essentials/Footer';
+import { withRouter } from 'react-router-dom';
+import TrashButton from './components/essentials/TrashButton';
 
-function App() {
+function App({ history }) {
     return (
         <>
             <Element name="main_top_start" />
@@ -17,9 +19,9 @@ function App() {
                     <Route path="/class/:id" component={Class} />
                 </main>
             </ScrollTop>
-            <Footer />
+            {history.location.pathname === '/' ? <Footer /> : <TrashButton />}
         </>
     );
 }
 
-export default App;
+export default withRouter(App);
