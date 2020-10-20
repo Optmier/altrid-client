@@ -5,6 +5,7 @@ import CardLists from '../essentials/CardLists';
 import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
+import ClassHeaderBox from '../essentials/ClassHeaderBox';
 
 function Draft() {
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
@@ -20,6 +21,8 @@ function Draft() {
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
                 <ClassDrawer />
             </Drawer>
+
+            <ClassHeaderBox />
 
             <div className="class-draft-root">
                 <div className="class-draft-card">

@@ -35,7 +35,7 @@ const ClassPageSwitcher = ({ match }) => {
     }
 };
 
-function Class({ history, match }) {
+function Class({ match }) {
     let { id } = match.params;
 
     return (
