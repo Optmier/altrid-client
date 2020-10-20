@@ -8,10 +8,15 @@ const StyleButton = styled.button`
     border-radius: 30px;
     width: 36px;
     color: white;
+
+    &:hover {
+        transition: 0.3s;
+        background-color: #13c58d;
+    }
 `;
 
-function ModifyButton() {
-    return <StyleButton>수정</StyleButton>;
+function ModifyButton({ handleDateChange }) {
+    return <StyleButton onClick={handleDateChange}>수정</StyleButton>;
 }
 
 export default ModifyButton;

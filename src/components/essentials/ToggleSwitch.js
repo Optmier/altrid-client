@@ -99,17 +99,17 @@ const DrawerSwitch = withStyles((theme) => ({
     checked: {},
 }))(Switch);
 
-function ToggleSwitch({ toggle, handleChange, type, name }) {
+function ToggleSwitch({ toggle, handleToggleChange, type, name }) {
     return (
         <div style={{ display: 'inline' }}>
             <StyleToggle>
                 {type === 'share' ? (
                     <>
-                        <ShareSwitch checked={toggle} onChange={handleChange} name={name} />
+                        <ShareSwitch checked={toggle} onChange={handleToggleChange} name={name} />
                         {toggle ? <div className="toggle-on-ment">과제 진행중</div> : <div className="toggle-off-ment">과제 완료됨</div>}
                     </>
                 ) : (
-                    <DrawerSwitch checked={toggle} onChange={handleChange} name={name} />
+                    <DrawerSwitch checked={toggle} onChange={handleToggleChange} name={name} />
                 )}
             </StyleToggle>
         </div>
