@@ -235,6 +235,12 @@ body {
         }
     }
 
+    #webgazerGazeDot {
+        pointer-events: none;
+        width: 15px !important;
+        height: 15px !important;
+    }
+
     @media all and (min-width: 769px) and (max-width: 1280) {
     }
 
