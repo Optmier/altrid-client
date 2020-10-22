@@ -99,8 +99,6 @@ window.varOfSaccadeVelocities = 0;
 window.clusterAreaOfFixations = 128;
 /** fixation 카운트 값(이 값 만큼 영역에 들어올 시 원이 커지기 시작함) */
 window.clusterCountsOfFixations = 3;
-/** 재응시 횟수 RAW 데이터 */
-window.rawRegressions = {};
 
 window.$ = $;
 

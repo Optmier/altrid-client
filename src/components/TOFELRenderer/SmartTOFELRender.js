@@ -262,7 +262,7 @@ function SmartTOFELRender({
     }, [currentProblemIdx, userSelectionDatas, currentLog]);
 
     useEffect(() => {
-        // console.log(metadata);
+        console.log(metadata);
     }, [metadata]);
 
     useEffect(() => {
