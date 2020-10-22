@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as $ from 'jquery';
 import * as PIXI from 'pixi.js';
-import * as Heatmap from 'heatmap.js';
+import Heatmap from 'heatmap.js';
 import classNames from 'classnames';
 import styled from 'styled-components';
 import SmartTOFELRender from './SmartTOFELRender';
@@ -13,6 +13,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
+import TrackChangesIcon from '@material-ui/icons/TrackChanges';
+import BlurOnIcon from '@material-ui/icons/BlurOn';
 
 $.fn.changeSize = function (handleFunction) {
     let element = this;
@@ -77,7 +79,13 @@ const OverlayRoot = styled.canvas`
     transform-origin: center center;
 `;
 const OverlayHeatmap = styled.div`
-    position: initial !important;
+    width: 1280px;
+    height: 750px;
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
 
     & canvas {
         width: 1280px;
@@ -196,6 +204,9 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
     const [elapsedTime, setElapsedTime] = useState(sequences[0].elapsedTime / 1000);
     // 사용자 선택 정답 다이렉트
     const [userAnswerDirect, setUserAnswerDirect] = useState(0);
+    /** 트레이서, 히트맵 전환 */
+    // true: tracer / false: heatmap
+    const [tracerOrHeatmap, setTracerOrHeatmap] = useState(true);
 
     const playerRoot = useRef();
     const sliderRoot = useRef();
@@ -215,9 +226,12 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
         $vO.css({
             transform: 'translate(-50%, -50%) ' + 'scale(' + scale * 0.999 + ')',
         });
-        $vH.find('canvas').css({
+        $vH.css({
             transform: 'translate(-50%, -50%) ' + 'scale(' + scale * 0.999 + ')',
         });
+        // $vH.find('canvas').css({
+        //     transform: 'translate(-50%, -50%) ' + 'scale(' + scale * 0.999 + ')',
+        // });
 
         if (!isFullScreen) $vP.height(scale * vContentHeight);
     };
@@ -225,6 +239,10 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
     const toggleFullScreen = () => {
         setFullScreen(!fullScreen);
         window.fullScreen = !fullScreen;
+    };
+
+    const toggleTracerOrHeatmap = () => {
+        setTracerOrHeatmap(!tracerOrHeatmap);
     };
 
     const handleOnSequenceChange = (event, value) => {
@@ -368,8 +386,14 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
         setHeatmap((h) => {
             h = Heatmap.create({
                 container: heatmapScreen.current,
+                radius: 50,
+                // maxOpacity: 0.5,
+                // minOpacity: 0,
+                // blur: 0.75,
             });
             window.heatmap = h;
+            h.setDataMin(1);
+            h.setDataMax(50);
             return h;
         });
 
@@ -500,6 +524,15 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
                     pixiGraphics.stage.addChild(ln);
                 }
             }
+            // 히트맵 그리기
+            if (heatmap) {
+                if (Math.abs(seqIdx - lastSeqIdx) > 10 || sequences[seqIdx].problemStep !== sequences[lastSeqIdx].problemStep) {
+                    heatmap.setData({ data: [] });
+                }
+                const { x, y, value } = sequences[seqIdx];
+                const heatmapData = { x: x, y: y, value: value ? 10 : 0 };
+                heatmap.addData(heatmapData);
+            }
         }
         // 스크롤 컨트롤
         $('.player-root').find('.passages')[0].scrollTop = sequences[seqIdx].passageScrollPosition;
@@ -507,6 +540,19 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
         // 마지막 시퀀스 인덱스 저장
         setLastSeqIdx(seqIdx);
     }, [seqIdx]);
+
+    useEffect(() => {
+        // alt to tracer
+        if (tracerOrHeatmap) {
+            traceScreen.current.style.display = 'block';
+            heatmapScreen.current.style.display = 'none';
+        }
+        // alt to heatmap
+        else {
+            traceScreen.current.style.display = 'none';
+            heatmapScreen.current.style.display = 'block';
+        }
+    }, [tracerOrHeatmap]);
 
     useEffect(() => {
         setSeqIdx(goto);
@@ -561,17 +607,28 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
                         </Tooltip>
                     </div>
                     <div className="right" style={{ marginLeft: 'auto', height: 30, display: 'flex', alignItems: 'center' }}>
+                        <IconButton size="small" onClick={toggleTracerOrHeatmap} style={{ marginLeft: 'auto', marginRight: 12 }}>
+                            <Tooltip title={tracerOrHeatmap ? 'Switch to heatmap' : 'Switch to tracer'} placement="top">
+                                {tracerOrHeatmap ? <BlurOnIcon style={{ fontSize: 16 }} /> : <TrackChangesIcon style={{ fontSize: 16 }} />}
+                            </Tooltip>
+                        </IconButton>
                         <IconButton size="small" onClick={handleSpeedDown}>
-                            <ChevronLeftIcon style={{ fontSize: 16 }} />
+                            <Tooltip title="Speed down" placement="top">
+                                <ChevronLeftIcon style={{ fontSize: 16 }} />
+                            </Tooltip>
                         </IconButton>
                         <Tooltip title="Click to reset" placement="top">
                             <SpeedIndecator onClick={handleSpeedReset}>{speeds[speedStep]}x</SpeedIndecator>
                         </Tooltip>
                         <IconButton size="small" onClick={handleSpeedUp}>
-                            <ChevronRightIcon style={{ fontSize: 16 }} />
+                            <Tooltip title="Speed up" placement="top">
+                                <ChevronRightIcon style={{ fontSize: 16 }} />
+                            </Tooltip>
                         </IconButton>
                         <IconButton size="small" onClick={toggleFullScreen} style={{ marginLeft: 12, marginRight: 6 }}>
-                            {fullScreen ? <FullscreenExitIcon style={{ fontSize: 16 }} /> : <FullscreenIcon style={{ fontSize: 16 }} />}
+                            <Tooltip title={fullScreen ? 'Exit full screen' : 'Set full screen'} placement="top">
+                                {fullScreen ? <FullscreenExitIcon style={{ fontSize: 16 }} /> : <FullscreenIcon style={{ fontSize: 16 }} />}
+                            </Tooltip>
                         </IconButton>
                     </div>
                 </PlayerButtons>
