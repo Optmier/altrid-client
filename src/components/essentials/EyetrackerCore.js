@@ -110,6 +110,7 @@ let tickerTimeout = null;
 let _step = 0;
 let _lastStep = 0;
 let _userAnswer = 0;
+let _duration = 1;
 
 const getDistance = (pos1, pos2) => {
     const distX = Math.abs(pos1.x - pos2.x);
@@ -151,7 +152,14 @@ const captureChanged = (position, elapsedTime) => {
                 setnum++;
             }
         }
+        // duration 계산
+        if (position && seqs[seqs.length - 1].x === position.x && seqs[seqs.length - 1].y === position.y && _step === _lastStep) {
+            _duration++;
+        } else {
+            _duration = 1;
+        }
     }
+
     // 위치가 포착되지 않았으면 경고 기록
     if (!position) {
         _obj.code = 'out-of-range';
@@ -170,7 +178,7 @@ const captureChanged = (position, elapsedTime) => {
         _obj.setNumber = setnum;
         _obj.x = position.x;
         _obj.y = position.y;
-        _obj.value = 1;
+        _obj.value = _duration;
         _obj.passageScrollPosition = passageScrollPosition;
         _obj.problemScrollPosition = problemScrollPosition;
         _obj.elapsedTime = elapsedTime;
@@ -405,7 +413,11 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
 
     useEffect(() => {
         return () => {
-            Webgazer.end();
+            try {
+                Webgazer.end();
+            } catch (e) {
+                console.warn(e);
+            }
         };
     }, []);
 

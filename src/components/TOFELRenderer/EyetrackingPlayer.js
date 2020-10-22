@@ -359,13 +359,13 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
         const saccade = new PIXI.Graphics();
         saccade.lineStyle(1, 0x00b179, 1);
         saccade.beginFill(0x00cf8c, 0.666);
-        saccade.drawCircle(x, y, 2);
+        saccade.drawCircle(x, y, value ? 2 : 0);
         saccade.endFill();
 
         saccade.lineStyle(2, 0x00140e, 0.8);
         saccade.beginFill(0x00140e, 0.17);
         // saccade.drawCircle(x, y, 2 * logbase(duration + 1, 1.1) + 10);
-        saccade.drawCircle(x, y, (value + 1) * 2.25 + 8);
+        saccade.drawCircle(x, y, value * 2.25 + 8);
         saccade.endFill();
 
         return saccade;
@@ -503,6 +503,8 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
                 forwardDirection = false;
             }
             /** fixation, line 그리기 */
+            // 시선 추적에 문제가 발생한 부분이면 건너뛰기
+            if (sequences[seqIdx].code) return;
             // 이전과 같은 세트 번호의 객체이면 fixation 크기 증가해서 새로 그리기
             if (sequences[seqIdx].setNumber === sequences[lastSeqIdx].setNumber) {
                 const toDestroy = fixations.pop();
