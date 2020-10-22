@@ -27,6 +27,9 @@ const BottomSpan = ({ color, fill, children, align }) => {
     );
 };
 function CardContentBottom({ type, able, align }) {
+    //type : 'eye' 'share'
+    //able : true, false
+    //align : left, right
     return (
         <>
             {type === 'eye' ? (
