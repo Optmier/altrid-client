@@ -26,7 +26,7 @@ const BottomSpan = ({ color, fill, children, align }) => {
         </span>
     );
 };
-function CardContentBottom({ type, able, align }) {
+function IsPresence({ type, able, align }) {
     //type : 'eye' 'share'
     //able : true, false
     //align : left, right
@@ -38,7 +38,7 @@ function CardContentBottom({ type, able, align }) {
                         시선흐름 포함
                     </BottomSpan>
                 ) : (
-                    <BottomSpan align={align}>시선흐름 포함</BottomSpan>
+                    <BottomSpan align={align}>시선흐름 미포함</BottomSpan>
                 )
             ) : able ? (
                 <BottomSpan color="#13E2A1" fill="#FFBE2F" align={align}>
@@ -56,8 +56,8 @@ BottomSpan.defaultProps = {
     fill: '#BFBEBC',
 };
 
-CardContentBottom.defaultProps = {
+IsPresence.defaultProps = {
     align: 'right',
 };
 
-export default CardContentBottom;
+export default IsPresence;

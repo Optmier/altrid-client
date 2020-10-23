@@ -17,7 +17,7 @@ const StyleToggle = styled.div`
     & .toggle-off-ment {
         font-size: 14px;
         font-weight: 500;
-        color: #2e2c2c;
+        color: #989696;
         margin-left: 8px;
     }
 `;
@@ -105,11 +105,23 @@ function ToggleSwitch({ toggle, handleToggleChange, type, name }) {
             <StyleToggle>
                 {type === 'share' ? (
                     <>
-                        <ShareSwitch checked={toggle} onChange={handleToggleChange} name={name} />
+                        <ShareSwitch
+                            value="checkedA"
+                            inputProps={{ 'aria-label': 'Switch A' }}
+                            checked={toggle}
+                            onChange={handleToggleChange}
+                            name={name}
+                        />
                         {toggle ? <div className="toggle-on-ment">과제 진행중</div> : <div className="toggle-off-ment">과제 완료됨</div>}
                     </>
                 ) : (
-                    <DrawerSwitch checked={toggle} onChange={handleToggleChange} name={name} />
+                    <DrawerSwitch
+                        value="checkedB"
+                        inputProps={{ 'aria-label': 'Switch B' }}
+                        checked={toggle}
+                        onChange={handleToggleChange}
+                        name={name}
+                    />
                 )}
             </StyleToggle>
         </div>

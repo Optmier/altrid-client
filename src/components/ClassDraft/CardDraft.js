@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/class_card.scss';
-import CardContentBottom from '../essentials/CardContentBottom';
+import IsPresence from '../essentials/IsPresence';
 import CardPopOver from '../essentials/CardPopOver';
 import ClassDialog from '../essentials/ClassDialog';
 
@@ -27,13 +27,13 @@ function CardDraft() {
 
     /** class-modal 메소드 */
     // type 4가지 : date-init(과제 공유), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
-    const [dateModalopen, setDateModalOpen] = useState(false);
+    const [dateDialogopen, setDateDialogopen] = useState(false);
 
     const handleDialogOpen = (type) => {
-        setDateModalOpen(true);
+        setDateDialogopen(true);
     };
     const handleDateDialogClose = () => {
-        setDateModalOpen(false);
+        setDateDialogopen(false);
     };
     /** =================== */
 
@@ -45,7 +45,7 @@ function CardDraft() {
                 handleOptionClose={handleOptionClose}
                 anchorEl={anchorEl}
             />
-            <ClassDialog type="date" subType="init" open={dateModalopen} handleDialogClose={handleDateDialogClose} />
+            <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
             <div className="class-card-root">
                 <div className="class-card-header class-card-wrapper">
                     <div className="card-title-p">과제 TITLE</div>
@@ -71,8 +71,8 @@ function CardDraft() {
                     </div>
                 </div>
                 <div className="class-card-bottom-right">
-                    <CardContentBottom type={'eye'} able={true} />
-                    <CardContentBottom type={'share'} able={true} />
+                    <IsPresence type={'eye'} able={true} />
+                    <IsPresence type={'share'} able={true} />
                 </div>
             </div>
         </>

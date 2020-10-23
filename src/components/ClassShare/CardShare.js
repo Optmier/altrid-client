@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/class_card.scss';
-import CardContentBottom from '../essentials/CardContentBottom';
+import IsPresence from '../essentials/IsPresence';
 import { IoIosArrowForward } from 'react-icons/io';
 import ModifyButton from '../essentials/ModifyButton';
 import StudentNum from '../essentials/StudentNum';
@@ -33,20 +33,20 @@ const DateItems = ({ title, start, end, handleDateChange }) => {
 function CardShare({ classNum, dummy, history, match }) {
     let path = history.location.pathname;
 
-    /** class-modal 메소드 */
+    /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 공유), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
-    const [dateModalopen, setDateModalOpen] = useState(false);
-    const [testModalopen, setTestModalOpen] = useState(false);
+    const [dateDialogopen, setDateDialogopen] = useState(false);
+    const [testDialogopen, setTestDialogopen] = useState(false);
 
     const handleDialogOpen = (type) => {
-        type === 'test' ? setTestModalOpen(true) : setDateModalOpen(true);
+        type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
     };
 
     const handleTestDialogClose = () => {
-        setTestModalOpen(false);
+        setTestDialogopen(false);
     };
     const handleDateDialogClose = () => {
-        setDateModalOpen(false);
+        setDateDialogopen(false);
     };
     /** =================== */
 
@@ -71,8 +71,8 @@ function CardShare({ classNum, dummy, history, match }) {
     /** */
     return (
         <>
-            <ClassDialog type="test" subType={subTypeState} open={testModalopen} handleDialogClose={handleTestDialogClose} />
-            <ClassDialog type="date" subType="modify" open={dateModalopen} handleDialogClose={handleDateDialogClose} />
+            <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
+            <ClassDialog type="date" subType="modify" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
 
             <div className="class-card-root">
                 <div
@@ -105,7 +105,7 @@ function CardShare({ classNum, dummy, history, match }) {
                             </div>
                         </div>
                         <div className="class-card-bottom-left">
-                            <CardContentBottom type={'eye'} able={true} align="left" />
+                            <IsPresence type={'eye'} able={dummy['eyetrack']} align="left" />
                         </div>
                     </div>
                     <div className="class-card-right">
