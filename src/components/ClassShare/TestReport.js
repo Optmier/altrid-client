@@ -16,15 +16,13 @@ function TestReport({ match }) {
                     <div className="report-box">
                         <div className="report-col">
                             <CardContentBottom type="eye" able={shareDummy[classNum]['age']} align="left" />
+                            <span>{shareDummy[classNum]['age']}</span>
                         </div>
                         <div className="report-col">
                             <h3>{shareDummy[classNum]['title']}</h3>
                         </div>
                         <div className="report-col">
                             <p>{shareDummy[classNum]['desc']}</p>
-                        </div>
-                        <div className="report-col">
-                            <p>{shareDummy[classNum]['age']}</p>
                         </div>
                     </div>
                     <div className="report-box">
