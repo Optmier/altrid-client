@@ -5,7 +5,7 @@ import Draft from '../components/ClassDraft/Draft';
 import Manage from '../components/ClassManage/Manage';
 import Share from '../components/ClassShare/Share';
 import { Route } from 'react-router-dom';
-import TestReport from '../components/ClassShare/TestReport';
+import TestReport from '../components/ClassReport/TestReport';
 
 const ClassPageSwitcher = ({ match }) => {
     let { id } = match.params;

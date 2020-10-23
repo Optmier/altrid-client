@@ -138,5 +138,14 @@ $textGray: #706d6d;
                 }
             }
         }
+
+        & .class-report-title {
+            font-size: $textBlack;
+            font-size: 1rem;
+            font-weight: 600;
+            padding-bottom: 12px;
+        }
+        & .class-report-progress {
+        }
     }
 }

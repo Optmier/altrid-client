@@ -8,6 +8,8 @@ import ToggleSwitch from '../essentials/ToggleSwitch';
 import ClassDialog from '../essentials/ClassDialog';
 import ModifyButton from '../essentials/ModifyButton';
 import StudentNum from '../essentials/StudentNum';
+import studentDummy from '../../datas/studentDummy.json';
+import TotalProgress from './TotalProgress';
 
 function TestReport({ match }) {
     let { classNum } = match.params;
@@ -103,6 +105,19 @@ function TestReport({ match }) {
                                 <div className="right-bottom">제출한 학생</div>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="class-report-progress">
+                        <div className="class-report-title">전체 진행률</div>
+                        <TotalProgress studentList={studentDummy}></TotalProgress>
+                    </div>
+
+                    <div className="class-report-graph">
+                        <div className="class-report-title">영역별 리포트</div>
+                    </div>
+
+                    <div className="class-report-student">
+                        <div className="class-report-title">학생별 리포트</div>
                     </div>
                 </div>
             </ClassWrapper>
