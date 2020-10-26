@@ -1,29 +1,90 @@
 {
     "01": {
         "name":"최준영",
-        "test":"[0,0,1,1,0,0,0,1,1,0]",
+        "complete": true,
+        "test":"0,0,1,1,0,0,0,1,1,0",
         "submit_date":"20.10.04 14:00",
         "score": 6,
+        "total": 10,
         "test_time" : "14분 30초",
         "weak":"세부정보 찾기",
-        "compre":"+34"
+        "compare":"34"
     },
     "02": {
         "name":"최세인",
-        "test":"[1,1,1,0,0,0,0,1,1,1]",
+        "complete": true,
+        "test":"1,1,1,0,0,0,0,1,1,1",
         "submit_date":"20.10.04 14:00",
         "score": 4,
+        "total": 10,
         "test_time":"11분 20초",
         "weak":"세부정보 찾기",
-        "compre":"+12"
+        "compare":"12"
     },
     "03": {
         "name":"전광휘",
-        "test":"[1,1,0,0,1,0,1,1,1,0]",
+        "complete": true,
+        "test":"1,1,0,0,1,0,-1,-1,-1,-1",
         "submit_date":"20.10.04 14:00",
-        "score": 6,
+        "score": 7,
+        "total": 10,
         "test_time":"14분 52초",
         "weak":"세부정보 찾기",
-        "compre":"-30"
+        "compare":"-30"
+    },
+    "04": {
+        "name":"전광휘",
+        "complete": false,
+        "test":"-1,-1,-1,-1,-1,-1,-1,-1,-1,-1",
+        "submit_date":"-",
+        "score": "-",
+        "total": "-",
+        "test_time":"-",
+        "weak":"-",
+        "compare":"0"
+    },
+    "05": {
+        "name":"전광휘",
+        "complete": true,
+        "test":"1,1,0,0,1,0,1,1,1,0",
+        "submit_date":"20.10.04 14:00",
+        "score": 6,
+        "total": 10,
+        "test_time":"14분 52초",
+        "weak":"세부정보 찾기",
+        "compare":"-30"
+    },
+    "06": {
+        "name":"전광휘",
+        "complete": true,
+        "test":"1,1,0,0,1,0,1,1,1,0",
+        "submit_date":"20.10.04 14:00",
+        "score": 6,
+        "total": 10,
+        "test_time":"14분 52초",
+        "weak":"세부정보 찾기",
+        "compare":"-30"
+    },
+    "07": {
+        "name":"전광휘",
+        "complete": true,
+        "test":"1,1,0,0,1,0,1,1,1,0",
+        "submit_date":"20.10.04 14:00",
+        "score": 6,
+        "total": 10,
+        "test_time":"14분 52초",
+        "weak":"세부정보 찾기",
+        "compare":"-30"
+    },
+    "08": {
+        "name":"전광휘",
+        "complete": true,
+        "test":"1,1,0,0,1,0,1,1,1,0",
+        "submit_date":"20.10.04 14:00",
+        "score": 6,
+        "total": 10,
+        "test_time":"14분 52초",
+        "weak":"세부정보 찾기",
+        "compare":"-30"
     }
 }

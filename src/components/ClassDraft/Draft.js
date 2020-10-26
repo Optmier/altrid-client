@@ -42,9 +42,6 @@ function Draft() {
                         <CardRoot cardHeight="281px">
                             <CardDraftIng />
                         </CardRoot>
-                        <CardRoot cardHeight="281px">
-                            <CardDraftIng />
-                        </CardRoot>
 
                         {Object.keys(draftDummy).map((num) => (
                             <CardRoot key={num} cardHeight="281px">

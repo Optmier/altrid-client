@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import '../../styles/test_report.scss';
 import shareDummy from '../../datas/shareDummy.json';
 import BranchNav from '../essentials/BranchNav';
@@ -10,6 +10,37 @@ import ModifyButton from '../essentials/ModifyButton';
 import StudentNum from '../essentials/StudentNum';
 import studentDummy from '../../datas/studentDummy.json';
 import TotalProgress from './TotalProgress';
+import LineChartProblem from '../essentials/LineChartProblem';
+import LineChartType from '../essentials/LineChartType';
+import CardStudent from './CardStudent';
+import CardRoot from '../essentials/CardRoot';
+import CardLists from '../essentials/CardLists';
+import styled from 'styled-components';
+import FilterButton from '../essentials/FilterButton';
+
+const StudentCardHeader = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 22px;
+
+    & .left {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        & .title {
+            color: #2e2c2c;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        & select {
+            padding-left: 2rem;
+            border: none;
+            outline: none;
+            background-color: transparent;
+        }
+    }
+`;
 
 function TestReport({ match }) {
     let { classNum } = match.params;
@@ -26,8 +57,6 @@ function TestReport({ match }) {
         setTestDialogopen(false);
     };
 
-    /** =================== */
-
     /** toggle state */
     const [toggleState, setToggleState] = useState({
         checked: shareDummy['progress'],
@@ -40,13 +69,18 @@ function TestReport({ match }) {
         toggleState['checked'] ? setSubTypeState('init') : setSubTypeState('modify');
         handleDialogOpen('test');
     };
-    /**===================== */
 
     /** modify state */
     const handleDateChange = () => {
         handleDialogOpen('date');
     };
-    /** */
+
+    /** select state */
+    const [selectState, setSelectState] = useState('0');
+
+    const handleSelect = (e) => {
+        setSelectState(e.target.value);
+    };
 
     return (
         <>
@@ -56,7 +90,7 @@ function TestReport({ match }) {
                 <div className="class-report-root">
                     <BranchNav deps="2" />
 
-                    <div className="class-report-info">
+                    <section className="class-report-info">
                         <div className="report-box">
                             <div className="report-col">
                                 <h3>{shareDummy[classNum]['title']}</h3>
@@ -105,22 +139,47 @@ function TestReport({ match }) {
                                 <div className="right-bottom">제출한 학생</div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div className="class-report-progress">
+                    <section className="class-report-progress">
                         <div className="class-report-title">전체 진행률</div>
                         <TotalProgress studentList={studentDummy}></TotalProgress>
-                    </div>
+                    </section>
 
-                    <div className="class-report-graph">
+                    <section className="class-report-graph">
                         <div className="class-report-title">영역별 리포트</div>
-                    </div>
-
-                    <div className="class-report-student">
-                        <div className="class-report-title">학생별 리포트</div>
-                    </div>
+                        <div className="graph-box">
+                            <select name="chart-option" onChange={handleSelect}>
+                                <option value="0">문제별 정답률</option>
+                                <option value="1">유형별 정답률</option>
+                            </select>
+                            {selectState === '0' ? <LineChartProblem /> : <LineChartType />}
+                        </div>
+                    </section>
                 </div>
             </ClassWrapper>
+
+            <CardLists
+                upperDeck={
+                    <StudentCardHeader className="class-report-student-card">
+                        <div className="left">
+                            <div className="title">학생별 리포트</div>
+                            <select name="student-option">
+                                <option value="0">제출순</option>
+                                <option value="1">점수순</option>
+                                <option value="1">소요시간순</option>
+                            </select>
+                        </div>
+                        <FilterButton />
+                    </StudentCardHeader>
+                }
+            >
+                {Object.keys(studentDummy).map((num) => (
+                    <CardRoot key={num} cardHeight="250px">
+                        <CardStudent num={num} />
+                    </CardRoot>
+                ))}
+            </CardLists>
         </>
     );
 }
