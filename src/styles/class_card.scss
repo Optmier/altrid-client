@@ -20,16 +20,16 @@
         & .card-option {
             cursor: pointer;
 
-            & > p {
+            & p {
                 font-size: 11px;
                 font-weight: 500;
                 transition: all 0.5s;
                 color: #2e2c2c;
             }
-            & > p::after {
+            & p::after {
                 content: ' >';
             }
-            & > p:hover {
+            & p:hover {
                 margin-right: 3px;
             }
         }
@@ -55,16 +55,16 @@
         & .card-option {
             cursor: pointer;
 
-            & > p {
+            & p {
                 font-size: 11px;
                 font-weight: 500;
                 transition: all 0.5s;
                 color: white;
             }
-            & > p::after {
+            & p::after {
                 content: ' >';
             }
-            & > p:hover {
+            & p:hover {
                 margin-right: 3px;
             }
         }

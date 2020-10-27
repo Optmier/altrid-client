@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import '../../styles/test_report.scss';
 import shareDummy from '../../datas/shareDummy.json';
 import BranchNav from '../essentials/BranchNav';
@@ -42,7 +42,7 @@ const StudentCardHeader = styled.div`
     }
 `;
 
-function TestReport({ match }) {
+function ReportClass({ match }) {
     let { classNum } = match.params;
 
     /** class-modal 메소드 */
@@ -184,4 +184,4 @@ function TestReport({ match }) {
     );
 }
 
-export default TestReport;
+export default ReportClass;

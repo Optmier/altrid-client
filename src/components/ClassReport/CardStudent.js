@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../../styles/class_card.scss';
 import studentDummy from '../../datas/studentDummy.json';
 import classNames from 'classnames';
 import styled from 'styled-components';
+import { Link, withRouter } from 'react-router-dom';
 
 const StyleState = styled.div`
     width: 52px;
@@ -63,7 +64,9 @@ const CompareItems = ({ title, contents, children }) => {
     );
 };
 
-function CardStudent({ num }) {
+function CardStudent({ num, history }) {
+    let path = history.location.pathname;
+
     return (
         <>
             <div className="class-card-root">
@@ -82,7 +85,9 @@ function CardStudent({ num }) {
                         </StyleState>
                     </div>
                     <span className="card-option">
-                        <p>상세 리포트</p>
+                        <Link to={`${path}/${num}`}>
+                            <p>상세 리포트</p>
+                        </Link>
                     </span>
                 </div>
                 <div></div>
@@ -132,4 +137,4 @@ function CardStudent({ num }) {
     );
 }
 
-export default CardStudent;
+export default withRouter(CardStudent);

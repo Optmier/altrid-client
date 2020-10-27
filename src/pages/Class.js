@@ -5,7 +5,7 @@ import Draft from '../components/ClassDraft/Draft';
 import Manage from '../components/ClassManage/Manage';
 import Share from '../components/ClassShare/Share';
 import { Route } from 'react-router-dom';
-import TestReport from '../components/ClassReport/TestReport';
+import Reportes from '../components/ClassReport/Reportes';
 
 const ClassPageSwitcher = ({ match }) => {
     let { id } = match.params;
@@ -19,7 +19,7 @@ const ClassPageSwitcher = ({ match }) => {
             return (
                 <>
                     <Route path={`${match.path}`} exact component={Share} />
-                    <Route path={`${match.path}/:classNum`} component={TestReport} />
+                    <Route path={`${match.path}/:classNum`} component={Reportes} />
                 </>
             );
 

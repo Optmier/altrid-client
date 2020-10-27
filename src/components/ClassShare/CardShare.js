@@ -30,8 +30,10 @@ const DateItems = ({ title, start, end, handleDateChange }) => {
     );
 };
 
-function CardShare({ classNum, dummy, history, match }) {
+function CardShare({ classNum, dummy, history }) {
     let path = history.location.pathname;
+    // let { id } = match.params;
+    // console.log(id);
 
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 공유), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
