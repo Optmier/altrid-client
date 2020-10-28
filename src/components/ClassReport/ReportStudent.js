@@ -30,6 +30,21 @@ const StyleItems = styled.div`
     }
 `;
 
+const StyleArrowButton = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+
+    & > p {
+        margin: 0 1rem 0 0;
+        font-size: 1rem;
+        color: black;
+        font-weight: 600;
+    }
+`;
+
 const InfoItems = ({ title, contents, children }) => {
     return (
         <StyleItems>
@@ -146,6 +161,16 @@ function ReportStudent({ match }) {
                 <div className="class-report-title">유형별 정답률</div>
                 <section>
                     <StudentTypeScore />
+
+                    <StyleArrowButton>
+                        <p>관찰데이터 확인하기</p>
+                        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M1.41 0.589844L6 5.16984L10.59 0.589844L12 1.99984L6 7.99984L0 1.99984L1.41 0.589844Z"
+                                fill="#2E2C2C"
+                            />
+                        </svg>
+                    </StyleArrowButton>
                 </section>
 
                 <section className="student-report-observe">
