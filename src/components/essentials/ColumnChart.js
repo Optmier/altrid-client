@@ -7,16 +7,12 @@ function ColumnChart() {
     state = {
         series: [
             {
-                name: 'Net Profit',
-                data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
+                name: '학생 정답률',
+                data: [44, 55, 57, 56, 61, 58, 63, 60, 66, 70],
             },
             {
-                name: 'Revenue',
-                data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
-            },
-            {
-                name: 'Free Cash Flow',
-                data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
+                name: '평균 정답률',
+                data: [76, 85, 101, 98, 87, 105, 91, 114, 94, 90],
             },
         ],
         options: {
@@ -31,6 +27,7 @@ function ColumnChart() {
                     endingShape: 'rounded',
                 },
             },
+            colors: ['#13e2a1', '#706d6d'],
             dataLabels: {
                 enabled: false,
             },
@@ -40,20 +37,27 @@ function ColumnChart() {
                 colors: ['transparent'],
             },
             xaxis: {
-                categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                categories: [
+                    '세부내용찾기',
+                    '지시대상찾기',
+                    '세부내용찾기',
+                    '지시대상찾기',
+                    '세부내용찾기',
+                    '지시대상찾기',
+                    '세부내용찾기',
+                    '지시대상찾기',
+                    '세부내용찾기',
+                    '지시대상찾기',
+                ],
             },
-            yaxis: {
-                title: {
-                    text: '$ (thousands)',
-                },
-            },
+            yaxis: {},
             fill: {
                 opacity: 1,
             },
             tooltip: {
                 y: {
                     formatter: function (val) {
-                        return '$ ' + val + ' thousands';
+                        return val + '%';
                     },
                 },
             },

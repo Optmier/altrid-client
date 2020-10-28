@@ -7,7 +7,9 @@ import Progress from './Progress';
 import styled from 'styled-components';
 import StudentTypeScore from './StudentTypeScore';
 import MoreBox from '../essentials/MoreBox';
+import EyeTrackBox from './EyeTrackBox';
 import { Tooltip } from '@material-ui/core';
+import TimeTrackBox from './TimeTrackBox';
 
 const StyleItems = styled.div`
     display: flex;
@@ -141,7 +143,7 @@ function ReportStudent({ match }) {
                     </div>
                 </section>
 
-                <div className="class-report-title">유형별 점수</div>
+                <div className="class-report-title">유형별 정답률</div>
                 <section>
                     <StudentTypeScore />
                 </section>
@@ -170,6 +172,21 @@ function ReportStudent({ match }) {
                 </div>
                 <section className="student-report-eyetrack">
                     <EyeTrackBox />
+                </section>
+
+                <div className="class-report-title">
+                    <div>문제별 시간 분석</div>
+                    <Tooltip title="설명 설명 설명 설명">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
+                                fill="#A9ACAF"
+                            />
+                        </svg>
+                    </Tooltip>
+                </div>
+                <section className="student-report-timetrack">
+                    <TimeTrackBox />
                 </section>
             </div>
         </ClassWrapper>

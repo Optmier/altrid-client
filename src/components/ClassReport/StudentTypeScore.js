@@ -17,6 +17,10 @@ const StyleStudentTypeScore = styled.div`
     justify-content: space-between;
 
     & .chart-right {
+        width: 40%;
+    }
+
+    & .chart-right {
         width: 60%;
     }
 `;

@@ -7,8 +7,8 @@ function RadarChart() {
     state = {
         series: [
             {
-                name: 'Series 1',
-                data: [20, 100, 40, 30, 50, 80, 33],
+                name: '학생 정답률',
+                data: [44, 55, 57, 56, 61, 58, 63, 60, 66, 70],
             },
         ],
         options: {
@@ -21,7 +21,7 @@ function RadarChart() {
             },
             plotOptions: {
                 radar: {
-                    size: 140,
+                    size: 110,
                     polygons: {
                         strokeColors: '#e9e9e9',
                         fill: {
@@ -30,14 +30,12 @@ function RadarChart() {
                     },
                 },
             },
-            title: {
-                text: 'Radar with Polygon Fill',
-            },
-            colors: ['#FF4560'],
+            title: {},
+            colors: ['#008FF8'],
             markers: {
                 size: 4,
                 colors: ['#fff'],
-                strokeColor: '#FF4560',
+                strokeColor: '#008FF8',
                 strokeWidth: 2,
             },
             tooltip: {
@@ -48,7 +46,18 @@ function RadarChart() {
                 },
             },
             xaxis: {
-                categories: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                categories: [
+                    '세부내용찾기',
+                    '지시대상찾기',
+                    '세부내용찾기',
+                    '지시대상찾기',
+                    '세부내용찾기',
+                    '지시대상찾기',
+                    '세부내용찾기',
+                    '지시대상찾기',
+                    '세부내용찾기',
+                    '지시대상찾기',
+                ],
             },
             yaxis: {
                 tickAmount: 7,
