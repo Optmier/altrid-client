@@ -85,10 +85,9 @@ function ReportClass({ match }) {
         <>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
 
-            <ClassWrapper>
+            <ClassWrapper col={true}>
+                <BranchNav deps="2" />
                 <div className="class-report-root">
-                    <BranchNav deps="2" />
-
                     <section className="class-report-info">
                         <div className="report-box">
                             <div className="report-col">

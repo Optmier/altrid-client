@@ -8,14 +8,19 @@ const StyleWrapper = styled.div`
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
+    flex-direction: ${(props) => (props.col ? 'column' : 'none')};
 
     @media (min-width: 0px) and (max-width: 1231px) {
         max-width: 632px;
     }
 `;
 
-function ClassWrapper({ children }) {
-    return <StyleWrapper>{children}</StyleWrapper>;
+function ClassWrapper({ children, col }) {
+    return <StyleWrapper col={col}>{children}</StyleWrapper>;
 }
+
+ClassWrapper.defaultProps = {
+    col: false,
+};
 
 export default ClassWrapper;
