@@ -167,4 +167,58 @@ $textGray: #706d6d;
             }
         }
     }
+
+    & .student-report-root {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 25px 0;
+
+        & section {
+            width: 100%;
+            padding: 40px 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        & .ment-ai {
+            font-size: 1.75rem;
+            font-weight: 400;
+            color: $textBlack;
+
+            & > b {
+                font-weight: 600;
+            }
+
+            & > .underline {
+                color: #13e2a1;
+                text-decoration: underline;
+            }
+        }
+
+        & .student-report-header {
+            & .student-report-left {
+                display: flex;
+                flex-direction: column;
+                & .left-top {
+                    margin-bottom: 1.2rem;
+                }
+                & .left-bottom {
+                    font-size: 1rem;
+                    font-weight: 300;
+
+                    & > b {
+                        font-weight: 500;
+                        padding-right: 1rem;
+                    }
+                }
+                & .left-bottom + .left-bottom {
+                    margin-top: 0.4rem;
+                }
+            }
+        }
+    }
 }

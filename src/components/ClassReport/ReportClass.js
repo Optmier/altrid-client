@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import '../../styles/test_report.scss';
 import shareDummy from '../../datas/shareDummy.json';
 import BranchNav from '../essentials/BranchNav';
 import ClassWrapper from '../essentials/ClassWrapper';
