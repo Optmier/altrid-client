@@ -64,6 +64,8 @@ const PatternList = ({ title, pattern, answer, route, time }) => {
     const [padding, setPadding] = useState(0);
 
     const handlePattern = () => {
+        console.log(heightToggle);
+
         if (!heightToggle) {
             setHeight('68px');
             setPadding('20px');
@@ -71,6 +73,7 @@ const PatternList = ({ title, pattern, answer, route, time }) => {
         } else {
             setHeight(0);
             setPadding(0);
+            setHeightToggle(false);
         }
     };
     return (

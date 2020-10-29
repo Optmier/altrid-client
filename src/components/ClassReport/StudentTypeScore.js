@@ -8,7 +8,7 @@ const StyleStudentTypeScore = styled.div`
     background-color: white;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 11px;
-    padding: 40px 32px;
+    padding: 30px 32px;
     width: 100%;
     box-sizing: border-box;
     overflow: auto;

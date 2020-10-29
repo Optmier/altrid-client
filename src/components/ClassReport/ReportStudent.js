@@ -41,7 +41,7 @@ const StyleArrowButton = styled.div`
         margin: 0 1rem 0 0;
         font-size: 1rem;
         color: black;
-        font-weight: 600;
+        font-weight: 500;
     }
 `;
 
@@ -114,6 +114,7 @@ function ReportStudent({ match }) {
                     </div>
 
                     <div className="student-report-right">
+                        {studentDummy[studentNum]['test'].split(',').length % 17 === 0 ? console.log('넘어가!') : console.log('아직!')}
                         <Progress test={studentDummy[studentNum]['test']} />
 
                         <div className="right-bottom">

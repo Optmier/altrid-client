@@ -9,13 +9,13 @@ import ModifyButton from '../essentials/ModifyButton';
 import StudentNum from '../essentials/StudentNum';
 import studentDummy from '../../datas/studentDummy.json';
 import TotalProgress from './TotalProgress';
-import LineChartProblem from '../essentials/LineChartProblem';
-import LineChartType from '../essentials/LineChartType';
 import CardStudent from './CardStudent';
 import CardRoot from '../essentials/CardRoot';
 import CardLists from '../essentials/CardLists';
 import styled from 'styled-components';
 import FilterButton from '../essentials/FilterButton';
+import ColumnChartProblem from '../essentials/ColumnChartProblem';
+import ColumnChartType from '../essentials/ColumnChartType';
 
 const StudentCardHeader = styled.div`
     display: flex;
@@ -33,10 +33,13 @@ const StudentCardHeader = styled.div`
             font-weight: 600;
         }
         & select {
-            padding-left: 2rem;
+            cursor: pointer;
+            padding: 0 0.7rem;
+            margin-left: 0.7rem;
             border: none;
             outline: none;
             background-color: transparent;
+            text-align-last: right;
         }
     }
 `;
@@ -139,20 +142,29 @@ function ReportClass({ match }) {
                         </div>
                     </section>
 
-                    <section className="class-report-progress">
-                        <div className="class-report-title">전체 진행률</div>
-                        <TotalProgress studentList={studentDummy}></TotalProgress>
-                    </section>
-
                     <section className="class-report-graph">
                         <div className="class-report-title">영역별 리포트</div>
                         <div className="graph-box">
-                            <select name="chart-option" onChange={handleSelect}>
-                                <option value="0">문제별 정답률</option>
-                                <option value="1">유형별 정답률</option>
-                            </select>
-                            {selectState === '0' ? <LineChartProblem /> : <LineChartType />}
+                            <div className="graph-header">
+                                <div className="graph-header-text">
+                                    <span>가장 취약한 문제 </span> 3번(21%)
+                                </div>
+                                <div className="graph-header-text">
+                                    <span>가징 취약한 유형 </span> 세부내용 찾기(29%)
+                                </div>
+                                <select name="chart-option" onChange={handleSelect}>
+                                    <option value="0">문제별 정답률</option>
+                                    <option value="1">유형별 정답률</option>
+                                </select>
+                            </div>
+
+                            {selectState === '0' ? <ColumnChartProblem /> : <ColumnChartType />}
                         </div>
+                    </section>
+
+                    <section className="class-report-progress">
+                        <div className="class-report-title">전체 진행률</div>
+                        <TotalProgress studentList={studentDummy}></TotalProgress>
                     </section>
                 </div>
             </ClassWrapper>
