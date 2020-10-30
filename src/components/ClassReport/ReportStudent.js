@@ -89,8 +89,35 @@ const CompareItems = ({ title, contents, children }) => {
     );
 };
 
+//배열 원하는 길이만큼 2차원 배열로 만들기
+const division = (arr, n) => {
+    let len = arr.length;
+    let cnt = Math.floor(len / n) + (Math.floor(len % n) > 0 ? 1 : 0);
+    let tmp = [];
+    let last_tmp = [];
+
+    for (let i = 0; i < cnt; i++) {
+        if (arr.length >= n) {
+            tmp.push(arr.splice(0, n));
+        } else {
+            for (let j = 0; j < arr.length; j++) {
+                last_tmp.push(arr[j]);
+            }
+            for (let k = arr.length; k < n; k++) {
+                last_tmp.push('-2');
+            }
+        }
+    }
+
+    tmp.push(last_tmp);
+    console.log(tmp);
+    return tmp;
+};
 function ReportStudent({ match }) {
     let { studentNum } = match.params;
+    let testSquareArr = division(studentDummy[studentNum]['test'].split(','), 16);
+
+    //console.log(testSquareArr.map((i) => console.log(i)));
 
     return (
         <ClassWrapper col={true}>
@@ -114,8 +141,9 @@ function ReportStudent({ match }) {
                     </div>
 
                     <div className="student-report-right">
-                        {studentDummy[studentNum]['test'].split(',').length % 17 === 0 ? console.log('넘어가!') : console.log('아직!')}
-                        <Progress test={studentDummy[studentNum]['test']} />
+                        {testSquareArr.map((arr, idx) => (
+                            <Progress key={idx} test={arr} />
+                        ))}
 
                         <div className="right-bottom">
                             <div className="right-bottom-col">

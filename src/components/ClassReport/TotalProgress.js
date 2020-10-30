@@ -42,7 +42,7 @@ function TotalProgress({ studentList }) {
             {Object.keys(studentList).map((num) => (
                 <div key={num} className="progress-list">
                     <div className="name">{studentList[num]['name']}</div>
-                    <Progress test={studentDummy[num]['test']} />
+                    <Progress test={studentDummy[num]['test'].split(',')} />
                 </div>
             ))}
         </StyleTotalProgress>

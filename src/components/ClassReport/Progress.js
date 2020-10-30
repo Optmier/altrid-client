@@ -16,12 +16,16 @@ const StyleTestSquareList = styled.div`
     & .square + .square {
         margin-left: 5px;
     }
+
+    & + & {
+        margin-top: 5px;
+    }
 `;
 
 function Progress({ test }) {
     let testArr = new Array();
 
-    test.split(',').map((i) => {
+    test.map((i) => {
         i *= 1;
         testArr.push(i);
     });
@@ -31,10 +35,12 @@ function Progress({ test }) {
             {testArr.map((i, idx) =>
                 i === 1 ? (
                     <div key={idx} className="square" style={{ backgroundColor: '#13E2A1' }}></div>
-                ) : i ? (
+                ) : i === 0 ? (
+                    <div key={idx} className="square" style={{ backgroundColor: '#FFA552' }}></div>
+                ) : i === -1 ? (
                     <div key={idx} className="square" style={{ backgroundColor: '#E5E5E5' }}></div>
                 ) : (
-                    <div key={idx} className="square" style={{ backgroundColor: '#FFA552' }}></div>
+                    <div key={idx} className="square" style={{ backgroundColor: '#f7f9f8' }}></div>
                 ),
             )}
         </StyleTestSquareList>
