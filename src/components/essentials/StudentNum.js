@@ -1,9 +1,8 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const StyleStudentNum = styled.div`
-    width: 100%;
-    height: 100%;
+    width: ${(props) => props.width};
     display: flex;
     flex-direction: column;
     position: relative;
@@ -29,9 +28,9 @@ const StyleStudentNum = styled.div`
     }
 `;
 
-function StudentNum({ totalNum, completeNum }) {
+function StudentNum({ totalNum, completeNum, width }) {
     return (
-        <StyleStudentNum>
+        <StyleStudentNum width={width}>
             <span className="complete-num">{completeNum}</span>
             <div className="divider">
                 <svg width="53" height="51" viewBox="0 0 53 51" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -49,5 +48,9 @@ function StudentNum({ totalNum, completeNum }) {
         </StyleStudentNum>
     );
 }
+
+StudentNum.defaultProps = {
+    width: '100%',
+};
 
 export default StudentNum;

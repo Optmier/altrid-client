@@ -4,11 +4,8 @@ import '../styles/class.scss';
 import Draft from '../components/ClassDraft/Draft';
 import Manage from '../components/ClassManage/Manage';
 import Share from '../components/ClassShare/Share';
-import SearchInput from '../components/essentials/SearchInput';
-import ClassWrapper from '../components/essentials/ClassWrapper';
-import FilterButton from '../components/essentials/FilterButton';
 import { Route } from 'react-router-dom';
-import TestReport from '../components/ClassShare/TestReport';
+import Reportes from '../components/ClassReport/Reportes';
 
 const ClassPageSwitcher = ({ match }) => {
     let { id } = match.params;
@@ -22,7 +19,7 @@ const ClassPageSwitcher = ({ match }) => {
             return (
                 <>
                     <Route path={`${match.path}`} exact component={Share} />
-                    <Route path={`${match.path}/:classNum`} component={TestReport} />
+                    <Route path={`${match.path}/:classNum`} component={Reportes} />
                 </>
             );
 
@@ -36,24 +33,10 @@ const ClassPageSwitcher = ({ match }) => {
 };
 
 function Class({ match }) {
-    let { id } = match.params;
-
     return (
         <>
             <LeftNav />
             <div className="class-page-root">
-                {
-                    id === 'manage' ? '' : ''
-                    // <div style={{ width: '100%', borderBottom: '1.5px solid #e5e5e5' }}>
-                    //     <ClassWrapper>
-                    //         <div className="class-input-header">
-                    //             <SearchInput />
-                    //             <FilterButton />
-                    //         </div>
-                    //     </ClassWrapper>
-                    // </div>
-                }
-
                 <ClassPageSwitcher match={match} />
             </div>
         </>

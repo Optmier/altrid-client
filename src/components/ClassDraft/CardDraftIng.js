@@ -3,7 +3,6 @@ import '../../styles/class_card.scss';
 import IsPresence from '../essentials/IsPresence';
 import CardPopOver from '../essentials/CardPopOver';
 import ClassDialog from '../essentials/ClassDialog';
-import draftDummy from '../../datas/draftDummy.json';
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -14,7 +13,7 @@ const InfoItems = ({ title, contents }) => {
     );
 };
 
-function CardDraft({ num }) {
+function CardDraftIng() {
     /** pop-over (옵션 선택) 메소드 */
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -48,36 +47,40 @@ function CardDraft({ num }) {
             />
             <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
             <div className="class-card-root">
-                <div className="class-card-header class-card-wrapper">
-                    <div className="card-title-p">{draftDummy[num]['title']}</div>
+                <div style={{ backgroundColor: '#FFBE2F' }} className="class-card-header class-card-wrapper">
+                    <div style={{ color: 'white' }} className="card-title-p">
+                        실전 기출 문제 모음
+                    </div>
                     <span className="card-option" onClick={handleOptionClick}>
                         <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
-                            <circle cx="16.5" cy="2.5" r="2.5" fill="#C4C4C4" />
-                            <circle cx="9.5" cy="2.5" r="2.5" fill="#C4C4C4" />
+                            <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
+                            <circle cx="16.5" cy="2.5" r="2.5" fill="white" />
+                            <circle cx="9.5" cy="2.5" r="2.5" fill="white" />
                         </svg>
                     </span>
                 </div>
                 <div></div>
-                <div className="class-card-contents class-card-wrapper">
-                    <div className="contents-block">
-                        <div className="card-item card-subTitle-p">{draftDummy[num]['desc']}</div>
-                        <div className="card-item card-content-p">{draftDummy[num]['age']}</div>
-                    </div>
-
-                    <div className="contents-block">
-                        <InfoItems title={'문항수'} contents={draftDummy[num]['question_num']} />
-                        <InfoItems title={'제한시간'} contents={draftDummy[num]['time']} />
-                        <InfoItems title={'최종수정'} contents={draftDummy[num]['start']} />
-                    </div>
+                <div
+                    style={{
+                        fontSize: '2rem',
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#706d6d',
+                        fontWeight: 600,
+                    }}
+                >
+                    <h4>과제 제작중...</h4>
                 </div>
-                <div className="class-card-bottom-right">
-                    <IsPresence type={'eye'} able={draftDummy[num]['eyetrack']} />
-                    <IsPresence type={'share'} able={draftDummy[num]['progress']} />
+                <div style={{ height: '0' }} className="class-card-bottom-right">
+                    <IsPresence type={'eye'} able={true} />
+                    <IsPresence type={'share'} able={true} />
                 </div>
             </div>
         </>
     );
 }
 
-export default CardDraft;
+export default CardDraftIng;

@@ -6,6 +6,8 @@ import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
 import ClassHeaderBox from '../essentials/ClassHeaderBox';
+import CardDraftIng from './CardDraftIng';
+import draftDummy from '../../datas/draftDummy.json';
 
 function Draft() {
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
@@ -38,14 +40,14 @@ function Draft() {
                             <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
                         </CardRoot>
                         <CardRoot cardHeight="281px">
-                            <CardDraft />
+                            <CardDraftIng />
                         </CardRoot>
-                        <CardRoot cardHeight="281px">
-                            <CardDraft />
-                        </CardRoot>
-                        <CardRoot cardHeight="281px">
-                            <CardDraft />
-                        </CardRoot>
+
+                        {Object.keys(draftDummy).map((num) => (
+                            <CardRoot key={num} cardHeight="281px">
+                                <CardDraft num={num} />
+                            </CardRoot>
+                        ))}
                     </CardLists>
                 </div>
             </div>

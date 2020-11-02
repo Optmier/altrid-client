@@ -1,0 +1,68 @@
+{
+    "패턴1": {
+        "title":"1번 풀이 진행",
+        "answer":"a번/b번",
+        "route":"a,b,a",
+        "time":"08:52"
+    },
+    "패턴2": {
+        "title":"2번 풀이 진행",
+        "answer":"c번/c번",
+        "route":"a,b,a",
+        "time":"03:12"
+    },
+    "패턴3": {
+        "title":"1번 풀이 진행",
+        "answer":"a번/b번",
+        "route":"a,b,a",
+        "time":"08:52"
+    },
+    "패턴4": {
+        "title":"3번 풀이 진행",
+        "answer":"a번/a번",
+        "route":"a,b,a",
+        "time":"08:52"
+    },
+    "패턴5": {
+        "title":"4번 풀이 진행",
+        "answer":"a번/a번",
+        "route":"b,c,d,a",
+        "time":"03:12"
+    },
+    "패턴6": {
+        "title":"4번 풀이 진행",
+        "answer":"a번/a번",
+        "route":"b,c,d,a",
+        "time":"03:12"
+    },
+    "패턴7": {
+        "title":"4번 풀이 진행",
+        "answer":"a번/a번",
+        "route":"b,c,d,a",
+        "time":"03:12"
+    },
+    "패턴8": {
+        "title":"4번 풀이 진행",
+        "answer":"a번/a번",
+        "route":"b,c,d,a",
+        "time":"03:12"
+    },
+    "패턴9": {
+        "title":"4번 풀이 진행",
+        "answer":"a번/a번",
+        "route":"b,c,d,a",
+        "time":"03:12"
+    },
+    "패턴10": {
+        "title":"4번 풀이 진행",
+        "answer":"a번/a번",
+        "route":"b,c,d,a",
+        "time":"03:12"
+    },
+    "패턴11": {
+        "title":"4번 풀이 진행",
+        "answer":"a번/a번",
+        "route":"b,c,d,a",
+        "time":"03:12"
+    }
+}

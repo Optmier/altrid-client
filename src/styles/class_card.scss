@@ -7,6 +7,9 @@
     & .class-card-wrapper {
         padding: 12px;
     }
+    & .class-card-wrapper-student {
+        padding: 16px;
+    }
     & .class-card-header {
         background-color: #e5e5e5;
         border-radius: 10px 10px 0 0;
@@ -16,6 +19,30 @@
 
         & .card-option {
             cursor: pointer;
+
+            & p {
+                font-size: 11px;
+                font-weight: 500;
+                transition: all 0.5s;
+                color: #2e2c2c;
+            }
+            & p::after {
+                content: ' >';
+            }
+            & p:hover {
+                margin-right: 3px;
+            }
+        }
+
+        & .card-title-p {
+            color: #2e2c2c;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+
+            & .card-title-name {
+                margin-right: 1rem;
+            }
         }
     }
     & .class-card-header-on {
@@ -27,10 +54,30 @@
 
         & .card-option {
             cursor: pointer;
+
+            & p {
+                font-size: 11px;
+                font-weight: 500;
+                transition: all 0.5s;
+                color: white;
+            }
+            & p::after {
+                content: ' >';
+            }
+            & p:hover {
+                margin-right: 3px;
+            }
         }
 
         & .card-title-p {
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+
+            & .card-title-name {
+                margin-right: 1rem;
+            }
         }
     }
     & .class-card-contents {
@@ -105,6 +152,7 @@
     & .card-item + .card-item {
         padding-top: 6px;
     }
+
     & .contents-block {
         width: 100%;
 
@@ -114,6 +162,26 @@
             & > .card-content-title-p {
                 width: 71px;
             }
+
+            & > svg {
+                padding-right: 12px;
+            }
+        }
+    }
+
+    & .card-item-student + .card-item-student {
+        padding-top: 10px;
+    }
+
+    & .card-item-student {
+        display: flex;
+
+        & > .card-content-title-p {
+            width: 83px;
+        }
+
+        & > svg {
+            padding-right: 12px;
         }
     }
 }

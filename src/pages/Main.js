@@ -8,6 +8,7 @@ import CardLists from '../components/essentials/CardLists';
 import CardAddNew from '../components/essentials/CardAddNew';
 import CardEntry from '../components/MainPage/CardEntry';
 import CreateNewEntry from '../components/MainPage/CreateNewEntry';
+import { Link } from 'react-router-dom';
 
 const testDatas = [
     {
@@ -90,7 +91,7 @@ function Main() {
                                     totalStudents={totalStudents}
                                     totalAssignments={totalAssignments}
                                     onClick={() => {
-                                        console.log(id);
+                                        //  console.log(id);
                                     }}
                                 />
                             </CardRoot>
