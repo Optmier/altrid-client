@@ -7,7 +7,7 @@ import StudentNum from '../essentials/StudentNum';
 import classNames from 'classnames';
 import ToggleSwitch from '../essentials/ToggleSwitch';
 import ClassDialog from '../essentials/ClassDialog';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, Router, withRouter } from 'react-router-dom';
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -30,7 +30,7 @@ const DateItems = ({ title, start, end, handleDateChange }) => {
     );
 };
 
-function CardShare({ classNum, dummy, history }) {
+function CardShare({ testNum, cardData, history }) {
     let path = history.location.pathname;
     // let { id } = match.params;
     // console.log(id);
@@ -54,7 +54,7 @@ function CardShare({ classNum, dummy, history }) {
 
     /** toggle state */
     const [toggleState, setToggleState] = useState({
-        checked: dummy['progress'],
+        checked: cardData['progress'],
     });
     const [subTypeState, setSubTypeState] = useState('init');
 
@@ -84,7 +84,7 @@ function CardShare({ classNum, dummy, history }) {
                         'class-card-wrapper',
                     )}
                 >
-                    <div className="card-title-p">{dummy['title']}</div>
+                    <div className="card-title-p">{cardData['title']}</div>
                     <span className="card-option">
                         <ToggleSwitch toggle={toggleState['checked']} handleToggleChange={handleToggleChange} type="share" name="checked" />
                     </span>
@@ -96,28 +96,38 @@ function CardShare({ classNum, dummy, history }) {
                     <div className="class-card-left">
                         <div className="class-card-contents class-card-wrapper">
                             <div className="contents-block">
-                                <div className="card-item card-subTitle-p">과제 한줄 설명 과제 한줄 설명 과제 한줄 설명 과제 한줄 설명</div>
-                                <div className="card-item card-content-p">에듀이티 고2</div>
+                                <div className="card-item">
+                                    <div className="card-subTitle-p">{cardData['desc']}</div>
+                                </div>
+
+                                <div className="card-item">
+                                    <div className="card-content-p">{cardData['age']}</div>
+                                </div>
                             </div>
 
                             <div className="contents-block">
-                                <InfoItems title={'문항수'} contents={'3set / 15문제'} />
-                                <InfoItems title={'제한시간'} contents={'14분'} />
-                                <DateItems title={'최종수정'} start={'09/10/2020'} end={'09/30/2020'} handleDateChange={handleDateChange} />
+                                <InfoItems title={'문항수'} contents={cardData['question_num']} />
+                                <InfoItems title={'제한시간'} contents={cardData['time']} />
+                                <DateItems
+                                    title={'최종수정'}
+                                    start={cardData['start']}
+                                    end={cardData['end']}
+                                    handleDateChange={handleDateChange}
+                                />
                             </div>
                         </div>
                         <div className="class-card-bottom-left">
-                            <IsPresence type={'eye'} able={dummy['eyetrack']} align="left" />
+                            <IsPresence type={'eye'} able={cardData['eyetrack']} align="left" />
                         </div>
                     </div>
                     <div className="class-card-right">
                         <div className="class-card-contents class-card-wrapper">
-                            <StudentNum completeNum={14} totalNum={30} />
+                            <StudentNum completeNum={cardData['complete_student']} totalNum={cardData['total_student']} />
                             <div className="student-complete-text">제출한 학생</div>
                         </div>
 
                         <div className="class-card-bottom-right card-bottom-p">
-                            <Link to={`${path}/${classNum}`}>
+                            <Link to={`${path}/${testNum}`}>
                                 <div className="share-report">
                                     과제별 리포트 보기 <IoIosArrowForward />
                                 </div>

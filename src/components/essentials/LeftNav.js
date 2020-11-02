@@ -13,7 +13,8 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-function LeftNav({ history }) {
+function LeftNav({ match }) {
+    let { num } = match.params;
     return (
         <div className="left-nav-root">
             <div className="left-nav-wrapper">
@@ -39,7 +40,7 @@ function LeftNav({ history }) {
                     </div>
                 </div>
                 <div className="left-nav-box  left-nav-wrapper">
-                    {/* <LeftNavItem linkTo="/class/manage">
+                    {/* <LeftNavItem linkTo={`/class/${num}/manage`}>
                         <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M14.5455 0V10.1818H16V0H14.5455ZM11.6364 10.1818H13.0909V0H11.6364V10.1818ZM9.45455 0H0.727273C0.327273 0 0 0.327273 0 0.727273V9.45454C0 9.85454 0.327273 10.1818 0.727273 10.1818H9.45455C9.85455 10.1818 10.1818 9.85454 10.1818 9.45454V0.727273C10.1818 0.327273 9.85455 0 9.45455 0ZM5.09091 2C5.99273 2 6.72727 2.73455 6.72727 3.63636C6.72727 4.53818 5.99273 5.27273 5.09091 5.27273C4.18909 5.27273 3.45455 4.53818 3.45455 3.63636C3.45455 2.73455 4.18909 2 5.09091 2ZM8.36364 8.72727H1.81818V8.18182C1.81818 7.09091 4 6.54545 5.09091 6.54545C6.18182 6.54545 8.36364 7.09091 8.36364 8.18182V8.72727Z"
@@ -48,7 +49,7 @@ function LeftNav({ history }) {
                         </svg>
                         클래스 관리
                     </LeftNavItem> */}
-                    <LeftNavItem linkTo="/class/draft">
+                    <LeftNavItem linkTo={`/class/${num}/draft`}>
                         <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 fillRule="evenodd"
@@ -59,7 +60,7 @@ function LeftNav({ history }) {
                         </svg>
                         과제 생성
                     </LeftNavItem>
-                    <LeftNavItem linkTo="/class/share">
+                    <LeftNavItem linkTo={`/class/${num}/share`}>
                         <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M11.25 10.56C10.68 10.56 10.17 10.785 9.78 11.1375L4.4325 8.025C4.47 7.8525 4.5 7.68 4.5 7.5C4.5 7.32 4.47 7.1475 4.4325 6.975L9.72 3.8925C10.125 4.2675 10.6575 4.5 11.25 4.5C12.495 4.5 13.5 3.495 13.5 2.25C13.5 1.005 12.495 0 11.25 0C10.005 0 9 1.005 9 2.25C9 2.43 9.03 2.6025 9.0675 2.775L3.78 5.8575C3.375 5.4825 2.8425 5.25 2.25 5.25C1.005 5.25 0 6.255 0 7.5C0 8.745 1.005 9.75 2.25 9.75C2.8425 9.75 3.375 9.5175 3.78 9.1425L9.12 12.2625C9.0825 12.42 9.06 12.585 9.06 12.75C9.06 13.9575 10.0425 14.94 11.25 14.94C12.4575 14.94 13.44 13.9575 13.44 12.75C13.44 11.5425 12.4575 10.56 11.25 10.56Z"

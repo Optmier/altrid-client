@@ -56,7 +56,7 @@ function Main() {
     return (
         <>
             <Element name="main_top_start" />
-            <HeaderBar />
+            {/* <HeaderBar /> */}
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
                 <CreateNewEntry handleClose={toggleDrawer(false)} />
             </Drawer>
@@ -83,17 +83,19 @@ function Main() {
                         </CardRoot>
                         {testDatas.map(({ id, title, description, assignmentOnProgress, teacherName, totalStudents, totalAssignments }) => (
                             <CardRoot key={id}>
-                                <CardEntry
-                                    title={title}
-                                    description={description}
-                                    assignmentOnProgress={assignmentOnProgress}
-                                    teacherName={teacherName}
-                                    totalStudents={totalStudents}
-                                    totalAssignments={totalAssignments}
-                                    onClick={() => {
-                                        //  console.log(id);
-                                    }}
-                                />
+                                <Link key={id} to={`/class/${id}/draft`}>
+                                    <CardEntry
+                                        title={title}
+                                        description={description}
+                                        assignmentOnProgress={assignmentOnProgress}
+                                        teacherName={teacherName}
+                                        totalStudents={totalStudents}
+                                        totalAssignments={totalAssignments}
+                                        onClick={() => {
+                                            console.log(id);
+                                        }}
+                                    />
+                                </Link>
                             </CardRoot>
                         ))}
 

@@ -41,7 +41,7 @@ function IsPresence({ type, able, align }) {
                     <BottomSpan align={align}>시선흐름 미포함</BottomSpan>
                 )
             ) : able ? (
-                <BottomSpan color="#13E2A1" fill="#FFBE2F" align={align}>
+                <BottomSpan color="#13E2A1" fill="#13E2A1" align={align}>
                     공유 완료
                 </BottomSpan>
             ) : (

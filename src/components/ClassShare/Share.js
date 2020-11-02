@@ -3,7 +3,7 @@ import CardShare from './CardShare';
 import CardLists from '../essentials/CardLists';
 import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
-import shareDummy from '../../datas/shareDummy.json';
+import testDummy from '../../datas/testDummy.json';
 import ClassDrawer from '../essentials/ClassDrawer';
 import ClassHeaderBox from '../essentials/ClassHeaderBox';
 
@@ -33,9 +33,9 @@ function Share() {
                             </div>
                         }
                     >
-                        {Object.keys(shareDummy).map((key) => (
+                        {Object.keys(testDummy).map((key) => (
                             <CardRoot key={key} wider cardHeight="300px">
-                                <CardShare classNum={key} dummy={shareDummy[key]} />
+                                <CardShare testNum={key} cardData={testDummy[key]} />
                             </CardRoot>
                         ))}
                     </CardLists>

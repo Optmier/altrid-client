@@ -3,7 +3,16 @@ import '../../styles/class_card.scss';
 import IsPresence from '../essentials/IsPresence';
 import CardPopOver from '../essentials/CardPopOver';
 import ClassDialog from '../essentials/ClassDialog';
-import draftDummy from '../../datas/draftDummy.json';
+import styled from 'styled-components';
+
+const StyleDraftIng = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8c8989;
+`;
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -14,7 +23,7 @@ const InfoItems = ({ title, contents }) => {
     );
 };
 
-function CardDraft({ num }) {
+function CardDraft({ testNum, cardData }) {
     /** pop-over (옵션 선택) 메소드 */
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -48,33 +57,72 @@ function CardDraft({ num }) {
             />
             <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
             <div className="class-card-root">
-                <div className="class-card-header class-card-wrapper">
-                    <div className="card-title-p">{draftDummy[num]['title']}</div>
-                    <span className="card-option" onClick={handleOptionClick}>
-                        <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
-                            <circle cx="16.5" cy="2.5" r="2.5" fill="#C4C4C4" />
-                            <circle cx="9.5" cy="2.5" r="2.5" fill="#C4C4C4" />
-                        </svg>
-                    </span>
-                </div>
-                <div></div>
-                <div className="class-card-contents class-card-wrapper">
-                    <div className="contents-block">
-                        <div className="card-item card-subTitle-p">{draftDummy[num]['desc']}</div>
-                        <div className="card-item card-content-p">{draftDummy[num]['age']}</div>
-                    </div>
+                {cardData['question_num'] === '-' ? (
+                    <>
+                        <div className="class-card-header class-card-wrapper">
+                            <div className="card-title-p">{cardData['title']}</div>
+                            <span className="card-option" onClick={handleOptionClick}>
+                                <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
+                                    <circle cx="16.5" cy="2.5" r="2.5" fill="#C4C4C4" />
+                                    <circle cx="9.5" cy="2.5" r="2.5" fill="#C4C4C4" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div></div>
+                        <StyleDraftIng>
+                            <h4>과제 제작중 ...</h4>
+                        </StyleDraftIng>
+                    </>
+                ) : (
+                    <>
+                        {cardData['progress'] ? (
+                            <div className="class-card-header-on class-card-wrapper">
+                                <div className="card-title-p">{cardData['title']}</div>
+                                <span className="card-option" onClick={handleOptionClick}>
+                                    <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
+                                        <circle cx="16.5" cy="2.5" r="2.5" fill="white" />
+                                        <circle cx="9.5" cy="2.5" r="2.5" fill="white" />
+                                    </svg>
+                                </span>
+                            </div>
+                        ) : (
+                            <div className="class-card-header-default class-card-wrapper">
+                                <div className="card-title-p">{cardData['title']}</div>
+                                <span className="card-option" onClick={handleOptionClick}>
+                                    <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
+                                        <circle cx="16.5" cy="2.5" r="2.5" fill="white" />
+                                        <circle cx="9.5" cy="2.5" r="2.5" fill="white" />
+                                    </svg>
+                                </span>
+                            </div>
+                        )}
 
-                    <div className="contents-block">
-                        <InfoItems title={'문항수'} contents={draftDummy[num]['question_num']} />
-                        <InfoItems title={'제한시간'} contents={draftDummy[num]['time']} />
-                        <InfoItems title={'최종수정'} contents={draftDummy[num]['start']} />
-                    </div>
-                </div>
-                <div className="class-card-bottom-right">
-                    <IsPresence type={'eye'} able={draftDummy[num]['eyetrack']} />
-                    <IsPresence type={'share'} able={draftDummy[num]['progress']} />
-                </div>
+                        <div></div>
+                        <div className="class-card-contents class-card-wrapper">
+                            <div className="contents-block">
+                                <div className="card-item">
+                                    <div className="card-subTitle-p">{cardData['desc']}</div>
+                                </div>
+                                <div className="card-item">
+                                    <div className="card-content-p">{cardData['age']}</div>
+                                </div>
+                            </div>
+
+                            <div className="contents-block">
+                                <InfoItems title={'문항수'} contents={cardData['question_num']} />
+                                <InfoItems title={'제한시간'} contents={cardData['time']} />
+                                <InfoItems title={'최종수정'} contents={cardData['start']} />
+                            </div>
+                        </div>
+                        <div className="class-card-bottom-right">
+                            <IsPresence type={'eye'} able={cardData['eyetrack']} />
+                            <IsPresence type={'share'} able={cardData['progress']} />
+                        </div>
+                    </>
+                )}
             </div>
         </>
     );

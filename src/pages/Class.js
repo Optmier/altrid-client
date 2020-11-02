@@ -10,8 +10,11 @@ import Reportes from '../components/ClassReport/Reportes';
 const ClassPageSwitcher = ({ match }) => {
     let { id } = match.params;
 
+    // console.log(num, id);
+    // console.log(match);
+
     switch (id) {
-        case 'draft':
+        case `draft`:
             return <Draft />;
         case 'manage':
             return <Manage />;

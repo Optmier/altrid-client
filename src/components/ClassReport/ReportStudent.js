@@ -110,7 +110,6 @@ const division = (arr, n) => {
     }
 
     tmp.push(last_tmp);
-    console.log(tmp);
     return tmp;
 };
 function ReportStudent({ match }) {

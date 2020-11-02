@@ -15,7 +15,7 @@ function App({ history }) {
             <ScrollTop>
                 <main>
                     <Route path="/" component={Main} exact />
-                    <Route path="/class/:id" component={Class} />
+                    <Route path="/class/:num/:id" component={Class} />
                 </main>
             </ScrollTop>
             {history.location.pathname === '/' ? (

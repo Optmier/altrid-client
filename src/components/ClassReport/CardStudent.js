@@ -77,13 +77,13 @@ function CardStudent({ num, history }) {
                         'class-card-wrapper',
                     )}
                 >
-                    <div className="card-title-p">
-                        <div className="card-title-name">{studentDummy[num]['name']}</div>
-
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div className="card-title-p card-title-name"> {studentDummy[num]['name']}</div>
                         <StyleState complete={studentDummy[num]['complete']}>
                             {studentDummy[num]['complete'] ? '제출완료' : '미제출'}
                         </StyleState>
                     </div>
+
                     <span className="card-option">
                         <Link to={`${path}/${num}`}>
                             <p>상세 리포트</p>

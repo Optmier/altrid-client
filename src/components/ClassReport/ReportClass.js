@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import shareDummy from '../../datas/shareDummy.json';
+import testDummy from '../../datas/testDummy.json';
 import BranchNav from '../essentials/BranchNav';
 import ClassWrapper from '../essentials/ClassWrapper';
 import IsPresence from '../essentials/IsPresence';
@@ -65,7 +65,7 @@ function ReportClass({ match }) {
 
     /** toggle state */
     const [toggleState, setToggleState] = useState({
-        checked: shareDummy[classNum]['progress'],
+        checked: testDummy[classNum]['progress'],
     });
     const [subTypeState, setSubTypeState] = useState('init');
 
@@ -99,14 +99,14 @@ function ReportClass({ match }) {
                     <section className="class-report-info">
                         <div className="report-box">
                             <div className="report-col">
-                                <h3>{shareDummy[classNum]['title']}</h3>
+                                <h3>{testDummy[classNum]['title']}</h3>
                             </div>
                             <div className="report-col">
-                                <p>{shareDummy[classNum]['desc']}</p>
+                                <p>{testDummy[classNum]['desc']}</p>
                             </div>
                             <div className="report-col">
                                 <div className="left-bottom">
-                                    <IsPresence type="eye" able={shareDummy[classNum]['eyetrack']} align="right" />
+                                    <IsPresence type="eye" able={testDummy[classNum]['eyetrack']} align="right" />
                                     <ToggleSwitch
                                         toggle={toggleState['checked']}
                                         handleToggleChange={handleToggleChange}
@@ -120,21 +120,21 @@ function ReportClass({ match }) {
                             <div className="report-col">
                                 <div className="mid-mid">
                                     <span className="mid-desc">문항수</span>
-                                    <span className="mid-content">{shareDummy[classNum]['question_num']}</span>
+                                    <span className="mid-content">{testDummy[classNum]['question_num']}</span>
                                 </div>
                             </div>
 
                             <div className="report-col">
                                 <div className="mid-mid">
                                     <span className="mid-desc">제한 시간</span>
-                                    <span className="mid-content">{shareDummy[classNum]['time']}</span>
+                                    <span className="mid-content">{testDummy[classNum]['time']}</span>
                                 </div>
                             </div>
                             <div className="report-col">
                                 <div className="mid-mid">
                                     <span className="mid-desc">과제 기한</span>
                                     <span className="mid-content">
-                                        {shareDummy[classNum]['start']} ~ {shareDummy[classNum]['start']}
+                                        {testDummy[classNum]['start']} ~ {testDummy[classNum]['start']}
                                     </span>
                                     <ModifyButton handleDateChange={handleDateChange} />
                                 </div>
