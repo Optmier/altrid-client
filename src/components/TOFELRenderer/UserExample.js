@@ -77,7 +77,8 @@ function UserExample() {
                 if (accumDistCount > 3) {
                     while (iter <= idx) {
                         if (checkRange(eData[iter], data, 10)) {
-                            console.log('regression!!!');
+                            // console.log('regression!!!');
+                            window.numberOfRegressions++;
                             accumDistCount = 0;
                             break;
                         }
