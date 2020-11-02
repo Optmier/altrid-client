@@ -69,9 +69,10 @@ function CardDraftIng() {
                         alignItems: 'center',
                         justifyContent: 'center',
                         color: '#706d6d',
+                        fontWeight: 600,
                     }}
                 >
-                    <h3>과제 제작중...</h3>
+                    <h4>과제 제작중...</h4>
                 </div>
                 <div style={{ height: '0' }} className="class-card-bottom-right">
                     <IsPresence type={'eye'} able={true} />

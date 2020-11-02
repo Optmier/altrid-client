@@ -47,21 +47,25 @@ const StudentCardHeader = styled.div`
 function ReportClass({ match }) {
     let { classNum } = match.params;
 
-    /** class-modal 메소드 */
+    /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 공유), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
+    const [dateDialogopen, setDateDialogopen] = useState(false);
     const [testDialogopen, setTestDialogopen] = useState(false);
 
-    const handleDialogOpen = () => {
-        setTestDialogopen(true);
+    const handleDialogOpen = (type) => {
+        type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
     };
 
     const handleTestDialogClose = () => {
         setTestDialogopen(false);
     };
+    const handleDateDialogClose = () => {
+        setDateDialogopen(false);
+    };
 
     /** toggle state */
     const [toggleState, setToggleState] = useState({
-        checked: shareDummy['progress'],
+        checked: shareDummy[classNum]['progress'],
     });
     const [subTypeState, setSubTypeState] = useState('init');
 
@@ -87,6 +91,7 @@ function ReportClass({ match }) {
     return (
         <>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
+            <ClassDialog type="date" subType="modify" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
 
             <ClassWrapper col={true}>
                 <BranchNav deps="2" />
@@ -102,7 +107,12 @@ function ReportClass({ match }) {
                             <div className="report-col">
                                 <div className="left-bottom">
                                     <IsPresence type="eye" able={shareDummy[classNum]['eyetrack']} align="right" />
-                                    <ToggleSwitch />
+                                    <ToggleSwitch
+                                        toggle={toggleState['checked']}
+                                        handleToggleChange={handleToggleChange}
+                                        type="share2"
+                                        name="checked"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -150,7 +160,7 @@ function ReportClass({ match }) {
                                     <span>가장 취약한 문제 </span> 3번(21%)
                                 </div>
                                 <div className="graph-header-text">
-                                    <span>가징 취약한 유형 </span> 세부내용 찾기(29%)
+                                    <span>가장 취약한 유형 </span> 세부내용 찾기(29%)
                                 </div>
                                 <select name="chart-option" onChange={handleSelect}>
                                     <option value="0">문제별 정답률</option>

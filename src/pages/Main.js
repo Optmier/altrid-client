@@ -83,19 +83,17 @@ function Main() {
                         </CardRoot>
                         {testDatas.map(({ id, title, description, assignmentOnProgress, teacherName, totalStudents, totalAssignments }) => (
                             <CardRoot key={id}>
-                                <Link to="/class/draft">
-                                    <CardEntry
-                                        title={title}
-                                        description={description}
-                                        assignmentOnProgress={assignmentOnProgress}
-                                        teacherName={teacherName}
-                                        totalStudents={totalStudents}
-                                        totalAssignments={totalAssignments}
-                                        onClick={() => {
-                                            console.log(id);
-                                        }}
-                                    />
-                                </Link>
+                                <CardEntry
+                                    title={title}
+                                    description={description}
+                                    assignmentOnProgress={assignmentOnProgress}
+                                    teacherName={teacherName}
+                                    totalStudents={totalStudents}
+                                    totalAssignments={totalAssignments}
+                                    onClick={() => {
+                                        //  console.log(id);
+                                    }}
+                                />
                             </CardRoot>
                         ))}
 

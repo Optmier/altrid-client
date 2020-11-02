@@ -1,7 +1,7 @@
 import React from 'react';
 import Switch from '@material-ui/core/Switch';
 import { withStyles } from '@material-ui/core/styles';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const StyleToggle = styled.div`
     display: flex;
@@ -23,6 +23,44 @@ const StyleToggle = styled.div`
 `;
 
 const ShareSwitch = withStyles((theme) => ({
+    root: {
+        width: 28,
+        height: 16,
+        padding: 0,
+        display: 'flex',
+    },
+    switchBase: {
+        padding: 2,
+        color: '#E5E5E5',
+        '&$checked': {
+            transform: 'translateX(12px)',
+            color: '#13e2a1',
+            '& + $track': {
+                opacity: 1,
+                backgroundColor: 'white',
+                border: 'none',
+            },
+        },
+
+        '& + $track': {
+            backgroundColor: '#C4C4C4',
+            border: 'none',
+        },
+    },
+    thumb: {
+        width: 12,
+        height: 12,
+        boxShadow: 'none',
+    },
+    track: {
+        border: `1px solid ${theme.palette.grey[500]}`,
+        borderRadius: 16 / 2,
+        opacity: 1,
+        backgroundColor: theme.palette.common.white,
+    },
+    checked: {},
+}))(Switch);
+const ShareSwitch2 = withStyles((theme) => ({
     root: {
         width: 28,
         height: 16,
@@ -99,7 +137,10 @@ const DrawerSwitch = withStyles((theme) => ({
     checked: {},
 }))(Switch);
 
-function ToggleSwitch({ toggle, handleToggleChange, type, name }) {
+//type : share(과제진행 vs 과제완료), drawer (drawer에 있는 toggle)
+//toggle : toggle 초기 state -> true, false
+//name :
+function ToggleSwitch({ type, toggle, handleToggleChange, name }) {
     return (
         <div style={{ display: 'inline' }}>
             <StyleToggle>
@@ -113,6 +154,23 @@ function ToggleSwitch({ toggle, handleToggleChange, type, name }) {
                             name={name}
                         />
                         {toggle ? <div className="toggle-on-ment">과제 진행중</div> : <div className="toggle-off-ment">과제 완료됨</div>}
+                    </>
+                ) : type === 'share2' ? (
+                    <>
+                        <DrawerSwitch
+                            value="checkedC"
+                            inputProps={{ 'aria-label': 'Switch C' }}
+                            checked={toggle}
+                            onChange={handleToggleChange}
+                            name={name}
+                        />
+                        {toggle ? (
+                            <div style={{ color: '#13e2a1' }} className="toggle-on-ment">
+                                과제 진행중
+                            </div>
+                        ) : (
+                            <div className="toggle-off-ment">과제 완료됨</div>
+                        )}
                     </>
                 ) : (
                     <DrawerSwitch
