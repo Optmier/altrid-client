@@ -8,6 +8,7 @@ import CardLists from '../components/essentials/CardLists';
 import CardAddNew from '../components/essentials/CardAddNew';
 import CardEntry from '../components/MainPage/CardEntry';
 import CreateNewEntry from '../components/MainPage/CreateNewEntry';
+import { Link } from 'react-router-dom';
 
 const testDatas = [
     {
@@ -82,17 +83,19 @@ function Main() {
                         </CardRoot>
                         {testDatas.map(({ id, title, description, assignmentOnProgress, teacherName, totalStudents, totalAssignments }) => (
                             <CardRoot key={id}>
-                                <CardEntry
-                                    title={title}
-                                    description={description}
-                                    assignmentOnProgress={assignmentOnProgress}
-                                    teacherName={teacherName}
-                                    totalStudents={totalStudents}
-                                    totalAssignments={totalAssignments}
-                                    onClick={() => {
-                                        console.log(id);
-                                    }}
-                                />
+                                <Link to="/class/draft">
+                                    <CardEntry
+                                        title={title}
+                                        description={description}
+                                        assignmentOnProgress={assignmentOnProgress}
+                                        teacherName={teacherName}
+                                        totalStudents={totalStudents}
+                                        totalAssignments={totalAssignments}
+                                        onClick={() => {
+                                            console.log(id);
+                                        }}
+                                    />
+                                </Link>
                             </CardRoot>
                         ))}
 
