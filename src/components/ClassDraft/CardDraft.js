@@ -17,8 +17,12 @@ const StyleDraftIng = styled.div`
 const InfoItems = ({ title, contents }) => {
     return (
         <div className="card-item">
-            <div className="card-content-title-p">{title}</div>
-            <div className="card-content-p">{contents}</div>
+            <div className="card-content-title-p" title={title}>
+                {title}
+            </div>
+            <div className="card-content-p" title={contents}>
+                {contents}
+            </div>
         </div>
     );
 };
@@ -60,7 +64,9 @@ function CardDraft({ testNum, cardData }) {
                 {cardData['question_num'] === '-' ? (
                     <>
                         <div className="class-card-header class-card-wrapper">
-                            <div className="card-title-p">{cardData['title']}</div>
+                            <div className="card-title-p" title={cardData['title']}>
+                                {cardData['title']}
+                            </div>
                             <span className="card-option" onClick={handleOptionClick}>
                                 <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
@@ -78,7 +84,9 @@ function CardDraft({ testNum, cardData }) {
                     <>
                         {cardData['progress'] ? (
                             <div className="class-card-header-on class-card-wrapper">
-                                <div className="card-title-p">{cardData['title']}</div>
+                                <div className="card-title-p" title={cardData['title']}>
+                                    {cardData['title']}
+                                </div>
                                 <span className="card-option" onClick={handleOptionClick}>
                                     <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
@@ -89,7 +97,9 @@ function CardDraft({ testNum, cardData }) {
                             </div>
                         ) : (
                             <div className="class-card-header-default class-card-wrapper">
-                                <div className="card-title-p">{cardData['title']}</div>
+                                <div className="card-title-p" title={cardData['title']}>
+                                    {cardData['title']}
+                                </div>
                                 <span className="card-option" onClick={handleOptionClick}>
                                     <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
@@ -104,10 +114,14 @@ function CardDraft({ testNum, cardData }) {
                         <div className="class-card-contents class-card-wrapper">
                             <div className="contents-block">
                                 <div className="card-item">
-                                    <div className="card-subTitle-p">{cardData['desc']}</div>
+                                    <div className="card-subTitle-p" title={cardData['desc']}>
+                                        {cardData['desc']}
+                                    </div>
                                 </div>
                                 <div className="card-item">
-                                    <div className="card-content-p">{cardData['age']}</div>
+                                    <div className="card-content-p" title={cardData['age']}>
+                                        {cardData['age']}
+                                    </div>
                                 </div>
                             </div>
 

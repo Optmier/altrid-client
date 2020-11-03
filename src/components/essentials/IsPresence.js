@@ -29,7 +29,7 @@ const BottomSpan = ({ color, fill, children, align }) => {
 function IsPresence({ type, able, align }) {
     //type : 'eye' 'share'
     //able : true, false
-    //align : left, right
+    //align : 'left', 'right'
     return (
         <>
             {type === 'eye' ? (
@@ -45,7 +45,9 @@ function IsPresence({ type, able, align }) {
                     공유 완료
                 </BottomSpan>
             ) : (
-                <BottomSpan align={align}>미공유</BottomSpan>
+                <BottomSpan color="#3b168a" fill="#3b168a" align={align}>
+                    미공유
+                </BottomSpan>
             )}
         </>
     );

@@ -7,13 +7,17 @@ import StudentNum from '../essentials/StudentNum';
 import classNames from 'classnames';
 import ToggleSwitch from '../essentials/ToggleSwitch';
 import ClassDialog from '../essentials/ClassDialog';
-import { Link, Router, withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 const InfoItems = ({ title, contents }) => {
     return (
         <div className="card-item">
-            <div className="card-content-title-p">{title}</div>
-            <div className="card-content-p">{contents}</div>
+            <div className="card-content-title-p" title={title}>
+                {title}
+            </div>
+            <div className="card-content-p" title={contents}>
+                {contents}
+            </div>
         </div>
     );
 };
@@ -84,7 +88,9 @@ function CardShare({ testNum, cardData, history }) {
                         'class-card-wrapper',
                     )}
                 >
-                    <div className="card-title-p">{cardData['title']}</div>
+                    <div className="card-title-p" title={cardData['title']}>
+                        {cardData['title']}
+                    </div>
                     <span className="card-option">
                         <ToggleSwitch toggle={toggleState['checked']} handleToggleChange={handleToggleChange} type="share" name="checked" />
                     </span>
@@ -97,11 +103,15 @@ function CardShare({ testNum, cardData, history }) {
                         <div className="class-card-contents class-card-wrapper">
                             <div className="contents-block">
                                 <div className="card-item">
-                                    <div className="card-subTitle-p">{cardData['desc']}</div>
+                                    <div className="card-subTitle-p" title={cardData['desc']}>
+                                        {cardData['desc']}
+                                    </div>
                                 </div>
 
                                 <div className="card-item">
-                                    <div className="card-content-p">{cardData['age']}</div>
+                                    <div className="card-content-p" title={cardData['age']}>
+                                        {cardData['age']}
+                                    </div>
                                 </div>
                             </div>
 

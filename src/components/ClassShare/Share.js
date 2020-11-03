@@ -8,6 +8,12 @@ import ClassDrawer from '../essentials/ClassDrawer';
 import ClassHeaderBox from '../essentials/ClassHeaderBox';
 
 function Share() {
+    let shareJson = {};
+
+    Object.keys(testDummy)
+        .filter((i) => testDummy[i]['progress'])
+        .map((i) => (shareJson[i] = testDummy[i]));
+
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -33,9 +39,9 @@ function Share() {
                             </div>
                         }
                     >
-                        {Object.keys(testDummy).map((key) => (
+                        {Object.keys(shareJson).map((key) => (
                             <CardRoot key={key} wider cardHeight="300px">
-                                <CardShare testNum={key} cardData={testDummy[key]} />
+                                <CardShare testNum={key} cardData={shareJson[key]} />
                             </CardRoot>
                         ))}
                     </CardLists>
