@@ -60,44 +60,7 @@ const ShareSwitch = withStyles((theme) => ({
     },
     checked: {},
 }))(Switch);
-const ShareSwitch2 = withStyles((theme) => ({
-    root: {
-        width: 28,
-        height: 16,
-        padding: 0,
-        display: 'flex',
-    },
-    switchBase: {
-        padding: 2,
-        color: '#E5E5E5',
-        '&$checked': {
-            transform: 'translateX(12px)',
-            color: '#13e2a1',
-            '& + $track': {
-                opacity: 1,
-                backgroundColor: 'white',
-                border: 'none',
-            },
-        },
 
-        '& + $track': {
-            backgroundColor: '#C4C4C4',
-            border: 'none',
-        },
-    },
-    thumb: {
-        width: 12,
-        height: 12,
-        boxShadow: 'none',
-    },
-    track: {
-        border: `1px solid ${theme.palette.grey[500]}`,
-        borderRadius: 16 / 2,
-        opacity: 1,
-        backgroundColor: theme.palette.common.white,
-    },
-    checked: {},
-}))(Switch);
 const DrawerSwitch = withStyles((theme) => ({
     root: {
         width: 28,

@@ -27,7 +27,7 @@ const BottomSpan = ({ color, fill, children, align, shareRef }) => {
     );
 };
 function IsPresence({ type, able, align }) {
-    //type : 'eye' 'progress' 'share'
+    //type : 'eye' 'share'
     //able : true, false
     //align : 'left', 'right'
 
@@ -41,20 +41,12 @@ function IsPresence({ type, able, align }) {
                 ) : (
                     <BottomSpan align={align}>시선흐름 미포함</BottomSpan>
                 )
-            ) : type === 'share' ? (
-                able ? (
-                    <BottomSpan color="black" fill="#3b168a" align={align}>
-                        공유중
-                    </BottomSpan>
-                ) : (
-                    <BottomSpan align={align}>미공유</BottomSpan>
-                )
             ) : able ? (
-                <BottomSpan color="black" fill="#13E2A1" align={align}>
-                    과제 진행중
+                <BottomSpan color="black" fill="#3b168a" align={align}>
+                    공유중
                 </BottomSpan>
             ) : (
-                <BottomSpan align={align}>과제 미진행</BottomSpan>
+                <BottomSpan align={align}>미공유</BottomSpan>
             )}
         </>
     );

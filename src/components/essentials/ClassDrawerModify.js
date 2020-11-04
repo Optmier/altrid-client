@@ -45,7 +45,7 @@ function ClassDrawer() {
     return (
         <div className="class-drawer-root">
             <div style={{ width: '100%' }}>
-                <h2 className="drawer-title">과제를 생성해보세요 :)</h2>
+                <h2 className="drawer-title">과제 수정이 가능합니다 !</h2>
                 <p className="drawer-subTitle">과제의 기본적인 정보를 입력해주세요.</p>
 
                 <div className="drawer-inputs">

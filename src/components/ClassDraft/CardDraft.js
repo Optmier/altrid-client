@@ -134,8 +134,6 @@ function CardDraft({ testNum, cardData }) {
                         <div className="class-card-bottom-right">
                             {/* 시선흐름 유무 */}
                             <IsPresence type={'eye'} able={cardData['eyetrack']} />
-                            {/* 과제 진행 유무 */}
-                            <IsPresence type={'progress'} able={cardData['progress']} />
                             {/* 공유 유무 */}
                             <IsPresence type={'share'} able={cardData['share']} />
                         </div>
