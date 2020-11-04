@@ -7,8 +7,11 @@ a {
 }
 .left-nav-root {
     background-color: #3b168a;
+    background-image: url('/bg_images/nav_back.png');
+    background-repeat: no-repeat;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: flex-start;
 
     width: 240px;
@@ -16,76 +19,78 @@ a {
     position: fixed;
     z-index: 1000;
 
-    & .left-nav-wrapper {
-        & .left-nav-box {
-            padding: 18px 24px;
-        }
-        & .left-nav-box + .left-nav-box {
-            border-top: 1.4px solid #6c4cb1;
-            border-width: 120%;
-        }
+    & .left-nav-box + .left-nav-box {
+        border-top: 2px solid #6c4cb1;
+    }
+    & .left-nav-box {
+        width: 100%;
 
-        & .logo-wrapper {
+        & .box-wrapper {
+            padding: 18px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            color: white;
+
             & > img {
                 height: 28px;
+                margin-right: 1rem;
             }
-        }
-        & .avatar-wrapper {
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding-bottom: 20px;
-
-            & > img {
-                width: 32px;
-                margin-right: 13px;
+            & > h4 {
+                padding-bottom: 4px;
             }
-        }
-        & .info-wrapper {
-            & .info-header {
-                color: white;
-                & > h4 {
-                    padding-bottom: 4px;
-                }
-                & > h5 {
-                    padding-bottom: 4px;
+            & > h5 {
+                padding-bottom: 4px;
+                font-weight: 500;
+            }
+            & .info-num {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                margin-top: 5px;
+                & h5 {
                     font-weight: 500;
                 }
-                & .info-num {
-                    display: flex;
-                    align-items: center;
-                    justify-content: flex-start;
-                    margin-top: 5px;
-                    & h5 {
-                        font-weight: 500;
-                    }
-                    & > img {
-                        width: 18px;
-                        margin-right: 16px;
-                    }
-                }
-            }
-        }
-
-        & .left-nav-wrapper {
-            color: white;
-            padding: 24px 0;
-
-            & .left-nav-item {
-                padding: 8px 24px;
-                font-size: 14px;
-                font-weight: 500;
-
-                & svg {
+                & > img {
+                    width: 18px;
                     margin-right: 16px;
                 }
             }
-            & .left-nav-active {
-                color: $LeftMenuPrimary;
-                & > .left-nav-item {
+        }
+
+        & .a-wrapper {
+            & .left-nav-item {
+                padding: 14px 24px;
+                color: white;
+
+                font-size: 14px;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+
+                & > p {
+                    font-size: 0.875rem;
+                }
+                & .draft-ment {
+                    font-size: 1rem;
+                    margin-right: 2rem;
+                    font-weight: 400;
+                    & > b {
+                        font-weight: 600;
+                    }
+                }
+                & svg + p {
+                    margin-left: 1rem;
+                }
+            }
+
+            & .left-a-active {
+                & .left-nav-item {
                     background-color: #daebf7;
                     font-weight: 600;
+                    color: $LeftMenuPrimary;
                     & svg path {
                         fill: $LeftMenuPrimary;
                     }

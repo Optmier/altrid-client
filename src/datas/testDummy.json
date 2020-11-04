@@ -14,8 +14,8 @@
         "total_student":30
     },
     "02": {
-        "share":true,
-        "progress": true,
+        "share":false,
+        "progress": false,
         "title": "과제 TITL 0222",
         "desc": "과제 02 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
         "age": "에듀이티 고2 에듀이티 고2 에듀이티 고2 에듀이티 고2",
@@ -29,7 +29,7 @@
     },
     "03": {
         "share":false,
-        "progress": true,
+        "progress": false,
         "title": "과제 TITL 03",
         "desc": "과제 03 과제 03 과제 03 과제 03 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
         "age": "에듀이티 고3 에듀이티 고3 에듀이티 고3 에듀이티 고3",
@@ -42,8 +42,8 @@
         "total_student": 30
     },
     "04": {
-        "share":false,
-        "progress": false,
+        "share":true,
+        "progress": true,
         "title": "과제 TITL 04",
         "desc": "과제 04 과제 04 과제 04 과제 04 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
         "age": "에듀이티 고3 에듀이티 고3 에듀이티 고3 에듀이티 고3",
@@ -56,8 +56,8 @@
         "total_student": 30
     },
     "05": {
-        "share":false,
-        "progress": false,
+        "share":true,
+        "progress": true,
         "title": "과제 TITL 05",
         "desc": "과제 05 과제 05 과제 05 과제 05 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
         "age": "에듀이티 고3 에듀이티 고3 에듀이티 고3 에듀이티 고3",
@@ -71,7 +71,7 @@
     },
     "06": {
         "share":true,
-        "progress": true,
+        "progress": false,
         "title": "과제 TITL 06",
         "desc": "과제 06 과제 06 과제 06 과제 06 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명 한줄설명",
         "age": "에듀이티 고3 에듀이티 고3 에듀이티 고3 에듀이티 고3",
@@ -79,7 +79,7 @@
         "time": "20분",
         "start": "09/20/2020",
         "end": "10/10/2020",
-        "eyetrack": false,
+        "eyetrack": true,
         "complete_student": 17,
         "total_student": 30
     }

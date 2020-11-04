@@ -11,7 +11,7 @@ function Share() {
     let shareJson = {};
 
     Object.keys(testDummy)
-        .filter((i) => testDummy[i]['progress'])
+        .filter((i) => testDummy[i]['share'])
         .map((i) => (shareJson[i] = testDummy[i]));
 
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);

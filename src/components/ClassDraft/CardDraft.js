@@ -82,8 +82,8 @@ function CardDraft({ testNum, cardData }) {
                     </>
                 ) : (
                     <>
-                        {cardData['progress'] ? (
-                            <div className="class-card-header-on class-card-wrapper">
+                        {cardData['share'] ? (
+                            <div className="class-card-header-sharing class-card-wrapper">
                                 <div className="card-title-p" title={cardData['title']}>
                                     {cardData['title']}
                                 </div>
@@ -96,15 +96,15 @@ function CardDraft({ testNum, cardData }) {
                                 </span>
                             </div>
                         ) : (
-                            <div className="class-card-header-default class-card-wrapper">
+                            <div className="class-card-header class-card-wrapper">
                                 <div className="card-title-p" title={cardData['title']}>
                                     {cardData['title']}
                                 </div>
                                 <span className="card-option" onClick={handleOptionClick}>
                                     <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
-                                        <circle cx="16.5" cy="2.5" r="2.5" fill="white" />
-                                        <circle cx="9.5" cy="2.5" r="2.5" fill="white" />
+                                        <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
+                                        <circle cx="16.5" cy="2.5" r="2.5" fill="#C4C4C4" />
+                                        <circle cx="9.5" cy="2.5" r="2.5" fill="#C4C4C4" />
                                     </svg>
                                 </span>
                             </div>
@@ -132,8 +132,12 @@ function CardDraft({ testNum, cardData }) {
                             </div>
                         </div>
                         <div className="class-card-bottom-right">
+                            {/* 시선흐름 유무 */}
                             <IsPresence type={'eye'} able={cardData['eyetrack']} />
-                            <IsPresence type={'share'} able={cardData['progress']} />
+                            {/* 과제 진행 유무 */}
+                            <IsPresence type={'progress'} able={cardData['progress']} />
+                            {/* 공유 유무 */}
+                            <IsPresence type={'share'} able={cardData['share']} />
                         </div>
                     </>
                 )}
@@ -142,4 +146,4 @@ function CardDraft({ testNum, cardData }) {
     );
 }
 
-export default CardDraft;
+export default React.memo(CardDraft);

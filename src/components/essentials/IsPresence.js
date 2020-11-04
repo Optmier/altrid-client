@@ -3,7 +3,7 @@ import React from 'react';
 const OnOffCircle = ({ fill }) => {
     return <div style={{ width: '8px', height: '8px', borderRadius: '5px', backgroundColor: fill }}> </div>;
 };
-const BottomSpan = ({ color, fill, children, align }) => {
+const BottomSpan = ({ color, fill, children, align, shareRef }) => {
     return (
         <span className="card-bottom-p" style={{ color: color, display: 'flex', alignItems: 'center' }}>
             {align === 'right' ? (
@@ -27,9 +27,10 @@ const BottomSpan = ({ color, fill, children, align }) => {
     );
 };
 function IsPresence({ type, able, align }) {
-    //type : 'eye' 'share'
+    //type : 'eye' 'progress' 'share'
     //able : true, false
     //align : 'left', 'right'
+
     return (
         <>
             {type === 'eye' ? (
@@ -40,22 +41,28 @@ function IsPresence({ type, able, align }) {
                 ) : (
                     <BottomSpan align={align}>시선흐름 미포함</BottomSpan>
                 )
+            ) : type === 'share' ? (
+                able ? (
+                    <BottomSpan color="black" fill="#3b168a" align={align}>
+                        공유중
+                    </BottomSpan>
+                ) : (
+                    <BottomSpan align={align}>미공유</BottomSpan>
+                )
             ) : able ? (
-                <BottomSpan color="#13E2A1" fill="#13E2A1" align={align}>
-                    공유 완료
+                <BottomSpan color="black" fill="#13E2A1" align={align}>
+                    과제 진행중
                 </BottomSpan>
             ) : (
-                <BottomSpan color="#3b168a" fill="#3b168a" align={align}>
-                    미공유
-                </BottomSpan>
+                <BottomSpan align={align}>과제 미진행</BottomSpan>
             )}
         </>
     );
 }
 
 BottomSpan.defaultProps = {
-    color: '#BFBEBC',
-    fill: '#BFBEBC',
+    color: '#989696',
+    fill: '#989696',
 };
 
 IsPresence.defaultProps = {

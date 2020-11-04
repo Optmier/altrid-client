@@ -119,7 +119,7 @@ function CardShare({ testNum, cardData, history }) {
                                 <InfoItems title={'문항수'} contents={cardData['question_num']} />
                                 <InfoItems title={'제한시간'} contents={cardData['time']} />
                                 <DateItems
-                                    title={'최종수정'}
+                                    title={'과제기한'}
                                     start={cardData['start']}
                                     end={cardData['end']}
                                     handleDateChange={handleDateChange}
