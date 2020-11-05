@@ -110,13 +110,7 @@ function App({ history }) {
                     <Route path="/player-example" component={PlayerExample} />
                 </main>
             </ScrollTop>
-            {history.location.pathname === '/' ? (
-                <Footer />
-            ) : history.location.pathname === '/class/draft' || history.location.pathname === '/class/share' ? (
-                <TrashButton />
-            ) : (
-                ''
-            )}
+            {history.location.pathname === '/class/draft' || history.location.pathname === '/class/share' ? <TrashButton /> : ''}
         </>
     );
 }
