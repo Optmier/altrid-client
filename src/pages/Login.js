@@ -10,6 +10,7 @@ import { Button, Link, withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import * as $ from 'jquery';
 import TeachersList from '../components/Login/TeachersList';
+import { $_loginDefault, $_loginStudent, $_loginTeacher } from '../configs/front_urls';
 
 const RequestButton = withStyles((theme) => ({
     root: {
@@ -66,7 +67,7 @@ function Login({ history }) {
                         alert('회원 정보가 없습니다.\n등록을 해주세요.');
                         break;
                     case 'not-approved':
-                        alert(`승인이 필요한 계정입니다.\n${usertype === 'student' ? '선생님의' : '관리자의'} 승인을 기다려주세요!`);
+                        alert(`승인이 필요한 계정입니다.\n${usertype === 'students' ? '선생님의' : '관리자의'} 승인을 기다려주세요!`);
                         break;
                 }
             });
@@ -119,13 +120,13 @@ function Login({ history }) {
     const onSuccessKakaoAuth = ({ profile }) => {
         // console.log(profile.kakao_account.email || profile.id);
         console.log(profile);
-        // setProfileData({
-        //     ...profileData,
-        //     email: profile.kakao_account.email,
-        //     authId: profile.id,
-        //     authWith: 'kakao',
-        //     image: profile.properties.profile_image,
-        // });
+        setProfileData({
+            ...profileData,
+            email: profile.kakao_account.email,
+            authId: profile.id,
+            authWith: 'kakao',
+            image: profile.properties.profile_image,
+        });
         Axios.get(`${apiUrl}/${usertype}/exists/${profile.kakao_account.email || profile.id}`, { withCredentials: true })
             .then((res) => {
                 const isExists = res.data;
@@ -154,9 +155,9 @@ function Login({ history }) {
 
     const handleChangeUsertype = () => {
         if (usertype === 'students') {
-            setUsertype('teachers');
+            history.push($_loginTeacher);
         } else {
-            setUsertype('students');
+            history.push($_loginStudent);
         }
     };
 
@@ -198,7 +199,7 @@ function Login({ history }) {
         // 승인 여부(학생은 우선 승인)
         const approved = usertype === 'students' ? 1 : 0;
         // 현재 등록하는 대상이 학생인 경우 선생님 선택 목록 구성
-        const teachers = inputState.teacher_selected.map((data) => [data.email, data.auth_id, email, authId]);
+        const teachers = inputState.teacher_selected.map((data) => [data.email || data.auth_id, email || authId, academyCode]);
         console.log(email, name, authId, authWith, academyCode, phone, approved, teachers);
 
         if (usertype === 'students') {
@@ -217,7 +218,7 @@ function Login({ history }) {
                 .then((res1) => {
                     console.log(res1);
                     if (teachers.length > 0)
-                        Axios.post(`${apiUrl}/students-in-teacher`, { teachers: teachers }, { withCredentials: true })
+                        Axios.post(`${apiUrl}/students-in-teacher/first`, { teachers: teachers }, { withCredentials: true })
                             .then((res2) => {
                                 alert('계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요 :)');
                                 loginMethod(email, authId);
@@ -247,7 +248,6 @@ function Login({ history }) {
                 { withCredentials: true },
             )
                 .then((res) => {
-                    console.log(res);
                     alert('계정 등록이 완료 되었습니다.\n승인이 될때까지 기다려 주세요 :)');
                     document.location.replace('/login');
                 })
@@ -301,6 +301,30 @@ function Login({ history }) {
         }
         // console.log(inputState, usertype, academyInfo, profileData);
     }, [usertype, academyInfo, inputState, profileData]);
+
+    useEffect(() => {
+        console.log(history);
+        if (!localStorage.getItem('loginFor')) localStorage.setItem('loginFor', 'students');
+        const urlSearchParams = new URLSearchParams(history.location.search);
+        const queryUserType = urlSearchParams.get('user') || localStorage.getItem('loginFor');
+        if (!['students', 'teachers'].includes(queryUserType)) {
+            history.replace($_loginDefault);
+        } else {
+            localStorage.setItem('loginFor', queryUserType);
+            history.replace(`${$_loginDefault}?user=${queryUserType}`);
+        }
+    }, []);
+
+    useEffect(() => {
+        const urlSearchParams = new URLSearchParams(history.location.search);
+        const queryUserType = urlSearchParams.get('user') || localStorage.getItem('loginFor');
+        if (!['students', 'teachers'].includes(queryUserType)) {
+            setUsertype(localStorage.getItem('loginFor'));
+        } else {
+            localStorage.setItem('loginFor', queryUserType);
+            setUsertype(queryUserType);
+        }
+    }, [history.location]);
 
     const getContentsForStep = (step) => {
         switch (step) {
@@ -384,7 +408,8 @@ function Login({ history }) {
                 <div className="container right"></div>
             </header>
             <main className="login-page">
-                <section className="decorator-root"></section>
+                <section className="decorator-root teachers"></section>
+                <section className="decorator-root" style={{ opacity: usertype === 'students' ? 1 : 0 }}></section>
                 <section className="contents-root">{getContentsForStep(loginStep)}</section>
             </main>
             <Footer />

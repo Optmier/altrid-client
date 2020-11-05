@@ -54,6 +54,7 @@
 // nav, footer, font 등 구현하시면 됩니다.
 
 $primaryColor: #13e2a1;
+$secondaryColor: #3b168a;
 $greenTintGrey: #f7f9f8;
 $backgroundFooter: #eaeaea;
 $textFooterInfo: #8a8a8a;
@@ -120,8 +121,19 @@ body {
         transition: all 0.3s;
 
         &.scrolled {
-            background-color: $primaryColor;
             box-shadow: 0 0.2rem 0.25rem rgba(0, 0, 0, 0.15);
+
+            &.students {
+                background-color: $primaryColor;
+            }
+
+            &.teachers {
+                background-color: $secondaryColor;
+            }
+
+            &.admins {
+                background-color: #7c7c7c;
+            }
         }
 
         & .container {

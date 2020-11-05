@@ -3,7 +3,7 @@ import { Autocomplete } from '@material-ui/lab';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import classNames from 'classnames';
-import React from 'react';
+import React, { useState } from 'react';
 
 const EdTextField = withStyles((theme) => ({
     root: {
@@ -65,22 +65,41 @@ const EdTextField = withStyles((theme) => ({
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-function MultipleAutocomplete({ id, onChange, value, defaultValue, options, getOptionLabel, loading, error, placeholder }) {
+function MultipleAutocomplete({
+    id,
+    onOpen,
+    onClose,
+    onChange,
+    value,
+    defaultValue,
+    options,
+    getOptionLabel,
+    loading,
+    error,
+    placeholder,
+}) {
+    const [selectedValue, setSelectedValue] = useState(value);
+    const selectedChange = (e, value) => {
+        onChange(e, value);
+        setSelectedValue(value);
+    };
     return (
         <Autocomplete
             multiple
             id={id}
-            onChange={onChange}
+            onOpen={onOpen}
+            onClose={onClose}
+            onChange={selectedChange}
             defaultValue={defaultValue}
             disableCloseOnSelect
-            value={value}
-            options={options}
+            filterSelectedOptions
+            value={selectedValue}
+            options={options.filter((option) => selectedValue.filter((selected) => selected.student_id === option.student_id).length < 1)}
             getOptionLabel={getOptionLabel}
             loading={loading}
-            renderOption={(option, { selected }) => (
+            renderOption={(option, state) => (
                 <React.Fragment>
-                    <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
-                    {option.name} - {option.email}
+                    {option.name} - {option.student_id}
                 </React.Fragment>
             )}
             renderInput={(params) => (

@@ -78,7 +78,7 @@ function LoginAdmin({ history }) {
                 <div className="container right"></div>
             </header>
             <main className="login-page">
-                <section className="decorator-root"></section>
+                <section className="decorator-root admins"></section>
                 <section className="contents-root">
                     <div className="login-form">
                         <h4>관리자 로그인</h4>

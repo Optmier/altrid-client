@@ -2,10 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
+/** redux setup */
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import rootReducer from './redux_modules';
+import { composeWithDevTools } from 'redux-devtools-extension';
+
+const reduxStore = createStore(rootReducer, composeWithDevTools());
 
 ReactDOM.render(
     <BrowserRouter>
-        <App />
+        <Provider store={reduxStore}>
+            <App />
+        </Provider>
     </BrowserRouter>,
     document.getElementById('root'),
 );

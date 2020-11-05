@@ -10,6 +10,15 @@
         position: absolute;
         width: 100%;
         height: 380px;
+        transition: all 0.5s;
+
+        &.teachers {
+            background-image: url('/bg_images/frame_1.png');
+        }
+
+        &.admins {
+            background-image: url('/bg_images/frame_2.png');
+        }
     }
 
     & .contents-root {
