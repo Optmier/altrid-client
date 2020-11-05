@@ -4,30 +4,8 @@ import { Button, withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import * as $ from 'jquery';
 import MultipleAutocomplete from '../essentials/MultipleAutocomplete';
-
-const testData = [
-    { name: '전광희', email: 'khjeon1994' },
-    { name: '최준영', email: 'junyoung094' },
-    { name: '최세인', email: 'chyh1900' },
-    { name: '전광희', email: 'khjeon1994' },
-    { name: '최준영', email: 'junyoung094' },
-    { name: '최세인', email: 'chyh1900' },
-    { name: '전광희', email: 'khjeon1994' },
-    { name: '최준영', email: 'junyoung094' },
-    { name: '최세인', email: 'chyh1900' },
-    { name: '전광희', email: 'khjeon1994' },
-    { name: '최준영', email: 'junyoung094' },
-    { name: '최세인', email: 'chyh1900' },
-    { name: '전광희', email: 'khjeon1994' },
-    { name: '최준영', email: 'junyoung094' },
-    { name: '최세인', email: 'chyh1900' },
-    { name: '전광희', email: 'khjeon1994' },
-    { name: '최준영', email: 'junyoung094' },
-    { name: '최세인', email: 'chyh1900' },
-    { name: '전광희', email: 'khjeon1994' },
-    { name: '최준영', email: 'junyoung094' },
-    { name: '최세인', email: 'chyh1900' },
-];
+import Axios from 'axios';
+import { apiUrl } from '../../configs/configs';
 
 const CreateButton = withStyles((theme) => ({
     root: {
@@ -38,15 +16,17 @@ const CreateButton = withStyles((theme) => ({
     },
 }))(Button);
 
-function CreateNewEntry({ handleClose }) {
+function CreateNewEntry({ history, handleClose }) {
     const [createButtonEnabled, setCreateButtonEnabled] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [selectOpen, setSelectOpen] = useState(false);
     const [inputState, setInputState] = useState({
         entry_new_name: '',
         entry_new_description: '',
         entry_new_students: [],
     });
     const [inputError, setInputError] = useState(false);
+    const [studentsData, setStudentsData] = useState([]);
 
     const handleInputChange = (e, value) => {
         if ($(e.target).hasClass('default')) {
@@ -65,9 +45,57 @@ function CreateNewEntry({ handleClose }) {
     const handleClickCreate = () => {
         if (!inputState['entry_new_name'].trim()) {
             setInputError(true);
+            return;
         } else {
             setInputError(false);
         }
+        Axios.post(
+            `${apiUrl}/classes`,
+            {
+                name: inputState.entry_new_name,
+                description: inputState.entry_new_description,
+            },
+            { withCredentials: true },
+        )
+            .then((res1) => {
+                if (inputState.entry_new_students.length > 0)
+                    Axios.post(
+                        `${apiUrl}/students-in-class`,
+                        {
+                            classNumber: res1.data.insertId,
+                            students: inputState.entry_new_students,
+                        },
+                        { withCredentials: true },
+                    )
+                        .then((res2) => {
+                            console.log('클래스가 생성됨.');
+                            history.push(`/class/${res1.data.insertId}`);
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
+                else {
+                    console.log('클래스가 생성됨.');
+                    history.push(`/class/${res1.data.insertId}`);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
+    const fetchStudents = () => {
+        setLoading(true);
+        Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
+            .then((res) => {
+                setStudentsData(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     useEffect(() => {
@@ -79,6 +107,14 @@ function CreateNewEntry({ handleClose }) {
 
         // 중복 체크하기
     }, [inputState]);
+
+    useEffect(() => {
+        if (!selectOpen) {
+            setStudentsData([]);
+        } else {
+            fetchStudents();
+        }
+    }, [selectOpen]);
 
     return (
         <div className="create-new-entry-root">
@@ -110,10 +146,16 @@ function CreateNewEntry({ handleClose }) {
                 <div style={{ marginTop: 24 }}>
                     <MultipleAutocomplete
                         id="entry_new_students"
+                        onOpen={() => {
+                            setSelectOpen(true);
+                        }}
+                        onClose={() => {
+                            setSelectOpen(false);
+                        }}
                         onChange={handleInputChange}
                         value={inputState['entry_new_students']}
-                        options={testData}
-                        getOptionLabel={(option) => option.name + ' - ' + option.email}
+                        options={studentsData}
+                        getOptionLabel={(option) => option.name + ' - ' + option.student_id}
                         loading={loading}
                         placeholder="수강생 선택"
                     />

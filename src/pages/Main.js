@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HeaderBar from '../components/essentials/HeaderBar';
 import { Element } from 'react-scroll';
-import { Grid, Drawer, Divider } from '@material-ui/core';
+import { Grid, Drawer, Divider, Button } from '@material-ui/core';
 import '../styles/main_page.scss';
 import CardRoot from '../components/essentials/CardRoot';
 import CardLists from '../components/essentials/CardLists';
@@ -9,59 +9,60 @@ import CardAddNew from '../components/essentials/CardAddNew';
 import CardEntry from '../components/MainPage/CardEntry';
 import CreateNewEntry from '../components/MainPage/CreateNewEntry';
 import { Link } from 'react-router-dom';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import Footer from '../components/essentials/Footer';
+import Axios from 'axios';
+import { apiUrl } from '../configs/configs';
+import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import AddTeacher from '../components/MainPage/AddTeacher';
+import classNames from 'classnames';
 
-const testDatas = [
-    {
-        id: 0,
-        title: 'Class 01011101101110100101011',
-        description:
-            '에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반',
-        assignmentOnProgress: true,
-        teacherName: '최세인',
-        totalStudents: 30000000000000,
-        totalAssignments: 3,
-    },
-    {
-        id: 1,
-        title: 'Class 2',
-        description:
-            '에듀이티학원 토플 900점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반',
-        assignmentOnProgress: true,
-        teacherName: '최세인2',
-        totalStudents: 25,
-        totalAssignments: 5,
-    },
-    {
-        id: 2,
-        title: 'Class 3',
-        description:
-            '에듀이티학원 토플 800점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반 에듀이티학원 토플 700점 이상을 위한 집중관리 반',
-        assignmentOnProgress: false,
-        teacherName: '최세인3',
-        totalStudents: 17,
-        totalAssignments: 4,
-    },
-];
-
-function Main() {
-    const [academyName, setAcademyName] = useState('에듀이티학원');
+function Main({ history }) {
+    const sessions = useSelector((state) => state.RdxSessions);
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
+    const [openAddTeacher, setOpenAddTeacher] = useState(false);
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
         }
         setOpenCreateNewDrawer(open);
     };
+    const toggleAddTeacherDrawer = (open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        setOpenAddTeacher(open);
+    };
+    const [cardDatas, setCardDatas] = useState([]);
+
+    const fetchCardData = () => {
+        Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
+            .then((res) => {
+                console.log(res);
+                setCardDatas(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
+    useEffect(() => {
+        fetchCardData();
+    }, []);
 
     return (
         <>
             <Element name="main_top_start" />
-            {/* <HeaderBar /> */}
+            <HeaderBar />
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
-                <CreateNewEntry handleClose={toggleDrawer(false)} />
+                <CreateNewEntry history={history} handleClose={toggleDrawer(false)} />
+            </Drawer>
+            <Drawer anchor="right" open={openAddTeacher} onClose={toggleAddTeacherDrawer(false)}>
+                <AddTeacher handleClose={toggleAddTeacherDrawer(false)} />
             </Drawer>
             <main className="main-page">
-                <section className="decorator-root"></section>
+                <section className={classNames('decorator-root', sessions.userType)}></section>
                 <section className="contents-root">
                     <CardLists
                         upperDeck={
@@ -72,39 +73,46 @@ function Main() {
                                     </h2>
                                 </div>
                                 <div className="academy-name">
-                                    <h4>{academyName} 클래스</h4>
+                                    <h4>{sessions.userName}님의 클래스</h4>
                                 </div>
                             </>
                         }
                         maxColumn={3}
                     >
-                        <CardRoot>
-                            <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
-                        </CardRoot>
-                        {testDatas.map(({ id, title, description, assignmentOnProgress, teacherName, totalStudents, totalAssignments }) => (
-                            <CardRoot key={id}>
-                                <Link key={id} to={`/class/${id}/draft`}>
-                                    <CardEntry
-                                        title={title}
-                                        description={description}
-                                        assignmentOnProgress={assignmentOnProgress}
-                                        teacherName={teacherName}
-                                        totalStudents={totalStudents}
-                                        totalAssignments={totalAssignments}
-                                        onClick={() => {
-                                            console.log(id);
-                                        }}
-                                    />
-                                </Link>
+                        {sessions.userType !== 'students' ? (
+                            <CardRoot>
+                                <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
+                            </CardRoot>
+                        ) : null}
+                        {cardDatas.map(({ idx, name, description, teacher_name, num_of_students }) => (
+                            <CardRoot key={idx}>
+                                <CardEntry
+                                    title={name}
+                                    description={description}
+                                    assignmentOnProgress={false}
+                                    teacherName={teacher_name}
+                                    totalStudents={num_of_students}
+                                    totalAssignments={0}
+                                    onClick={() => {
+                                        history.push(`/class/${idx}`);
+                                    }}
+                                />
                             </CardRoot>
                         ))}
-
-                        <CardRoot></CardRoot>
                     </CardLists>
-
                     <Divider className="main-divider" />
+                    {sessions.userType === 'students' ? (
+                        <CardLists>
+                            <div className="below-card-container">
+                                <Button size="large" variant="outlined" startIcon={<GroupAddIcon />} onClick={toggleAddTeacherDrawer(true)}>
+                                    선생님 추가하기
+                                </Button>
+                            </div>
+                        </CardLists>
+                    ) : null}
                 </section>
             </main>
+            <Footer />
         </>
     );
 }

@@ -3,15 +3,15 @@ import { Autocomplete } from '@material-ui/lab';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React from 'react';
 
 const EdTextField = withStyles((theme) => ({
     root: {
         fontFamily: 'inherit',
         '& .MuiInputBase-root': {
             backgroundColor: '#f6f7f9',
-            border: 'none',
-            borderRadius: 10,
+            border: '1px solid #d6d6d6',
+            borderRadius: 4,
             boxSizing: 'border-box',
             color: '#474747',
             fontFamily: 'inherit',
@@ -19,7 +19,7 @@ const EdTextField = withStyles((theme) => ({
             lineHeight: '2.625rem',
             paddingRight: '9px !important',
             width: '100%',
-            minHeight: 60,
+            minHeight: 52,
             outline: 'none',
             '&.Mui-focused': {
                 backgroundColor: '#f2f3f6',
@@ -40,7 +40,7 @@ const EdTextField = withStyles((theme) => ({
                 color: '#474747',
                 fontFamily: 'inherit',
                 padding: 0,
-                margin: '0 0 0 21px',
+                margin: '0 0 0 15px',
                 '&::placeholder': {
                     color: '#000000',
                 },
@@ -65,41 +65,22 @@ const EdTextField = withStyles((theme) => ({
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-function MultipleAutocomplete({
-    id,
-    onOpen,
-    onClose,
-    onChange,
-    value,
-    defaultValue,
-    options,
-    getOptionLabel,
-    loading,
-    error,
-    placeholder,
-}) {
-    const [selectedValue, setSelectedValue] = useState(value);
-    const selectedChange = (e, value) => {
-        onChange(e, value);
-        setSelectedValue(value);
-    };
+function TeachersList({ id, onChange, value, defaultValue, options, getOptionLabel, loading, error, placeholder }) {
     return (
         <Autocomplete
             multiple
             id={id}
-            onOpen={onOpen}
-            onClose={onClose}
-            onChange={selectedChange}
-            defaultValue={defaultValue}
+            onChange={onChange}
+            // defaultValue={defaultValue}
+            //value={value}
             disableCloseOnSelect
-            filterSelectedOptions
-            value={selectedValue}
-            options={options.filter((option) => selectedValue.filter((selected) => selected.student_id === option.student_id).length < 1)}
+            options={options}
             getOptionLabel={getOptionLabel}
             loading={loading}
-            renderOption={(option, state) => (
+            renderOption={(option, { selected }) => (
                 <React.Fragment>
-                    {option.name} - {option.student_id}
+                    <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
+                    {option.name} 선생님
                 </React.Fragment>
             )}
             renderInput={(params) => (
@@ -123,7 +104,7 @@ function MultipleAutocomplete({
     );
 }
 
-MultipleAutocomplete.defaultProps = {
+TeachersList.defaultProps = {
     id: 'multiple_auto_complete',
     value: '',
     defaultValue: '',
@@ -135,8 +116,11 @@ MultipleAutocomplete.defaultProps = {
     loading: false,
     error: false,
     placeholder: '다중 선택',
-    getOptionLabel: (option) => option.name + ' - ' + option.email,
+    getOptionLabel: (option) => {
+        if (!option) return '';
+        return option.name + ' 선생님';
+    },
     onChange() {},
 };
 
-export default React.memo(MultipleAutocomplete);
+export default React.memo(TeachersList);

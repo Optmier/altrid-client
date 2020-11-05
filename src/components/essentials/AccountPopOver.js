@@ -51,9 +51,10 @@ function AccountPopOver({ targetEl, userName }) {
     const [accountPopOverAnchorEl, setAccountPopOverAnchorEl] = useState(null);
     const accountPopOverOpen = Boolean(accountPopOverAnchorEl);
     const accountPopOverId = accountPopOverOpen ? 'account_popover' : undefined;
-    const [accountPopOverName, setAccountPopOverName] = useState(userName);
 
-    const handleLogout = () => {};
+    const handleLogout = () => {
+        window.logout();
+    };
 
     const handleAccountPopoverOpen = (event) => {
         setAccountPopOverAnchorEl(event.currentTarget);
@@ -99,7 +100,7 @@ function AccountPopOver({ targetEl, userName }) {
                 <CardContent>
                     <div style={{ width: '100%' }}>
                         <Avatar src="/broken-image.jpg" style={{ width: 72, height: 72, margin: '0 auto' }} />
-                        <div className="nav-popover-acc-name">{accountPopOverName}님</div>
+                        <div className="nav-popover-acc-name">{userName} 님</div>
                     </div>
                 </CardContent>
                 <Divider />
