@@ -74,8 +74,8 @@ function App({ history }) {
                         }
                         break;
                 }
-                const { academyCode, exp, iat, iss, username, usertype } = res1.data;
-                saveSessions(username, usertype, academyCode, null, iss, iat, exp);
+                const { academyCode, exp, iat, iss, userName, userType } = res1.data;
+                saveSessions(userName, userType, academyCode, null, iss, iat, exp);
                 Axios.get(`${apiUrl}/academies/current/name`, { withCredentials: true })
                     .then((res2) => {
                         const academyName = res2.data.name;
@@ -110,13 +110,7 @@ function App({ history }) {
                     <Route path="/player-example" component={PlayerExample} />
                 </main>
             </ScrollTop>
-            {history.location.pathname === '/' ? (
-                <Footer />
-            ) : history.location.pathname === '/class/draft' || history.location.pathname === '/class/share' ? (
-                <TrashButton />
-            ) : (
-                ''
-            )}
+            {history.location.pathname === '/class/draft' || history.location.pathname === '/class/share' ? <TrashButton /> : ''}
         </>
     );
 }
