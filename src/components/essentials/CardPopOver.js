@@ -31,7 +31,7 @@ const StylePopOverList = styled.div`
     }
 `;
 
-function CardPopOver({ handleDialogOpen, handleOptionClose, anchorEl, handleModify }) {
+function CardPopOver({ handleDialogOpen, handleOptionClose, anchorEl, handleDrawerOpen }) {
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
 
@@ -59,7 +59,9 @@ function CardPopOver({ handleDialogOpen, handleOptionClose, anchorEl, handleModi
                 </div>
                 <div className="popover-section">
                     <div className="popover-list">복사하기</div>
-                    <div className="popover-list">수정하기</div>
+                    <div className="popover-list" onClick={handleDrawerOpen}>
+                        수정하기
+                    </div>
                 </div>
                 <div className="popover-section">
                     <div className="popover-list">삭제하기</div>

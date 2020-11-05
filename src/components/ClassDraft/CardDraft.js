@@ -4,6 +4,9 @@ import IsPresence from '../essentials/IsPresence';
 import CardPopOver from '../essentials/CardPopOver';
 import ClassDialog from '../essentials/ClassDialog';
 import styled from 'styled-components';
+import { Drawer } from '@material-ui/core';
+import ClassDrawerModify from '../essentials/ClassDrawerModify';
+import { SecondtoMinute } from '../essentials/TimeChange';
 
 const StyleDraftIng = styled.div`
     width: 100%;
@@ -26,8 +29,31 @@ const InfoItems = ({ title, contents }) => {
         </div>
     );
 };
+const TimeItems = ({ title, mm, ss }) => {
+    return (
+        <div className="card-item">
+            <div className="card-content-title-p" title={title}>
+                {title}
+            </div>
+
+            {mm ? (
+                <>
+                    <div className="card-content-p" style={{ marginRight: '0.4rem' }}>
+                        {mm}분
+                    </div>
+                    <div className="card-content-p">{ss}초</div>
+                </>
+            ) : (
+                <div className="card-content-p">없음</div>
+            )}
+        </div>
+    );
+};
 
 function CardDraft({ testNum, cardData }) {
+    let mm = SecondtoMinute(cardData['time'])[0];
+    let ss = SecondtoMinute(cardData['time'])[1];
+
     /** pop-over (옵션 선택) 메소드 */
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -37,7 +63,6 @@ function CardDraft({ testNum, cardData }) {
     const handleOptionClose = () => {
         setAnchorEl(null);
     };
-    /*====================*/
 
     /** class-modal 메소드 */
     // type 4가지 : date-init(과제 공유), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
@@ -45,16 +70,34 @@ function CardDraft({ testNum, cardData }) {
 
     const handleDialogOpen = (type) => {
         setDateDialogopen(true);
+        handleOptionClose();
     };
     const handleDateDialogClose = () => {
         setDateDialogopen(false);
     };
-    /** =================== */
+
+    /** drawer 메소드 */
+    const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
+
+    const toggleDrawer = (open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+
+        cardData['question_num'] === '-' ? alert('제작 중인 과제는 수정이 불가능합니다 :(') : setOpenCreateNewDrawer(open);
+
+        handleOptionClose();
+    };
 
     return (
         <>
+            <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
+                <ClassDrawerModify testNum={testNum} />
+            </Drawer>
+
             <CardPopOver
                 handleDialogOpen={handleDialogOpen}
+                handleDrawerOpen={toggleDrawer(true)}
                 handleOptionClick={handleOptionClick}
                 handleOptionClose={handleOptionClose}
                 anchorEl={anchorEl}
@@ -127,7 +170,7 @@ function CardDraft({ testNum, cardData }) {
 
                             <div className="contents-block">
                                 <InfoItems title={'문항수'} contents={cardData['question_num']} />
-                                <InfoItems title={'제한시간'} contents={cardData['time']} />
+                                <TimeItems title={'제한시간'} mm={mm} ss={ss} />
                                 <InfoItems title={'최종수정'} contents={cardData['start']} />
                             </div>
                         </div>

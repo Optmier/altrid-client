@@ -13,6 +13,7 @@
     & .drawer-subTitle {
         color: #969393;
         padding-bottom: 2.5rem;
+        font-size: 0.9rem;
     }
 
     & .drawer-inputs {
@@ -64,6 +65,7 @@
             }
 
             & .time-inputs {
+                font-size: 1rem;
                 color: #969393;
                 display: flex;
                 align-items: center;
@@ -72,9 +74,13 @@
                 & > input {
                     font-size: 1rem;
                     color: black;
-                    width: 35px;
+                    width: 25px;
                     height: 25px;
                     text-align: center;
+                }
+                & > input::placeholder {
+                    font-size: 1rem;
+                    color: #969393;
                 }
             }
         }

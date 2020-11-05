@@ -3,16 +3,16 @@ import CardShare from './CardShare';
 import CardLists from '../essentials/CardLists';
 import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
-import testDummy from '../../datas/testDummy.json';
+import assignmentDummy from '../../datas/assignmentDummy.json';
 import ClassDrawer from '../essentials/ClassDrawer';
 import ClassHeaderBox from '../essentials/ClassHeaderBox';
 
 function Share() {
     let shareJson = {};
 
-    Object.keys(testDummy)
-        .filter((i) => testDummy[i]['share'])
-        .map((i) => (shareJson[i] = testDummy[i]));
+    Object.keys(assignmentDummy)
+        .filter((i) => assignmentDummy[i]['share'])
+        .map((i) => (shareJson[i] = assignmentDummy[i]));
 
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const toggleDrawer = (open) => (event) => {
@@ -30,7 +30,7 @@ function Share() {
 
             <ClassHeaderBox />
 
-            <div className="class-draft-root">
+            <div className="class-section-root">
                 <div className="class-draft-card">
                     <CardLists
                         upperDeck={

@@ -6,10 +6,11 @@ import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
 import ClassHeaderBox from '../essentials/ClassHeaderBox';
-import testDummy from '../../datas/testDummy.json';
+import assignmentDummy from '../../datas/assignmentDummy.json';
 
 function Draft() {
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
+
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -25,7 +26,7 @@ function Draft() {
 
             <ClassHeaderBox />
 
-            <div className="class-draft-root">
+            <div className="class-section-root">
                 <div className="class-draft-card">
                     <CardLists
                         upperDeck={
@@ -39,9 +40,9 @@ function Draft() {
                             <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
                         </CardRoot>
 
-                        {Object.keys(testDummy).map((key) => (
+                        {Object.keys(assignmentDummy).map((key) => (
                             <CardRoot key={key} cardHeight="281px">
-                                <CardDraft testNum={key} cardData={testDummy[key]} />
+                                <CardDraft testNum={key} cardData={assignmentDummy[key]} />
                             </CardRoot>
                         ))}
                     </CardLists>

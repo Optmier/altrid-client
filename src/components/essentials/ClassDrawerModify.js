@@ -1,31 +1,50 @@
 import React, { useState } from 'react';
 import '../../styles/class_drawer.scss';
 import ToggleSwitch from './ToggleSwitch';
+import assignmentDummy from '../../datas/assignmentDummy.json';
+import styled from 'styled-components';
+import { SecondtoMinute } from '../essentials/TimeChange';
 
-function ClassDrawer() {
+const StyleInput = styled.input`
+    &::placeholder {
+        color: black;
+        font-weight: 600;
+    }
+`;
+function ClassDrawerModify({ testNum }) {
+    let mmm = SecondtoMinute(assignmentDummy[testNum]['time'])[0];
+    let sss = SecondtoMinute(assignmentDummy[testNum]['time'])[1];
+    let timeState = true;
+
+    if (!mmm) {
+        mmm = '--';
+        sss = '--';
+        timeState = false;
+    }
+
     const [timeInputs, setTimeInputs] = useState({
-        hh: '',
         mm: '',
+        ss: '',
     });
+    const { mm, ss } = timeInputs;
 
     const [toggleState, setToggleState] = useState({
-        eyetrack: true,
-        timeAttack: true,
+        eyetrack: assignmentDummy[testNum]['eyetrack'],
+        timeAttack: timeState,
     });
-    const { hh, mm } = timeInputs;
 
     const handleChange = (event) => {
         setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
 
         if (!event.target.checked && event.target.name === 'timeAttack') {
             setTimeInputs({
-                hh: '--',
                 mm: '--',
+                ss: '--',
             });
         } else if (event.target.checked && event.target.name === 'timeAttack') {
             setTimeInputs({
-                hh: '',
                 mm: '',
+                ss: '',
             });
         }
     };
@@ -46,12 +65,15 @@ function ClassDrawer() {
         <div className="class-drawer-root">
             <div style={{ width: '100%' }}>
                 <h2 className="drawer-title">과제 수정이 가능합니다 !</h2>
-                <p className="drawer-subTitle">과제의 기본적인 정보를 입력해주세요.</p>
+                <p className="drawer-subTitle">
+                    수정된 정보는 <b style={{ fontWeight: '600' }}>이미 공유된 과제</b>에 반영되지 않습니다. <br /> 수정된 정보의 반영을
+                    원하시는 경우, 다시 공유를 해주시길 바랍니다.
+                </p>
 
                 <div className="drawer-inputs">
-                    <input className="input-name" placeholder="과제 이름"></input>
-                    <input className="input-desc" placeholder="과제 한 줄 설명"></input>
-                    <input className="input-age" placeholder="학습자 나이"></input>
+                    <StyleInput className="input-name" placeholder={assignmentDummy[testNum]['title']}></StyleInput>
+                    <StyleInput className="input-desc" placeholder={assignmentDummy[testNum]['desc']}></StyleInput>
+                    <StyleInput className="input-age" placeholder={assignmentDummy[testNum]['age']}></StyleInput>
                     <div className="input-upload">
                         <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -78,21 +100,22 @@ function ClassDrawer() {
                         <div className="time-inputs">
                             <input
                                 type="text"
-                                name="hh"
-                                value={hh}
-                                readOnly={hh === '--' ? true : false}
-                                onChange={onChange}
-                                placeholder="00"
-                            />
-                            :
-                            <input
-                                type="text"
                                 name="mm"
                                 value={mm}
                                 readOnly={mm === '--' ? true : false}
                                 onChange={onChange}
-                                placeholder="00"
+                                placeholder={String(mmm)}
                             />
+                            <p>분</p>
+                            <input
+                                type="text"
+                                name="ss"
+                                value={ss}
+                                readOnly={ss === '--' ? true : false}
+                                onChange={onChange}
+                                placeholder={String(sss)}
+                            />
+                            <p>초</p>
                         </div>
 
                         <ToggleSwitch
@@ -104,13 +127,11 @@ function ClassDrawer() {
                     </span>
                 </div>
             </div>
-
             <div className="drawer-footer">
-                <div className="drawer-button">생성하기</div>
-                <div className="drawer-button">생성 및 공유하기</div>
+                <div className="drawer-button">수정하기</div>
             </div>
         </div>
     );
 }
 
-export default ClassDrawer;
+export default ClassDrawerModify;
