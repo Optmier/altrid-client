@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import AddTeacher from '../components/MainPage/AddTeacher';
 import classNames from 'classnames';
+import { $_classDefault } from '../configs/front_urls';
 
 function Main({ history }) {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -94,7 +95,7 @@ function Main({ history }) {
                                     totalStudents={num_of_students}
                                     totalAssignments={0}
                                     onClick={() => {
-                                        history.push(`/class/${idx}`);
+                                        history.push(`${$_classDefault}/${idx}/draft`);
                                     }}
                                 />
                             </CardRoot>

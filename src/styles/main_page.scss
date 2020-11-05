@@ -24,6 +24,13 @@
         }
     }
 
+    & .contents-root {
+        & .cards-contents-root {
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+    }
+
     & .introduce {
         color: #ffffff;
         margin-top: 48px;
