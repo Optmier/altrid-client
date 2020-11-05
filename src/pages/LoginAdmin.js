@@ -13,7 +13,7 @@ function LoginAdmin({ history }) {
             apiUrl + '/auth/admins',
             {
                 email: profileObj.email,
-                authId: profileObj.authId,
+                authId: profileObj.authId + '',
             },
             { withCredentials: true },
         )
@@ -44,7 +44,7 @@ function LoginAdmin({ history }) {
             apiUrl + '/auth/admins',
             {
                 email: profile.kakao_account.email,
-                authId: profile.id,
+                authId: profile.id + '',
             },
             { withCredentials: true },
         )

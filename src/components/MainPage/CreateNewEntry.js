@@ -6,6 +6,7 @@ import * as $ from 'jquery';
 import MultipleAutocomplete from '../essentials/MultipleAutocomplete';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
+import { $_classDefault } from '../../configs/front_urls';
 
 const CreateButton = withStyles((theme) => ({
     root: {
@@ -69,14 +70,14 @@ function CreateNewEntry({ history, handleClose }) {
                     )
                         .then((res2) => {
                             console.log('클래스가 생성됨.');
-                            history.push(`/class/${res1.data.insertId}`);
+                            history.push(`${$_classDefault}/${res1.data.insertId}/draft`);
                         })
                         .catch((err) => {
                             console.error(err);
                         });
                 else {
                     console.log('클래스가 생성됨.');
-                    history.push(`/class/${res1.data.insertId}`);
+                    history.push(`${$_classDefault}/${res1.data.insertId}/draft`);
                 }
             })
             .catch((err) => {

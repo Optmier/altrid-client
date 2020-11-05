@@ -92,7 +92,7 @@ function Login({ history }) {
             authWith: 'google',
             image: profileObj.imageUrl,
         });
-        Axios.get(`${apiUrl}/${usertype}/exists/${profileObj.email || profileObj.googleId}`, { withCredentials: true })
+        Axios.get(`${apiUrl}/${usertype}/exists/${profileObj.googleId}`, { withCredentials: true })
             .then((res) => {
                 const isExists = res.data;
                 // 존재하면 로그인
@@ -127,7 +127,7 @@ function Login({ history }) {
             authWith: 'kakao',
             image: profile.properties.profile_image,
         });
-        Axios.get(`${apiUrl}/${usertype}/exists/${profile.kakao_account.email || profile.id}`, { withCredentials: true })
+        Axios.get(`${apiUrl}/${usertype}/exists/${profile.id}`, { withCredentials: true })
             .then((res) => {
                 const isExists = res.data;
                 console.log(res);
@@ -199,7 +199,7 @@ function Login({ history }) {
         // 승인 여부(학생은 우선 승인)
         const approved = usertype === 'students' ? 1 : 0;
         // 현재 등록하는 대상이 학생인 경우 선생님 선택 목록 구성
-        const teachers = inputState.teacher_selected.map((data) => [data.email || data.auth_id, email || authId, academyCode]);
+        const teachers = inputState.teacher_selected.map((data) => [data.auth_id, authId, academyCode]);
         console.log(email, name, authId, authWith, academyCode, phone, approved, teachers);
 
         if (usertype === 'students') {
