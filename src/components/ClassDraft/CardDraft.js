@@ -51,8 +51,8 @@ const TimeItems = ({ title, mm, ss }) => {
 };
 
 function CardDraft({ testNum, cardData }) {
-    let mm = SecondtoMinute(cardData['time'])[0];
-    let ss = SecondtoMinute(cardData['time'])[1];
+    let mm = SecondtoMinute(cardData['time_limit'])[0];
+    let ss = SecondtoMinute(cardData['time_limit'])[1];
 
     /** pop-over (옵션 선택) 메소드 */
     const [anchorEl, setAnchorEl] = useState(null);
@@ -84,7 +84,7 @@ function CardDraft({ testNum, cardData }) {
             return;
         }
 
-        cardData['question_num'] === '-' ? alert('제작 중인 과제는 수정이 불가능합니다 :(') : setOpenCreateNewDrawer(open);
+        !cardData['contents_data'] ? alert('제작 중인 과제는 수정이 불가능합니다 :(') : setOpenCreateNewDrawer(open);
 
         handleOptionClose();
     };
@@ -104,7 +104,7 @@ function CardDraft({ testNum, cardData }) {
             />
             <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
             <div className="class-card-root">
-                {cardData['question_num'] === '-' ? (
+                {!cardData['contents_data'] ? (
                     <>
                         <div className="class-card-header class-card-wrapper">
                             <div className="card-title-p" title={cardData['title']}>
@@ -125,7 +125,7 @@ function CardDraft({ testNum, cardData }) {
                     </>
                 ) : (
                     <>
-                        {cardData['share'] ? (
+                        {cardData['actived'] ? (
                             <div className="class-card-header-sharing class-card-wrapper">
                                 <div className="card-title-p" title={cardData['title']}>
                                     {cardData['title']}
@@ -157,13 +157,13 @@ function CardDraft({ testNum, cardData }) {
                         <div className="class-card-contents class-card-wrapper">
                             <div className="contents-block">
                                 <div className="card-item">
-                                    <div className="card-subTitle-p" title={cardData['desc']}>
-                                        {cardData['desc']}
+                                    <div className="card-subTitle-p" title={cardData['description']}>
+                                        {cardData['description']}
                                     </div>
                                 </div>
                                 <div className="card-item">
-                                    <div className="card-content-p" title={cardData['age']}>
-                                        {cardData['age']}
+                                    <div className="card-content-p" title={cardData['grade']}>
+                                        {cardData['grade']}
                                     </div>
                                 </div>
                             </div>
@@ -171,14 +171,14 @@ function CardDraft({ testNum, cardData }) {
                             <div className="contents-block">
                                 <InfoItems title={'문항수'} contents={cardData['question_num']} />
                                 <TimeItems title={'제한시간'} mm={mm} ss={ss} />
-                                <InfoItems title={'최종수정'} contents={cardData['start']} />
+                                <InfoItems title={'최종수정'} contents={cardData['updated']} />
                             </div>
                         </div>
                         <div className="class-card-bottom-right">
                             {/* 시선흐름 유무 */}
                             <IsPresence type={'eye'} able={cardData['eyetrack']} />
                             {/* 공유 유무 */}
-                            <IsPresence type={'share'} able={cardData['share']} />
+                            <IsPresence type={'share'} able={cardData['actived']} />
                         </div>
                     </>
                 )}
