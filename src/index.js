@@ -3,12 +3,16 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 /** redux setup */
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import rootReducer from './redux_modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { createLogger } from 'redux-logger';
+import ReduxThunk from 'redux-thunk';
 
-const reduxStore = createStore(rootReducer, composeWithDevTools());
+const logger = createLogger();
+const reduxStore = createStore(rootReducer, applyMiddleware(logger, ReduxThunk));
+//const reduxStore = createStore(rootReducer, composeWithDevTools());
 
 ReactDOM.render(
     <BrowserRouter>

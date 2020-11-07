@@ -12,8 +12,8 @@ const StyleInput = styled.input`
     }
 `;
 function ClassDrawerModify({ testNum }) {
-    let mmm = SecondtoMinute(assignmentDummy[testNum]['time'])[0];
-    let sss = SecondtoMinute(assignmentDummy[testNum]['time'])[1];
+    let mmm = SecondtoMinute(assignmentDummy[testNum]['time_limit'])[0];
+    let sss = SecondtoMinute(assignmentDummy[testNum]['time_limit'])[1];
     let timeState = true;
 
     if (!mmm) {

@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import React, { useState, useEffect, useCallback } from 'react';
 import Axios from 'axios';
 import CardDraft from './CardDraft';
@@ -15,21 +14,22 @@ import { getDraft } from '../../redux_modules/assignmentDraft';
 
 function Draft() {
     /** redux state */
-    const draftArr = useSelector((state) => state.assignmentDraft);
+    const datas = useSelector((state) => state.assignmentDraft);
     const dispatch = useDispatch();
 
-    const onGetDraft = useCallback(() => dispatch(getDraft()), [dispatch]);
-
     useEffect(() => {
-        onGetDraft();
-        return () => {};
-    }, []);
+        dispatch(getDraft());
+    }, [dispatch]);
 
-    console.log('state : ', draftArr);
+    let obj = datas.draftData;
+
+    window.obj = obj;
+
+    console.log('redux-store', obj.data);
+    let draftArr = [];
 
     /** draft.js 자체 메소드 */
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
-    //const [draftArr, setDraftArr] = useState([]);
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -38,6 +38,7 @@ function Draft() {
         setOpenCreateNewDrawer(open);
     };
 
+    // const [draftArr, setDraftArr] = useState([]);
     // useEffect(() => {
     //     Axios.get(`${apiUrl}/assignment-draft`, { withCredentials: true })
     //         .then((res) => {
@@ -48,6 +49,7 @@ function Draft() {
     //         });
     //     return () => {};
     // }, []);
+
     return (
         <>
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
