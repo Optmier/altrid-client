@@ -8,7 +8,6 @@ import { Route, withRouter } from 'react-router-dom';
 import ScrollTop from './components/essentials/ScrollTop';
 import Footer from './components/essentials/Footer';
 import TrashButton from './components/essentials/TrashButton';
-import TofelEditorTemp from './pages/TofelEditorTemp';
 import UserExample from './components/TOFELRenderer/UserExample';
 import EyetrackingPlayer from './components/TOFELRenderer/EyetrackingPlayer';
 import PlayerExample from './components/TOFELRenderer/PlayerExample';
@@ -18,12 +17,21 @@ import { apiUrl } from './configs/configs';
 import { useDispatch } from 'react-redux';
 import { saveSession, deleteSession, updateSession } from './redux_modules/sessions';
 import { $_loginAdmin, $_loginDefault, $_loginStudent, $_loginTeacher, $_root } from './configs/front_urls';
+import MakeContents from './pages/MakeContents';
+import AdminMain from './pages/AdminMain';
+import AssignmentDoItNow from './pages/AssignmentDoItNow';
 
 window.lastUrl = '/';
 const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin];
 const excludesForAdminUrls = [];
-const excludesForTeacherUrls = [];
-const excludesForStudentUrls = [];
+const excludesForTeacherUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
+const excludesForStudentUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
+
+// Array.prototype.findUrlMatch = function (match) {
+//     return this.filter(function (item) {
+//         return typeof item == 'string' && item.indexOf(match) > -1;
+//     });
+// };
 
 function App({ history }) {
     const dispatch = useDispatch();
@@ -54,22 +62,22 @@ function App({ history }) {
         Axios.get(apiUrl + '/auth', { withCredentials: true })
             .then((res1) => {
                 if (loginUrls.includes(history.location.pathname)) history.replace(window.lastUrl);
-                switch (res1.data.usertype) {
+                switch (res1.data.userType) {
                     case 'admins':
                         if (excludesForAdminUrls.includes(history.location.pathname)) {
-                            history.goBack();
+                            history.replace($_root);
                             alert('권한이 없는 사용자 입니다.');
                         }
                         break;
                     case 'teachers':
                         if (excludesForTeacherUrls.includes(history.location.pathname)) {
-                            history.goBack();
+                            history.replace($_root);
                             alert('권한이 없는 사용자 입니다.');
                         }
                         break;
                     case 'students':
                         if (excludesForStudentUrls.includes(history.location.pathname)) {
-                            history.goBack();
+                            history.replace($_root);
                             alert('권한이 없는 사용자 입니다.');
                         }
                         break;
@@ -86,14 +94,16 @@ function App({ history }) {
                     });
             })
             .catch((err) => {
-                console.log(err);
+                console.log(err.response);
                 if (err.response.status === 401) {
                     if (!loginUrls.includes(history.location.pathname)) {
                         alert('로그인이 필요합니다.');
                         history.replace($_loginDefault);
                     }
+                } else if (err.response.data.code === 'TokenExpiredError') {
+                    alert('세션이 만료되어 다시 로그인 해야합니다.');
+                    window.logout();
                 }
-                console.error(err);
             });
     }, [history.location]);
     return (
@@ -104,10 +114,11 @@ function App({ history }) {
                     <Route path={$_root} component={Main} exact />
                     <Route path={$_loginDefault} component={Login} exact />
                     <Route path={$_loginAdmin} component={LoginAdmin} exact />
+                    <Route path={'/admins'} component={AdminMain} />
                     <Route path="/class/:num/:id" component={Class} />
-                    <Route path="/temp" component={TofelEditorTemp} />
                     <Route path="/user-example" component={UserExample} />
                     <Route path="/player-example" component={PlayerExample} />
+                    <Route path="/assignments/do-it-now/:classnum/:assignmentid" component={AssignmentDoItNow} exact></Route>
                 </main>
             </ScrollTop>
             {history.location.pathname === '/class/draft' || history.location.pathname === '/class/share' ? <TrashButton /> : ''}

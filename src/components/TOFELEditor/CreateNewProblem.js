@@ -136,7 +136,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                 else setProblemAnswer(value);
                 break;
             case 'score_input':
-                setProblemScore(value);
+                setProblemScore(parseInt(value));
                 break;
             default:
                 setProblemSelections({
@@ -150,8 +150,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     const onQuillEditorChange = (id) => (content, delta, source, editor) => {
         // console.log(id, content, delta, source, editor);
         if (id === 'texts_editor') setProblemTexts({ render: content, editor: JSON.stringify(editor.getContents()) });
-        else if (id === 'comments_editor');
-        setProblemComments({ render: content, editor: JSON.stringify(editor.getContents()) });
+        else if (id === 'comments_editor') setProblemComments({ render: content, editor: JSON.stringify(editor.getContents()) });
     };
 
     const handleOnCreate = () => {
@@ -275,14 +274,36 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                         id="texts_editor"
                         modules={{ toolbar: QuillEditorToolbarOption }}
                         placeholder="여기에 문제 내용을 입력해 주세요."
-                        defaultValue={jsonParse(problemDatas.textForEditor)}
+                        defaultValue={JSON.parse(
+                            problemDatas.textForEditor
+                                .replace(/\\n/g, '\\n')
+                                .replace(/\\'/g, "\\'")
+                                .replace(/\\"/g, '\\"')
+                                .replace(/\\&/g, '\\&')
+                                .replace(/\\r/g, '\\r')
+                                .replace(/\\t/g, '\\t')
+                                .replace(/\\b/g, '\\b')
+                                .replace(/\\f/g, '\\f')
+                                .replace(/[\u0000-\u0019]+/g, ''),
+                        )}
                         onChange={onQuillEditorChange('texts_editor')}
                     />
                     <ReactQuill
                         id="comments_editor"
                         modules={{ toolbar: QuillEditorToolbarOption }}
-                        placeholder="여기에 헤설을 입력해 주세요."
-                        defaultValue={jsonParse(problemDatas.commentsForEditor)}
+                        placeholder="여기에 해설을 입력해 주세요."
+                        defaultValue={JSON.parse(
+                            problemDatas.commentsForEditor
+                                .replace(/\\n/g, '\\n')
+                                .replace(/\\'/g, "\\'")
+                                .replace(/\\"/g, '\\"')
+                                .replace(/\\&/g, '\\&')
+                                .replace(/\\r/g, '\\r')
+                                .replace(/\\t/g, '\\t')
+                                .replace(/\\b/g, '\\b')
+                                .replace(/\\f/g, '\\f')
+                                .replace(/[\u0000-\u0019]+/g, ''),
+                        )}
                         onChange={onQuillEditorChange('comments_editor')}
                         style={{ marginTop: 8 }}
                     />

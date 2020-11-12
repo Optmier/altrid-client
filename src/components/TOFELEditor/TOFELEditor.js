@@ -1,4 +1,4 @@
-import { AppBar, Button, Dialog, Drawer, TextField, Toolbar, withStyles } from '@material-ui/core';
+import { AppBar, Button, Dialog, Drawer, Snackbar, TextField, Toolbar, withStyles } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 import ReactQuill from 'react-quill';
@@ -6,11 +6,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as $ from 'jquery';
 import styled from 'styled-components';
 import 'react-quill/dist/quill.snow.css';
-import TofelEditorTemp from '../../pages/TofelEditorTemp';
 import CreateNewProblem from './CreateNewProblem';
 import QuillEditorToolbarOption from './QuillEditorToolbarOption';
 import ProblemCard from './ProblemCard';
 import SmartTOFELRender from '../TOFELRenderer/SmartTOFELRender';
+import Axios from 'axios';
+import { apiUrl } from '../../configs/configs';
+import { withRouter } from 'react-router-dom';
+import { Alert } from '@material-ui/lab';
+import { useBeforeunload } from 'react-beforeunload';
 
 $.fn.changeSize = function (handleFunction) {
     let element = this;
@@ -43,12 +47,6 @@ const fitEditorSize = (height) => {
     const $problemContainer = $('.problem-container');
     $quillContainer.height(rootHeight - headerHeight - quillToolbarHeight - 36);
     $problemContainer.height(rootHeight - headerHeight - 70);
-};
-
-const jsonParse = (string) => {
-    return eval('(' + string.replace(/[\n\r]/gi, '\\n') + ')')
-        ? eval('(' + string.replace(/[\n\r]/gi, '\\n') + ')')
-        : { ops: [{ insert: '\n' }] };
 };
 
 const EdAppBar = withStyles((theme) => ({
@@ -88,6 +86,7 @@ const Root = styled.div`
 `;
 const Header = styled.div`
     width: 100%;
+    position: relative;
 `;
 const Container = styled.div`
     display: flex;
@@ -133,7 +132,7 @@ const PreviewContainer = styled.div`
     height: 750px;
 `;
 
-function TOFELEditor({ id, datas, children, ...rest }) {
+function TOFELEditor({ id, datas, requestFile, history, children, ...rest }) {
     const quillRef = useRef();
 
     const [metadata, setMetadata] = useState(datas);
@@ -146,9 +145,24 @@ function TOFELEditor({ id, datas, children, ...rest }) {
     const [problemEditIdx, setProblemEditIdx] = useState(0);
 
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
-    const [openPreview, setOpenPreview] = useState(true);
+    const [openPreview, setOpenPreview] = useState(false);
 
-    const [tempTimer, setTempTimer] = useState(10);
+    const [alertBarOpen, setAlertBarOpen] = useState(false);
+    const [alertBarOption, setAlertBarOption] = useState({
+        message: '',
+        severity: 'success',
+    });
+
+    const handleAlertBarOpen = () => {
+        setAlertBarOpen(true);
+    };
+
+    const handleAlertBarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setAlertBarOpen(false);
+    };
 
     const onTextFieldChange = ({ target }) => {
         const { name, value } = target;
@@ -197,7 +211,7 @@ function TOFELEditor({ id, datas, children, ...rest }) {
     window.testChangePosition = handleSwapProblemPosition;
 
     const onProblemCreate = (newData) => {
-        console.log(newData);
+        // console.log(newData);
         if (problemEditmode)
             setContentsProblemDatas(contentsProblemDatas.map((origData, idx) => (idx === problemEditIdx ? newData : origData)));
         else setContentsProblemDatas([...contentsProblemDatas, newData]);
@@ -213,6 +227,43 @@ function TOFELEditor({ id, datas, children, ...rest }) {
     const onProblemDelete = (delIdx) => (event) => {
         const confirmDialog = window.confirm('정말로 삭제하시겠어요?');
         if (confirmDialog) setContentsProblemDatas(contentsProblemDatas.filter((origData, idx) => idx !== delIdx));
+    };
+
+    const handleSaveContents = () => {
+        if (id)
+            Axios.patch(
+                `${apiUrl}/assignment-admin/${id}`,
+                {
+                    contentsData: JSON.stringify(metadata),
+                },
+                { withCredentials: true },
+            )
+                .then((res) => {
+                    setAlertBarOption({ message: '저장되었습니다.', severity: 'success' });
+                    handleAlertBarOpen();
+                })
+                .catch((err) => {
+                    setAlertBarOption({ message: '저장에 실패했습니다.', severity: 'error' });
+                    handleAlertBarOpen();
+                    console.error(err);
+                });
+    };
+
+    const handleDeleteContents = () => {
+        const conf = window.confirm('정말로 삭제하시겠습니까?\n삭제 후에는 복구가 불가합니다.');
+        if (!conf) return;
+        if (id)
+            Axios.delete(`${apiUrl}/assignment-admin/${id}`, { withCredentials: true })
+                .then((res) => {
+                    setAlertBarOption({ message: '삭제되었습니다.', severity: 'success' });
+                    handleAlertBarOpen();
+                    history.replace('/admins/contents-requests');
+                })
+                .catch((err) => {
+                    setAlertBarOption({ message: '삭제에 실패했습니다.', severity: 'error' });
+                    handleAlertBarOpen();
+                    console.error(err);
+                });
     };
 
     useEffect(() => {
@@ -245,8 +296,30 @@ function TOFELEditor({ id, datas, children, ...rest }) {
     }, [contentsProblemDatas]);
 
     useEffect(() => {
-        console.log('최종 컨텐츠 데이터:: ', metadata);
+        // console.log('최종 컨텐츠 데이터:: ', metadata);
     }, [metadata]);
+
+    useEffect(() => {
+        setMetadata(datas);
+        setContentsTitle(datas.title);
+        setContentsPassage({ render: datas.passageForRender, editor: datas.passageForEditor });
+        setContentsTimeLimit(datas.timeLimit);
+        setContentsProblemDatas(datas.problemDatas);
+        if (datas.passageForEditor) {
+            let s = datas.passageForEditor
+                .replace(/\\n/g, '\\n')
+                .replace(/\\'/g, "\\'")
+                .replace(/\\"/g, '\\"')
+                .replace(/\\&/g, '\\&')
+                .replace(/\\r/g, '\\r')
+                .replace(/\\t/g, '\\t')
+                .replace(/\\b/g, '\\b')
+                .replace(/\\f/g, '\\f');
+            // remove non-printable and other non-valid JSON chars
+            s = s.replace(/[\u0000-\u0019]+/g, '');
+            quillRef.current.editor.setContents(JSON.parse(s));
+        }
+    }, [datas]);
 
     useEffect(() => {
         const $root = $('.tofel-editor-root');
@@ -271,17 +344,17 @@ function TOFELEditor({ id, datas, children, ...rest }) {
                 // addParagraphSplitter();
             }
         });
-
-        const testtimer = setInterval(() => {
-            setTempTimer((tempTimer) => {
-                if (tempTimer < 1) clearInterval(testtimer);
-                return tempTimer - 1;
-            });
-        }, 1000);
     }, []);
+
+    useBeforeunload((e) => e.preventDefault());
 
     return (
         <Root className="tofel-editor-root">
+            <Snackbar open={alertBarOpen} autoHideDuration={5000} onClose={handleAlertBarClose}>
+                <Alert onClose={handleAlertBarClose} severity={alertBarOption.severity}>
+                    {alertBarOption.message}
+                </Alert>
+            </Snackbar>
             <PreviewDialog open={openPreview} onClose={handlePreviewClose}>
                 <PreviewContainer>
                     <SmartTOFELRender
@@ -289,7 +362,7 @@ function TOFELEditor({ id, datas, children, ...rest }) {
                         title={contentsTitle}
                         passageForRender={contentsPassage.render}
                         problemDatas={contentsProblemDatas}
-                        timer={tempTimer}
+                        timer={contentsTimeLimit}
                         onEnd={handlePreviewClose}
                     />
                 </PreviewContainer>
@@ -313,13 +386,23 @@ function TOFELEditor({ id, datas, children, ...rest }) {
                             value={contentsTitle}
                             onChange={onTextFieldChange}
                         />
+                        {requestFile ? (
+                            <Button
+                                href={`${apiUrl}/files/${requestFile}`}
+                                download={requestFile.substring(requestFile.indexOf('_') + 1).substring(requestFile.lastIndexOf('/') + 1)}
+                                color="inherit"
+                                style={{ minWidth: 128 }}
+                            >
+                                첨부파일(F)
+                            </Button>
+                        ) : null}
                         <Button color="inherit" onClick={handlePreviewOpen} style={{ minWidth: 128 }}>
                             미리보기(B)
                         </Button>
-                        <Button color="inherit" style={{ minWidth: 72 }}>
+                        <Button color="inherit" style={{ minWidth: 72 }} onClick={handleSaveContents}>
                             저장(S)
                         </Button>
-                        <Button color="inherit" style={{ minWidth: 72 }}>
+                        <Button color="inherit" style={{ minWidth: 72 }} onClick={handleDeleteContents}>
                             삭제(D)
                         </Button>
                     </EdToolbar>
@@ -332,7 +415,7 @@ function TOFELEditor({ id, datas, children, ...rest }) {
                         ref={quillRef}
                         modules={{ toolbar: QuillEditorToolbarOption }}
                         placeholder="지문을 입력하세요."
-                        defaultValue={jsonParse(datas.passageForEditor)}
+                        // value={contentsPassage.editor}
                         onChange={onQuillEditorChange}
                     />
                 </LeftContainer>
@@ -373,31 +456,15 @@ function TOFELEditor({ id, datas, children, ...rest }) {
 }
 
 TOFELEditor.defaultProps = {
+    id: 0,
     datas: {
         title: '',
         passageForRender: '',
         passageForEditor: `{"ops":[{"insert":"\n"}]}`,
         timeLimit: 60,
-        problemDatas: [
-            {
-                category: 2,
-                type: 'multiple-choice',
-                textForRender: '',
-                textForEditor: `{"ops":[{"insert":"\n"}]}`,
-                commentsForRender: '',
-                commentsForEditor: `{"ops":[{"insert":"\n"}]}`,
-                selections: {
-                    1: '',
-                    2: '',
-                    3: '',
-                    4: '',
-                    5: '',
-                },
-                answer: 3,
-                score: 0,
-            },
-        ],
+        problemDatas: [],
     },
+    requestFile: undefined,
 };
 
-export default React.memo(TOFELEditor);
+export default React.memo(withRouter(TOFELEditor));
