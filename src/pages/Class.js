@@ -23,7 +23,7 @@ const ClassPageSwitcher = ({ match }) => {
             return (
                 <>
                     <Route path={`${match.path}`} exact component={Share} />
-                    <Route path={`${match.path}/:classNum`} component={Reportes} />
+                    <Route path={`${match.path}/:activedNum`} component={Reportes} />
                 </>
             );
 
