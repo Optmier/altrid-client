@@ -22,7 +22,7 @@ const StyleBranchItem = styled.div`
     }
 `;
 
-const shareArr = ['과제 공유', '과제별 리포트', '학생별 리포트'];
+const shareArr = ['과제 게시판', '과제별 리포트', '학생별 리포트'];
 
 function BranchNav({ deps }) {
     return (

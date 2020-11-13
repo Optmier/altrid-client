@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/class_drawer.scss';
 import ToggleSwitch from './ToggleSwitch';
-import assignmentDummy from '../../datas/assignmentDummy.json';
 import styled from 'styled-components';
 import { SecondtoMinute } from '../essentials/TimeChange';
+import { useSelector, useDispatch } from 'react-redux';
+import { patchDraft, goToHome } from '../../redux_modules/assignmentDraft';
 
 const StyleInput = styled.input`
     &::placeholder {
@@ -11,26 +12,105 @@ const StyleInput = styled.input`
         font-weight: 600;
     }
 `;
-function ClassDrawerModify({ testNum }) {
-    let mmm = SecondtoMinute(assignmentDummy[testNum]['time_limit'])[0];
-    let sss = SecondtoMinute(assignmentDummy[testNum]['time_limit'])[1];
-    let timeState = true;
+function ClassDrawerModify({ cardData, handleClose }) {
+    /** redux state */
+    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas); //axios 작업 없으니, loading과 error는 필요 x
+    const dispatch = useDispatch();
 
-    if (!mmm) {
+    let titleArr = [];
+    Object.keys(data).map((i) => titleArr.push(data[i]['title'].replace(/(\s*)/g, '')));
+
+    /** 여러개 input 상태 관리 */
+    //1. text-input
+    const [inputs, setInputs] = useState({
+        title: cardData['title'],
+        description: cardData['description'],
+    });
+    const [inputsError, setInputsError] = useState({
+        title_error: '',
+        description_error: '',
+    });
+
+    const { title, description } = inputs;
+    const { title_error, description_error } = inputsError;
+
+    const onInputChange = (e) => {
+        const { value, name } = e.target;
+        setInputs({
+            ...inputs,
+            [name]: value,
+        });
+    };
+    const onInputOut = (e) => {
+        const { name, value } = e.target;
+        console.log('input out!', titleArr, value);
+
+        if (name === 'title') {
+            if (value === '') {
+                setInputsError({
+                    ...inputsError,
+                    title_error: '빈칸을 채워주세요!',
+                });
+            } else {
+                titleArr.includes(title)
+                    ? setInputsError({
+                          ...inputsError,
+                          title_error: '과제 제목이 중복되었습니다 :(',
+                      })
+                    : setInputsError({
+                          ...inputsError,
+                          title_error: '',
+                      });
+            }
+        } else if (name === 'description') {
+            if (value === '') {
+                setInputsError({
+                    ...inputsError,
+                    description_error: '빈칸을 채워주세요!',
+                });
+            } else {
+                setInputsError({
+                    ...inputsError,
+                    description_error: '',
+                });
+            }
+        }
+    };
+
+    //2. time-input
+    let mmm, sss, time_limit;
+
+    if (!cardData['time_limit']) {
         mmm = '--';
         sss = '--';
-        timeState = false;
+        time_limit = false;
+    } else {
+        mmm = SecondtoMinute(cardData['time_limit'])[0];
+        sss = SecondtoMinute(cardData['time_limit'])[1];
+        time_limit = true;
     }
 
     const [timeInputs, setTimeInputs] = useState({
-        mm: '',
-        ss: '',
+        mm: mmm,
+        ss: sss,
     });
     const { mm, ss } = timeInputs;
+    const onTimeChange = (e) => {
+        const { value, name } = e.target;
+        if (value.length > '2') {
+            return 0;
+        }
 
+        setTimeInputs({
+            ...timeInputs,
+            [name]: value,
+        });
+    };
+
+    /** toggle-state 상태 관리 */
     const [toggleState, setToggleState] = useState({
-        eyetrack: assignmentDummy[testNum]['eyetrack'],
-        timeAttack: timeState,
+        eyetrack: cardData['eyetrack'],
+        timeAttack: time_limit,
     });
 
     const handleChange = (event) => {
@@ -49,17 +129,43 @@ function ClassDrawerModify({ testNum }) {
         }
     };
 
-    const onChange = (e) => {
-        const { value, name } = e.target;
-        if (value.length > '2') {
-            return 0;
+    /** card 정보 수정하기 */
+    const onCardModify = (e) => {
+        //1. title, description 빈칸 아님 체크
+        if (!title) {
+            setInputsError({
+                ...inputsError,
+                title_error: '빈칸을 채워주세요!',
+            });
+            console.log('아직 오류 중..');
+            return;
+        }
+        if (!description) {
+            setInputsError({
+                ...inputsError,
+                description_error: '빈칸을 채워주세요!',
+            });
+            console.log('아직 오류 중..');
+            return;
         }
 
-        setTimeInputs({
-            ...timeInputs,
-            [name]: value,
-        });
+        //2. title_error, description_error 빈칸 체크
+        if (title_error !== '' || description_error !== '') {
+            console.log('아직 오류 중..');
+            return;
+        }
+
+        //3. axios-patch 작업
+        let result = window.confirm('과제 내용을 수정하시겠습니까?');
+        if (result) {
+            dispatch(patchDraft(cardData, inputs, timeInputs, toggleState, handleClose, e));
+            handleClose(e);
+        }
     };
+
+    if (loading) return <div style={{ width: '700px' }}>로딩 중....</div>; // 로딩중이고 데이터 없을때만
+    if (error) return <div>에러 발생!</div>;
+    if (!data) return null;
 
     return (
         <div className="class-drawer-root">
@@ -71,16 +177,35 @@ function ClassDrawerModify({ testNum }) {
                 </p>
 
                 <div className="drawer-inputs">
-                    <StyleInput className="input-name" placeholder={assignmentDummy[testNum]['title']}></StyleInput>
-                    <StyleInput className="input-desc" placeholder={assignmentDummy[testNum]['desc']}></StyleInput>
-                    <StyleInput className="input-age" placeholder={assignmentDummy[testNum]['age']}></StyleInput>
-                    <div className="input-upload">
-                        <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M38.7 12.08C37.34 5.18 31.28 0 24 0C18.22 0 13.2 3.28 10.7 8.08C4.68 8.72 0 13.82 0 20C0 26.62 5.38 32 12 32H38C43.52 32 48 27.52 48 22C48 16.72 43.9 12.44 38.7 12.08ZM28 18V26H20V18H14L24 8L34 18H28Z"
-                                fill="#969393"
-                            />
-                        </svg>
+                    <div className="drawer-input">
+                        <StyleInput
+                            name="title"
+                            value={title}
+                            className="input-name"
+                            onChange={onInputChange}
+                            onBlur={onInputOut}
+                        ></StyleInput>
+                        <div className="drawer-error">{title_error}</div>
+                    </div>
+                    <div className="drawer-input">
+                        <StyleInput
+                            name="description"
+                            value={description}
+                            className="input-desc"
+                            onChange={onInputChange}
+                            onBlur={onInputOut}
+                        ></StyleInput>
+                        <div className="drawer-error">{description_error}</div>
+                    </div>
+                    <div className="drawer-input">
+                        <div className="input-upload">
+                            <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M38.7 12.08C37.34 5.18 31.28 0 24 0C18.22 0 13.2 3.28 10.7 8.08C4.68 8.72 0 13.82 0 20C0 26.62 5.38 32 12 32H38C43.52 32 48 27.52 48 22C48 16.72 43.9 12.44 38.7 12.08ZM28 18V26H20V18H14L24 8L34 18H28Z"
+                                    fill="#969393"
+                                />
+                            </svg>
+                        </div>
                     </div>
                 </div>
 
@@ -103,8 +228,8 @@ function ClassDrawerModify({ testNum }) {
                                 name="mm"
                                 value={mm}
                                 readOnly={mm === '--' ? true : false}
-                                onChange={onChange}
-                                placeholder={String(mmm)}
+                                onChange={onTimeChange}
+                                placeholder="00"
                             />
                             <p>분</p>
                             <input
@@ -112,8 +237,8 @@ function ClassDrawerModify({ testNum }) {
                                 name="ss"
                                 value={ss}
                                 readOnly={ss === '--' ? true : false}
-                                onChange={onChange}
-                                placeholder={String(sss)}
+                                onChange={onTimeChange}
+                                placeholder="00"
                             />
                             <p>초</p>
                         </div>
@@ -127,7 +252,7 @@ function ClassDrawerModify({ testNum }) {
                     </span>
                 </div>
             </div>
-            <div className="drawer-footer">
+            <div className="drawer-footer" onClick={onCardModify}>
                 <div className="drawer-button">수정하기</div>
             </div>
         </div>
