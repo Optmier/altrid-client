@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import assignmentDummy from '../../datas/assignmentDummy.json';
 import BranchNav from '../essentials/BranchNav';
 import ClassWrapper from '../essentials/ClassWrapper';
@@ -16,6 +16,20 @@ import styled from 'styled-components';
 import FilterButton from '../essentials/FilterButton';
 import ColumnChartProblem from '../essentials/ColumnChartProblem';
 import ColumnChartType from '../essentials/ColumnChartType';
+import Axios from 'axios';
+import { apiUrl } from '../../configs/configs';
+import moment from 'moment-timezone';
+
+const pad = (n, width) => {
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+};
+
+const timeValueToTimer = (seconds) => {
+    const secs = seconds < 0 ? 0 : seconds;
+    if (seconds === -2) return '제한 없음';
+    else return `${pad(parseInt(secs / 60), 2)}분 ${pad(Math.floor(secs % 60), 2)}초`;
+};
 
 const StudentCardHeader = styled.div`
     display: flex;
@@ -45,12 +59,30 @@ const StudentCardHeader = styled.div`
 `;
 
 function ReportClass({ match }) {
-    let { classNum } = match.params;
+    let { activedNum } = match.params;
 
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 공유), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
     const [testDialogopen, setTestDialogopen] = useState(false);
+    /** 메인 데이터 및 각 요소 */
+    const [mainReportData, setMainReportData] = useState(undefined);
+    // 과제 제목
+    const [title, setTitle] = useState('');
+    // 과제 한 줄 설명
+    const [description, setDescription] = useState('');
+    // 시선흐름 측정 여부
+    const [eyetrack, setEyetrack] = useState(false);
+    // 문항 수
+    const [problemNumbers, setProblemNumbers] = useState(0);
+    // 제한 시간 (초)
+    const [timeLimit, setTimeLimit] = useState(0);
+    // 과제 시작 날짜
+    const [startDate, setStartDate] = useState(null);
+    // 과제 종료 날짜
+    const [dueDate, setDueDate] = useState(null);
+    /** 학생별 데이터 및 각 요소 */
+    const [studentsData, setStudentsData] = useState([]);
 
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
@@ -65,7 +97,7 @@ function ReportClass({ match }) {
 
     /** toggle state */
     const [toggleState, setToggleState] = useState({
-        checked: assignmentDummy[classNum]['progress'],
+        checked: false,
     });
     const [subTypeState, setSubTypeState] = useState('init');
 
@@ -88,6 +120,114 @@ function ReportClass({ match }) {
         setSelectState(e.target.value);
     };
 
+    useEffect(() => {
+        // 메인 정보 불러오기
+        const { num, activedNum } = match.params;
+        console.log(num, activedNum);
+        Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, { withCredentials: true })
+            .then((res) => {
+                console.log(res);
+                let unparsedContentsData = res.data.contents_data;
+                try {
+                    unparsedContentsData
+                        .replace(/\\n/g, '\\n')
+                        .replace(/\\'/g, "\\'")
+                        .replace(/\\"/g, '\\"')
+                        .replace(/\\&/g, '\\&')
+                        .replace(/\\r/g, '\\r')
+                        .replace(/\\t/g, '\\t')
+                        .replace(/\\b/g, '\\b')
+                        .replace(/\\f/g, '\\f')
+                        .replace(/[\u0000-\u0019]+/g, '');
+                } catch (e) {
+                    unparsedContentsData = null;
+                }
+                setMainReportData({ ...res.data, contents_data: JSON.parse(unparsedContentsData) });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+
+        // 학생별 정보 불러오기
+        Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
+            params: {
+                order: 1,
+            },
+            withCredentials: true,
+        })
+            .then((res) => {
+                console.log(res);
+                const convertedData = res.data.map((data) => {
+                    let unparsedUserData = data.user_data;
+                    try {
+                        unparsedUserData
+                            .replace(/\\n/g, '\\n')
+                            .replace(/\\'/g, "\\'")
+                            .replace(/\\"/g, '\\"')
+                            .replace(/\\&/g, '\\&')
+                            .replace(/\\r/g, '\\r')
+                            .replace(/\\t/g, '\\t')
+                            .replace(/\\b/g, '\\b')
+                            .replace(/\\f/g, '\\f')
+                            .replace(/[\u0000-\u0019]+/g, '');
+                    } catch (e) {
+                        unparsedUserData = null;
+                    }
+                    let unparsedEyetrackData = data.eyetrack_data;
+                    try {
+                        unparsedEyetrackData
+                            .replace(/\\n/g, '\\n')
+                            .replace(/\\'/g, "\\'")
+                            .replace(/\\"/g, '\\"')
+                            .replace(/\\&/g, '\\&')
+                            .replace(/\\r/g, '\\r')
+                            .replace(/\\t/g, '\\t')
+                            .replace(/\\b/g, '\\b')
+                            .replace(/\\f/g, '\\f')
+                            .replace(/[\u0000-\u0019]+/g, '');
+                    } catch (e) {
+                        unparsedEyetrackData = null;
+                    }
+                    return {
+                        ...data,
+                        user_data: JSON.parse(unparsedUserData),
+                        eyetrack_data: JSON.parse(unparsedEyetrackData),
+                    };
+                });
+                setStudentsData(convertedData);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (!mainReportData) return;
+        console.log(mainReportData);
+        setTitle(mainReportData.title);
+        setDescription(mainReportData.description);
+        setEyetrack(mainReportData.eyetrack);
+        setTimeLimit(mainReportData.time_limit);
+        setStartDate(moment(mainReportData.created).format('MM.DD HH:mm'));
+        setDueDate(moment(mainReportData.due_date).format('MM.DD HH:mm'));
+
+        if (new Date() >= new Date(moment(mainReportData.due_date).format())) {
+            setToggleState({ checked: false });
+        } else {
+            setToggleState({ checked: true });
+        }
+
+        if (mainReportData.contents_data) {
+            const contentsData = mainReportData.contents_data;
+            setProblemNumbers(contentsData.problemDatas.length);
+        }
+    }, [mainReportData]);
+
+    useEffect(() => {
+        if (!studentsData || studentsData.length < 1) return;
+        console.log(studentsData);
+    }, [studentsData]);
+
     return (
         <div style={{ paddingBottom: '200px' }}>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
@@ -99,14 +239,14 @@ function ReportClass({ match }) {
                     <section className="class-report-info">
                         <div className="report-box">
                             <div className="report-col">
-                                <h3>{assignmentDummy[classNum]['title']}</h3>
+                                <h3>{title}</h3>
                             </div>
                             <div className="report-col">
-                                <p>{assignmentDummy[classNum]['desc']}</p>
+                                <p>{description}</p>
                             </div>
                             <div className="report-col">
                                 <div className="left-bottom">
-                                    <IsPresence type="eye" able={assignmentDummy[classNum]['eyetrack']} align="right" />
+                                    <IsPresence type="eye" able={eyetrack} align="right" />
                                     <ToggleSwitch
                                         toggle={toggleState['checked']}
                                         handleToggleChange={handleToggleChange}
@@ -120,21 +260,21 @@ function ReportClass({ match }) {
                             <div className="report-col">
                                 <div className="mid-mid">
                                     <span className="mid-desc">문항수</span>
-                                    <span className="mid-content">{assignmentDummy[classNum]['question_num']}</span>
+                                    <span className="mid-content">{problemNumbers} 문제</span>
                                 </div>
                             </div>
 
                             <div className="report-col">
                                 <div className="mid-mid">
                                     <span className="mid-desc">제한 시간</span>
-                                    <span className="mid-content">{assignmentDummy[classNum]['time']}</span>
+                                    <span className="mid-content">{timeLimit === -2 ? '없음' : timeValueToTimer(timeLimit)}</span>
                                 </div>
                             </div>
                             <div className="report-col">
                                 <div className="mid-mid">
                                     <span className="mid-desc">과제 기한</span>
                                     <span className="mid-content">
-                                        {assignmentDummy[classNum]['start']} ~ {assignmentDummy[classNum]['start']}
+                                        {startDate} ~ {dueDate}
                                     </span>
                                     <ModifyButton handleDateChange={handleDateChange} />
                                 </div>

@@ -77,10 +77,12 @@ window.applyKalmanFilter = true;
 window.saveDataAcrossSessions = true;
 
 /** Eyetracking data configuration */
-const eyetrackingResults = {
+// const eyetrackingResults = {
+//     sequences: [],
+// };
+window.etRes = {
     sequences: [],
 };
-window.etRes = eyetrackingResults;
 
 /** Eyetracking statistics set */
 /** fixation 개수 */
@@ -99,16 +101,20 @@ window.varOfSaccadeVelocities = 0;
 window.clusterAreaOfFixations = 128;
 /** fixation 카운트 값(이 값 만큼 영역에 들어올 시 원이 커지기 시작함) */
 window.clusterCountsOfFixations = 3;
+/** 8. Number of regressions */
+window.numberOfRegressions = 0;
 
 window.$ = $;
+window._etNxtSetNum = 0;
 
 let completedCalib = false;
-let setnum = 0;
+let setnum = 0 + window._etNxtSetNum;
 let tickerTimeout = null;
 let _step = 0;
 let _lastStep = 0;
 let _userAnswer = 0;
 let _duration = 1;
+let _timeElapsed = 0;
 
 const getDistance = (pos1, pos2) => {
     const distX = Math.abs(pos1.x - pos2.x);
@@ -139,7 +145,7 @@ const captureChanged = (position, elapsedTime) => {
         elapsedTime: 0,
     };
     // setNumber 지정
-    const seqs = eyetrackingResults.sequences;
+    const seqs = window.etRes.sequences;
     if (seqs[seqs.length - 1]) {
         if (position === null) {
             if (_step !== _lastStep || seqs[seqs.length - 1].x || seqs[seqs.length - 1].y) {
@@ -181,13 +187,14 @@ const captureChanged = (position, elapsedTime) => {
         _obj.problemScrollPosition = problemScrollPosition;
         _obj.elapsedTime = elapsedTime;
     }
-    eyetrackingResults.sequences.push(_obj);
+    window.etRes.sequences.push(_obj);
     _lastStep = _step;
 };
 
-function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUpdate, rootRef }) {
+function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUpdate, rootRef, timeElapsed }) {
     _step = step;
     _userAnswer = userAnswer;
+    _timeElapsed = timeElapsed;
     const [start, setStart] = useState(false);
     const [webgazerLoded, setWebgazerLoaded] = useState(false);
     const [calib, setCalib] = useState(false);
@@ -276,15 +283,15 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         if (!completedCalib) return;
         if (!afterCalibAndStarted) {
             afterCalibAndStarted = true;
-            startedTime = elapsedTime;
+            // startedTime = elapsedTime;
         }
-        onUpdate(data, elapsedTime - startedTime);
+        onUpdate(data, _timeElapsed);
 
         if (!tickerTimeout)
             tickerTimeout = setTimeout(() => {
                 if (!data) {
                     console.log('22 out of range! not recorded.');
-                    captureChanged(null, elapsedTime - startedTime);
+                    captureChanged(null, _timeElapsed);
                     tickerTimeout = null;
                     return;
                 }
@@ -294,7 +301,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
 
                 if (lastX === null) lastX = calcX;
                 if (lastY === null) lastY = calcY;
-                if (lastElapsedTime === null) lastElapsedTime = elapsedTime - startedTime;
+                if (lastElapsedTime === null) lastElapsedTime = elapsedTime;
 
                 // 클러스터링 영역 안에 들어오면
                 if (checkRange({ x: calcX, y: calcY }, { x: lastX, y: lastY }, window.clusterAreaOfFixations)) {
@@ -313,7 +320,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                     const fixationVelocity = getVelocity(
                         { x: lastX, y: lastY },
                         { x: calcX, y: calcY },
-                        Math.abs(elapsedTime - startedTime - lastElapsedTime),
+                        Math.abs(elapsedTime - lastElapsedTime),
                     );
                     // 속도가 400px/s 이상이므로 saccade 로 간주
                     if (fixationVelocity >= 400) {
@@ -338,10 +345,10 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                     lastY = calcY;
                 }
 
-                lastElapsedTime = elapsedTime - startedTime;
+                lastElapsedTime = elapsedTime;
 
                 // console.log(lastX, lastY);
-                captureChanged({ x: lastX, y: lastY }, elapsedTime - startedTime);
+                captureChanged({ x: lastX, y: lastY }, _timeElapsed);
 
                 tickerTimeout = null;
             }, 100);

@@ -4,6 +4,8 @@ import ToggleSwitch from './ToggleSwitch';
 import assignmentDummy from '../../datas/assignmentDummy.json';
 import styled from 'styled-components';
 import { SecondtoMinute } from '../essentials/TimeChange';
+import { Route, withRouter } from 'react-router-dom';
+import MakeContents from '../../pages/MakeContents';
 
 const StyleInput = styled.input`
     &::placeholder {
@@ -134,4 +136,4 @@ function ClassDrawerModify({ testNum }) {
     );
 }
 
-export default ClassDrawerModify;
+export default withRouter(ClassDrawerModify);
