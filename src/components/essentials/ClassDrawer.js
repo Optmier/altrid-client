@@ -8,10 +8,18 @@ import { Button, Dialog } from '@material-ui/core';
 import TOFELEditor from '../TOFELEditor/TOFELEditor';
 
 function ClassDrawer({ handleClose }) {
+    /** 과제 생성 state */
+    const [selfCreate, setSelfCreate] = useState(false);
+    const [attachFiles, setAttachFiles] = useState(new FormData());
+    const [contentsData, setContentsData] = useState(null);
+
+    const handleChecked = () => {
+        setSelfCreate(!selfCreate);
+    };
+
     /** redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
     const dispatch = useDispatch();
-    const [attachFiles, setAttachFiles] = useState(new FormData());
 
     let titleArr = [];
     if (!titleArr) {
@@ -140,9 +148,15 @@ function ClassDrawer({ handleClose }) {
         }
 
         //3. axios-post 작업
-        dispatch(postDraft(inputs, timeInputs, toggleState, attachFiles, handleClose, e));
+        if (selfCreate) {
+            console.log('직접생성!');
+            setContentsData('{ "json" : "json" }');
+        }
+        console.log(contentsData);
+        dispatch(postDraft(inputs, timeInputs, toggleState, attachFiles, contentsData, handleClose, e));
         handleClose(e);
     };
+    console.log(contentsData);
 
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [contentsData, setContentsData] = useState(undefined);
@@ -219,6 +233,18 @@ function ClassDrawer({ handleClose }) {
                                 onClose={handleEditDialogClose}
                             />
                         </Dialog>
+                    </div>
+                    <div className="drawer-input">
+                        <div>
+                            직접 생성{' '}
+                            <input
+                                type="checkbox"
+                                name="chk_info"
+                                value="create_assignment_self"
+                                defaultChecked={selfCreate}
+                                onClick={handleChecked}
+                            />
+                        </div>
                     </div>
                 </div>
 

@@ -40,7 +40,7 @@ export const getDrafts = () => async (dispatch) => {
     }
 };
 export const getDraft = (idx) => async (dispatch) => {};
-export const postDraft = (inputs, timeInputs, toggleState, attachFiles, handleClose, e) => async (dispatch) => {
+export const postDraft = (inputs, timeInputs, toggleState, attachFiles, selfCreate, handleClose, e) => async (dispatch) => {
     dispatch({ type: POST_DRAFT }); // 요청이 시작됨
 
     try {
@@ -49,10 +49,6 @@ export const postDraft = (inputs, timeInputs, toggleState, attachFiles, handleCl
 
         let { eyetrack, timeAttack } = toggleState;
         let time_limit = 0;
-
-        /** 나중에 json으로 받아올 데이터 !!*/
-        const contents_data = null;
-        const file_url = null;
 
         if (timeAttack) {
             time_limit = MinutetoSecond(mm, ss);
@@ -64,6 +60,14 @@ export const postDraft = (inputs, timeInputs, toggleState, attachFiles, handleCl
             eyetrack = 0;
         }
 
+        //직접 생성 vs file업로드
+        let contents_data;
+        if (selfCreate) {
+            contents_data = '{ "json" : "json" }';
+        } else {
+            contents_data = null;
+        }
+
         const result = await Axios.post(
             `${apiUrl}/assignment-draft`,
             {
@@ -72,7 +76,6 @@ export const postDraft = (inputs, timeInputs, toggleState, attachFiles, handleCl
                 time_limit: time_limit,
                 eyetrack: eyetrack,
                 contents_data: contents_data,
-                file_url: file_url,
             },
             { withCredentials: true },
         ); // API 호출
@@ -81,7 +84,14 @@ export const postDraft = (inputs, timeInputs, toggleState, attachFiles, handleCl
         const academy_code = result['data']['academy_code'];
         const teacher_id = result['data']['teacher_id'];
 
-        const { file_name } = await Axios.post(`${apiUrl}/files/requests-contents/${idx}`, attachFiles, { withCredentials: true });
+        //직접 생성 vs file업로드
+        let file_url;
+        if (!attachFiles) {
+            const { file_name } = await Axios.post(`${apiUrl}/files/requests-contents/${idx}`, attachFiles, { withCredentials: true });
+            file_url = file_name;
+        } else {
+            file_url = null;
+        }
 
         let postData = {
             idx: idx,
@@ -148,7 +158,6 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, handleClos
         };
 
         dispatch({ type: PATCH_DRAFT_SUCCESS, patchData }); // 성공
-        handleClose(e);
     } catch (e) {
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패
     }
