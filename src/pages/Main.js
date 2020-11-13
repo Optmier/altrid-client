@@ -160,10 +160,10 @@ function Main({ history }) {
                                 <Button size="large" variant="outlined" startIcon={<GroupAddIcon />} onClick={toggleAddTeacherDrawer(true)}>
                                     선생님 추가하기
                                 </Button>
-                                <button type="button" onClick={onAssignmentCardItemClick(3, 11, '시선흐름 측정이 있는 과제 샘플')}>
+                                <button type="button" onClick={onAssignmentCardItemClick(3, 10, '시선흐름 측정이 있는 과제 샘플')}>
                                     학생용 시선흐름 있는 테스트 창 열기
                                 </button>
-                                <button type="button" onClick={onAssignmentCardItemClick(4, 11, '시선흐름 측정이 없는 과제 샘플')}>
+                                <button type="button" onClick={onAssignmentCardItemClick(4, 10, '시선흐름 측정이 없는 과제 샘플')}>
                                     학생용 시선흐름 없는 테스트 창 열기
                                 </button>
                             </div>
