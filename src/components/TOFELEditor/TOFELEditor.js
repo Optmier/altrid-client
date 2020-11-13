@@ -132,7 +132,7 @@ const PreviewContainer = styled.div`
     height: 750px;
 `;
 
-function TOFELEditor({ id, datas, requestFile, history, children, ...rest }) {
+function TOFELEditor({ id, datas, requestFile, mode, onChange, onClose, history, children, ...rest }) {
     const quillRef = useRef();
 
     const [metadata, setMetadata] = useState(datas);
@@ -297,6 +297,7 @@ function TOFELEditor({ id, datas, requestFile, history, children, ...rest }) {
 
     useEffect(() => {
         // console.log('최종 컨텐츠 데이터:: ', metadata);
+        onChange(metadata);
     }, [metadata]);
 
     useEffect(() => {
@@ -399,12 +400,20 @@ function TOFELEditor({ id, datas, requestFile, history, children, ...rest }) {
                         <Button color="inherit" onClick={handlePreviewOpen} style={{ minWidth: 128 }}>
                             미리보기(B)
                         </Button>
-                        <Button color="inherit" style={{ minWidth: 72 }} onClick={handleSaveContents}>
-                            저장(S)
-                        </Button>
-                        <Button color="inherit" style={{ minWidth: 72 }} onClick={handleDeleteContents}>
-                            삭제(D)
-                        </Button>
+                        {mode ? (
+                            <Button color="inherit" onClick={onClose}>
+                                확인
+                            </Button>
+                        ) : (
+                            <>
+                                <Button color="inherit" style={{ minWidth: 72 }} onClick={handleSaveContents}>
+                                    저장(S)
+                                </Button>
+                                <Button color="inherit" style={{ minWidth: 72 }} onClick={handleDeleteContents}>
+                                    삭제(D)
+                                </Button>
+                            </>
+                        )}
                     </EdToolbar>
                 </EdAppBar>
             </Header>
@@ -465,6 +474,7 @@ TOFELEditor.defaultProps = {
         problemDatas: [],
     },
     requestFile: undefined,
+    mode: false,
 };
 
 export default React.memo(withRouter(TOFELEditor));

@@ -4,6 +4,8 @@ import ToggleSwitch from './ToggleSwitch';
 import { useSelector, useDispatch } from 'react-redux';
 import { postDraft } from '../../redux_modules/assignmentDraft';
 import { withRouter } from 'react-router-dom';
+import { Button, Dialog } from '@material-ui/core';
+import TOFELEditor from '../TOFELEditor/TOFELEditor';
 
 function ClassDrawer({ handleClose }) {
     /** redux-state */
@@ -142,6 +144,16 @@ function ClassDrawer({ handleClose }) {
         handleClose(e);
     };
 
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [contentsData, setContentsData] = useState(undefined);
+    window.contentsData = contentsData;
+    const handleEditDialogOpen = () => {
+        setEditDialogOpen(true);
+    };
+    const handleEditDialogClose = () => {
+        setEditDialogOpen(false);
+    };
+
     if (loading) return <div style={{ width: '700px' }}>로딩 중!!!!</div>; // 로딩중이고 데이터 없을때만
     if (error) return <div>에러 발생!</div>;
     if (!data) return null;
@@ -194,6 +206,19 @@ function ClassDrawer({ handleClose }) {
                                 }}
                             />
                         </div>
+                        <Button type="button" onClick={handleEditDialogOpen}>
+                            직접 편집하기
+                        </Button>
+                        <Dialog fullScreen open={editDialogOpen} onClose={handleEditDialogClose}>
+                            <TOFELEditor
+                                mode
+                                onChange={(metadata) => {
+                                    console.log(metadata);
+                                    setContentsData(metadata);
+                                }}
+                                onClose={handleEditDialogClose}
+                            />
+                        </Dialog>
                     </div>
                 </div>
 
