@@ -92,7 +92,6 @@ export const postDraft = (inputs, timeInputs, toggleState, handleClose, e) => as
             contents_data: contents_data,
             file_url: file_url,
         };
-
         dispatch({ type: POST_DRAFT_SUCCESS, postData }); // 성공
     } catch (e) {
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패

@@ -59,7 +59,8 @@ const TimeItems = ({ title, mm, ss }) => {
 
 function CardDraft({ cardData, match }) {
     /** redux actived-state */
-    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
+    // const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
+    const data = [];
     const dispatch = useDispatch();
 
     /** 제한시간 분할(분,초) 메소드 */
@@ -94,7 +95,7 @@ function CardDraft({ cardData, match }) {
             if (due_date) {
                 //과제 게시하기 버튼 클릭
                 const { num } = match.params; //클래스 번호
-                dispatch(postActived(cardData, num, due_date));
+                //dispatch(postActived(cardData, num, due_date));
                 alert('과제 공유 완료되었습니다!');
                 setDateDialogopen(false);
             } else {
