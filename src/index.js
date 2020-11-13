@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Router } from 'react-router-dom';
 /** redux setup */
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
@@ -9,17 +9,19 @@ import rootReducer from './redux_modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { createLogger } from 'redux-logger';
 import ReduxThunk from 'redux-thunk';
+import { createBrowserHistory } from 'history';
 
+const customHistory = createBrowserHistory();
 const logger = createLogger();
-const reduxStore = createStore(rootReducer, applyMiddleware(logger, ReduxThunk));
+const reduxStore = createStore(rootReducer, composeWithDevTools(applyMiddleware(ReduxThunk.withExtraArgument({ history: customHistory }))));
 //const reduxStore = createStore(rootReducer, composeWithDevTools());
 
 ReactDOM.render(
-    <BrowserRouter>
+    <Router history={customHistory}>
         <Provider store={reduxStore}>
             <App />
         </Provider>
-    </BrowserRouter>,
+    </Router>,
     document.getElementById('root'),
 );
 

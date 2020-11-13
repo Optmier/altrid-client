@@ -2,6 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, withStyles } from '@material-ui/core';
+import moment from 'moment';
+import { changeDueDate } from '../../redux_modules/assignmentActived';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -60,14 +63,21 @@ const StyleModalShare = styled.div`
 `;
 
 function ClassDialoglDate({ subType }) {
-    const classes = useStyles();
+    /** redux state */
+    const dispatch = useDispatch();
 
+    const classes = useStyles();
+    const onChange = (e) => {
+        let { value } = e.target;
+
+        dispatch(changeDueDate(moment(value).format('YYYY-MM-DD HH:mm:ss')));
+    };
     return (
         <StyleModalShare>
             {subType === 'init' ? (
                 <>
                     <h4 className="modal-share-title">과제를 공유하시겠습니까?</h4>
-                    <p className="modal-share-subTitle">과제 공유 후에도 수정이 가능합니다.</p>
+                    <p className="modal-share-subTitle">과제 게시 후에도 기한수정이 가능합니다.</p>
                 </>
             ) : (
                 <>
@@ -80,9 +90,10 @@ function ClassDialoglDate({ subType }) {
                 <p>기한 설정</p>
                 <form className={classes.container} noValidate>
                     <DateTextField
+                        onChange={onChange}
                         id="datetime-local"
                         type="datetime-local"
-                        defaultValue="2020-05-24T10:30"
+                        defaultValue={moment().add('minutes', 5).format('YYYY-MM-DDTHH:mm')}
                         className={classes.textField}
                         InputLabelProps={{
                             shrink: true,

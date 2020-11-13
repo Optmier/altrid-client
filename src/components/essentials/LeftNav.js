@@ -78,7 +78,7 @@ function LeftNav({ match }) {
                                 fill="white"
                             />
                         </svg>
-                        <p>과제 공유</p>
+                        <p>과제 게시판</p>
                     </LeftNavItem>
                 </div>
             </div>

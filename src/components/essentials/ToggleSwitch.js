@@ -104,6 +104,7 @@ const DrawerSwitch = withStyles((theme) => ({
 //toggle : toggle 초기 state -> true, false
 //name :
 function ToggleSwitch({ type, toggle, handleToggleChange, name }) {
+    toggle ? (toggle = true) : (toggle = false);
     return (
         <div style={{ display: 'inline' }}>
             <StyleToggle>

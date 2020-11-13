@@ -6,7 +6,7 @@ import ClassDialoglDate from './ClassDialoglDate';
 import ClassDialogTest from './ClassDialogTest';
 import styled from 'styled-components';
 
-const StyleModalButton = styled.div`
+const StyleModalButton = styled.button`
     cursor: pointer;
     border-radius: 11px;
     padding: 0.5rem 2rem;
@@ -17,7 +17,7 @@ const StyleModalButton = styled.div`
 
 function ClassDialog({ type, subType, open, handleDialogClose }) {
     /** class-modal 메소드 */
-    // type 4가지 : date-init(과제 공유), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
+    // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
 
     return (
         <Dialog open={open} onClose={handleDialogClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
@@ -27,10 +27,10 @@ function ClassDialog({ type, subType, open, handleDialogClose }) {
                 </DialogContent>
 
                 <DialogActions>
-                    <StyleModalButton onClick={handleDialogClose} color="primary">
+                    <StyleModalButton name="button" onClick={handleDialogClose} color="primary">
                         {type === 'date'
                             ? subType === 'init'
-                                ? '공유하기'
+                                ? '게시하기'
                                 : '수정하기'
                             : subType === 'init'
                             ? '완료하기'

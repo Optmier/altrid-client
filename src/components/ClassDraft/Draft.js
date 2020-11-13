@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import CardDraft from './CardDraft';
 import CardAddNew from '../essentials/CardAddNew';
 import CardLists from '../essentials/CardLists';
@@ -7,26 +6,28 @@ import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
 import ClassHeaderBox from '../essentials/ClassHeaderBox';
-import assignmentDummy from '../../datas/assignmentDummy.json';
-import { apiUrl } from '../../configs/configs';
 import { useSelector, useDispatch } from 'react-redux';
-import { getDraft } from '../../redux_modules/assignmentDraft';
+import { getDrafts } from '../../redux_modules/assignmentDraft';
+import { withRouter } from 'react-router-dom';
+import ClassWrapper from '../essentials/ClassWrapper';
 
 function Draft() {
     /** redux state */
-    const datas = useSelector((state) => state.assignmentDraft);
+    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
+        loading: false,
+        data: null,
+        error: null,
+    }; // 아예 데이터가 존재하지 않을 때가 있으므로, 비구조화 할당이 오류나지 않도록
     const dispatch = useDispatch();
 
+    // cardDatas get함수 통해서 불러오기
+    let cardDatas = {};
     useEffect(() => {
-        dispatch(getDraft());
+        dispatch(getDrafts());
     }, [dispatch]);
 
-    let obj = datas.draftData;
-
-    window.obj = obj;
-
-    console.log('redux-store', obj.data);
-    let draftArr = [];
+    // cardDatas 변수에 불러온 값 저장하기
+    data ? (cardDatas = data) : (cardDatas = {});
 
     /** draft.js 자체 메소드 */
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
@@ -38,22 +39,14 @@ function Draft() {
         setOpenCreateNewDrawer(open);
     };
 
-    // const [draftArr, setDraftArr] = useState([]);
-    // useEffect(() => {
-    //     Axios.get(`${apiUrl}/assignment-draft`, { withCredentials: true })
-    //         .then((res) => {
-    //             setDraftArr(res.data);
-    //         })
-    //         .catch((err) => {
-    //             console.error(err.response.data.code);
-    //         });
-    //     return () => {};
-    // }, []);
+    if (loading && !data) return <div>로딩 중....</div>; // 로딩중이고 데이터 없을때만
+    if (error) return <div>에러 발생!</div>;
+    if (!data) return null;
 
     return (
         <>
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
-                <ClassDrawer />
+                <ClassDrawer handleClose={toggleDrawer(false)} />
             </Drawer>
 
             <ClassHeaderBox />
@@ -64,17 +57,17 @@ function Draft() {
                         upperDeck={
                             <div className="class-title">
                                 <b>최준영</b>
-                                선생님이 만든 과제는 총 <b>5개</b>입니다.
+                                선생님이 만든 과제는 총 <b>{cardDatas.length}개</b>입니다.
                             </div>
                         }
                     >
                         <CardRoot cardHeight="281px">
-                            <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
+                            <CardAddNew onClick={toggleDrawer(true)}>과제 생성</CardAddNew>
                         </CardRoot>
 
-                        {draftArr.map((data, idx) => (
+                        {Object.keys(cardDatas).map((i, idx) => (
                             <CardRoot key={idx} cardHeight="281px">
-                                <CardDraft testNum={data} cardData={data} />
+                                <CardDraft testNum={data[i]['idx']} cardData={data[i]} />
                             </CardRoot>
                         ))}
                     </CardLists>
@@ -84,4 +77,4 @@ function Draft() {
     );
 }
 
-export default Draft;
+export default React.memo(withRouter(Draft));
