@@ -6,10 +6,18 @@ import { postDraft } from '../../redux_modules/assignmentDraft';
 import { withRouter } from 'react-router-dom';
 
 function ClassDrawer({ handleClose }) {
+    /** 과제 생성 state */
+    const [selfCreate, setSelfCreate] = useState(false);
+    const [attachFiles, setAttachFiles] = useState(new FormData());
+    const [contentsData, setContentsData] = useState(null);
+
+    const handleChecked = () => {
+        setSelfCreate(!selfCreate);
+    };
+
     /** redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
     const dispatch = useDispatch();
-    const [attachFiles, setAttachFiles] = useState(new FormData());
 
     let titleArr = [];
     if (!titleArr) {
@@ -138,9 +146,15 @@ function ClassDrawer({ handleClose }) {
         }
 
         //3. axios-post 작업
-        dispatch(postDraft(inputs, timeInputs, toggleState, attachFiles, handleClose, e));
+        if (selfCreate) {
+            console.log('직접생성!');
+            setContentsData('{ "json" : "json" }');
+        }
+        console.log(contentsData);
+        dispatch(postDraft(inputs, timeInputs, toggleState, attachFiles, contentsData, handleClose, e));
         handleClose(e);
     };
+    console.log(contentsData);
 
     if (loading) return <div style={{ width: '700px' }}>로딩 중!!!!</div>; // 로딩중이고 데이터 없을때만
     if (error) return <div>에러 발생!</div>;
@@ -192,6 +206,18 @@ function ClassDrawer({ handleClose }) {
                                     if (!name) return;
                                     attachFiles.append(name, value, fileName);
                                 }}
+                            />
+                        </div>
+                    </div>
+                    <div className="drawer-input">
+                        <div>
+                            직접 생성{' '}
+                            <input
+                                type="checkbox"
+                                name="chk_info"
+                                value="create_assignment_self"
+                                defaultChecked={selfCreate}
+                                onClick={handleChecked}
                             />
                         </div>
                     </div>
