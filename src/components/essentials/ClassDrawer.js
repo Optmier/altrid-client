@@ -9,6 +9,7 @@ function ClassDrawer({ handleClose }) {
     /** redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
     const dispatch = useDispatch();
+    const [attachFiles, setAttachFiles] = useState(new FormData());
 
     let titleArr = [];
     if (!titleArr) {
@@ -137,7 +138,7 @@ function ClassDrawer({ handleClose }) {
         }
 
         //3. axios-post 작업
-        dispatch(postDraft(inputs, timeInputs, toggleState, handleClose, e));
+        dispatch(postDraft(inputs, timeInputs, toggleState, attachFiles, handleClose, e));
         handleClose(e);
     };
 
@@ -182,6 +183,16 @@ function ClassDrawer({ handleClose }) {
                                     fill="#969393"
                                 />
                             </svg>
+                            <input
+                                type="file"
+                                onChange={({ target }) => {
+                                    const name = target.files[0].name;
+                                    const value = target.files[0];
+                                    const fileName = target.files[0].name;
+                                    if (!name) return;
+                                    attachFiles.append(name, value, fileName);
+                                }}
+                            />
                         </div>
                     </div>
                 </div>

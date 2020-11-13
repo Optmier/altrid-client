@@ -40,7 +40,7 @@ export const getDrafts = () => async (dispatch) => {
     }
 };
 export const getDraft = (idx) => async (dispatch) => {};
-export const postDraft = (inputs, timeInputs, toggleState, handleClose, e) => async (dispatch) => {
+export const postDraft = (inputs, timeInputs, toggleState, attachFiles, handleClose, e) => async (dispatch) => {
     dispatch({ type: POST_DRAFT }); // 요청이 시작됨
 
     try {
@@ -80,6 +80,8 @@ export const postDraft = (inputs, timeInputs, toggleState, handleClose, e) => as
         const idx = result['data']['result2'][0]['LAST_INSERT_ID()'];
         const academy_code = result['data']['academy_code'];
         const teacher_id = result['data']['teacher_id'];
+
+        const { file_name } = await Axios.post(`${apiUrl}/files/requests-contents/${idx}`, attachFiles, { withCredentials: true });
 
         let postData = {
             idx: idx,
