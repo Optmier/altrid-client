@@ -18,6 +18,7 @@ import ColumnChartProblem from '../essentials/ColumnChartProblem';
 import ColumnChartType from '../essentials/ColumnChartType';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
+import moment from 'moment-timezone';
 
 const pad = (n, width) => {
     n = n + '';
@@ -64,18 +65,24 @@ function ReportClass({ match }) {
     // type 4가지 : date-init(과제 공유), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
     const [testDialogopen, setTestDialogopen] = useState(false);
+    /** 메인 데이터 및 각 요소 */
     const [mainReportData, setMainReportData] = useState(undefined);
-    /** 메인 데이터 각 요소 */
     // 과제 제목
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState('');
     // 과제 한 줄 설명
-    const [description, setDescription] = useState("");
+    const [description, setDescription] = useState('');
     // 시선흐름 측정 여부
     const [eyetrack, setEyetrack] = useState(false);
     // 문항 수
     const [problemNumbers, setProblemNumbers] = useState(0);
     // 제한 시간 (초)
     const [timeLimit, setTimeLimit] = useState(0);
+    // 과제 시작 날짜
+    const [startDate, setStartDate] = useState(null);
+    // 과제 종료 날짜
+    const [dueDate, setDueDate] = useState(null);
+    /** 학생별 데이터 및 각 요소 */
+    const [studentsData, setStudentsData] = useState([]);
 
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
@@ -90,7 +97,7 @@ function ReportClass({ match }) {
 
     /** toggle state */
     const [toggleState, setToggleState] = useState({
-        checked: assignmentDummy[activedNum]['progress'],
+        checked: false,
     });
     const [subTypeState, setSubTypeState] = useState('init');
 
@@ -117,44 +124,109 @@ function ReportClass({ match }) {
         // 메인 정보 불러오기
         const { num, activedNum } = match.params;
         console.log(num, activedNum);
-        Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, {withCredentials: true})
-        .then(res => {
-            console.log(res);
-            let unparsedContentsData = res.data.contents_data;
-            try {
-                unparsedContentsData
-                .replace(/\\n/g, '\\n')
-                .replace(/\\'/g, "\\'")
-                .replace(/\\"/g, '\\"')
-                .replace(/\\&/g, '\\&')
-                .replace(/\\r/g, '\\r')
-                .replace(/\\t/g, '\\t')
-                .replace(/\\b/g, '\\b')
-                .replace(/\\f/g, '\\f')
-                .replace(/[\u0000-\u0019]+/g, '');
-            } catch(e) {
-                unparsedContentsData = null;
-            }
-            setMainReportData({...res.data, contents_data: JSON.parse(unparsedContentsData)})
+        Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, { withCredentials: true })
+            .then((res) => {
+                console.log(res);
+                let unparsedContentsData = res.data.contents_data;
+                try {
+                    unparsedContentsData
+                        .replace(/\\n/g, '\\n')
+                        .replace(/\\'/g, "\\'")
+                        .replace(/\\"/g, '\\"')
+                        .replace(/\\&/g, '\\&')
+                        .replace(/\\r/g, '\\r')
+                        .replace(/\\t/g, '\\t')
+                        .replace(/\\b/g, '\\b')
+                        .replace(/\\f/g, '\\f')
+                        .replace(/[\u0000-\u0019]+/g, '');
+                } catch (e) {
+                    unparsedContentsData = null;
+                }
+                setMainReportData({ ...res.data, contents_data: JSON.parse(unparsedContentsData) });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+
+        // 학생별 정보 불러오기
+        Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
+            params: {
+                order: 1,
+            },
+            withCredentials: true,
         })
-        .catch(err => { 
-            console.error(err);
-        })
+            .then((res) => {
+                console.log(res);
+                const convertedData = res.data.map((data) => {
+                    let unparsedUserData = data.user_data;
+                    try {
+                        unparsedUserData
+                            .replace(/\\n/g, '\\n')
+                            .replace(/\\'/g, "\\'")
+                            .replace(/\\"/g, '\\"')
+                            .replace(/\\&/g, '\\&')
+                            .replace(/\\r/g, '\\r')
+                            .replace(/\\t/g, '\\t')
+                            .replace(/\\b/g, '\\b')
+                            .replace(/\\f/g, '\\f')
+                            .replace(/[\u0000-\u0019]+/g, '');
+                    } catch (e) {
+                        unparsedUserData = null;
+                    }
+                    let unparsedEyetrackData = data.eyetrack_data;
+                    try {
+                        unparsedEyetrackData
+                            .replace(/\\n/g, '\\n')
+                            .replace(/\\'/g, "\\'")
+                            .replace(/\\"/g, '\\"')
+                            .replace(/\\&/g, '\\&')
+                            .replace(/\\r/g, '\\r')
+                            .replace(/\\t/g, '\\t')
+                            .replace(/\\b/g, '\\b')
+                            .replace(/\\f/g, '\\f')
+                            .replace(/[\u0000-\u0019]+/g, '');
+                    } catch (e) {
+                        unparsedEyetrackData = null;
+                    }
+                    return {
+                        ...data,
+                        user_data: JSON.parse(unparsedUserData),
+                        eyetrack_data: JSON.parse(unparsedEyetrackData),
+                    };
+                });
+                setStudentsData(convertedData);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     }, []);
 
     useEffect(() => {
-        if(!mainReportData) return;
+        if (!mainReportData) return;
         console.log(mainReportData);
         setTitle(mainReportData.title);
         setDescription(mainReportData.description);
         setEyetrack(mainReportData.eyetrack);
         setTimeLimit(mainReportData.time_limit);
+        setStartDate(moment(mainReportData.created).format('MM.DD HH:mm'));
+        setDueDate(moment(mainReportData.due_date).format('MM.DD HH:mm'));
 
-        if(mainReportData.contents_data) {
+        if (new Date() >= new Date(moment(mainReportData.due_date).format())) {
+            setToggleState({ checked: false });
+        } else {
+            setToggleState({ checked: true });
+        }
+
+        if (mainReportData.contents_data) {
             const contentsData = mainReportData.contents_data;
             setProblemNumbers(contentsData.problemDatas.length);
         }
     }, [mainReportData]);
+
+    useEffect(() => {
+        if (!studentsData || studentsData.length < 1) return;
+        console.log(studentsData);
+    }, [studentsData]);
 
     return (
         <div style={{ paddingBottom: '200px' }}>
@@ -195,14 +267,14 @@ function ReportClass({ match }) {
                             <div className="report-col">
                                 <div className="mid-mid">
                                     <span className="mid-desc">제한 시간</span>
-                                    <span className="mid-content">{timeLimit === -2 ? "없음" : timeValueToTimer(timeLimit)}</span>
+                                    <span className="mid-content">{timeLimit === -2 ? '없음' : timeValueToTimer(timeLimit)}</span>
                                 </div>
                             </div>
                             <div className="report-col">
                                 <div className="mid-mid">
                                     <span className="mid-desc">과제 기한</span>
                                     <span className="mid-content">
-                                        {assignmentDummy[activedNum]['start']} ~ {assignmentDummy[activedNum]['start']}
+                                        {startDate} ~ {dueDate}
                                     </span>
                                     <ModifyButton handleDateChange={handleDateChange} />
                                 </div>
