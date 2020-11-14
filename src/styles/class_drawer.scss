@@ -1,3 +1,4 @@
+$primaryColor: #13e2a1;
 .class-drawer-root {
     padding: 50px 80px 50px 80px;
     height: 100%;
@@ -6,14 +7,24 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-
     & .drawer-title {
-        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    & .class-drawer-block + .class-drawer-block {
+        margin-top: 2rem;
     }
     & .drawer-subTitle {
         color: #969393;
-        padding-bottom: 2.5rem;
-        font-size: 0.9rem;
+        padding-bottom: 0.5rem;
+        font-size: 1rem;
+        display: flex;
+        justify-content: space-between;
+
+        & .drawer-select-name {
+            font-size: 0.85rem;
+            color: black;
+            text-decoration: underline;
+        }
     }
 
     & .drawer-inputs {
@@ -40,17 +51,6 @@
                 padding: 1.3rem;
                 border-radius: 11px;
             }
-
-            & .input-upload {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border-radius: 11px;
-                width: 100%;
-                height: 120px;
-                background-color: #f6f7f9;
-            }
-
             & .drawer-error {
                 width: 100%;
                 padding: 0.5rem 1rem 0 1rem;
@@ -61,12 +61,71 @@
             }
         }
     }
+    .drawer-selects {
+        display: flex;
+        & input[type='file'] {
+            /* 파일 필드 숨기기 */
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        & #file-click {
+            pointer-events: none;
+        }
+
+        & .drawer-select + .drawer-select {
+            margin-left: 1rem;
+        }
+        & .drawer-select {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #f6f7f9;
+            border-radius: 11px;
+            width: 50%;
+            height: 220px;
+            box-sizing: border-box;
+            padding: 1rem 2rem;
+
+            & svg {
+                pointer-events: none;
+                width: 40px;
+                height: 40px;
+                margin-bottom: 1rem;
+            }
+            & h4 {
+                pointer-events: none;
+                margin: 0 0 0.2rem 0;
+                font-size: 0.9rem;
+            }
+            & p {
+                pointer-events: none;
+                color: #4c8573;
+                margin: 0;
+                font-size: 0.75rem;
+            }
+        }
+
+        & .drawer-select:hover {
+            background-color: #13e2a11f;
+            box-sizing: border-box;
+            border: 1.5px solid $primaryColor;
+        }
+    }
 
     & .drawer-toggle {
-        margin-top: 2rem;
         display: flex;
         align-items: flex-start;
         justify-content: flex-start;
+        padding: 0.75rem 1.5rem;
 
         & > span {
             width: 50%;
@@ -74,7 +133,7 @@
             align-items: center;
             justify-content: flex-start;
             & > p {
-                font-size: 1rem;
+                font-size: 0.9rem;
                 color: #969393;
                 margin-right: 1rem;
             }
@@ -87,14 +146,14 @@
                 justify-content: flex-start;
                 margin-right: 1rem;
                 & > input {
-                    font-size: 1rem;
+                    font-size: 0.9rem;
                     color: black;
                     width: 25px;
                     height: 25px;
                     text-align: center;
                 }
                 & > input::placeholder {
-                    font-size: 1rem;
+                    font-size: 0.9rem;
                     color: #969393;
                 }
             }
@@ -110,7 +169,7 @@
         display: flex;
         align-items: flex-end;
         justify-content: flex-end;
-        margin-top: 3rem;
+        margin-top: 4.5rem;
         font-size: 0.8rem;
         font-weight: 600;
 

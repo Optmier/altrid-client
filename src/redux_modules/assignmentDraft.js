@@ -40,7 +40,7 @@ export const getDrafts = () => async (dispatch) => {
     }
 };
 export const getDraft = (idx) => async (dispatch) => {};
-export const postDraft = (inputs, timeInputs, toggleState, attachFiles, selfCreate, handleClose, e) => async (dispatch) => {
+export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e) => async (dispatch) => {
     dispatch({ type: POST_DRAFT }); // 요청이 시작됨
 
     try {
@@ -60,12 +60,9 @@ export const postDraft = (inputs, timeInputs, toggleState, attachFiles, selfCrea
             eyetrack = 0;
         }
 
-        //직접 생성 vs file업로드
-        let contents_data;
-        if (selfCreate) {
-            contents_data = '{ "json" : "json" }';
-        } else {
-            contents_data = null;
+        //파일 업로드 선택시,
+        if (selectState === 'left') {
+            contentsData = null;
         }
 
         const result = await Axios.post(
@@ -75,7 +72,7 @@ export const postDraft = (inputs, timeInputs, toggleState, attachFiles, selfCrea
                 description: description,
                 time_limit: time_limit,
                 eyetrack: eyetrack,
-                contents_data: contents_data,
+                contents_data: JSON.stringify(contentsData),
             },
             { withCredentials: true },
         ); // API 호출
@@ -84,13 +81,11 @@ export const postDraft = (inputs, timeInputs, toggleState, attachFiles, selfCrea
         const academy_code = result['data']['academy_code'];
         const teacher_id = result['data']['teacher_id'];
 
-        //직접 생성 vs file업로드
-        let file_url;
-        if (!attachFiles) {
-            const { file_name } = await Axios.post(`${apiUrl}/files/requests-contents/${idx}`, attachFiles, { withCredentials: true });
-            file_url = file_name;
-        } else {
-            file_url = null;
+        //파일 업로드 선택시,
+        let file_url = null;
+        if (selectState === 'left') {
+            const result = await Axios.post(`${apiUrl}/files/requests-contents/${idx}`, attachFiles, { withCredentials: true });
+            file_url = result.data.file_name;
         }
 
         let postData = {
@@ -101,7 +96,7 @@ export const postDraft = (inputs, timeInputs, toggleState, attachFiles, selfCrea
             description: description,
             time_limit: time_limit,
             eyetrack: eyetrack,
-            contents_data: contents_data,
+            contents_data: contentsData,
             file_url: file_url,
         };
         dispatch({ type: POST_DRAFT_SUCCESS, postData }); // 성공
