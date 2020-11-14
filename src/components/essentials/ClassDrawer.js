@@ -215,6 +215,7 @@ function ClassDrawer({ handleClose }) {
                                     placeholder="과제 이름"
                                     onChange={onInputChange}
                                     onBlur={onInputOut}
+                                ></input>
                                 <div className="drawer-error">{title_error}</div>
                             </div>
                             <div className="drawer-input">
