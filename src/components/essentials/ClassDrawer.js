@@ -6,6 +6,13 @@ import { postDraft } from '../../redux_modules/assignmentDraft';
 import { withRouter } from 'react-router-dom';
 import { Dialog } from '@material-ui/core';
 import TOFELEditor from '../TOFELEditor/TOFELEditor';
+import styled from 'styled-components';
+
+const StyleSelectdiv = styled.div`
+    font-size: 0.85rem;
+    text-decoration: underline;
+    color: ${(props) => (props.mode === '생성방법을 선택해주세요!' ? 'red' : 'black')};
+`;
 
 function ClassDrawer({ handleClose }) {
     /** 과제 생성 state */
@@ -28,7 +35,7 @@ function ClassDrawer({ handleClose }) {
     };
     const handleChangeFile = (e) => {
         if (!e.target.files[0]) {
-            setSelectName('');
+            setSelectName('생성방법을 선택해주세요!');
             return;
         }
         const name = e.target.files[0].name;
@@ -74,10 +81,11 @@ function ClassDrawer({ handleClose }) {
     const [inputsError, setInputsError] = useState({
         title_error: '',
         description_error: '',
+        time_error: '',
     });
 
     const { title, description } = inputs;
-    const { title_error, description_error } = inputsError;
+    const { title_error, description_error, time_error } = inputsError;
 
     const onInputChange = (e) => {
         const { value, name } = e.target;
@@ -124,11 +132,16 @@ function ClassDrawer({ handleClose }) {
 
     //2. time-input
     const [timeInputs, setTimeInputs] = useState({
-        mm: '',
-        ss: '',
+        mm: '--',
+        ss: '--',
     });
     const { mm, ss } = timeInputs;
     const onTimeChange = (e) => {
+        setInputsError({
+            ...inputsError,
+            time_error: '',
+        });
+
         const { value, name } = e.target;
         if (value.length > '2') {
             return 0;
@@ -142,22 +155,35 @@ function ClassDrawer({ handleClose }) {
 
     /** toggle-state 상태 관리 */
     const [toggleState, setToggleState] = useState({
-        eyetrack: true,
-        timeAttack: true,
+        eyetrack: false,
+        timeAttack: false,
     });
 
     const handleChange = (event) => {
-        setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
+        const { checked, name } = event.target;
 
-        if (!event.target.checked && event.target.name === 'timeAttack') {
-            setTimeInputs({
-                mm: '--',
-                ss: '--',
-            });
-        } else if (event.target.checked && event.target.name === 'timeAttack') {
+        //eyetrack의 경우 켜지면 둘다 on, 꺼지면 eyetrack만 off
+        if (name === 'eyetrack' && checked === true) {
+            setToggleState({ ...toggleState, eyetrack: true, timeAttack: true });
+        } else if (name === 'eyetrack' && checked === false) {
+            setToggleState({ ...toggleState, [name]: checked });
+        } else if (name === 'timeAttack' && checked === true) {
+            setToggleState({ ...toggleState, [name]: checked });
+        } else if (name === 'timeAttack' && checked === false) {
+            if (toggleState['eyetrack'] === false) {
+                setToggleState({ ...toggleState, [name]: checked });
+            }
+        }
+
+        if (checked === true) {
             setTimeInputs({
                 mm: '',
                 ss: '',
+            });
+        } else if (checked === false && name === 'timeAttack') {
+            setTimeInputs({
+                mm: '--',
+                ss: '--',
             });
         }
     };
@@ -186,9 +212,24 @@ function ClassDrawer({ handleClose }) {
             return;
         }
 
-        //3. axios-post 작업
+        //3. 생성방법 선택
+        if (selectState === '') {
+            setSelectName('생성방법을 선택해주세요!');
+            return;
+        }
+
+        //4. 제한시간 설정
+        if (toggleState['eyetrack'] && !timeInputs['mm'] && !timeInputs['ss']) {
+            setInputsError({
+                ...inputsError,
+                time_error: '최소시간을 넘겨주세요!',
+            });
+            return;
+        }
+
+        //4. axios-post 작업
         dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e));
-        //handleClose(e);
+        handleClose(e);
     };
 
     if (loading) return <div style={{ width: '700px' }}>로딩 중!!!!</div>; // 로딩중이고 데이터 없을때만
@@ -232,7 +273,10 @@ function ClassDrawer({ handleClose }) {
                         </div>
                     </div>
                     <div className="class-drawer-block">
-                        <p className="drawer-subTitle">2. 과제의 선택적인 정보를 입력해주세요.</p>
+                        <div className="drawer-subTitle">
+                            2. 과제의 선택적인 정보를 입력해주세요.
+                            {toggleState['eyetrack'] ? <StyleSelectdiv>시선흐름 측정시, 제한시간은 필수사항입니다.</StyleSelectdiv> : ''}
+                        </div>
                         <div className="drawer-toggle">
                             <span>
                                 <p>시선흐름 측정</p>
@@ -275,12 +319,15 @@ function ClassDrawer({ handleClose }) {
                                 />
                             </span>
                         </div>
+                        <div className="drawer-error" style={{ textAlign: 'right', padding: '0 1.5rem 0 0' }}>
+                            {time_error}
+                        </div>
                     </div>
 
                     <div className="class-drawer-block">
                         <div className="drawer-subTitle">
                             3. 과제 생성 방법을 선택해주세요.
-                            <div className="drawer-select-name">{selectName}</div>
+                            <StyleSelectdiv mode={selectName}>{selectName}</StyleSelectdiv>
                         </div>
                         <div className="drawer-selects">
                             <input id="file-click" type="file" onChange={handleChangeFile} />
@@ -315,6 +362,7 @@ function ClassDrawer({ handleClose }) {
                                 <p>과제를 바로 제작하고 싶으시다면, 자체 에디터를 통해 문제 생성이 가능합니다.</p>
                             </label>
                         </div>
+                        <div className="drawer-select-warn">** 과제 업로드의 경우, 웹 view로 변환하는데 조금의 시간이 소요됩니다.</div>
                     </div>
                 </div>
 

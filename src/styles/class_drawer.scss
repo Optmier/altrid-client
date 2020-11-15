@@ -7,6 +7,16 @@ $primaryColor: #13e2a1;
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
+
+    & .drawer-error {
+        width: 100%;
+        padding: 0.5rem 1rem 0 1rem;
+        box-sizing: border-box;
+        font-size: 0.75rem;
+        color: red;
+        font-weight: 400;
+    }
+
     & .drawer-title {
         margin-bottom: 1.5rem;
     }
@@ -19,12 +29,7 @@ $primaryColor: #13e2a1;
         font-size: 1rem;
         display: flex;
         justify-content: space-between;
-
-        & .drawer-select-name {
-            font-size: 0.85rem;
-            color: black;
-            text-decoration: underline;
-        }
+        align-items: center;
     }
 
     & .drawer-inputs {
@@ -50,14 +55,6 @@ $primaryColor: #13e2a1;
                 color: black;
                 padding: 1.3rem;
                 border-radius: 11px;
-            }
-            & .drawer-error {
-                width: 100%;
-                padding: 0.5rem 1rem 0 1rem;
-                box-sizing: border-box;
-                font-size: 0.75rem;
-                color: red;
-                font-weight: 400;
             }
         }
     }
@@ -119,6 +116,11 @@ $primaryColor: #13e2a1;
             box-sizing: border-box;
             border: 1.5px solid $primaryColor;
         }
+    }
+    & .drawer-select-warn {
+        font-size: 0.75rem;
+        font-weight: 400;
+        padding: 0.5rem 0 0 0.5rem;
     }
 
     & .drawer-toggle {

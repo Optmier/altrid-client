@@ -64,6 +64,10 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
         if (selectState === 'left') {
             contentsData = null;
         }
+        //직성 생성 선택시,
+        else {
+            contentsData = JSON.stringify(contentsData);
+        }
 
         const result = await Axios.post(
             `${apiUrl}/assignment-draft`,
@@ -72,7 +76,7 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
                 description: description,
                 time_limit: time_limit,
                 eyetrack: eyetrack,
-                contents_data: JSON.stringify(contentsData),
+                contents_data: contentsData,
             },
             { withCredentials: true },
         ); // API 호출
