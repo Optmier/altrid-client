@@ -9,7 +9,6 @@ import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector, useDispatch } from 'react-redux';
 import { getDrafts } from '../../redux_modules/assignmentDraft';
 import { withRouter } from 'react-router-dom';
-import ClassWrapper from '../essentials/ClassWrapper';
 
 function Draft() {
     /** redux state */
@@ -46,7 +45,7 @@ function Draft() {
     return (
         <>
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
-                <ClassDrawer handleClose={toggleDrawer(false)} />
+                <ClassDrawer handleClose={toggleDrawer(false)} mode="draft" />
             </Drawer>
 
             <ClassHeaderBox />

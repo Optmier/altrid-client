@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/class_drawer.scss';
 import ToggleSwitch from './ToggleSwitch';
 import { useSelector, useDispatch } from 'react-redux';
-import { postDraft, patchDraft } from '../../redux_modules/assignmentDraft';
+import { postDraft } from '../../redux_modules/assignmentDraft';
 import { withRouter } from 'react-router-dom';
 import { Dialog } from '@material-ui/core';
 import TOFELEditor from '../TOFELEditor/TOFELEditor';
 import styled from 'styled-components';
-import { SecondtoMinute } from './TimeChange';
 
 const StyleSelectdiv = styled.div`
     font-size: 0.85rem;
     text-decoration: underline;
-    color: ${(props) => (props.errorCheck === '생성방법을 선택해주세요!' ? 'red' : 'black')};
+    color: ${(props) => (props.mode === '생성방법을 선택해주세요!' ? 'red' : 'black')};
 `;
 
-//mode : draft(생성), modift(수정)
-function ClassDrawer({ handleClose, cardData, mode }) {
+function ClassDrawer({ handleClose }) {
     /** redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
     const dispatch = useDispatch();
@@ -75,8 +73,8 @@ function ClassDrawer({ handleClose, cardData, mode }) {
     /** 여러개 input 상태 관리 */
     //1. text-input
     const [inputs, setInputs] = useState({
-        title: mode === 'draft' ? '' : cardData['title'],
-        description: mode === 'draft' ? '' : cardData['description'],
+        title: '',
+        description: '',
     });
     const [inputsError, setInputsError] = useState({
         title_error: '',
@@ -118,26 +116,11 @@ function ClassDrawer({ handleClose, cardData, mode }) {
     };
 
     //2. time-input
-    let mmm, sss, time_limit;
-    if (mode === 'modify') {
-        if (cardData['time_limit'] === -1) {
-            mmm = '--';
-            sss = '--';
-            time_limit = false;
-        } else {
-            mmm = SecondtoMinute(cardData['time_limit'])[0];
-            sss = SecondtoMinute(cardData['time_limit'])[1];
-            time_limit = true;
-        }
-    }
-
     const [timeInputs, setTimeInputs] = useState({
-        mm: mode === 'draft' ? '--' : mmm,
-        ss: mode === 'draft' ? '--' : sss,
+        mm: '--',
+        ss: '--',
     });
-
     const { mm, ss } = timeInputs;
-
     const onTimeChange = (e) => {
         setInputsError({
             ...inputsError,
@@ -157,8 +140,8 @@ function ClassDrawer({ handleClose, cardData, mode }) {
 
     /** toggle-state 상태 관리 */
     const [toggleState, setToggleState] = useState({
-        eyetrack: mode === 'draft' ? false : cardData['eyetrack'],
-        timeAttack: mode === 'draft' ? false : time_limit,
+        eyetrack: false,
+        timeAttack: false,
     });
 
     const handleChange = (event) => {
@@ -167,6 +150,7 @@ function ClassDrawer({ handleClose, cardData, mode }) {
         //eyetrack의 경우 켜지면 둘다 on, 꺼지면 eyetrack만 off
         if (name === 'eyetrack' && checked === true) {
             setToggleState({ ...toggleState, eyetrack: true, timeAttack: true });
+
             setTimeInputs({
                 mm: '',
                 ss: '',
@@ -198,13 +182,7 @@ function ClassDrawer({ handleClose, cardData, mode }) {
     };
 
     /** 생성하기, 생성 및 공유하기 */
-    const onCardDraft = (e) => {};
-
-    /** card 정보 수정하기 */
-    const onCardModify = (e) => {};
-
-    /** 최종적으로 drawer input들 error 체크 */
-    const onDrawerErrorCheck = (e) => {
+    const onCardDraft = (e) => {
         //1. 제한시간 설정
         if (toggleState['timeAttack'] === true) {
             if (timeInputs['mm'] === '' && timeInputs['ss'] === '') {
@@ -231,7 +209,8 @@ function ClassDrawer({ handleClose, cardData, mode }) {
 
         //3. title 중복 체크
         if (title_error !== '') {
-            return console.log('아직 오류 중..');
+            console.log('아직 오류 중..');
+            return;
         }
 
         //4. 생성방법 선택
@@ -240,14 +219,8 @@ function ClassDrawer({ handleClose, cardData, mode }) {
             return;
         }
 
-        //5. axios 작업
-        if (mode === 'draft') {
-            console.log('insert!');
-            dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e));
-        } else if (mode === 'modify') {
-            console.log('modify!');
-            //dispatch(patchDraft(cardData, inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e));
-        }
+        //5. axios-post 작업
+        dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e));
         //handleClose(e);
     };
 
@@ -262,31 +235,11 @@ function ClassDrawer({ handleClose, cardData, mode }) {
             </Dialog>
             <div className="class-drawer-root">
                 <div style={{ width: '100%' }}>
-                    {mode === 'draft' ? (
-                        <h2 className="drawer-title">과제를 생성해보세요 :)</h2>
-                    ) : (
-                        <>
-                            <h2 className="drawer-modify-title">과제 수정이 가능합니다!</h2>
-                            <p className="drawer-modify-subTitle">
-                                수정된 정보는 <b style={{ fontWeight: '600' }}>이미 공유된 과제</b>에 반영되지 않습니다. 수정된 정보의
-                                반영을 원하시는 경우에는 다시 공유를 해주시길 바랍니다.
-                            </p>
-                        </>
-                    )}
+                    <h2 className="drawer-title">과제를 생성해보세요 :)</h2>
                     <div className="class-drawer-block">
                         <div className="drawer-subTitle">
-                            {mode === 'draft' ? (
-                                <>
-                                    1. 과제의 선택적인 정보를 입력해주세요.
-                                    {toggleState['eyetrack'] ? (
-                                        <StyleSelectdiv>시선흐름 측정시, 제한시간은 필수사항입니다.</StyleSelectdiv>
-                                    ) : (
-                                        ''
-                                    )}
-                                </>
-                            ) : (
-                                <StyleSelectdiv>* 시선흐름 측정시, 제한시간은 필수사항입니다.</StyleSelectdiv>
-                            )}
+                            1. 과제의 선택적인 정보를 입력해주세요.
+                            {toggleState['eyetrack'] ? <StyleSelectdiv>시선흐름 측정시, 제한시간은 필수사항입니다.</StyleSelectdiv> : ''}
                         </div>
                         <div className="drawer-toggle">
                             <span>
@@ -335,7 +288,7 @@ function ClassDrawer({ handleClose, cardData, mode }) {
                         </div>
                     </div>
                     <div className="class-drawer-block">
-                        {mode === 'draft' ? <p className="drawer-subTitle">2. 과제의 필수적인 정보를 입력해주세요.</p> : ''}
+                        <p className="drawer-subTitle">2. 과제의 필수적인 정보를 입력해주세요.</p>
                         <div className="drawer-inputs">
                             <div className="drawer-input">
                                 <input
@@ -363,8 +316,8 @@ function ClassDrawer({ handleClose, cardData, mode }) {
                     </div>
                     <div className="class-drawer-block">
                         <div className="drawer-subTitle">
-                            {mode === 'draft' ? <> 3. 과제 생성 방법을 선택해주세요.</> : ''}
-                            <StyleSelectdiv errorCheck={selectName}>{selectName}</StyleSelectdiv>
+                            3. 과제 생성 방법을 선택해주세요.
+                            <StyleSelectdiv mode={selectName}>{selectName}</StyleSelectdiv>
                         </div>
                         <div className="drawer-selects">
                             <input id="file-click" type="file" onChange={handleChangeFile} />
@@ -407,40 +360,16 @@ function ClassDrawer({ handleClose, cardData, mode }) {
                 </div>
 
                 <div className="drawer-footer">
-                    {mode === 'draft' ? (
-                        <>
-                            <button className="drawer-button" name="drawer-draft" onClick={onDrawerErrorCheck}>
-                                생성하기
-                            </button>
-                            <button className="drawer-button" name="drawer-share">
-                                생성 및 공유하기
-                            </button>
-                        </>
-                    ) : (
-                        <button className="drawer-button" name="drawer-share" onClick={onDrawerErrorCheck}>
-                            수정하기
-                        </button>
-                    )}
+                    <button className="drawer-button" name="drawer-draft" onClick={onCardDraft}>
+                        생성하기
+                    </button>
+                    <button className="drawer-button" name="drawer-share" onClick={onCardDraft}>
+                        생성 및 공유하기
+                    </button>
                 </div>
             </div>
         </>
     );
 }
-
-ClassDrawer.defaultProps = {
-    cardData: {
-        idx: '',
-        academy_code: '',
-        teacher_id: '',
-        title: '',
-        description: '',
-        time_limit: '',
-        eyetrack: '',
-        contents_data: '',
-        file_url: '',
-        created: '',
-        updated: '',
-    },
-};
 
 export default React.memo(withRouter(ClassDrawer));
