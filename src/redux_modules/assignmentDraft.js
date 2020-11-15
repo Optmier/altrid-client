@@ -48,7 +48,7 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
         const { mm, ss } = timeInputs;
 
         let { eyetrack, timeAttack } = toggleState;
-        let time_limit = 0;
+        let time_limit = -1;
 
         if (timeAttack) {
             time_limit = MinutetoSecond(mm, ss);
@@ -118,7 +118,7 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, handleClos
         let { eyetrack, timeAttack } = toggleState;
         const { mm, ss } = timeInputs;
 
-        let time_limit = 0;
+        let time_limit = -1;
         if (timeAttack) {
             time_limit = MinutetoSecond(mm, ss);
         }

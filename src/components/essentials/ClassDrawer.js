@@ -165,26 +165,29 @@ function ClassDrawer({ handleClose }) {
         //eyetrack의 경우 켜지면 둘다 on, 꺼지면 eyetrack만 off
         if (name === 'eyetrack' && checked === true) {
             setToggleState({ ...toggleState, eyetrack: true, timeAttack: true });
-        } else if (name === 'eyetrack' && checked === false) {
-            setToggleState({ ...toggleState, [name]: checked });
-        } else if (name === 'timeAttack' && checked === true) {
-            setToggleState({ ...toggleState, [name]: checked });
-        } else if (name === 'timeAttack' && checked === false) {
-            if (toggleState['eyetrack'] === false) {
-                setToggleState({ ...toggleState, [name]: checked });
-            }
-        }
 
-        if (checked === true) {
             setTimeInputs({
                 mm: '',
                 ss: '',
             });
-        } else if (checked === false && name === 'timeAttack') {
+        } else if (name === 'eyetrack' && checked === false) {
+            setToggleState({ ...toggleState, [name]: checked });
+        } else if (name === 'timeAttack' && checked === true) {
+            setToggleState({ ...toggleState, [name]: checked });
+
             setTimeInputs({
-                mm: '--',
-                ss: '--',
+                mm: '',
+                ss: '',
             });
+        } else if (name === 'timeAttack' && checked === false) {
+            if (toggleState['eyetrack'] === false) {
+                setToggleState({ ...toggleState, [name]: checked });
+
+                setTimeInputs({
+                    mm: '--',
+                    ss: '--',
+                });
+            }
         }
     };
 
@@ -219,7 +222,7 @@ function ClassDrawer({ handleClose }) {
         }
 
         //4. 제한시간 설정
-        if (toggleState['eyetrack'] && !timeInputs['mm'] && !timeInputs['ss']) {
+        if (toggleState['eyetrack'] && !(timeInputs['mm'] > 0) && !(timeInputs['ss'] > 0)) {
             setInputsError({
                 ...inputsError,
                 time_error: '최소시간을 넘겨주세요!',
@@ -227,7 +230,7 @@ function ClassDrawer({ handleClose }) {
             return;
         }
 
-        //4. axios-post 작업
+        //5. axios-post 작업
         dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e));
         handleClose(e);
     };
@@ -339,8 +342,8 @@ function ClassDrawer({ handleClose }) {
                                         fill="#969393"
                                     />
                                 </svg>
-                                <h4>과제 업로드하기</h4>
-                                <p>이미 hwp, pdf 파일로 제작하셨다면, 웹 view로 변환이 가능합니다.</p>
+                                <h4>과제 파일 업로드하기</h4>
+                                <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
                             </label>
                             <label className="drawer-select" onClick={handleSelectRight}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -359,10 +362,13 @@ function ClassDrawer({ handleClose }) {
                                 </svg>
 
                                 <h4>직접 제작하기</h4>
-                                <p>과제를 바로 제작하고 싶으시다면, 자체 에디터를 통해 문제 생성이 가능합니다.</p>
+                                <p>과제를 바로 제작하고 싶으시다면, 자체 에디터를 통해 과제 생성이 가능합니다.</p>
                             </label>
                         </div>
-                        <div className="drawer-select-warn">** 과제 업로드의 경우, 웹 view로 변환하는데 조금의 시간이 소요됩니다.</div>
+                        <div className="drawer-select-warn">
+                            ** 과제 파일 업로드의 경우, 과제 생성의 완료까지 최대 1일의 시간이 소요됩니다. <br />
+                            ** 여러 파일인 경우, 하나의 파일로 압축해주세요.
+                        </div>
                     </div>
                 </div>
 

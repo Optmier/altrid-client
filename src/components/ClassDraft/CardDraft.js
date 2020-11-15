@@ -43,15 +43,15 @@ const TimeItems = ({ title, mm, ss }) => {
                 {title}
             </div>
 
-            {mm ? (
+            {mm === -1 ? (
+                <div className="card-content-p">없음</div>
+            ) : (
                 <>
                     <div className="card-content-p" style={{ marginRight: '0.4rem' }}>
                         {mm}분
                     </div>
                     <div className="card-content-p">{ss}초</div>
                 </>
-            ) : (
-                <div className="card-content-p">없음</div>
             )}
         </div>
     );

@@ -31,6 +31,15 @@ $primaryColor: #13e2a1;
         justify-content: space-between;
         align-items: center;
     }
+    & .drawer-modify-title {
+        margin-bottom: 1rem;
+    }
+
+    & .drawer-modify-subTitle {
+        color: #969393;
+        padding-bottom: 2rem;
+        font-size: 0.85rem;
+    }
 
     & .drawer-inputs {
         display: flex;
@@ -39,7 +48,7 @@ $primaryColor: #13e2a1;
         justify-content: flex-start;
 
         & .drawer-input + .drawer-input {
-            margin-top: 1rem;
+            margin-top: 0.5rem;
         }
         & .drawer-input {
             width: 100%;
@@ -127,7 +136,7 @@ $primaryColor: #13e2a1;
         display: flex;
         align-items: flex-start;
         justify-content: flex-start;
-        padding: 0.75rem 1.5rem;
+        //padding: 0.75rem 1.5rem;
 
         & > span {
             width: 50%;
