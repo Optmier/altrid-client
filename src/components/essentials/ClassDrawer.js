@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/class_drawer.scss';
 import ToggleSwitch from './ToggleSwitch';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,6 +15,13 @@ const StyleSelectdiv = styled.div`
 `;
 
 function ClassDrawer({ handleClose }) {
+    /** redux-state */
+    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
+    const dispatch = useDispatch();
+
+    let titleArr = [];
+    Object.keys(data).map((i) => titleArr.push(data[i]['title'].replace(/(\s*)/g, '')));
+
     /** 과제 생성 state */
     const [attachFiles, setAttachFiles] = useState(new FormData());
     const [contentsData, setContentsData] = useState(null);
@@ -63,15 +70,6 @@ function ClassDrawer({ handleClose }) {
         }
     };
 
-    /** redux-state */
-    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
-    const dispatch = useDispatch();
-
-    let titleArr = [];
-    if (!titleArr) {
-        Object.keys(data).map((i) => titleArr.push(data[i]['title'].replace(/(\s*)/g, '')));
-    }
-
     /** 여러개 input 상태 관리 */
     //1. text-input
     const [inputs, setInputs] = useState({
@@ -96,37 +94,24 @@ function ClassDrawer({ handleClose }) {
     };
 
     const onInputOut = (e) => {
-        const { name, value } = e.target;
+        // 중복 체크
+        const { name } = e.target;
 
         if (name === 'title') {
-            if (value === '') {
-                setInputsError({
-                    ...inputsError,
-                    title_error: '빈칸을 채워주세요!',
-                });
-            } else {
-                titleArr.includes(title)
-                    ? setInputsError({
-                          ...inputsError,
-                          title_error: '과제 제목이 중복되었습니다 :(',
-                      })
-                    : setInputsError({
-                          ...inputsError,
-                          title_error: '',
-                      });
-            }
+            titleArr.includes(title)
+                ? setInputsError({
+                      ...inputsError,
+                      title_error: '과제 제목이 중복되었습니다 :(',
+                  })
+                : setInputsError({
+                      ...inputsError,
+                      title_error: '',
+                  });
         } else if (name === 'description') {
-            if (value === '') {
-                setInputsError({
-                    ...inputsError,
-                    description_error: '빈칸을 채워주세요!',
-                });
-            } else {
-                setInputsError({
-                    ...inputsError,
-                    description_error: '',
-                });
-            }
+            setInputsError({
+                ...inputsError,
+                description_error: '',
+            });
         }
     };
 
@@ -187,46 +172,50 @@ function ClassDrawer({ handleClose }) {
                     mm: '--',
                     ss: '--',
                 });
+
+                setInputsError({
+                    ...inputsError,
+                    time_error: '',
+                });
             }
         }
     };
 
     /** 생성하기, 생성 및 공유하기 */
     const onCardDraft = (e) => {
-        //1. title, description 빈칸 아님 체크
-        if (!title) {
-            setInputsError({
+        //1. 제한시간 설정
+        if (toggleState['timeAttack'] === true) {
+            if (timeInputs['mm'] === '' && timeInputs['ss'] === '') {
+                return setInputsError({
+                    ...inputsError,
+                    time_error: '최소시간을 넘겨주세요!',
+                });
+            }
+        }
+
+        //2. title, description 빈칸 아님 체크
+        if (title.replace(/(\s*)/g, '') === '') {
+            return setInputsError({
                 ...inputsError,
                 title_error: '빈칸을 채워주세요!',
             });
-            return;
         }
-        if (!description) {
-            setInputsError({
+        if (description.replace(/(\s*)/g, '') === '') {
+            return setInputsError({
                 ...inputsError,
                 description_error: '빈칸을 채워주세요!',
             });
-            return;
         }
 
-        //2. title_error, description_error 빈칸 체크
-        if (title_error !== '' || description_error !== '') {
+        //3. title 중복 체크
+        if (title_error !== '') {
             console.log('아직 오류 중..');
             return;
         }
 
-        //3. 생성방법 선택
+        //4. 생성방법 선택
         if (selectState === '') {
             setSelectName('생성방법을 선택해주세요!');
-            return;
-        }
-
-        //4. 제한시간 설정
-        if (toggleState['eyetrack'] && !(timeInputs['mm'] > 0) && !(timeInputs['ss'] > 0)) {
-            setInputsError({
-                ...inputsError,
-                time_error: '최소시간을 넘겨주세요!',
-            });
             return;
         }
 
@@ -247,37 +236,9 @@ function ClassDrawer({ handleClose }) {
             <div className="class-drawer-root">
                 <div style={{ width: '100%' }}>
                     <h2 className="drawer-title">과제를 생성해보세요 :)</h2>
-
-                    <div className="class-drawer-block">
-                        <p className="drawer-subTitle">1. 과제의 필수적인 정보를 입력해주세요.</p>
-                        <div className="drawer-inputs">
-                            <div className="drawer-input">
-                                <input
-                                    name="title"
-                                    value={title}
-                                    className="input-name"
-                                    placeholder="과제 이름"
-                                    onChange={onInputChange}
-                                    onBlur={onInputOut}
-                                ></input>
-                                <div className="drawer-error">{title_error}</div>
-                            </div>
-                            <div className="drawer-input">
-                                <input
-                                    name="description"
-                                    value={description}
-                                    className="input-desc"
-                                    placeholder="과제 한 줄 설명"
-                                    onChange={onInputChange}
-                                    onBlur={onInputOut}
-                                ></input>
-                                <div className="drawer-error">{description_error}</div>
-                            </div>
-                        </div>
-                    </div>
                     <div className="class-drawer-block">
                         <div className="drawer-subTitle">
-                            2. 과제의 선택적인 정보를 입력해주세요.
+                            1. 과제의 선택적인 정보를 입력해주세요.
                             {toggleState['eyetrack'] ? <StyleSelectdiv>시선흐름 측정시, 제한시간은 필수사항입니다.</StyleSelectdiv> : ''}
                         </div>
                         <div className="drawer-toggle">
@@ -326,7 +287,33 @@ function ClassDrawer({ handleClose }) {
                             {time_error}
                         </div>
                     </div>
-
+                    <div className="class-drawer-block">
+                        <p className="drawer-subTitle">2. 과제의 필수적인 정보를 입력해주세요.</p>
+                        <div className="drawer-inputs">
+                            <div className="drawer-input">
+                                <input
+                                    name="title"
+                                    value={title}
+                                    className="input-name"
+                                    placeholder="과제 이름"
+                                    onChange={onInputChange}
+                                    onBlur={onInputOut}
+                                ></input>
+                                <div className="drawer-error">{title_error}</div>
+                            </div>
+                            <div className="drawer-input">
+                                <input
+                                    name="description"
+                                    value={description}
+                                    className="input-desc"
+                                    placeholder="과제 한 줄 설명"
+                                    onChange={onInputChange}
+                                    onBlur={onInputOut}
+                                ></input>
+                                <div className="drawer-error">{description_error}</div>
+                            </div>
+                        </div>
+                    </div>
                     <div className="class-drawer-block">
                         <div className="drawer-subTitle">
                             3. 과제 생성 방법을 선택해주세요.

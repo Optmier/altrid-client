@@ -22,7 +22,14 @@ const StyleInput = styled.input`
 `;
 
 function ClassDrawerModify({ cardData, handleClose }) {
-    console.log(cardData['contents_data']['title']);
+    /** redux-state */
+    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
+    const dispatch = useDispatch();
+
+    let titleArr = [];
+    if (!titleArr) {
+        Object.keys(data).map((i) => titleArr.push(data[i]['title'].replace(/(\s*)/g, '')));
+    }
 
     /** 과제 생성 state */
     const [attachFiles, setAttachFiles] = useState(new FormData());
@@ -71,15 +78,6 @@ function ClassDrawerModify({ cardData, handleClose }) {
             setSelectName('직접 제작..');
         }
     };
-
-    /** redux-state */
-    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
-    const dispatch = useDispatch();
-
-    let titleArr = [];
-    if (!titleArr) {
-        Object.keys(data).map((i) => titleArr.push(data[i]['title'].replace(/(\s*)/g, '')));
-    }
 
     /** 여러개 input 상태 관리 */
     //1. text-input
