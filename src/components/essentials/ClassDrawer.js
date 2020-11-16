@@ -15,8 +15,8 @@ const StyleSelectdiv = styled.div`
     color: ${(props) => (props.errorCheck === '생성방법을 선택해주세요!' ? 'red' : 'black')};
 `;
 
-//mode : draft(생성), modift(수정)
-function ClassDrawer({ handleClose, cardData, mode }) {
+//ver : draft(생성), modift(수정)
+function ClassDrawer({ handleClose, cardData, ver }) {
     /** redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
     const dispatch = useDispatch();
@@ -75,8 +75,8 @@ function ClassDrawer({ handleClose, cardData, mode }) {
     /** 여러개 input 상태 관리 */
     //1. text-input
     const [inputs, setInputs] = useState({
-        title: mode === 'draft' ? '' : cardData['title'],
-        description: mode === 'draft' ? '' : cardData['description'],
+        title: ver === 'draft' ? '' : cardData['title'],
+        description: ver === 'draft' ? '' : cardData['description'],
     });
     const [inputsError, setInputsError] = useState({
         title_error: '',
@@ -119,7 +119,7 @@ function ClassDrawer({ handleClose, cardData, mode }) {
 
     //2. time-input
     let mmm, sss, time_limit;
-    if (mode === 'modify') {
+    if (ver === 'modify') {
         if (cardData['time_limit'] === -1) {
             mmm = '--';
             sss = '--';
@@ -132,8 +132,8 @@ function ClassDrawer({ handleClose, cardData, mode }) {
     }
 
     const [timeInputs, setTimeInputs] = useState({
-        mm: mode === 'draft' ? '--' : mmm,
-        ss: mode === 'draft' ? '--' : sss,
+        mm: ver === 'draft' ? '--' : mmm,
+        ss: ver === 'draft' ? '--' : sss,
     });
 
     const { mm, ss } = timeInputs;
@@ -157,8 +157,8 @@ function ClassDrawer({ handleClose, cardData, mode }) {
 
     /** toggle-state 상태 관리 */
     const [toggleState, setToggleState] = useState({
-        eyetrack: mode === 'draft' ? false : cardData['eyetrack'],
-        timeAttack: mode === 'draft' ? false : time_limit,
+        eyetrack: ver === 'draft' ? false : cardData['eyetrack'],
+        timeAttack: ver === 'draft' ? false : time_limit,
     });
 
     const handleChange = (event) => {
@@ -198,7 +198,7 @@ function ClassDrawer({ handleClose, cardData, mode }) {
     };
 
     /** 생성하기, 생성 및 공유하기 */
-    const onCardDraft = (e) => {};
+    const onCardDraft = () => {};
 
     /** card 정보 수정하기 */
     const onCardModify = (e) => {};
@@ -241,28 +241,41 @@ function ClassDrawer({ handleClose, cardData, mode }) {
         }
 
         //5. axios 작업
-        if (mode === 'draft') {
-            console.log('insert!');
+        if (ver === 'draft') {
             dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e));
-        } else if (mode === 'modify') {
-            console.log('modify!');
-            //dispatch(patchDraft(cardData, inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e));
+        } else if (ver === 'modify') {
+            dispatch(patchDraft(cardData, inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e));
         }
+
         //handleClose(e);
     };
 
     if (loading) return <div style={{ width: '700px' }}>로딩 중!!!!</div>; // 로딩중이고 데이터 없을때만
     if (error) return <div>에러 발생!</div>;
     if (!data) return null;
-
     return (
         <>
             <Dialog fullScreen open={editDialogOpen} onClose={handleEditDialogClose}>
-                <TOFELEditor mode onChange={handleChangeContents} onClose={handleEditDialogClose} />
+                {ver === 'draft' ? (
+                    <TOFELEditor mode onChange={handleChangeContents} onClose={handleEditDialogClose} />
+                ) : (
+                    <TOFELEditor
+                        mode
+                        datas={{
+                            title: 'aaaaaa',
+                            passageForRender: '',
+                            passageForEditor: `{"ops":[{"insert":"\n"}]}`,
+                            timeLimit: 60,
+                            problemDatas: [],
+                        }}
+                        onChange={handleChangeContents}
+                        onClose={handleEditDialogClose}
+                    />
+                )}
             </Dialog>
             <div className="class-drawer-root">
                 <div style={{ width: '100%' }}>
-                    {mode === 'draft' ? (
+                    {ver === 'draft' ? (
                         <h2 className="drawer-title">과제를 생성해보세요 :)</h2>
                     ) : (
                         <>
@@ -275,7 +288,7 @@ function ClassDrawer({ handleClose, cardData, mode }) {
                     )}
                     <div className="class-drawer-block">
                         <div className="drawer-subTitle">
-                            {mode === 'draft' ? (
+                            {ver === 'draft' ? (
                                 <>
                                     1. 과제의 선택적인 정보를 입력해주세요.
                                     {toggleState['eyetrack'] ? (
@@ -335,7 +348,7 @@ function ClassDrawer({ handleClose, cardData, mode }) {
                         </div>
                     </div>
                     <div className="class-drawer-block">
-                        {mode === 'draft' ? <p className="drawer-subTitle">2. 과제의 필수적인 정보를 입력해주세요.</p> : ''}
+                        {ver === 'draft' ? <p className="drawer-subTitle">2. 과제의 필수적인 정보를 입력해주세요.</p> : ''}
                         <div className="drawer-inputs">
                             <div className="drawer-input">
                                 <input
@@ -363,7 +376,7 @@ function ClassDrawer({ handleClose, cardData, mode }) {
                     </div>
                     <div className="class-drawer-block">
                         <div className="drawer-subTitle">
-                            {mode === 'draft' ? <> 3. 과제 생성 방법을 선택해주세요.</> : ''}
+                            {ver === 'draft' ? <> 3. 과제 생성 방법을 선택해주세요.</> : ''}
                             <StyleSelectdiv errorCheck={selectName}>{selectName}</StyleSelectdiv>
                         </div>
                         <div className="drawer-selects">
@@ -407,7 +420,7 @@ function ClassDrawer({ handleClose, cardData, mode }) {
                 </div>
 
                 <div className="drawer-footer">
-                    {mode === 'draft' ? (
+                    {ver === 'draft' ? (
                         <>
                             <button className="drawer-button" name="drawer-draft" onClick={onDrawerErrorCheck}>
                                 생성하기

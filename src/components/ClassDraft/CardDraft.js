@@ -5,7 +5,7 @@ import CardPopOver from '../essentials/CardPopOver';
 import ClassDialog from '../essentials/ClassDialog';
 import styled from 'styled-components';
 import { Drawer } from '@material-ui/core';
-import ClassDrawerModify from '../essentials/ClassDrawerModify';
+import ClassDrawer from '../essentials/ClassDrawer';
 import { SecondtoMinute } from '../essentials/TimeChange';
 import { useDispatch, useSelector } from 'react-redux';
 import { postActived } from '../../redux_modules/assignmentActived';
@@ -136,7 +136,7 @@ function CardDraft({ cardData, match }) {
     return (
         <>
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
-                <ClassDrawerModify cardData={cardData} handleClose={toggleDrawer(false)} />
+                <ClassDrawer ver="modify" cardData={cardData} handleClose={toggleDrawer(false)} />
             </Drawer>
 
             <CardPopOver

@@ -45,7 +45,7 @@ function Draft() {
     return (
         <>
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
-                <ClassDrawer handleClose={toggleDrawer(false)} mode="draft" />
+                <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>
 
             <ClassHeaderBox />

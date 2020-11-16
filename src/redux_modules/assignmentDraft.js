@@ -108,7 +108,7 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패
     }
 };
-
+export const postDraftSuccess = () => {};
 export const patchDraft = (cardData, inputs, timeInputs, toggleState, handleClose, e) => async (dispatch) => {
     dispatch({ type: PATCH_DRAFT }); // 요청이 시작됨
 
