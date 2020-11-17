@@ -11,7 +11,7 @@ import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { SecondtoMinute } from '../essentials/TimeChange';
 import { useSelector, useDispatch } from 'react-redux';
-import { getActivedes } from '../../redux_modules/assignmentActived';
+import { patchActived } from '../../redux_modules/assignmentActived';
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -45,7 +45,6 @@ const TimeItems = ({ title, mm, ss }) => {
         </div>
     );
 };
-
 const DateItems = ({ title, start, end, handleDateChange }) => {
     return (
         <div className="card-item">
@@ -64,6 +63,7 @@ function CardShare({ testNum, cardData, history }) {
 
     /** Redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentActived.activedDatas);
+    const dispatch = useDispatch();
 
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
@@ -79,7 +79,14 @@ function CardShare({ testNum, cardData, history }) {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
     };
 
-    const handleTestDialogClose = () => {
+    //과제 완료 클릭
+    const handleTestDialogClose = (e) => {
+        const { name } = e.target;
+
+        if (name === 'button') {
+            console.log('완료 !');
+            dispatch(patchActived(cardData['idx']));
+        }
         setTestDialogopen(false);
     };
     const handleDateDialogClose = () => {
@@ -96,7 +103,7 @@ function CardShare({ testNum, cardData, history }) {
     const [subTypeState, setSubTypeState] = useState('init');
 
     const handleToggleChange = (event) => {
-        setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
+        //setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
 
         toggleState['checked'] ? setSubTypeState('init') : setSubTypeState('modify');
         handleDialogOpen('test');

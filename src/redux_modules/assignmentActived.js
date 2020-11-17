@@ -2,6 +2,7 @@ import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
 import { MinutetoSecond } from '../components/essentials/TimeChange';
 import { $_root } from '../configs/front_urls';
+import moment from 'moment';
 
 /* 액션 타입 선언 */
 //atived 과제 모두 조회
@@ -107,7 +108,21 @@ export const postActived = (cardData, num, due_date, history) => async (dispatch
         dispatch({ type: ACTIVED_ERROR, error: e }); //실패
     }
 };
-export const patchActived = (cardData, inputs, timeInputs, toggleState) => async (dispatch) => {};
+export const patchActived = (idx) => async (dispatch) => {
+    dispatch({ type: PATCH_ACTIVED }); // 요청이 시작됨
+
+    let now = moment().format('YYYY-MM-DD HH:mm:ss');
+    try {
+        await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: now }, { withCredentials: true }); // API 호출
+
+        const patchData = { idx: idx, now: now };
+        window.patchData = patchData;
+
+        dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData }); // 성공
+    } catch (e) {
+        dispatch({ type: ACTIVEDES_ERROR, error: e }); // 실패
+    }
+};
 
 export const changeDueDate = (value) => ({
     type: CHANGE_DUE_DATE,
@@ -137,6 +152,8 @@ const initialState = {
         error: null,
     },
 };
+
+window.state = initialState;
 
 /* reducer 함수 */
 export default function eyetrackingSelect(state = initialState, action) {
@@ -175,6 +192,32 @@ export default function eyetrackingSelect(state = initialState, action) {
                 activedData: {
                     loading: true,
                     data: action.postData,
+                    error: null,
+                },
+            };
+
+        case PATCH_ACTIVED:
+            return {
+                ...state,
+                activedDatas: {
+                    loading: true,
+                    data: state.activedDatas.data,
+                    error: null,
+                },
+            };
+        case PATCH_ACTIVED_SUCCESS:
+            return {
+                ...state,
+                activedDatas: {
+                    loading: false,
+                    data: state['activedDatas']['data'].map((obj) =>
+                        obj['idx'] === action.patchData['idx']
+                            ? {
+                                  ...obj,
+                                  due_date: new Date(),
+                              }
+                            : obj,
+                    ),
                     error: null,
                 },
             };
