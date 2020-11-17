@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/class_card.scss';
 import IsPresence from '../essentials/IsPresence';
 import { IoIosArrowForward } from 'react-icons/io';
@@ -95,11 +95,19 @@ function CardShare({ testNum, cardData, history }) {
     /** =================== */
 
     /** toggle state */
-    let t1 = moment(cardData['due_date']);
-    let t2 = moment();
+    let t1 = moment(cardData['due_date']).format('YYMMDDHHmmss');
+    let t2 = moment().format('YYMMDDHHmmss');
     const [toggleState, setToggleState] = useState({
-        checked: moment.duration(t2.diff(t1)).asHours() > 0 ? false : true,
+        checked: t1 <= t2 ? false : true,
     });
+
+    useEffect(() => {
+        setToggleState({
+            ...toggleState,
+            checked: t1 <= t2 ? false : true,
+        });
+    }, [cardData['due_date']]);
+
     const [subTypeState, setSubTypeState] = useState('init');
 
     const handleToggleChange = (event) => {
