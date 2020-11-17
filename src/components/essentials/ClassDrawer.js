@@ -13,6 +13,15 @@ const StyleSelectdiv = styled.div`
     font-size: 0.85rem;
     text-decoration: underline;
     color: ${(props) => (props.errorCheck === '생성방법을 선택해주세요!' ? 'red' : 'black')};
+
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* 라인수 */
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    line-height: 1.5rem;
 `;
 
 //ver : draft(생성), modift(수정)
@@ -28,8 +37,10 @@ function ClassDrawer({ handleClose, cardData, ver }) {
     const [attachFiles, setAttachFiles] = useState(new FormData());
     const [contentsData, setContentsData] = useState(null);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
-    const [selectState, setSelectSate] = useState('');
-    const [selectName, setSelectName] = useState('');
+    const [selectState, setSelectSate] = useState(ver === 'draft' ? '' : 'right');
+    const [selectName, setSelectName] = useState(
+        ver === 'draft' ? '' : cardData['contents_data'] ? cardData['contents_data']['title'] : '과제 변환중',
+    );
 
     const handleEditDialogOpen = () => {
         setEditDialogOpen(true);
@@ -242,35 +253,25 @@ function ClassDrawer({ handleClose, cardData, ver }) {
 
         //5. axios 작업
         if (ver === 'draft') {
-            dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e));
+            dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData));
         } else if (ver === 'modify') {
-            dispatch(patchDraft(cardData, inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e));
+            dispatch(patchDraft(cardData, inputs, timeInputs, toggleState, contentsData));
         }
 
-        //handleClose(e);
+        handleClose(e);
     };
 
     if (loading) return <div style={{ width: '700px' }}>로딩 중!!!!</div>; // 로딩중이고 데이터 없을때만
     if (error) return <div>에러 발생!</div>;
     if (!data) return null;
+
     return (
         <>
             <Dialog fullScreen open={editDialogOpen} onClose={handleEditDialogClose}>
                 {ver === 'draft' ? (
                     <TOFELEditor mode onChange={handleChangeContents} onClose={handleEditDialogClose} />
                 ) : (
-                    <TOFELEditor
-                        mode
-                        datas={{
-                            title: 'aaaaaa',
-                            passageForRender: '',
-                            passageForEditor: `{"ops":[{"insert":"\n"}]}`,
-                            timeLimit: 60,
-                            problemDatas: [],
-                        }}
-                        onChange={handleChangeContents}
-                        onClose={handleEditDialogClose}
-                    />
+                    <TOFELEditor mode datas={cardData['contents_data']} onChange={handleChangeContents} onClose={handleEditDialogClose} />
                 )}
             </Dialog>
             <div className="class-drawer-root">
@@ -377,45 +378,90 @@ function ClassDrawer({ handleClose, cardData, ver }) {
                     <div className="class-drawer-block">
                         <div className="drawer-subTitle">
                             {ver === 'draft' ? <> 3. 과제 생성 방법을 선택해주세요.</> : ''}
-                            <StyleSelectdiv errorCheck={selectName}>{selectName}</StyleSelectdiv>
+                            <StyleSelectdiv ver={ver} errorCheck={selectName}>
+                                {selectName}
+                            </StyleSelectdiv>
                         </div>
-                        <div className="drawer-selects">
-                            <input id="file-click" type="file" onChange={handleChangeFile} />
+                        {ver === 'draft' ? (
+                            <>
+                                <div className="drawer-selects">
+                                    <input id="file-click" type="file" onChange={handleChangeFile} />
 
-                            <label className="drawer-select" htmlFor="file-click" onClick={handleSelectLeft}>
-                                <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M38.7 12.08C37.34 5.18 31.28 0 24 0C18.22 0 13.2 3.28 10.7 8.08C4.68 8.72 0 13.82 0 20C0 26.62 5.38 32 12 32H38C43.52 32 48 27.52 48 22C48 16.72 43.9 12.44 38.7 12.08ZM28 18V26H20V18H14L24 8L34 18H28Z"
-                                        fill="#969393"
-                                    />
-                                </svg>
-                                <h4>과제 파일 업로드하기</h4>
-                                <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
-                            </label>
-                            <label className="drawer-select" onClick={handleSelectRight}>
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g clipPath="url(#clip0)">
-                                        <path
-                                            d="M17.75 7.00006L14 3.25006L4 13.2501V17.0001H7.75L17.75 7.00006ZM20.71 4.04006C21.1 3.65006 21.1 3.02006 20.71 2.63006L18.37 0.290059C17.98 -0.0999414 17.35 -0.0999414 16.96 0.290059L15 2.25006L18.75 6.00006L20.71 4.04006Z"
-                                            fill="#969393"
-                                        />
-                                        <path d="M0 20H24V24H0V20Z" fill="black" fillOpacity="0.36" />
-                                    </g>
-                                    <defs>
-                                        <clipPath id="clip0">
-                                            <rect width="24" height="24" fill="white" />
-                                        </clipPath>
-                                    </defs>
-                                </svg>
+                                    <label className="drawer-select" htmlFor="file-click" onClick={handleSelectLeft}>
+                                        <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M38.7 12.08C37.34 5.18 31.28 0 24 0C18.22 0 13.2 3.28 10.7 8.08C4.68 8.72 0 13.82 0 20C0 26.62 5.38 32 12 32H38C43.52 32 48 27.52 48 22C48 16.72 43.9 12.44 38.7 12.08ZM28 18V26H20V18H14L24 8L34 18H28Z"
+                                                fill="#969393"
+                                            />
+                                        </svg>
+                                        <h4>과제 파일 업로드하기</h4>
+                                        <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
+                                    </label>
+                                    <label className="drawer-select" onClick={handleSelectRight}>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g clipPath="url(#clip0)">
+                                                <path
+                                                    d="M17.75 7.00006L14 3.25006L4 13.2501V17.0001H7.75L17.75 7.00006ZM20.71 4.04006C21.1 3.65006 21.1 3.02006 20.71 2.63006L18.37 0.290059C17.98 -0.0999414 17.35 -0.0999414 16.96 0.290059L15 2.25006L18.75 6.00006L20.71 4.04006Z"
+                                                    fill="#969393"
+                                                />
+                                                <path d="M0 20H24V24H0V20Z" fill="black" fillOpacity="0.36" />
+                                            </g>
+                                            <defs>
+                                                <clipPath id="clip0">
+                                                    <rect width="24" height="24" fill="white" />
+                                                </clipPath>
+                                            </defs>
+                                        </svg>
 
-                                <h4>직접 제작하기</h4>
-                                <p>과제를 바로 제작하고 싶으시다면, 자체 에디터를 통해 과제 생성이 가능합니다.</p>
-                            </label>
-                        </div>
-                        <div className="drawer-select-warn">
-                            ** 과제 파일 업로드의 경우, 과제 생성의 완료까지 최대 1일의 시간이 소요됩니다. <br />
-                            ** 여러 파일인 경우, 하나의 파일로 압축해주세요.
-                        </div>
+                                        <h4>직접 제작하기</h4>
+                                        <p>과제를 바로 제작하고 싶으시다면, 자체 에디터를 통해 과제 생성이 가능합니다.</p>
+                                    </label>
+                                </div>
+                                <div className="drawer-select-warn">
+                                    ** 과제 파일 업로드의 경우, 과제 생성의 완료까지 최대 1일의 시간이 소요됩니다. <br />
+                                    ** 여러 파일인 경우, 하나의 파일로 압축해주세요.
+                                </div>
+                            </>
+                        ) : cardData['contents_data'] ? (
+                            <>
+                                <div className="drawer-selects">
+                                    <div style={{ width: '100%' }} className="drawer-select" onClick={handleSelectRight}>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g clipPath="url(#clip0)">
+                                                <path
+                                                    d="M17.75 7.00006L14 3.25006L4 13.2501V17.0001H7.75L17.75 7.00006ZM20.71 4.04006C21.1 3.65006 21.1 3.02006 20.71 2.63006L18.37 0.290059C17.98 -0.0999414 17.35 -0.0999414 16.96 0.290059L15 2.25006L18.75 6.00006L20.71 4.04006Z"
+                                                    fill="#969393"
+                                                />
+                                                <path d="M0 20H24V24H0V20Z" fill="black" fillOpacity="0.36" />
+                                            </g>
+                                            <defs>
+                                                <clipPath id="clip0">
+                                                    <rect width="24" height="24" fill="white" />
+                                                </clipPath>
+                                            </defs>
+                                        </svg>
+
+                                        <h4>에디터에서 과제 수정하기</h4>
+                                        <p>제작된 과제를 에디터에서 바로 수정 가능합니다.</p>
+                                    </div>
+                                </div>
+                                <div className="drawer-select-warn">
+                                    ** 업로드된 파일은 에디터에서 수정이 가능합니다. <br /> ** 다른 파일에 대한 업로드를 원한다면, 새로운
+                                    과제를 생성해주세요.
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="drawer-selects">
+                                    <div style={{ width: '100%', pointerEvents: 'none' }} className="drawer-select">
+                                        <h3 style={{ color: '#969393' }}>과제 제작 중...</h3>
+                                    </div>
+                                </div>
+                                <div className="drawer-select-warn">
+                                    ** 파일 업로드시, 과제 제작이 완료 된 후, 에디터에서 수정이 가능합니다.
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
 

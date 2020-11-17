@@ -31,7 +31,37 @@ export const getDrafts = () => async (dispatch) => {
     dispatch({ type: GET_DRAFTS }); // 요청이 시작됨
     try {
         const drafts = await Axios.get(`${apiUrl}/assignment-draft`, { withCredentials: true }); // API 호출
-        let draftDatas = drafts.data;
+        let draftDatas = drafts.data.map((d) => {
+            if (d.contents_data) {
+                let unparsed = d.contents_data
+                    .replace(/\\n/g, '\\n')
+                    .replace(/\\'/g, "\\'")
+                    .replace(/\\"/g, '\\"')
+                    .replace(/\\&/g, '\\&')
+                    .replace(/\\r/g, '\\r')
+                    .replace(/\\t/g, '\\t')
+                    .replace(/\\b/g, '\\b')
+                    .replace(/\\f/g, '\\f')
+                    .replace(/[\u0000-\u0019]+/g, '');
+                try {
+                    return {
+                        ...d,
+                        contents_data: JSON.parse(unparsed),
+                    };
+                } catch (e) {
+                    return {
+                        ...d,
+                        contents_data: null,
+                    };
+                }
+            } else {
+                return {
+                    ...d,
+                    contents_data: null,
+                };
+            }
+        });
+
         window.data = draftDatas;
 
         dispatch({ type: GET_DRAFTS_SUCCESS, draftDatas }); // 성공
@@ -40,7 +70,7 @@ export const getDrafts = () => async (dispatch) => {
     }
 };
 export const getDraft = (idx) => async (dispatch) => {};
-export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, handleClose, e) => async (dispatch) => {
+export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFiles, contentsData) => async (dispatch) => {
     dispatch({ type: POST_DRAFT }); // 요청이 시작됨
 
     try {
@@ -64,10 +94,6 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
         if (selectState === 'left') {
             contentsData = null;
         }
-        //직성 생성 선택시,
-        else {
-            contentsData = JSON.stringify(contentsData);
-        }
 
         const result = await Axios.post(
             `${apiUrl}/assignment-draft`,
@@ -76,7 +102,7 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
                 description: description,
                 time_limit: time_limit,
                 eyetrack: eyetrack,
-                contents_data: contentsData,
+                contents_data: contentsData === null ? null : JSON.stringify(contentsData),
             },
             { withCredentials: true },
         ); // API 호출
@@ -108,8 +134,7 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패
     }
 };
-export const postDraftSuccess = () => {};
-export const patchDraft = (cardData, inputs, timeInputs, toggleState, handleClose, e) => async (dispatch) => {
+export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsData) => async (dispatch) => {
     dispatch({ type: PATCH_DRAFT }); // 요청이 시작됨
 
     try {
@@ -129,9 +154,6 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, handleClos
             eyetrack = 0;
         }
 
-        /** 나중에 json으로 받아올 데이터 !!*/
-        const { contents_data, file_url } = cardData;
-
         await Axios.patch(
             `${apiUrl}/assignment-draft`,
             {
@@ -140,8 +162,7 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, handleClos
                 description: description,
                 time_limit: time_limit,
                 eyetrack: eyetrack,
-                contents_data: contents_data,
-                file_url: file_url,
+                contents_data: contentsData ? JSON.stringify(contentsData) : null,
             },
             { withCredentials: true },
         ); // API 호출
@@ -152,8 +173,7 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, handleClos
             description: description,
             time_limit: time_limit,
             eyetrack: eyetrack,
-            contents_data: contents_data,
-            file_url: file_url,
+            contents_data: contentsData,
         };
 
         dispatch({ type: PATCH_DRAFT_SUCCESS, patchData }); // 성공
