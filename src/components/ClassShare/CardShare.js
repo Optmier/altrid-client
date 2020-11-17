@@ -8,6 +8,10 @@ import classNames from 'classnames';
 import ToggleSwitch from '../essentials/ToggleSwitch';
 import ClassDialog from '../essentials/ClassDialog';
 import { Link, withRouter } from 'react-router-dom';
+import moment from 'moment';
+import { SecondtoMinute } from '../essentials/TimeChange';
+import { useSelector, useDispatch } from 'react-redux';
+import { getActivedes } from '../../redux_modules/assignmentActived';
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -21,6 +25,27 @@ const InfoItems = ({ title, contents }) => {
         </div>
     );
 };
+const TimeItems = ({ title, mm, ss }) => {
+    return (
+        <div className="card-item">
+            <div className="card-content-title-p" title={title}>
+                {title}
+            </div>
+
+            {mm === -1 ? (
+                <div className="card-content-p">없음</div>
+            ) : (
+                <>
+                    <div className="card-content-p" style={{ marginRight: '0.4rem' }}>
+                        {mm}분
+                    </div>
+                    <div className="card-content-p">{ss}초</div>
+                </>
+            )}
+        </div>
+    );
+};
+
 const DateItems = ({ title, start, end, handleDateChange }) => {
     return (
         <div className="card-item">
@@ -36,14 +61,20 @@ const DateItems = ({ title, start, end, handleDateChange }) => {
 
 function CardShare({ testNum, cardData, history }) {
     let path = history.location.pathname;
-    // let { id } = match.params;
-    // console.log(id);
+
+    /** Redux-state */
+    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedDatas);
 
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
     const [testDialogopen, setTestDialogopen] = useState(false);
 
+    /** 제한시간 분할(분,초) 메소드 */
+    let mm = SecondtoMinute(cardData['time_limit'])[0];
+    let ss = SecondtoMinute(cardData['time_limit'])[1];
+
+    /** dialog 메소드 */
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
     };
@@ -57,8 +88,10 @@ function CardShare({ testNum, cardData, history }) {
     /** =================== */
 
     /** toggle state */
+    let t1 = moment(cardData['due_date']);
+    let t2 = moment();
     const [toggleState, setToggleState] = useState({
-        checked: cardData['progress'],
+        checked: moment.duration(t2.diff(t1)).asHours() > 0 ? false : true,
     });
     const [subTypeState, setSubTypeState] = useState('init');
 
@@ -103,36 +136,30 @@ function CardShare({ testNum, cardData, history }) {
                         <div className="class-card-contents class-card-wrapper">
                             <div className="contents-block">
                                 <div className="card-item">
-                                    <div className="card-subTitle-p" title={cardData['desc']}>
-                                        {cardData['desc']}
-                                    </div>
-                                </div>
-
-                                <div className="card-item">
-                                    <div className="card-content-p" title={cardData['age']}>
-                                        {cardData['age']}
+                                    <div className="card-subTitle-p" title={cardData['description']}>
+                                        {cardData['description']}
                                     </div>
                                 </div>
                             </div>
 
                             <div className="contents-block">
                                 <InfoItems title={'문항수'} contents={cardData['question_num']} />
-                                <InfoItems title={'제한시간'} contents={cardData['time']} />
+                                <TimeItems title={'제한시간'} mm={mm} ss={ss} />
                                 <DateItems
                                     title={'과제기한'}
-                                    start={cardData['start']}
-                                    end={cardData['end']}
+                                    start={moment(cardData['created']).format('YY.MM.DD HH:mm')}
+                                    end={moment(cardData['due_date']).format('YY.MM.DD HH:mm')}
                                     handleDateChange={handleDateChange}
                                 />
                             </div>
                         </div>
                         <div className="class-card-bottom-left">
-                            <IsPresence type={'eye'} able={cardData['eyetrack']} align="left" />
+                            <IsPresence type={'eye'} able={parseInt(cardData['eyetrack'])} align="left" />
                         </div>
                     </div>
                     <div className="class-card-right">
                         <div className="class-card-contents class-card-wrapper">
-                            <StudentNum completeNum={cardData['complete_student']} totalNum={cardData['total_student']} />
+                            <StudentNum completeNum={'00'} totalNum={'00'} />
                             <div className="student-complete-text">제출한 학생</div>
                         </div>
 

@@ -4,47 +4,75 @@ import { MinutetoSecond } from '../components/essentials/TimeChange';
 import { $_root } from '../configs/front_urls';
 
 /* 액션 타입 선언 */
-const GET_ACTIVED = 'assignmentActived/GET_ACTIVED';
-const GET_ACTIVED_SUCCESS = 'assignmentActived/GET_ACTIVED_SUCCESS';
-const GET_ACTIVED_ERROR = 'assignmentActived/GET_ACTIVED_ERROR';
+//atived 과제 모두 조회
+const GET_ACTIVEDES = 'assignmentActived/GET_ACTIVEDES';
+const GET_ACTIVEDES_SUCCESS = 'assignmentActived/GET_ACTIVEDES_SUCCESS';
 
+//atived 과제 등록
 const POST_ACTIVED = 'assignmentActived/POST_ACTIVED';
 const POST_ACTIVED_SUCCESS = 'assignmentActived/POST_ACTIVED_SUCCESS';
-const POST_ACTIVED_ERROR = 'assignmentActived/POST_ACTIVED_ERROR';
 
+//atived 과제 수정
 const PATCH_ACTIVED = 'assignmentActived/PATCH_ACTIVED';
-const PATCH_ACTIVED_ERROR = 'assignmentActived/POST_ACTIVED_ERROR';
+const PATCH_ACTIVED_SUCCESS = 'assignmentActived/PATCH_ACTIVED_SUCCESS';
 
+//atived 과제 날짜 변경
 const CHANGE_DUE_DATE = 'assignmentActived/CHANGE_DUE_DATE';
 
+// CRUD error
+const ACTIVED_ERROR = 'assignmentActived/ACTIVED_ERROR';
+const ACTIVEDES_ERROR = 'assignmentActived/ACTIVEDES_ERROR';
+
 /* 액션 생성함수 선언 */
-export const getActived = () => async (dispatch) => {
-    // dispatch({ type: GET_ACTIVED }); // 요청이 시작됨
-    // try {
-    //     const arr = await Axios.get(`${apiUrl}/assignment-actived`, { withCredentials: true }); // API 호출
-    //     let activedData = arr.data;
-    //     dispatch({ type: GET_ACTIVED_SUCCESS, activedData }); // 성공
-    // } catch (e) {
-    //     dispatch({ type: GET_ACTIVED_ERROR, error: e }); // 실패
-    // }
+export const getActivedes = (num) => async (dispatch) => {
+    dispatch({ type: GET_ACTIVEDES }); // 요청이 시작됨
+
+    try {
+        const activedes = await Axios.get(`${apiUrl}/assignment-actived/${num}`, { withCredentials: true }); // API 호출
+
+        let activedDatas = activedes.data.map((d) => {
+            if (d.contents_data) {
+                let unparsed = d.contents_data
+                    .replace(/\\n/g, '\\n')
+                    .replace(/\\'/g, "\\'")
+                    .replace(/\\"/g, '\\"')
+                    .replace(/\\&/g, '\\&')
+                    .replace(/\\r/g, '\\r')
+                    .replace(/\\t/g, '\\t')
+                    .replace(/\\b/g, '\\b')
+                    .replace(/\\f/g, '\\f')
+                    .replace(/[\u0000-\u0019]+/g, '');
+                try {
+                    return {
+                        ...d,
+                        contents_data: JSON.parse(unparsed),
+                    };
+                } catch (e) {
+                    return {
+                        ...d,
+                        contents_data: null,
+                    };
+                }
+            } else {
+                return {
+                    ...d,
+                    contents_data: null,
+                };
+            }
+        });
+
+        dispatch({ type: GET_ACTIVEDES_SUCCESS, activedDatas }); // 성공
+    } catch (e) {
+        dispatch({ type: ACTIVED_ERROR, error: e }); // 실패
+    }
 };
 
-export const postActived = (cardData, num, due_date) => async (dispatch) => {
+export const postActived = (cardData, num, due_date, history) => async (dispatch) => {
     dispatch({ type: POST_ACTIVED }); // 요청이 시작됨
 
     try {
-        const { idx, title, time_limit, description } = cardData;
+        const { idx, title, time_limit, description, eyetrack, contents_data, file_url } = cardData;
         const class_number = num;
-        let { eyetrack } = cardData;
-
-        if (eyetrack) {
-            eyetrack = 1;
-        } else {
-            eyetrack = 0;
-        }
-        /** 나중에 json으로 받아올 데이터 !!*/
-        const contents_data = null;
-        const file_url = null;
 
         await Axios.post(
             `${apiUrl}/assignment-actived`,
@@ -55,57 +83,31 @@ export const postActived = (cardData, num, due_date) => async (dispatch) => {
                 description: description,
                 time_limit: time_limit,
                 eyetrack: eyetrack,
-                contents_data: contents_data,
+                contents_data: JSON.stringify(contents_data),
                 file_url: file_url,
                 due_date: due_date,
             },
             { withCredentials: true },
         ); // API 호출
 
-        //dispatch({ type: POST_ACTIVED_SUCCESS }); // 성공
+        let postData = {
+            assignment_number: idx,
+            class_number: class_number,
+            title: title,
+            description: description,
+            time_limit: time_limit,
+            eyetrack: eyetrack,
+            contents_data: JSON.stringify(contents_data),
+            file_url: file_url,
+            due_date: due_date,
+        };
+        dispatch({ type: POST_ACTIVED_SUCCESS, postData }); // 성공
+        history.replace($_root + `class/${class_number}/share`);
     } catch (e) {
-        dispatch({ type: POST_ACTIVED_ERROR, error: e }); //실패
+        dispatch({ type: ACTIVED_ERROR, error: e }); //실패
     }
 };
-export const patchActived = (cardData, inputs, timeInputs, toggleState) => async (dispatch) => {
-    // dispatch({ type: PATCH_ACTIVED }); // 요청이 시작됨
-    // try {
-    //     const { title, description } = inputs;
-    //     let { eyetrack, timeAttack } = toggleState;
-    //     const { mm, ss } = timeInputs;
-    //     let time_limit = 0;
-    //     if (timeAttack) {
-    //         time_limit = MinutetoSecond(mm, ss);
-    //     }
-    //     if (eyetrack) {
-    //         eyetrack = 1;
-    //     } else {
-    //         eyetrack = 0;
-    //     }
-    //     /** 나중에 json으로 받아올 데이터 !!*/
-    //     const { idx, contents_data, file_url } = cardData;
-    //     await Axios.patch(
-    //         `${apiUrl}/assignment-actived`,
-    //         {
-    //             idx: idx,
-    //             title: title,
-    //             description: description,
-    //             time_limit: time_limit,
-    //             eyetrack: eyetrack,
-    //             contents_data: contents_data,
-    //             file_url: file_url,
-    //         },
-    //         { withCredentials: true },
-    //     ); // API 호출
-    //     console.log('update 성공 !!');
-    //     dispatch(getActived()); // 성공
-    // } catch (e) {
-    //     dispatch({ type: PATCH_ACTIVED_ERROR, error: e }); // 실패
-    //     if (!alert('데이터 베이스 오류 입니다. 관리자에게 문의해주세요 :(  관리자 이메일 cwd094@gmail.com')) {
-    //         window.location.href = $_root;
-    //     }
-    // }
-};
+export const patchActived = (cardData, inputs, timeInputs, toggleState) => async (dispatch) => {};
 
 export const changeDueDate = (value) => ({
     type: CHANGE_DUE_DATE,
@@ -114,6 +116,11 @@ export const changeDueDate = (value) => ({
 
 /* 초기 상태 선언 */
 const initialState = {
+    activedDatas: {
+        loading: false,
+        data: null,
+        error: null,
+    },
     activedData: {
         loading: false,
         data: {
@@ -134,35 +141,22 @@ const initialState = {
 /* reducer 함수 */
 export default function eyetrackingSelect(state = initialState, action) {
     switch (action.type) {
-        case GET_ACTIVED:
+        case GET_ACTIVEDES:
             return {
                 ...state,
-                activedData: {
+                activedDatas: {
                     loading: true,
                     data: null,
                     error: null,
                 },
             };
-        case GET_ACTIVED_SUCCESS:
+        case GET_ACTIVEDES_SUCCESS:
             return {
                 ...state,
-                activedData: {
+                activedDatas: {
                     loading: false,
-                    data: action.activedData,
+                    data: action.activedDatas,
                     error: null,
-                },
-            };
-        case GET_ACTIVED_ERROR:
-            if (!alert('데이터 베이스 오류 입니다. 관리자에게 문의해주세요 :(  관리자 이메일 cwd094@gmail.com')) {
-                window.location.href = $_root;
-            }
-
-            return {
-                ...state,
-                activedData: {
-                    loading: false,
-                    data: null,
-                    error: action.error,
                 },
             };
 
@@ -171,7 +165,7 @@ export default function eyetrackingSelect(state = initialState, action) {
                 ...state,
                 activedData: {
                     loading: true,
-                    data: null,
+                    data: state.activedData.data,
                     error: null,
                 },
             };
@@ -179,14 +173,29 @@ export default function eyetrackingSelect(state = initialState, action) {
             return {
                 ...state,
                 activedData: {
-                    loading: false,
+                    loading: true,
+                    data: action.postData,
                     error: null,
                 },
             };
-        case POST_ACTIVED_ERROR:
-            if (!alert('데이터 베이스 오류 입니다. 관리자에게 문의해주세요 :(  관리자 이메일 cwd094@gmail.com')) {
-                window.location.href = $_root;
-            }
+
+        case CHANGE_DUE_DATE:
+            return {
+                ...state,
+                activedData: {
+                    loading: false,
+                    data: {
+                        ...state['activedData']['data'],
+                        due_date: action.value,
+                    },
+                    error: null,
+                },
+            };
+
+        case ACTIVED_ERROR:
+            alert('데이터 베이스 오류 입니다. 관리자에게 문의해주세요:(\n** 관리자 이메일 cwd094@gmail.com');
+            console.error('error type : ', action.type);
+            console.error('error 내용 :\n', action.error);
 
             return {
                 ...state,
@@ -196,18 +205,18 @@ export default function eyetrackingSelect(state = initialState, action) {
                     error: action.error,
                 },
             };
-        case CHANGE_DUE_DATE:
-            const value = action.value;
+
+        case ACTIVEDES_ERROR:
+            alert('데이터 베이스 오류 입니다. 관리자에게 문의해주세요:(\n** 관리자 이메일 cwd094@gmail.com');
+            console.error('error type : ', action.type);
+            console.error('error 내용 :\n', action.error);
 
             return {
                 ...state,
-                activedData: {
+                activedDatas: {
                     loading: false,
-                    data: {
-                        ...state['activedData']['data'],
-                        due_date: value,
-                    },
-                    error: null,
+                    data: null,
+                    error: action.error,
                 },
             };
 

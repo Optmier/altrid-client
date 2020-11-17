@@ -57,10 +57,9 @@ const TimeItems = ({ title, mm, ss }) => {
     );
 };
 
-function CardDraft({ cardData, match }) {
+function CardDraft({ cardData, match, history }) {
     /** redux actived-state */
-    // const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
-    const data = [];
+    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
     const dispatch = useDispatch();
 
     /** 제한시간 분할(분,초) 메소드 */
@@ -89,15 +88,15 @@ function CardDraft({ cardData, match }) {
     const handleDateDialogClose = (e) => {
         const { name } = e.target;
         const due_date = data['due_date'];
-        console.log('due_date:', due_date);
 
         if (name === 'button') {
             if (due_date) {
                 //과제 게시하기 버튼 클릭
                 const { num } = match.params; //클래스 번호
-                //dispatch(postActived(cardData, num, due_date));
-                alert('과제 공유 완료되었습니다!');
+
                 setDateDialogopen(false);
+
+                dispatch(postActived(cardData, num, due_date, history));
             } else {
                 alert('과제 기한 변경은 필수항목입니다.');
             }

@@ -1,18 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CardShare from './CardShare';
 import CardLists from '../essentials/CardLists';
 import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
-import assignmentDummy from '../../datas/assignmentDummy.json';
 import ClassDrawer from '../essentials/ClassDrawer';
 import ClassHeaderBox from '../essentials/ClassHeaderBox';
+import { useSelector, useDispatch } from 'react-redux';
+import { getActivedes } from '../../redux_modules/assignmentActived';
 
-function Share() {
+function Share({ match }) {
+    const { num } = match.params;
+
+    /** redux state */
+    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedDatas) || {
+        loading: false,
+        data: null,
+        error: null,
+    }; // 아예 데이터가 존재하지 않을 때가 있으므로, 비구조화 할당이 오류나지 않도록
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getActivedes(num));
+    }, [dispatch]);
+    console.log(data);
+
     let shareJson = {};
 
-    Object.keys(assignmentDummy)
-        .filter((i) => assignmentDummy[i]['share'])
-        .map((i) => (shareJson[i] = assignmentDummy[i]));
+    data ? (shareJson = data) : (shareJson = {});
 
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const toggleDrawer = (open) => (event) => {
@@ -21,6 +35,10 @@ function Share() {
         }
         setOpenCreateNewDrawer(open);
     };
+
+    if (loading && !data) return <div>로딩 중....</div>; // 로딩중이고 데이터 없을때만
+    if (error) return <div>에러 발생!</div>;
+    if (!data) return null;
 
     return (
         <>
