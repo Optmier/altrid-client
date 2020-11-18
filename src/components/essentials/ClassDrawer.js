@@ -24,22 +24,28 @@ const StyleSelectdiv = styled.div`
     line-height: 1.5rem;
 `;
 
-//ver : draft(생성), modift(수정)
+//ver : draft(생성), modify(수정)
 function ClassDrawer({ handleClose, cardData, ver }) {
     /** redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
     const dispatch = useDispatch();
 
     let titleArr = [];
-    Object.keys(data).map((i) => titleArr.push(data[i]['title'].replace(/(\s*)/g, '')));
+    data.filter((i) => i['idx'] !== cardData['idx']).map((i) => titleArr.push(i['title'].replace(/(\s*)/g, '')));
 
     /** 과제 생성 state */
     const [attachFiles, setAttachFiles] = useState(new FormData());
-    const [contentsData, setContentsData] = useState(null);
+    const [contentsData, setContentsData] = useState(ver === 'draft' ? null : cardData['contents_data']);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectState, setSelectSate] = useState(ver === 'draft' ? '' : 'right');
     const [selectName, setSelectName] = useState(
-        ver === 'draft' ? '' : cardData['contents_data'] ? cardData['contents_data']['title'] : '과제 변환중',
+        ver === 'draft'
+            ? ''
+            : !cardData['contents_data']
+            ? '과제 파일 변환중'
+            : cardData['contents_data']['title'] === ''
+            ? '파일 제목 없음'
+            : cardData['contents_data']['title'],
     );
 
     const handleEditDialogOpen = () => {

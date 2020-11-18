@@ -24,9 +24,9 @@ function Share({ match }) {
     }, [dispatch]);
     console.log(data);
 
-    let shareJson = {};
+    let shareDatas = {};
 
-    data ? (shareJson = data) : (shareJson = {});
+    data ? (shareDatas = data) : (shareDatas = {});
 
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const toggleDrawer = (open) => (event) => {
@@ -39,6 +39,8 @@ function Share({ match }) {
     if (loading && !data) return <div>로딩 중....</div>; // 로딩중이고 데이터 없을때만
     if (error) return <div>에러 발생!</div>;
     if (!data) return null;
+
+    console.log(shareDatas);
 
     return (
         <>
@@ -53,13 +55,13 @@ function Share({ match }) {
                     <CardLists
                         upperDeck={
                             <div className="class-title">
-                                <b>총 3개</b>의 과제중 <b>2개</b>의 과제가 <span>진행중</span>입니다.
+                                <b>총 {shareDatas.length}개</b>의 과제중 <b>{}개</b>의 과제가 <span>진행중</span>입니다.
                             </div>
                         }
                     >
-                        {Object.keys(shareJson).map((key) => (
+                        {Object.keys(shareDatas).map((key) => (
                             <CardRoot key={key} wider cardHeight="300px">
-                                <CardShare testNum={key} cardData={shareJson[key]} />
+                                <CardShare testNum={key} cardData={shareDatas[key]} />
                             </CardRoot>
                         ))}
                     </CardLists>
