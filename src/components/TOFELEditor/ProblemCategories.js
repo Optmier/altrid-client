@@ -70,4 +70,11 @@ export default [
         desc: '지문의 비교/대조 개념과 정보를 알맞은 범주로 분류하는 능력을 평가하는 문제',
         nums: '0 ~ 1',
     },
+    {
+        id: 0,
+        name: '기타',
+        eng: 'Others',
+        desc: '기타 유형',
+        nums: '',
+    },
 ];

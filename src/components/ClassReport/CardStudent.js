@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../styles/class_card.scss';
 import studentDummy from '../../datas/studentDummy.json';
 import classNames from 'classnames';
 import styled from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
+import moment from 'moment-timezone';
 
 const StyleState = styled.div`
     width: 52px;
@@ -17,6 +18,17 @@ const StyleState = styled.div`
 
     background-color: ${(props) => (props.complete ? '#28BC8E' : '#C4C4C4')};
 `;
+
+const pad = (n, width) => {
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+};
+
+const timeValueToTimer = (seconds) => {
+    const secs = seconds < 0 ? 0 : seconds;
+    if (seconds === -2) return '제한 없음';
+    else return `${pad(parseInt(secs / 60), 1)}분 ${pad(Math.floor(secs % 60), 1)}초`;
+};
 
 const InfoItems = ({ title, contents, children }) => {
     return (
@@ -64,28 +76,29 @@ const CompareItems = ({ title, contents, children }) => {
     );
 };
 
-function CardStudent({ num, history }) {
+function CardStudent({ id, data, totalProblems, history }) {
     let path = history.location.pathname;
+    // console.log(data);
+
+    const [num, setTempnum] = useState('01');
 
     return (
         <>
             <div className="class-card-root">
                 <div
                     className={classNames(
-                        { 'class-card-header': !studentDummy[num]['complete'] },
-                        { 'class-card-header-on': studentDummy[num]['complete'] },
+                        { 'class-card-header': !data.submitted },
+                        { 'class-card-header-on': data.submitted },
                         'class-card-wrapper',
                     )}
                 >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div className="card-title-p card-title-name"> {studentDummy[num]['name']}</div>
-                        <StyleState complete={studentDummy[num]['complete']}>
-                            {studentDummy[num]['complete'] ? '제출완료' : '미제출'}
-                        </StyleState>
+                        <div className="card-title-p card-title-name">{data.name}</div>
+                        <StyleState complete={data.submitted}>{data.submitted ? '제출완료' : '미제출'}</StyleState>
                     </div>
 
                     <span className="card-option">
-                        <Link to={`${path}/${num}`}>
+                        <Link to={`${path}/details?user=${id}`}>
                             <p>상세 리포트</p>
                         </Link>
                     </span>
@@ -93,7 +106,7 @@ function CardStudent({ num, history }) {
                 <div></div>
                 <div className="class-card-contents class-card-wrapper-student">
                     <div className="contents-block">
-                        <InfoItems title={'제출 날짜'} contents={studentDummy[num]['submit_date']}>
+                        <InfoItems title={'제출 날짜'} contents={!data.updated ? '-' : moment(data.updated).format('YY.MM.DD HH:mm')}>
                             <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M5.33333 8H3.55556V9.77778H5.33333V8ZM8.88889 8H7.11111V9.77778H8.88889V8ZM12.4444 8H10.6667V9.77778H12.4444V8ZM14.2222 1.77778H13.3333V0H11.5556V1.77778H4.44444V0H2.66667V1.77778H1.77778C0.791111 1.77778 0.00888888 2.57778 0.00888888 3.55556L0 16C0 16.9778 0.791111 17.7778 1.77778 17.7778H14.2222C15.2 17.7778 16 16.9778 16 16V3.55556C16 2.57778 15.2 1.77778 14.2222 1.77778ZM14.2222 16H1.77778V6.22222H14.2222V16Z"
@@ -101,7 +114,11 @@ function CardStudent({ num, history }) {
                                 />
                             </svg>
                         </InfoItems>
-                        <ScoreItems title={'점수'} score={studentDummy[num]['score']} total={studentDummy[num]['total']}>
+                        <ScoreItems
+                            title={'점수'}
+                            score={!data.user_data ? '-' : data.user_data.selections.filter((s) => s.correct === true).length}
+                            total={totalProblems}
+                        >
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M14.2222 0H1.77778C0.8 0 0 0.8 0 1.77778V14.2222C0 15.2 0.8 16 1.77778 16H14.2222C15.2 16 16 15.2 16 14.2222V1.77778C16 0.8 15.2 0 14.2222 0ZM5.33333 12.4444H3.55556V6.22222H5.33333V12.4444ZM8.88889 12.4444H7.11111V3.55556H8.88889V12.4444ZM12.4444 12.4444H10.6667V8.88889H12.4444V12.4444Z"
@@ -109,7 +126,7 @@ function CardStudent({ num, history }) {
                                 />
                             </svg>
                         </ScoreItems>
-                        <InfoItems title={'소요 시간'} contents={studentDummy[num]['test_time']}>
+                        <InfoItems title={'소요 시간'} contents={!data.time ? '-' : timeValueToTimer(data.time)}>
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M11.392 4.608C10.456 3.672 9.232 3.2 8 3.2V8L4.608 11.392C6.48 13.264 9.52 13.264 11.4 11.392C13.272 9.52 13.272 6.48 11.392 4.608ZM8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0ZM8 14.4C4.464 14.4 1.6 11.536 1.6 8C1.6 4.464 4.464 1.6 8 1.6C11.536 1.6 14.4 4.464 14.4 8C14.4 11.536 11.536 14.4 8 14.4Z"

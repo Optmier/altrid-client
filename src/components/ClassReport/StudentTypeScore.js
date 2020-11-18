@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import RadarChart from '../essentials/RadarChart';
 import ColumnChart from '../essentials/ColumnChart';
@@ -25,14 +25,14 @@ const StyleStudentTypeScore = styled.div`
     }
 `;
 
-function StudentTypeScore() {
+function StudentTypeScore({ current, total }) {
     return (
         <StyleStudentTypeScore>
             <div className="chart-left">
-                <RadarChart />
+                <RadarChart objDatas={current} />
             </div>
             <div className="chart-right">
-                <ColumnChart />
+                <ColumnChart currentObjs={current} averageObjs={total} />
             </div>
         </StyleStudentTypeScore>
     );

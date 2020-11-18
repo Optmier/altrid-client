@@ -14,12 +14,13 @@ import PlayerExample from './components/TOFELRenderer/PlayerExample';
 import Login from './pages/Login';
 import LoginAdmin from './pages/LoginAdmin';
 import { apiUrl } from './configs/configs';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveSession, deleteSession, updateSession } from './redux_modules/sessions';
 import { $_loginAdmin, $_loginDefault, $_loginStudent, $_loginTeacher, $_root } from './configs/front_urls';
 import MakeContents from './pages/MakeContents';
 import AdminMain from './pages/AdminMain';
 import AssignmentDoItNow from './pages/AssignmentDoItNow';
+import RestrictRoute from './components/essentials/RestrictRoute';
 
 window.lastUrl = '/';
 const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin];
@@ -42,6 +43,7 @@ function App({ history }) {
     );
     const updateSessions = useCallback((updateStates) => dispatch(updateSession(updateStates)), [dispatch]);
     const deleteSessions = useCallback(() => dispatch(deleteSession()), [dispatch]);
+    const sessions = useSelector((state) => state.RdxSessions);
 
     if (!loginUrls.includes(history.location.pathname)) window.lastUrl = history.location.pathname;
 
@@ -77,8 +79,8 @@ function App({ history }) {
                         break;
                     case 'students':
                         if (excludesForStudentUrls.includes(history.location.pathname)) {
-                            history.replace($_root);
-                            alert('권한이 없는 사용자 입니다.');
+                            // history.replace($_root);
+                            // alert('권한이 없는 사용자 입니다.');
                         }
                         break;
                 }
@@ -114,7 +116,8 @@ function App({ history }) {
                     <Route path={$_root} component={Main} exact />
                     <Route path={$_loginDefault} component={Login} exact />
                     <Route path={$_loginAdmin} component={LoginAdmin} exact />
-                    <Route path={'/admins'} component={AdminMain} />
+                    <RestrictRoute path="/admins" component={AdminMain} role={sessions.userType} allowedTypes={['admins']} />
+                    {/* <Route path={'/admins'} component={AdminMain} /> */}
                     <Route path="/class/:num/:id" component={Class} />
                     <Route path="/user-example" component={UserExample} />
                     <Route path="/player-example" component={PlayerExample} />

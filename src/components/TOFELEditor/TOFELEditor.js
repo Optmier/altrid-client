@@ -475,6 +475,8 @@ TOFELEditor.defaultProps = {
     },
     requestFile: undefined,
     mode: false,
+    onChange: (metadata) => {},
+    onClose: () => {},
 };
 
 export default React.memo(withRouter(TOFELEditor));

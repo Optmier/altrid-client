@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Chart from 'react-apexcharts';
+import problemCategories from '../TOFELEditor/ProblemCategories';
 
-function RadarChart() {
+function RadarChart({ objDatas }) {
     let state = {};
 
     state = {
         series: [
             {
                 name: '학생 정답률',
-                data: [44, 55, 57, 56, 61, 58, 63, 60, 66, 70],
+                data: [
+                    objDatas[1] * 100,
+                    objDatas[2] * 100,
+                    objDatas[3] * 100,
+                    objDatas[4] * 100,
+                    objDatas[5] * 100,
+                    objDatas[6] * 100,
+                    objDatas[7] * 100,
+                    objDatas[8] * 100,
+                    objDatas[9] * 100,
+                    objDatas[10] * 100,
+                    objDatas[0] ? objDatas[0] : null,
+                ],
             },
         ],
         options: {
@@ -47,16 +60,17 @@ function RadarChart() {
             },
             xaxis: {
                 categories: [
-                    '세부내용찾기',
-                    '지시대상찾기',
-                    '세부내용찾기',
-                    '지시대상찾기',
-                    '세부내용찾기',
-                    '지시대상찾기',
-                    '세부내용찾기',
-                    '지시대상찾기',
-                    '세부내용찾기',
-                    '지시대상찾기',
+                    problemCategories[0].name,
+                    problemCategories[1].name,
+                    problemCategories[2].name,
+                    problemCategories[3].name,
+                    problemCategories[4].name,
+                    problemCategories[5].name,
+                    problemCategories[6].name,
+                    problemCategories[7].name,
+                    problemCategories[8].name,
+                    problemCategories[9].name,
+                    '기타',
                 ],
             },
             yaxis: {
