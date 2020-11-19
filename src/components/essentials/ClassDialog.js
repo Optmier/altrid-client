@@ -39,7 +39,7 @@ function ClassDialog({ type, subType, open, handleDialogClose }) {
                                 게시하기
                             </StyleModalButton>
                         ) : (
-                            <StyleModalButton name="button" onClick={handleDialogClose} color="primary">
+                            <StyleModalButton name="button-modify" onClick={handleDialogClose} color="primary">
                                 수정하기
                             </StyleModalButton>
                         )

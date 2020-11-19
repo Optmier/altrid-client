@@ -97,17 +97,24 @@ export const postActived = (cardData, num, due_date, history) => async (dispatch
         dispatch({ type: ACTIVED_ERROR, error: e }); //실패
     }
 };
-export const patchActived = (idx, name) => async (dispatch) => {
+export const patchActived = (idx, date) => async (dispatch) => {
     dispatch({ type: PATCH_ACTIVED }); // 요청이 시작됨
 
     let now = moment().format('YYYY-MM-DD HH:mm:ss');
+    let patchData = {};
     try {
-        await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: now }, { withCredentials: true }); // API 호출
+        //과제 재시작하는 경우,
+        if (date) {
+            await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: date }, { withCredentials: true }); // API 호출
+            patchData = { idx: idx, now: date };
+        }
+        //과제 완료하는 경우,
+        else {
+            await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: now }, { withCredentials: true }); // API 호출
+            patchData = { idx: idx, now: now };
+        }
 
-        const patchData = { idx: idx, now: now };
-        window.patchData = patchData;
-
-        dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData }); // 성공
+        dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData, date }); // 성공
     } catch (e) {
         dispatch({ type: ACTIVEDES_ERROR, error: e }); // 실패
     }
@@ -189,6 +196,7 @@ export default function eyetrackingSelect(state = initialState, action) {
                 },
             };
         case PATCH_ACTIVED_SUCCESS:
+            alert('수정 완료되었습니다!');
             return {
                 ...state,
                 activedDatas: {
@@ -197,7 +205,7 @@ export default function eyetrackingSelect(state = initialState, action) {
                         obj['idx'] === action.patchData['idx']
                             ? {
                                   ...obj,
-                                  due_date: new Date(),
+                                  due_date: action.date ? action.date : new Date(),
                               }
                             : obj,
                     ),

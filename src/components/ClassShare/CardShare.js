@@ -11,7 +11,7 @@ import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { SecondtoMinute } from '../essentials/TimeChange';
 import { useSelector, useDispatch } from 'react-redux';
-import { patchActived } from '../../redux_modules/assignmentActived';
+import { patchActived, changeDueDate } from '../../redux_modules/assignmentActived';
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -79,21 +79,39 @@ function CardShare({ testNum, cardData, history }) {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
     };
 
-    //과제 완료 클릭
+    //과제 toggle 클릭
     const handleTestDialogClose = (e) => {
         const { name } = e.target;
 
         if (name === 'button-complete') {
-            dispatch(patchActived(cardData['idx'], name));
+            dispatch(patchActived(cardData['idx'], null));
         } else if (name === 'button-restart') {
-            console.log('reopen');
-            console.log(data['due_date']);
-            //dispatch(patchActived(cardData['idx'], name));
+            if (data['due_date']) {
+                dispatch(patchActived(cardData['idx'], data['due_date']));
+            } else {
+                alert('과제 기한 변경은 필수항목입니다.');
+            }
         }
         setTestDialogopen(false);
+        dispatch(changeDueDate(''));
     };
-    const handleDateDialogClose = () => {
-        setDateDialogopen(false);
+
+    //과제 기한 수정 클릭
+    const handleDateDialogClose = (e) => {
+        const { name } = e.target;
+
+        if (name === 'button-modify') {
+            if (data['due_date']) {
+                dispatch(patchActived(cardData['idx'], data['due_date']));
+                setDateDialogopen(false);
+            } else {
+                alert('과제 기한 변경은 필수항목입니다.');
+            }
+        } else {
+            setDateDialogopen(false);
+        }
+
+        dispatch(changeDueDate(''));
     };
     /** =================== */
 
