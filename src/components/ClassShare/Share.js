@@ -27,17 +27,6 @@ function Share({ match }) {
     }, [dispatch]);
 
     if (data) {
-        data.sort(function (a, b) {
-            if (a.due_date < b.due_date) {
-                return 1;
-            }
-            if (a.due_date > b.due_date) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-
         shareDatas = data;
         shareDatas.map((i) => (moment(i['due_date']).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss') ? cnt++ : ''));
     }

@@ -201,10 +201,11 @@ export default function eyetrackingSelect(state = initialState, action) {
                 ...state,
                 activedDatas: {
                     loading: false,
-                    data: state['activedDatas']['data'].map((obj) =>
-                        obj['idx'] === action.patchData['idx']
+                    data: state.activedDatas.data.map((obj) =>
+                        obj.idx === action.patchData.idx
                             ? {
                                   ...obj,
+                                  ...action.patchData,
                                   due_date: action.date ? action.date : new Date(),
                               }
                             : obj,
