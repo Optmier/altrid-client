@@ -23,19 +23,35 @@ function ClassDialog({ type, subType, open, handleDialogClose }) {
         <Dialog open={open} onClose={handleDialogClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
             <div style={{ padding: '2rem' }}>
                 <DialogContent>
-                    {type === 'date' ? <ClassDialoglDate subType={subType} /> : <ClassDialogTest subType={subType} />}
+                    {type === 'date' ? (
+                        <ClassDialoglDate subType={subType} />
+                    ) : subType === 'init' ? (
+                        <ClassDialogTest subType={subType} />
+                    ) : (
+                        <ClassDialoglDate subType={subType} />
+                    )}
                 </DialogContent>
 
                 <DialogActions>
-                    <StyleModalButton name="button" onClick={handleDialogClose} color="primary">
-                        {type === 'date'
-                            ? subType === 'init'
-                                ? '게시하기'
-                                : '수정하기'
-                            : subType === 'init'
-                            ? '완료하기'
-                            : '다시 시작하기'}
-                    </StyleModalButton>
+                    {type === 'date' ? (
+                        subType === 'init' ? (
+                            <StyleModalButton name="button" onClick={handleDialogClose} color="primary">
+                                게시하기
+                            </StyleModalButton>
+                        ) : (
+                            <StyleModalButton name="button" onClick={handleDialogClose} color="primary">
+                                수정하기
+                            </StyleModalButton>
+                        )
+                    ) : subType === 'init' ? (
+                        <StyleModalButton name="button-complete" onClick={handleDialogClose} color="primary">
+                            완료하기
+                        </StyleModalButton>
+                    ) : (
+                        <StyleModalButton name="button-restart" onClick={handleDialogClose} color="primary">
+                            다시 시작하기
+                        </StyleModalButton>
+                    )}
                 </DialogActions>
             </div>
         </Dialog>

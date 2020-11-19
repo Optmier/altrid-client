@@ -91,24 +91,13 @@ export const postActived = (cardData, num, due_date, history) => async (dispatch
             { withCredentials: true },
         ); // API 호출
 
-        let postData = {
-            assignment_number: idx,
-            class_number: class_number,
-            title: title,
-            description: description,
-            time_limit: time_limit,
-            eyetrack: eyetrack,
-            contents_data: JSON.stringify(contents_data),
-            file_url: file_url,
-            due_date: due_date,
-        };
-        dispatch({ type: POST_ACTIVED_SUCCESS, postData }); // 성공
+        dispatch({ type: POST_ACTIVED_SUCCESS }); // 성공
         history.replace($_root + `class/${class_number}/share`);
     } catch (e) {
         dispatch({ type: ACTIVED_ERROR, error: e }); //실패
     }
 };
-export const patchActived = (idx) => async (dispatch) => {
+export const patchActived = (idx, name) => async (dispatch) => {
     dispatch({ type: PATCH_ACTIVED }); // 요청이 시작됨
 
     let now = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -139,14 +128,6 @@ const initialState = {
     activedData: {
         loading: false,
         data: {
-            class_number: '',
-            assignment_number: '',
-            title: '',
-            description: '',
-            time_limit: '',
-            eyetrack: '',
-            contents_data: '',
-            file_url: '',
             due_date: '',
         },
         error: null,
@@ -190,8 +171,10 @@ export default function eyetrackingSelect(state = initialState, action) {
             return {
                 ...state,
                 activedData: {
-                    loading: true,
-                    data: action.postData,
+                    loading: false,
+                    data: {
+                        due_date: '',
+                    },
                     error: null,
                 },
             };

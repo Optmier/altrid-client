@@ -62,7 +62,7 @@ function CardShare({ testNum, cardData, history }) {
     let path = history.location.pathname;
 
     /** Redux-state */
-    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedDatas);
+    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
     const dispatch = useDispatch();
 
     /** class-dialog 메소드 */
@@ -83,9 +83,12 @@ function CardShare({ testNum, cardData, history }) {
     const handleTestDialogClose = (e) => {
         const { name } = e.target;
 
-        if (name === 'button') {
-            console.log('완료 !');
-            dispatch(patchActived(cardData['idx']));
+        if (name === 'button-complete') {
+            dispatch(patchActived(cardData['idx'], name));
+        } else if (name === 'button-restart') {
+            console.log('reopen');
+            console.log(data['due_date']);
+            //dispatch(patchActived(cardData['idx'], name));
         }
         setTestDialogopen(false);
     };
@@ -95,16 +98,14 @@ function CardShare({ testNum, cardData, history }) {
     /** =================== */
 
     /** toggle state */
-    let t1 = moment(cardData['due_date']).format('YYMMDDHHmmss');
-    let t2 = moment().format('YYMMDDHHmmss');
     const [toggleState, setToggleState] = useState({
-        checked: t1 <= t2 ? false : true,
+        checked: moment(cardData['due_date']).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss'),
     });
 
     useEffect(() => {
         setToggleState({
             ...toggleState,
-            checked: t1 <= t2 ? false : true,
+            checked: moment(cardData['due_date']).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss'),
         });
     }, [cardData['due_date']]);
 

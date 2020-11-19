@@ -7,9 +7,12 @@ import ClassDrawer from '../essentials/ClassDrawer';
 import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector, useDispatch } from 'react-redux';
 import { getActivedes } from '../../redux_modules/assignmentActived';
+import moment from 'moment';
 
 function Share({ match }) {
     const { num } = match.params;
+    let shareDatas = [];
+    let cnt = 0;
 
     /** redux state */
     const { data, loading, error } = useSelector((state) => state.assignmentActived.activedDatas) || {
@@ -22,11 +25,11 @@ function Share({ match }) {
     useEffect(() => {
         dispatch(getActivedes(num));
     }, [dispatch]);
-    console.log(data);
 
-    let shareDatas = {};
-
-    data ? (shareDatas = data) : (shareDatas = {});
+    if (data) {
+        shareDatas = data;
+        shareDatas.map((i) => (moment(i['due_date']).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss') ? cnt++ : ''));
+    }
 
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const toggleDrawer = (open) => (event) => {
@@ -39,8 +42,6 @@ function Share({ match }) {
     if (loading && !data) return <div>로딩 중....</div>; // 로딩중이고 데이터 없을때만
     if (error) return <div>에러 발생!</div>;
     if (!data) return null;
-
-    console.log(shareDatas);
 
     return (
         <>
@@ -55,7 +56,7 @@ function Share({ match }) {
                     <CardLists
                         upperDeck={
                             <div className="class-title">
-                                <b>총 {shareDatas.length}개</b>의 과제중 <b>{}개</b>의 과제가 <span>진행중</span>입니다.
+                                <b>총 {shareDatas.length}개</b>의 과제중 <b>{cnt}개</b>의 과제가 <span>진행중</span>입니다.
                             </div>
                         }
                     >

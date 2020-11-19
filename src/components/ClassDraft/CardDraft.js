@@ -8,7 +8,7 @@ import { Drawer } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
 import { SecondtoMinute } from '../essentials/TimeChange';
 import { useDispatch, useSelector } from 'react-redux';
-import { postActived } from '../../redux_modules/assignmentActived';
+import { postActived, changeDueDate } from '../../redux_modules/assignmentActived';
 import { deleteDraft } from '../../redux_modules/assignmentDraft';
 
 import { withRouter } from 'react-router-dom';
@@ -87,7 +87,7 @@ function CardDraft({ cardData, match, history }) {
     };
     const handleDateDialogClose = (e) => {
         const { name } = e.target;
-        const due_date = data['due_date'];
+        const due_date = data['due_date'] ? data['due_date'] : null;
 
         if (name === 'button') {
             if (due_date) {
@@ -103,6 +103,8 @@ function CardDraft({ cardData, match, history }) {
         } else {
             setDateDialogopen(false);
         }
+
+        dispatch(changeDueDate(''));
     };
 
     const handleDeleteDialogOpen = () => {
