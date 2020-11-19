@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, withStyles } from '@material-ui/core';
@@ -63,14 +63,19 @@ const StyleModalShare = styled.div`
 `;
 
 function ClassDialoglDate({ subType }) {
-    /** redux state */
     const dispatch = useDispatch();
 
+    const [dateState, setDateState] = useState(moment().add('minutes', 1).format('YYYY-MM-DDTHH:mm'));
+
     const classes = useStyles();
+
     const onChange = (e) => {
         let { value } = e.target;
 
-        dispatch(changeDueDate(moment(value).format('YYYY-MM-DD HH:mm:ss')));
+        if (moment(value).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss')) {
+            setDateState(value);
+            dispatch(changeDueDate(moment(value).format('YYYY-MM-DD HH:mm:ss')));
+        }
     };
     return (
         <StyleModalShare>
@@ -91,9 +96,9 @@ function ClassDialoglDate({ subType }) {
                 <form className={classes.container} noValidate>
                     <DateTextField
                         onChange={onChange}
+                        value={dateState}
                         id="datetime-local"
                         type="datetime-local"
-                        defaultValue={moment().add('minutes', 5).format('YYYY-MM-DDTHH:mm')}
                         className={classes.textField}
                         InputLabelProps={{
                             shrink: true,

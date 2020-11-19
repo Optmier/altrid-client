@@ -177,7 +177,7 @@ function CardShare({ testNum, cardData, history }) {
                             </div>
 
                             <div className="contents-block">
-                                <InfoItems title={'문항수'} contents={cardData['question_num']} />
+                                <InfoItems title={'문항수'} contents={cardData['contents_data']['problemDatas'].length + '문제'} />
                                 <TimeItems title={'제한시간'} mm={mm} ss={ss} />
                                 <DateItems
                                     title={'과제기한'}

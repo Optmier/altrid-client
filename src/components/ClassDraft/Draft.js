@@ -28,6 +28,8 @@ function Draft() {
     // cardDatas 변수에 불러온 값 저장하기
     data ? (cardDatas = data) : (cardDatas = {});
 
+    window.data = data;
+
     /** draft.js 자체 메소드 */
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
 

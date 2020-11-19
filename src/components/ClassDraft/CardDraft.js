@@ -198,7 +198,7 @@ function CardDraft({ cardData, match, history }) {
                             </div>
 
                             <div className="contents-block">
-                                <InfoItems title={'문항수'} contents={cardData['question_num']} />
+                                <InfoItems title={'문항수'} contents={cardData['contents_data']['problemDatas'].length + '문제'} />
                                 <TimeItems title={'제한시간'} mm={mm} ss={ss} />
                                 <InfoItems title={'최종수정'} contents={moment(cardData['updated']).format('MM월 DD일 HH시 mm분')} />
                             </div>
