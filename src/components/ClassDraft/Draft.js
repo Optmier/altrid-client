@@ -17,13 +17,8 @@ function Draft() {
         data: null,
         error: null,
     }; // 아예 데이터가 존재하지 않을 때가 있으므로, 비구조화 할당이 오류나지 않도록
-    const dispatch = useDispatch();
 
-    // cardDatas get함수 통해서 불러오기
     let cardDatas = {};
-    useEffect(() => {
-        dispatch(getDrafts());
-    }, [dispatch]);
 
     // cardDatas 변수에 불러온 값 저장하기
     data ? (cardDatas = data) : (cardDatas = {});

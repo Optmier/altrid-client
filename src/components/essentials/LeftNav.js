@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/nav_left.scss';
 import { NavLink, withRouter } from 'react-router-dom';
-import NavLogoWhite from '../../images/nav_logo_white.png';
+import LogoWhite from '../../images/logos/nav_logo_white.png';
 import People from '../../images/people.png';
 import Avatar from '../../images/avatar.png';
+import Axios from 'axios';
+import { apiUrl } from '../../configs/configs';
+import { useSelector, useDispatch } from 'react-redux';
+import { getDrafts } from '../../redux_modules/assignmentDraft';
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -14,17 +18,45 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
 });
 
 function LeftNav({ match }) {
-    let { num } = match.params;
+    const { num } = match.params;
+    const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
+    const dispatch = useDispatch();
+
+    const [studentData, setStudentData] = useState([]);
+    const [teacherData, setTeacherData] = useState([]);
+
+    useEffect(() => {
+        dispatch(getDrafts());
+
+        Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
+            .then((res) => {
+                setStudentData(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+
+        Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
+            .then((res) => {
+                setTeacherData(res.data[0]);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, [dispatch]);
+
     return (
         <div className="left-nav-root">
-            {/* <div className="left-nav-box logo-wrapper">
-                    <img src={NavLogoWhite} alt="logo_white"></img>
-                </div> */}
+            <div className="left-nav-box">
+                <LeftNavItem linkTo={`/`}>
+                    <img src={LogoWhite} alt="logo_white"></img>
+                </LeftNavItem>
+            </div>
 
             <div className="left-nav-box">
                 <div className="box-wrapper" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
                     <img alt="avatar" src={Avatar} />
-                    <h4>최준영 선생님</h4>
+                    <h4>{teacherData['teacher_name']} 선생님</h4>
                 </div>
 
                 <div className="a-wrapper">
@@ -32,7 +64,7 @@ function LeftNav({ match }) {
                         <div className="draft-ment">
                             현재 생성된 과제는
                             <br />
-                            <b>총 5개</b> 입니다.
+                            <b>총 {data ? data.length : 0}개</b> 입니다.
                         </div>
 
                         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -49,11 +81,11 @@ function LeftNav({ match }) {
 
             <div className="left-nav-box">
                 <div className="box-wrapper">
-                    <h5>Class 02반</h5>
-                    <p>에듀이티학원 도플 700점 목표반입니다.</p>
+                    <h5>{teacherData['class_name']} 반</h5>
+                    <p>{teacherData['description']}</p>
                     <div className="info-num">
                         <img alt="student_num" src={People} />
-                        <p>학생 수 30명</p>
+                        <p>학생 수 {studentData.length}명</p>
                     </div>
                 </div>
             </div>

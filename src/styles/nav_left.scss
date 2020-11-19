@@ -9,21 +9,27 @@ a {
     background-color: #3b168a;
     background-image: url('/bg_images/nav_back.png');
     background-repeat: no-repeat;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-
     width: 240px;
     height: 100%;
     position: fixed;
     z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 
     & .left-nav-box + .left-nav-box {
         border-top: 2px solid #6c4cb1;
     }
     & .left-nav-box {
         width: 100%;
+
+        & > a img {
+            height: 45px;
+            margin: 10px 24px;
+            box-sizing: border-box;
+        }
 
         & .box-wrapper {
             padding: 18px 24px;
