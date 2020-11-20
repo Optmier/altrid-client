@@ -40,7 +40,7 @@ const InfoItems = ({ title, contents, children }) => {
     );
 };
 const ScoreItems = ({ title, score, total, children }) => {
-    let percent = (score / total) * 100;
+    let percent = ((score / total) * 100).toFixed(1);
     return (
         <div className="card-item-student">
             {children}
@@ -98,9 +98,11 @@ function CardStudent({ id, data, totalProblems, history }) {
                     </div>
 
                     <span className="card-option">
-                        <Link to={`${path}/details?user=${id}`}>
-                            <p>상세 리포트</p>
-                        </Link>
+                        {data.submitted ? (
+                            <Link to={`${path}/details?user=${id}`}>
+                                <p>상세 리포트</p>
+                            </Link>
+                        ) : null}
                     </span>
                 </div>
                 <div></div>

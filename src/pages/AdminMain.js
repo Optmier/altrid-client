@@ -84,7 +84,7 @@ function AdminMain({ history, match }) {
                 <ResponsiveDrawer drawerLists={menus} title={barTitle} mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle}>
                     <Route path="/admins/members" component={AdminMembersPage} />
                     <Route path="/admins/contents-requests" component={ContentsRequests} exact />
-                    <Route path="/admins/contents-requests/:id" component={MakeContents} />
+                    <Route path="/admins/contents-requests/:id" component={MakeContents} exact />
                 </ResponsiveDrawer>
             </div>
         </>

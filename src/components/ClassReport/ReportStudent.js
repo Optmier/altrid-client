@@ -73,7 +73,7 @@ const InfoItems = ({ title, contents, children }) => {
     );
 };
 const ScoreItems = ({ title, score, total, children }) => {
-    let percent = (score / total) * 100;
+    let percent = ((score / total) * 100).toFixed(1);
     return (
         <StyleItems>
             {children}
@@ -266,16 +266,18 @@ function ReportStudent({ history, match }) {
         setDurTimes(currentStudent.time);
         setTries(currentStudent.tries);
         if (currentStudent.contents_data) {
-            setTotalProblems(currentStudent.contents_data.problemDatas.length);
+            setTotalProblems(currentStudent.contents_data.flatMap((m) => m.problemDatas).length);
             const _o = {};
-            currentStudent.contents_data.problemDatas.forEach((d) => {
-                const cat = d.category > 6 ? 3 : d.category;
-                !_o[cat] && (_o[cat] = {});
-                !_o[cat].category && (_o[cat].category = 0);
-                !_o[cat].count && (_o[cat].count = 0);
-                _o[cat].category = cat;
-                _o[cat].count += 1;
-            });
+            currentStudent.contents_data
+                .flatMap((m) => m.problemDatas)
+                .forEach((d) => {
+                    const cat = d.category > 6 ? 3 : d.category;
+                    !_o[cat] && (_o[cat] = {});
+                    !_o[cat].category && (_o[cat].category = 0);
+                    !_o[cat].count && (_o[cat].count = 0);
+                    _o[cat].category = cat;
+                    _o[cat].count += 1;
+                });
             setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
         }
         if (currentStudent.user_data) {
@@ -403,6 +405,7 @@ function ReportStudent({ history, match }) {
 
     useEffect(() => {
         if (!patternDatas || !patternDatas.length) return;
+        console.log(patternDatas);
         setAnswerChangedProblems(
             patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid.filter((g) => g.answerChanges).length,
         );
@@ -539,6 +542,8 @@ function ReportStudent({ history, match }) {
                             eyetrackData={currentStudentData.eyetrack_data}
                             contentsData={currentStudentData.contents_data}
                             patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
+                            totalStudentsDatas={studentsData.filter((d) => d.submitted)}
+                            currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
                         />
                     ) : null}
                 </section>

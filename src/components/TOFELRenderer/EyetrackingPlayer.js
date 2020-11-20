@@ -444,7 +444,7 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
     useEffect(() => {
         // console.log(seqIdx, lastSeqIdx);
         // 진행 시간 업데이트
-        setElapsedTime(() => sequences[seqIdx].elapsedTime / 1000);
+        setElapsedTime(() => sequences[seqIdx].elapsedTime);
         // 사용자 데이터 렌더
         setRenderUserData({
             ...renderUserData,
@@ -569,11 +569,12 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
             <ContentsWrapper className="contents-wrapper" onClick={handlePlay}>
                 <ContentsRoot className="contents-root">
                     <SmartTOFELRender
+                        preview
                         timer={elapsedTime}
                         timeLimit={99999}
-                        title={testContent.title}
-                        passageForRender={testContent.passageForRender}
-                        problemDatas={testContent.problemDatas}
+                        title={testContent.map((m) => m.title)}
+                        passageForRender={testContent.map((m) => m.passageForRender)}
+                        problemDatas={testContent.flatMap((m) => m.problemDatas)}
                         userDatas={renderUserData}
                         userAnswerDirect={userAnswerDirect}
                     />

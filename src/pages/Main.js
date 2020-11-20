@@ -70,7 +70,7 @@ function Main({ history }) {
 
             // 스크린 크기는 일단 고정해 놓음!
             screenWidth = 1280;
-            screenHeight = 750;
+            screenHeight = 751;
 
             // let centerX = window.screen.width / 2 - screenWidth / 2;
             // let centerY = window.screen.height / 2 - (screenHeight * 2) / 3;
@@ -160,10 +160,10 @@ function Main({ history }) {
                                 <Button size="large" variant="outlined" startIcon={<GroupAddIcon />} onClick={toggleAddTeacherDrawer(true)}>
                                     선생님 추가하기
                                 </Button>
-                                <button type="button" onClick={onAssignmentCardItemClick(3, 10, '시선흐름 측정이 있는 과제 샘플')}>
+                                <button type="button" onClick={onAssignmentCardItemClick(95, 10, '시선흐름 측정이 있는 과제 샘플')}>
                                     학생용 시선흐름 있는 테스트 창 열기
                                 </button>
-                                <button type="button" onClick={onAssignmentCardItemClick(4, 10, '시선흐름 측정이 없는 과제 샘플')}>
+                                <button type="button" onClick={onAssignmentCardItemClick(94, 10, '시선흐름 측정이 없는 과제 샘플')}>
                                     학생용 시선흐름 없는 테스트 창 열기
                                 </button>
                             </div>

@@ -280,16 +280,18 @@ function ReportClass({ match }) {
 
         if (mainReportData.contents_data) {
             const contentsData = mainReportData.contents_data;
-            setProblemNumbers(contentsData.problemDatas.length);
+            setProblemNumbers(contentsData.flatMap((m) => m.problemDatas).length);
             const _o = {};
-            contentsData.problemDatas.forEach((d) => {
-                const cat = d.category > 6 ? 3 : d.category;
-                !_o[cat] && (_o[cat] = {});
-                !_o[cat].category && (_o[cat].category = 0);
-                !_o[cat].count && (_o[cat].count = 0);
-                _o[cat].category = cat;
-                _o[cat].count += 1;
-            });
+            contentsData
+                .flatMap((m) => m.problemDatas)
+                .forEach((d) => {
+                    const cat = d.category > 6 ? 3 : d.category;
+                    !_o[cat] && (_o[cat] = {});
+                    !_o[cat].category && (_o[cat].category = 0);
+                    !_o[cat].count && (_o[cat].count = 0);
+                    _o[cat].category = cat;
+                    _o[cat].count += 1;
+                });
             setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
         }
     }, [mainReportData]);

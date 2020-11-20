@@ -55,7 +55,7 @@ function TimeTrackBox({ data, total }) {
                 sums[cur] += data.time;
             });
         });
-        setTotalAvgs(Object.keys(sums).map((k) => sums[k] / 2.0));
+        setTotalAvgs(Object.keys(sums).map((k) => (sums[k] / filtered.length) * 1.0));
     }, [data]);
 
     return (

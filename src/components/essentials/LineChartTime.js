@@ -49,7 +49,7 @@ function LineChartTime({ currents, averages }) {
                 size: 1,
             },
             xaxis: {
-                categories: ['1번', '2번', '3번', '4번', '5번', '6번', '7번', '8번', '9번', '10번'],
+                categories: currents.map((d, i) => i + 1 + '번'),
             },
             yaxis: {
                 min: 0,
