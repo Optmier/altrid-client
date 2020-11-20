@@ -18,6 +18,7 @@ import { withRouter } from 'react-router-dom';
 import AddTeacher from '../components/MainPage/AddTeacher';
 import classNames from 'classnames';
 import { $_classDefault } from '../configs/front_urls';
+import { cos } from 'mathjs';
 
 function Main({ history }) {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -51,6 +52,8 @@ function Main({ history }) {
     useEffect(() => {
         fetchCardData();
     }, []);
+
+    console.log(cardDatas);
 
     const onAssignmentCardItemClick = (idx, classNumber, assignmentTitle) => () => {
         console.log(idx, classNumber);
@@ -122,7 +125,7 @@ function Main({ history }) {
                             <>
                                 <div className="introduce">
                                     <h2>
-                                        에듀이티 클래스 관리<br></br>솔루션에 오신것을 환영합니다.
+                                        ALTRID 클래스 관리<br></br>솔루션에 오신것을 환영합니다.
                                     </h2>
                                 </div>
                                 <div className="academy-name">
@@ -137,7 +140,7 @@ function Main({ history }) {
                                 <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
                             </CardRoot>
                         ) : null}
-                        {cardDatas.map(({ idx, name, description, teacher_name, num_of_students }) => (
+                        {cardDatas.map(({ idx, name, class_count, description, teacher_name, num_of_students }) => (
                             <CardRoot key={idx}>
                                 <CardEntry
                                     title={name}
@@ -145,7 +148,7 @@ function Main({ history }) {
                                     assignmentOnProgress={false}
                                     teacherName={teacher_name}
                                     totalStudents={num_of_students}
-                                    totalAssignments={0}
+                                    totalAssignment={class_count}
                                     onClick={() => {
                                         history.push(`${$_classDefault}/${idx}/draft`);
                                     }}
