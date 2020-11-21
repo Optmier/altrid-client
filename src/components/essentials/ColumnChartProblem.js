@@ -1,45 +1,14 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 
-function ColumnChartProblem() {
+function ColumnChartProblem({ datas }) {
     let state = {};
 
     state = {
         series: [
             {
                 name: '정답률',
-                data: [
-                    59,
-                    32,
-                    68,
-                    36,
-                    82,
-                    18,
-                    70,
-                    50,
-                    33,
-                    74,
-                    59,
-                    32,
-                    68,
-                    36,
-                    82,
-                    18,
-                    70,
-                    50,
-                    33,
-                    74,
-                    59,
-                    32,
-                    68,
-                    36,
-                    82,
-                    18,
-                    70,
-                    50,
-                    33,
-                    74,
-                ],
+                data: datas,
             },
         ],
         options: {
@@ -63,38 +32,7 @@ function ColumnChartProblem() {
                 colors: ['transparent'],
             },
             xaxis: {
-                categories: [
-                    '1번',
-                    '2번',
-                    '3번',
-                    '4번',
-                    '5번',
-                    '6번',
-                    '7번',
-                    '8번',
-                    '9번',
-                    '10번',
-                    '1번',
-                    '2번',
-                    '3번',
-                    '4번',
-                    '5번',
-                    '6번',
-                    '7번',
-                    '8번',
-                    '9번',
-                    '10번',
-                    '1번',
-                    '2번',
-                    '3번',
-                    '4번',
-                    '5번',
-                    '6번',
-                    '7번',
-                    '8번',
-                    '9번',
-                    '10번',
-                ],
+                categories: datas && datas.length ? datas.map((d, i) => i + 1 + '번') : [],
             },
             yaxis: {},
             fill: {
@@ -115,5 +53,9 @@ function ColumnChartProblem() {
         </div>
     );
 }
+
+ColumnChartProblem.defaultProps = {
+    datas: [],
+};
 
 export default ColumnChartProblem;

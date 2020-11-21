@@ -116,6 +116,7 @@ function SmartTOFELRender({
     const [userSelectionDatas, setUserSelectionDatas] = useState(userDatas.selections);
     const [currentLog, setCurrentLog] = useState({
         pid: 0,
+        setNum: 0,
         action: null,
         time: 0,
         answerBefore: 0,
@@ -132,9 +133,10 @@ function SmartTOFELRender({
             const state = {
                 ...currentLog,
                 action: 'end',
-                time: timeLimit === -2 ? timer : (timeLimit - timer),
+                time: timeLimit === -2 ? timer : timeLimit - timer,
                 answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
                 correct: userSelectionDatas[currentProblemIdx].correct,
+                setNum: userSelectionDatas[currentProblemIdx].setNum,
             };
             // console.log(state);
             // onPrev(currentProblemIdx - 1);
@@ -148,9 +150,10 @@ function SmartTOFELRender({
             const state = {
                 ...currentLog,
                 action: 'end',
-                time: timeLimit === -2 ? timer : (timeLimit - timer),
+                time: timeLimit === -2 ? timer : timeLimit - timer,
                 answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
                 correct: userSelectionDatas[currentProblemIdx].correct,
+                setNum: userSelectionDatas[currentProblemIdx].setNum,
             };
             // console.log(state);
             if (currentProblemIdx < problemDatas.length - 1) {
@@ -174,10 +177,11 @@ function SmartTOFELRender({
             const state = {
                 ...currentLog,
                 action: 'changed',
-                time: timeLimit === -2 ? timer : (timeLimit - timer),
+                time: timeLimit === -2 ? timer : timeLimit - timer,
                 answerBefore: userSelectionDatas[currentProblemIdx].answerUser,
                 answerAfter: userAnswer,
                 correct: isCorrect,
+                setNum: userSelectionDatas[currentProblemIdx].setNum,
             };
             // console.log(state);
             return state;
@@ -187,6 +191,7 @@ function SmartTOFELRender({
                 idx === currentProblemIdx
                     ? {
                           ...data,
+                          setNum: problemDatas[currentProblemIdx].setNum,
                           type: problemDatas[currentProblemIdx].type,
                           category: problemDatas[currentProblemIdx].category,
                           answerUser: userAnswer,
@@ -216,9 +221,10 @@ function SmartTOFELRender({
             const state = {
                 ...currentLog,
                 action: 'end',
-                time: timeLimit === -2 ? timer : (timeLimit - timer),
+                time: timeLimit === -2 ? timer : timeLimit - timer,
                 answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
                 correct: userSelectionDatas[currentProblemIdx].correct,
+                setNum: userSelectionDatas[currentProblemIdx].setNum,
             };
             // console.log(state);
             setForceEnd(true);
@@ -234,6 +240,7 @@ function SmartTOFELRender({
                 setUserSelectionDatas([
                     ...userSelectionDatas,
                     {
+                        setNum: problemDatas[currentProblemIdx].setNum,
                         type: problemDatas[currentProblemIdx].type,
                         category: problemDatas[currentProblemIdx].category,
                         answerUser: problemDatas[currentProblemIdx].answer,
@@ -246,6 +253,7 @@ function SmartTOFELRender({
                 setUserSelectionDatas([
                     ...userSelectionDatas,
                     {
+                        setNum: problemDatas[currentProblemIdx].setNum,
                         type: problemDatas[currentProblemIdx].type,
                         category: problemDatas[currentProblemIdx].category,
                         answerUser: problemDatas[currentProblemIdx].type === 'short-answer' ? '' : 0,
@@ -259,10 +267,11 @@ function SmartTOFELRender({
                 const state = {
                     pid: currentProblemIdx,
                     action: 'begin',
-                    time: timeLimit === -2 ? timer : (timeLimit - timer),
+                    time: timeLimit === -2 ? timer : timeLimit - timer,
                     answerBefore: 0,
                     answerAfter: 0,
                     correct: false,
+                    setNum: -99,
                 };
                 // console.log(state);
                 return state;
@@ -272,10 +281,11 @@ function SmartTOFELRender({
                 const state = {
                     pid: currentProblemIdx,
                     action: 'begin',
-                    time: timeLimit === -2 ? timer : (timeLimit - timer),
+                    time: timeLimit === -2 ? timer : timeLimit - timer,
                     answerBefore: userSelectionDatas[currentProblemIdx].answerUser,
                     answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
                     correct: userSelectionDatas[currentProblemIdx].correct,
+                    setNum: userSelectionDatas[currentProblemIdx].setNum,
                 };
                 // console.log(state);
                 return state;
@@ -335,9 +345,21 @@ function SmartTOFELRender({
         <RenderRoot>
             <HeaderToolbar>
                 <HeaderTitle>
-                    <h4>{title}</h4>
+                    <h4>{title[problemDatas[currentProblemIdx].setNum]}</h4>
                 </HeaderTitle>
-                <HeaderTimer className={timeLimit !== -2 ? (timer <= 30 && timer > 10 ? 'warning' : timer <= 10 && timer !== -2 ? 'critical' : '') : ""}>
+                <HeaderTimer
+                    className={
+                        preview
+                            ? ''
+                            : timeLimit !== -2
+                            ? timer <= 30 && timer > 10
+                                ? 'warning'
+                                : timer <= 10 && timer !== -2
+                                ? 'critical'
+                                : ''
+                            : ''
+                    }
+                >
                     <TimerIcon />
                     <h5>{timeValueToTimer(timer)}</h5>
                 </HeaderTimer>
@@ -359,7 +381,9 @@ function SmartTOFELRender({
                 </HeaderPageController>
             </HeaderToolbar>
             <ContentsContainer>
-                <PassageContainer className="passages">{HtmlParser(passageForRender)}</PassageContainer>
+                <PassageContainer className="passages">
+                    {HtmlParser(passageForRender[problemDatas[currentProblemIdx].setNum])}
+                </PassageContainer>
                 <ProblemsContainer className="problems">
                     {problemDatas.length > 0 ? (
                         <ProblemComponent
@@ -388,8 +412,8 @@ function SmartTOFELRender({
 
 SmartTOFELRender.defaultProps = {
     preview: false,
-    title: '타이틀',
-    passageForRender: '',
+    title: ['타이틀'],
+    passageForRender: [''],
     problemDatas: [],
     userDatas: {
         selections: [],

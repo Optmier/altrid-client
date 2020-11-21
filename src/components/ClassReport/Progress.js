@@ -1,4 +1,5 @@
-import React from 'react';
+import { square } from 'mathjs';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const StyleTestSquareList = styled.div`
@@ -22,17 +23,35 @@ const StyleTestSquareList = styled.div`
     }
 `;
 
-function Progress({ test }) {
+function Progress({ test, problemNumbers }) {
+    const [squares, setSquars] = useState([]);
+    window.squares = squares;
     let testArr = new Array();
 
-    test.map((i) => {
-        i *= 1;
-        testArr.push(i);
-    });
+    // test.map((i) => {
+    //     i *= 1;
+    //     testArr.push(i);
+    // });
+
+    useEffect(() => {
+        // if (test) {
+        //     delete test.selections[5];
+        // }
+        for (let i = 0; i < problemNumbers; i++) {
+            if (!test || !test.selections[i]) {
+                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#E5E5E5' }}></div>]);
+            } else if (test.selections[i].correct) {
+                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#13E2A1' }}></div>]);
+            } else if (!test.selections[i].correct) {
+                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#FFA552' }}></div>]);
+            }
+        }
+    }, []);
 
     return (
         <StyleTestSquareList>
-            {testArr.map((i, idx) =>
+            {squares}
+            {/* {testArr.map((i, idx) =>
                 i === 1 ? (
                     <div key={idx} className="square" style={{ backgroundColor: '#13E2A1' }}></div>
                 ) : i === 0 ? (
@@ -42,7 +61,7 @@ function Progress({ test }) {
                 ) : (
                     <div key={idx} className="square" style={{ backgroundColor: '#f7f9f8' }}></div>
                 ),
-            )}
+            )} */}
         </StyleTestSquareList>
     );
 }

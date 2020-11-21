@@ -1,18 +1,43 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import problemCategories from '../TOFELEditor/ProblemCategories';
 
-function ColumnChart() {
+function ColumnChart({ currentObjs, averageObjs }) {
     let state = {};
 
     state = {
         series: [
             {
                 name: '학생 정답률',
-                data: [44, 55, 57, 56, 61, 58, 63, 60, 66, 70],
+                data: [
+                    currentObjs[1] * 100,
+                    currentObjs[2] * 100,
+                    currentObjs[3] * 100,
+                    currentObjs[4] * 100,
+                    currentObjs[5] * 100,
+                    currentObjs[6] * 100,
+                    currentObjs[7] * 100,
+                    currentObjs[8] * 100,
+                    currentObjs[9] * 100,
+                    currentObjs[10] * 100,
+                    currentObjs[0] ? currentObjs[0] : null,
+                ],
             },
             {
                 name: '평균 정답률',
-                data: [76, 85, 101, 98, 87, 105, 91, 114, 94, 90],
+                data: [
+                    averageObjs[1] * 100,
+                    averageObjs[2] * 100,
+                    averageObjs[3] * 100,
+                    averageObjs[4] * 100,
+                    averageObjs[5] * 100,
+                    averageObjs[6] * 100,
+                    averageObjs[7] * 100,
+                    averageObjs[8] * 100,
+                    averageObjs[9] * 100,
+                    averageObjs[10] * 100,
+                    averageObjs[0] ? averageObjs[0] : null,
+                ],
             },
         ],
         options: {
@@ -38,16 +63,17 @@ function ColumnChart() {
             },
             xaxis: {
                 categories: [
-                    '세부내용찾기',
-                    '지시대상찾기',
-                    '세부내용찾기',
-                    '지시대상찾기',
-                    '세부내용찾기',
-                    '지시대상찾기',
-                    '세부내용찾기',
-                    '지시대상찾기',
-                    '세부내용찾기',
-                    '지시대상찾기',
+                    problemCategories[0].name,
+                    problemCategories[1].name,
+                    problemCategories[2].name,
+                    problemCategories[3].name,
+                    problemCategories[4].name,
+                    problemCategories[5].name,
+                    problemCategories[6].name,
+                    problemCategories[7].name,
+                    problemCategories[8].name,
+                    problemCategories[9].name,
+                    '기타',
                 ],
             },
             yaxis: {},

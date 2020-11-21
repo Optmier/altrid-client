@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import assignmentDummy from '../../datas/assignmentDummy.json';
 import BranchNav from '../essentials/BranchNav';
 import ClassWrapper from '../essentials/ClassWrapper';
@@ -19,6 +19,9 @@ import ColumnChartType from '../essentials/ColumnChartType';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
+import { useDispatch } from 'react-redux';
+import { setReportData } from '../../redux_modules/reports';
+import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 
 const pad = (n, width) => {
     n = n + '';
@@ -83,6 +86,12 @@ function ReportClass({ match }) {
     const [dueDate, setDueDate] = useState(null);
     /** 학생별 데이터 및 각 요소 */
     const [studentsData, setStudentsData] = useState([]);
+    /** 유형 분석 활성화 달성률 */
+    const [achievesForTypes, setAchievesForTypes] = useState({ value: 0, satisfieds: [] });
+    /** 문제별 평균 정답률 */
+    const [avgScoresOfNumber, setAvgScoresOfNumber] = useState([]);
+    /** 전체 학생 영역별 평균 점수 데이터 */
+    const [averageScoresOfType, setAverageScoresOfType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
 
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
@@ -120,13 +129,49 @@ function ReportClass({ match }) {
         setSelectState(e.target.value);
     };
 
+    /** 학생 카드 정렬 */
+    const handleSortStudentsCard = ({ target }) => {
+        const { name, value } = target;
+        // console.log(name, value);
+        if (name === 'student-option') {
+            switch (value) {
+                // 제출 순
+                case '0':
+                    setStudentsData(
+                        studentsData.sort((a, b) => (a.updated < b.updated ? 1 : b.updated < a.updated ? -1 : 0)).map((d) => d),
+                    );
+                    break;
+                // 이름 순
+                case '1':
+                    setStudentsData(studentsData.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0)).map((d) => d));
+                    break;
+                // 점수 순
+                case '2':
+                    setStudentsData(
+                        studentsData
+                            .sort((a, b) =>
+                                a.score_percentage < b.score_percentage ? 1 : b.score_percentage < a.score_percentage ? -1 : 0,
+                            )
+                            .map((d) => d),
+                    );
+                    break;
+                // 소요시간 순
+                case '3':
+                    setStudentsData(studentsData.sort((a, b) => (a.time < b.time ? 1 : b.time < a.time ? -1 : 0)).map((d) => d));
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     useEffect(() => {
         // 메인 정보 불러오기
         const { num, activedNum } = match.params;
         console.log(num, activedNum);
         Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, { withCredentials: true })
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 let unparsedContentsData = res.data.contents_data;
                 try {
                     unparsedContentsData
@@ -156,7 +201,7 @@ function ReportClass({ match }) {
             withCredentials: true,
         })
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 const convertedData = res.data.map((data) => {
                     let unparsedUserData = data.user_data;
                     try {
@@ -188,10 +233,26 @@ function ReportClass({ match }) {
                     } catch (e) {
                         unparsedEyetrackData = null;
                     }
+
+                    // console.log(data);
+
+                    const _categoryScore = {};
+                    if (data.user_data) {
+                        const userSelections = JSON.parse(unparsedUserData).selections;
+                        userSelections.forEach((e) => {
+                            !_categoryScore[e.category] && (_categoryScore[e.category] = {});
+                            !_categoryScore[e.category].sum && (_categoryScore[e.category].sum = 0);
+                            _categoryScore[e.category].sum += e.correct ? 1 : 0;
+                            !_categoryScore[e.category].count && (_categoryScore[e.category].count = 0);
+                            _categoryScore[e.category].count += 1;
+                        });
+                    }
+
                     return {
                         ...data,
                         user_data: JSON.parse(unparsedUserData),
                         eyetrack_data: JSON.parse(unparsedEyetrackData),
+                        category_score: _categoryScore,
                     };
                 });
                 setStudentsData(convertedData);
@@ -219,13 +280,60 @@ function ReportClass({ match }) {
 
         if (mainReportData.contents_data) {
             const contentsData = mainReportData.contents_data;
-            setProblemNumbers(contentsData.problemDatas.length);
+            setProblemNumbers(contentsData.flatMap((m) => m.problemDatas).length);
+            const _o = {};
+            contentsData
+                .flatMap((m) => m.problemDatas)
+                .forEach((d) => {
+                    const cat = d.category > 6 ? 3 : d.category;
+                    !_o[cat] && (_o[cat] = {});
+                    !_o[cat].category && (_o[cat].category = 0);
+                    !_o[cat].count && (_o[cat].count = 0);
+                    _o[cat].category = cat;
+                    _o[cat].count += 1;
+                });
+            setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
         }
     }, [mainReportData]);
 
     useEffect(() => {
         if (!studentsData || studentsData.length < 1) return;
         console.log(studentsData);
+        /** 여기에 계산함수 구현하면 됩니다. */
+        const _sumOfScoresPerNumbers = {};
+        const len = studentsData
+            .filter(({ submitted }) => submitted)
+            .map(({ user_data }) => {
+                const curSelections = user_data.selections;
+                curSelections.forEach((s, i) => {
+                    !_sumOfScoresPerNumbers[i] && (_sumOfScoresPerNumbers[i] = 0);
+                    _sumOfScoresPerNumbers[i] += s.correct ? 1 : 0;
+                });
+            }).length;
+        const averagesOfNumber = Object.keys(_sumOfScoresPerNumbers).map((n) => (_sumOfScoresPerNumbers[n] / len) * 100.0);
+        setAvgScoresOfNumber(averagesOfNumber);
+        // console.log(averagesOfNumber);
+        const totalForWeaks = studentsData.filter((d) => d.submitted);
+        if (totalForWeaks && totalForWeaks.length) {
+            // 전체 학생 영역별 정답 합산
+            const _totals = {};
+            totalForWeaks.forEach((e) => {
+                const categoryScores = e.category_score;
+                Object.keys(categoryScores).map((c) => {
+                    const sum = categoryScores[c].sum;
+                    const count = categoryScores[c].count;
+                    !_totals[c] && (_totals[c] = 0);
+                    _totals[c] += (sum / count) * 1.0;
+                });
+            });
+            // 전체 학생 영역별 합산 점수에서 평균 구하기
+            const _averages = {};
+            Object.keys(_totals).map((c) => {
+                !_averages[c] && (_averages[c] = 0);
+                _averages[c] = (_totals[c] / totalForWeaks.length) * 1.0;
+            });
+            setAverageScoresOfType({ ...averageScoresOfType, ..._averages });
+        }
     }, [studentsData]);
 
     return (
@@ -283,7 +391,11 @@ function ReportClass({ match }) {
                         <div className="report-box">
                             <div className="report-col">
                                 <div className="right-top">
-                                    <StudentNum completeNum={14} totalNum={30} width="75%" />
+                                    <StudentNum
+                                        completeNum={studentsData.filter((s) => s.submitted).length}
+                                        totalNum={studentsData.length}
+                                        width="75%"
+                                    />
                                 </div>
                             </div>
                             <div className="report-col">
@@ -291,7 +403,7 @@ function ReportClass({ match }) {
                             </div>
                         </div>
                     </section>
-
+                    {/* {console.log(achievesForTypes)} */}
                     <section className="class-report-graph">
                         <div className="class-report-title">영역별 리포트</div>
                         <div className="graph-box">
@@ -299,22 +411,24 @@ function ReportClass({ match }) {
                                 <div className="graph-header-text">
                                     <span>가장 취약한 문제 </span> 3번(21%)
                                 </div>
-                                <div className="graph-header-text">
-                                    <span>가장 취약한 유형 </span> 세부내용 찾기(29%)
-                                </div>
+                                {achievesForTypes.value >= 100 ? (
+                                    <div className="graph-header-text">
+                                        <span>가장 취약한 유형 </span> 세부내용 찾기(29%)
+                                    </div>
+                                ) : null}
                                 <select name="chart-option" onChange={handleSelect}>
                                     <option value="0">문제별 정답률</option>
-                                    <option value="1">유형별 정답률</option>
+                                    {achievesForTypes.value >= 100 ? <option value="1">유형별 정답률</option> : null}
                                 </select>
                             </div>
 
-                            {selectState === '0' ? <ColumnChartProblem /> : <ColumnChartType />}
+                            {selectState === '0' ? <ColumnChartProblem datas={avgScoresOfNumber} /> : <ColumnChartType />}
                         </div>
                     </section>
 
                     <section className="class-report-progress">
                         <div className="class-report-title">전체 진행률</div>
-                        <TotalProgress studentList={studentDummy}></TotalProgress>
+                        <TotalProgress studentList={studentsData} problemNumbers={problemNumbers}></TotalProgress>
                     </section>
                 </div>
             </ClassWrapper>
@@ -324,19 +438,20 @@ function ReportClass({ match }) {
                     <StudentCardHeader className="class-report-student-card">
                         <div className="left">
                             <div className="title">학생별 리포트</div>
-                            <select name="student-option">
-                                <option value="0">제출순</option>
-                                <option value="1">점수순</option>
-                                <option value="1">소요시간순</option>
+                            <select name="student-option" onChange={handleSortStudentsCard}>
+                                <option value="0">제출 순</option>
+                                <option value="1">이름 순</option>
+                                <option value="2">점수 순</option>
+                                <option value="3">소요시간 순</option>
                             </select>
                         </div>
                         <FilterButton />
                     </StudentCardHeader>
                 }
             >
-                {Object.keys(studentDummy).map((num) => (
-                    <CardRoot key={num} cardHeight="250px">
-                        <CardStudent num={num} />
+                {studentsData.map((data) => (
+                    <CardRoot key={data.student_id} cardHeight="250px">
+                        <CardStudent id={data.student_id} data={data} totalProblems={problemNumbers} />
                     </CardRoot>
                 ))}
             </CardLists>

@@ -1,13 +1,28 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Route } from 'react-router-dom';
+import RestrictRoute from '../essentials/RestrictRoute';
 import ReportClass from './ReportClass';
 import ReportStudent from './ReportStudent';
 
 function Reportes({ match }) {
+    const sessions = useSelector((state) => state.RdxSessions);
+
     return (
         <>
-            <Route path={`${match.path}`} exact component={ReportClass} />
-            <Route path={`${match.path}/:studentNum`} component={ReportStudent} />
+            <RestrictRoute
+                path={`${match.path}`}
+                exact
+                component={ReportClass}
+                role={sessions.userType}
+                allowedTypes={['admins', 'teachers']}
+            />
+            <RestrictRoute
+                path={`${match.path}/:studentNum`}
+                component={ReportStudent}
+                role={sessions.userType}
+                allowedTypes={['admins', 'teachers', 'students']}
+            />
         </>
     );
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import patternDummy from '../../datas/patternDummy.json';
 import styled from 'styled-components';
+import classNames from 'classnames';
 
 const StylePatternBox = styled.div`
     width: 100%;
@@ -25,6 +26,10 @@ const StylePatternList = styled.div`
         color: #2e2c2c;
         font-size: 0.85rem;
         font-weight: 400;
+
+        &.incorrect {
+            color: #ff4444;
+        }
 
         & .pattern-num {
             font-weight: 600;
@@ -75,13 +80,18 @@ const StylePatternContent = styled.div`
 `;
 
 const AnswerRoute = ({ route }) => {
-    let routeArr = route.split(',');
+    let routeArr = route.filter((d) => d);
 
     return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
+            {routeArr.length < 1 ? (
+                <div style={{ marginRight: '3px' }}>
+                    <span style={{ marginRight: '3px' }}>없음</span>
+                </div>
+            ) : null}
             {routeArr.map((i, idx) => (
                 <div key={idx} style={{ marginRight: '3px' }}>
-                    <span style={{ marginRight: '3px' }}>{i}</span>
+                    <span style={{ marginRight: '3px' }}>{routeArr.length > 1 ? i : '없음'}</span>
                     {idx === routeArr.length - 1 ? (
                         ''
                     ) : (
@@ -97,13 +107,25 @@ const AnswerRoute = ({ route }) => {
         </div>
     );
 };
-const PatternList = ({ title, pattern, answer, route, time }) => {
+const PatternList = ({
+    title,
+    data,
+    pattern,
+    problemNumber,
+    userAnswer,
+    correctAnswer,
+    correct,
+    time,
+    elapsedAtStart,
+    hasEyetrack,
+    onEyetrackGoTo,
+}) => {
     const [heightToggle, setHeightToggle] = useState(false);
     const [height, setHeight] = useState(0);
     const [padding, setPadding] = useState(0);
 
     const handlePattern = () => {
-        console.log(heightToggle);
+        // console.log(heightToggle);
 
         if (!heightToggle) {
             setHeight('92px');
@@ -117,8 +139,8 @@ const PatternList = ({ title, pattern, answer, route, time }) => {
     };
     return (
         <StylePatternList>
-            <div className="pattern-header" onClick={handlePattern}>
-                <span className="pattern-num">{pattern}</span> {title}
+            <div className={classNames('pattern-header', !correct ? 'incorrect' : '')} onClick={handlePattern}>
+                <span className="pattern-num">패턴{parseInt(pattern) + 1}</span> {problemNumber}번 문제
                 <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1.41 0.589844L6 5.16984L10.59 0.589844L12 1.99984L6 7.99984L0 1.99984L1.41 0.589844Z" fill="#2E2C2C" />
                 </svg>
@@ -126,38 +148,59 @@ const PatternList = ({ title, pattern, answer, route, time }) => {
             <StylePatternContent height={height} padding={padding}>
                 <div className="pattern-item">
                     <div>선택 답/정답</div>
-                    {answer}
+                    {userAnswer ? userAnswer : '미선택'}/{correctAnswer}
                 </div>
                 <div className="pattern-item">
-                    <div>답 선택 경로</div>
-                    <AnswerRoute route={route} />
+                    <div>변경 사항</div>
+                    <AnswerRoute route={data.map((d) => (d.action === 'changed' ? d.answerAfter : null))} />
                 </div>
                 <div className="pattern-item">
                     <div>소요시간</div>
-                    {time}
+                    {time}초
                 </div>
-                <div className="pattern-item pattern-click">
-                    <button>영상 확인</button>
-                </div>
+                {hasEyetrack ? (
+                    <div className="pattern-item pattern-click">
+                        <button
+                            onClick={() => {
+                                onEyetrackGoTo(elapsedAtStart);
+                            }}
+                        >
+                            영상 확인
+                        </button>
+                    </div>
+                ) : null}
             </StylePatternContent>
         </StylePatternList>
     );
 };
-function EyeTrackPattern() {
+function EyeTrackPattern({ data, hasEyetrack, onEyetrackGoTo }) {
     return (
         <StylePatternBox>
-            {Object.keys(patternDummy).map((pattern) => (
+            {Object.keys(data).map((patternIdx) => (
                 <PatternList
-                    key={pattern}
-                    pattern={pattern}
-                    title={patternDummy[pattern]['title']}
-                    answer={patternDummy[pattern]['answer']}
-                    route={patternDummy[pattern]['route']}
-                    time={patternDummy[pattern]['time']}
+                    key={patternIdx}
+                    data={data[patternIdx].data}
+                    pattern={patternIdx}
+                    problemNumber={data[patternIdx].pid + 1}
+                    userAnswer={data[patternIdx].userAnswer}
+                    correctAnswer={data[patternIdx].correctAnswer}
+                    correct={data[patternIdx].correct}
+                    time={data[patternIdx].time}
+                    elapsedAtStart={data[patternIdx].elapsedAtStart}
+                    hasEyetrack={hasEyetrack}
+                    onEyetrackGoTo={onEyetrackGoTo}
                 />
             ))}
         </StylePatternBox>
     );
 }
+
+EyeTrackPattern.defaultProps = {
+    data: {},
+    hasEyetrack: false,
+    onEyetrackGoTo: (time) => {
+        console.log('Eyetrack go to > ', time);
+    },
+};
 
 export default EyeTrackPattern;

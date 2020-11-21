@@ -108,13 +108,14 @@ function AssignmentDoItNow({ history, match }) {
             lastData = data;
         });
         console.log('8. Number of regressions : ' + window.numberOfRegressions);
+        console.log(metadata);
 
         const scorePercentage =
             (metadata.selections.filter((selection) => selection.correct === true).length /
-                originalDatas.contents_data.problemDatas.length) *
-            0.0;
+                originalDatas.contents_data.flatMap((m) => m.problemDatas).length) *
+            100.0;
         const scorePoints = metadata.selections.reduce((acc, cur) => acc + parseInt(cur.score), 0);
-
+        console.log(scorePercentage, scorePoints);
         Axios.patch(
             `${apiUrl}/assignment-result`,
             {
@@ -180,7 +181,7 @@ function AssignmentDoItNow({ history, match }) {
 
     const startTestTimer = (from, noDurOpt) => {
         if (!timerState.isPlaying) {
-            handleStart(noDurOpt ? "no" : originalDatas.time_limit, new Date().getTime(), from);
+            handleStart(noDurOpt ? 'no' : originalDatas.time_limit, new Date().getTime(), from);
             const interval = setInterval(() => {
                 handleElapse();
             }, 1000);
@@ -287,10 +288,9 @@ function AssignmentDoItNow({ history, match }) {
     useEffect(() => {
         if (!originalDatas.contents_data) return;
         // console.log(timerState.elapsedTime);
-        if(originalDatas.time_limit !== -2) {
+        if (originalDatas.time_limit !== -2) {
             setRemainTime(originalDatas.time_limit - timerState.elapsedTime);
-        }
-        else {
+        } else {
             setRemainTime(timerState.elapsedTime);
         }
     }, [timerState]);
@@ -303,17 +303,16 @@ function AssignmentDoItNow({ history, match }) {
         if (!originalDatas.eyetrack && originalDatas.time_limit !== -2) {
             setRemainTime(originalDatas.time_limit - savedData.time);
             startTestTimer(savedData.time);
-        }
-        else if(originalDatas.time_limit === -2) {
+        } else if (originalDatas.time_limit === -2) {
             setRemainTime(0);
             startTestTimer(savedData.time, originalDatas.time_limit === -2);
         }
 
         if (originalDatas.eyetrack && savedData.eyetrack_data) {
             window.etRes = savedData.eyetrack_data;
-            window._etNxtSetNum = window.etRes.sequences[window.etRes.sequences.length - 1].setNumber + 1
+            window._etNxtSetNum = window.etRes.sequences[window.etRes.sequences.length - 1].setNumber + 1;
         }
-        if(originalDatas.eyetrack && savedData.user_data) {
+        if (originalDatas.eyetrack && savedData.user_data) {
             const logs = savedData.user_data.logs;
             setActiveStep(logs[logs.length - 1].pid);
             setUserAnswer(logs[logs.length - 1].answerAfter);
@@ -340,9 +339,9 @@ function AssignmentDoItNow({ history, match }) {
                     <SmartTOFELRender
                         timer={remainTime}
                         timeLimit={originalDatas.time_limit}
-                        title={originalDatas.contents_data.title}
-                        passageForRender={originalDatas.contents_data.passageForRender}
-                        problemDatas={originalDatas.contents_data.problemDatas}
+                        title={originalDatas.contents_data.map((m) => m.title)}
+                        passageForRender={originalDatas.contents_data.map((m) => m.passageForRender)}
+                        problemDatas={originalDatas.contents_data.flatMap((m) => m.problemDatas)}
                         userDatas={savedData && savedData.user_data ? savedData.user_data : undefined}
                         onPrev={onPrev}
                         onNext={onNext}

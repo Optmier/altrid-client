@@ -30,7 +30,7 @@ function MakeContents({ match, history }) {
                     dataParsed = JSON.parse(contents_data);
                 }
                 setInfoData({ ...infoData, title: title, time_limit: time_limit, eyetrack: eyetrack });
-                setTestData({ ...dataParsed, timeLimit: time_limit });
+                setTestData(dataParsed);
                 setRequestFile(file_url);
             })
             .catch((err) => {
@@ -40,7 +40,7 @@ function MakeContents({ match, history }) {
 
     return (
         <div style={{ height: 'calc(100vh - 128px)', marginTop: -64 }}>
-            <TOFELEditor id={match.params.id} datas={testData} requestFile={requestFile} />
+            <TOFELEditor id={match.params.id} datas={testData} requestFile={requestFile} timeLimit={infoData.time_limit} />
             <InfoContainer>
                 과제명: {infoData.title} | 제한시간: {infoData.time_limit}초 | 시선흐름 측정 여부: {infoData.eyetrack ? '예' : '아니오'}
             </InfoContainer>
