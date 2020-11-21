@@ -17,6 +17,7 @@ function Draft() {
         data: null,
         error: null,
     }; // 아예 데이터가 존재하지 않을 때가 있으므로, 비구조화 할당이 오류나지 않도록
+    const sessions = useSelector((state) => state.RdxSessions);
 
     let cardDatas = {};
 
@@ -52,8 +53,7 @@ function Draft() {
                     <CardLists
                         upperDeck={
                             <div className="class-title">
-                                <b>최준영</b>
-                                선생님이 만든 과제는 총 <b>{cardDatas.length}개</b>입니다.
+                                <b>{sessions.userName}</b> 선생님께서 만드신 과제는 총 <b>{cardDatas.length}개</b> 입니다.
                             </div>
                         }
                     >
