@@ -45,7 +45,7 @@ const TimeItems = ({ title, mm, ss }) => {
         </div>
     );
 };
-const DateItems = ({ title, start, end, handleDateChange }) => {
+const DateItems = ({ title, start, end, userType, handleDateChange }) => {
     return (
         <div className="card-item">
             <div className="card-content-title-p">{title}</div>
@@ -53,7 +53,7 @@ const DateItems = ({ title, start, end, handleDateChange }) => {
                 {start} - {end}
             </div>
             <span style={{ marginRight: '6px' }}></span>
-            <ModifyButton handleDateChange={handleDateChange} />
+            {userType === 'students' ? null : <ModifyButton handleDateChange={handleDateChange} />}
         </div>
     );
 };
@@ -63,6 +63,7 @@ function CardShare({ testNum, cardData, history }) {
 
     /** Redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
+    const sessions = useSelector((state) => state.RdxSessions);
     const dispatch = useDispatch();
 
     /** class-dialog 메소드 */
@@ -159,7 +160,23 @@ function CardShare({ testNum, cardData, history }) {
                         {cardData['title']}
                     </div>
                     <span className="card-option">
-                        <ToggleSwitch toggle={toggleState['checked']} handleToggleChange={handleToggleChange} type="share" name="checked" />
+                        {sessions.userType === 'students' ? (
+                            <>
+                                {toggleState['checked'] ? (
+                                    <span style={{ color: '#ffffff', fontSize: 14 }}>진행중</span>
+                                ) : (
+                                    <span style={{ color: '#989696', fontSize: 14 }}>완료됨</span>
+                                )}
+                            </>
+                        ) : null}
+                        {sessions.userType === 'students' ? null : (
+                            <ToggleSwitch
+                                toggle={toggleState['checked']}
+                                handleToggleChange={handleToggleChange}
+                                type="share"
+                                name="checked"
+                            />
+                        )}
                     </span>
                 </div>
 
@@ -186,6 +203,7 @@ function CardShare({ testNum, cardData, history }) {
                                     title={'과제기한'}
                                     start={moment(cardData['created']).format('YY.MM.DD HH:mm')}
                                     end={moment(cardData['due_date']).format('YY.MM.DD HH:mm')}
+                                    userType={sessions.userType}
                                     handleDateChange={handleDateChange}
                                 />
                             </div>
@@ -196,14 +214,24 @@ function CardShare({ testNum, cardData, history }) {
                     </div>
                     <div className="class-card-right">
                         <div className="class-card-contents class-card-wrapper">
-                            <StudentNum completeNum={'00'} totalNum={'00'} />
-                            <div className="student-complete-text">제출한 학생</div>
+                            {sessions.userType === 'students' ? null : (
+                                <>
+                                    <StudentNum completeNum={'00'} totalNum={'00'} />
+                                    <div className="student-complete-text">제출한 학생</div>
+                                </>
+                            )}
                         </div>
 
                         <div className="class-card-bottom-right card-bottom-p">
-                            <Link to={`${path}/${testNum}`}>
+                            <Link
+                                to={
+                                    sessions.userType === 'students'
+                                        ? `${path}/${testNum}/details?user=${sessions.authId}`
+                                        : `${path}/${testNum}`
+                                }
+                            >
                                 <div className="share-report">
-                                    과제별 리포트 보기 <IoIosArrowForward />
+                                    {sessions.userType === 'students' ? '나의 리포트' : '과제별 리포트 보기'} <IoIosArrowForward />
                                 </div>
                             </Link>
                         </div>

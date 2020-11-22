@@ -42,11 +42,12 @@ function AddTeacher({ handleClose }) {
                     setErrorMessage('존재하지 않는 이메일 또는 아이디 값입니다.');
                     setInputError(true);
                 } else {
+                    console.log(res);
                     setInputError(false);
                     Axios.post(
                         `${apiUrl}/students-in-teacher`,
                         {
-                            teacherId: inputState,
+                            teacherId: res.data.auth_id,
                         },
                         { withCredentials: true },
                     )

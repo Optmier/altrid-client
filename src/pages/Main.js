@@ -150,7 +150,7 @@ function Main({ history }) {
                                     totalStudents={num_of_students}
                                     totalAssignment={class_count}
                                     onClick={() => {
-                                        history.push(`${$_classDefault}/${idx}/draft`);
+                                        history.push(`${$_classDefault}/${idx}/${sessions.userType === 'students' ? 'share' : 'draft'}`);
                                     }}
                                 />
                             </CardRoot>

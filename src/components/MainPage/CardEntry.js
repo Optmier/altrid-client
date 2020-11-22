@@ -17,7 +17,7 @@ function CardEntry({ title, description, assignmentOnProgress, teacherName, tota
                 <h5 title={description}>{description}</h5>
             </div>
             <div className="footer-info" title={`${teacherName} 선생님 / ${totalStudents}명 / 게시 과제 ${totalAssignment}`}>
-                {teacherName} 선생님 / {totalStudents}명 / 게시 과제 {totalAssignment}
+                {teacherName} 선생님 / {totalStudents}명 / 게시된 과제 {totalAssignment}
             </div>
         </div>
     );
