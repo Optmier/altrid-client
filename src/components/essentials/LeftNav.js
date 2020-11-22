@@ -29,6 +29,7 @@ function LeftNav({ match }) {
     const [teacherData, setTeacherData] = useState([]);
 
     useEffect(() => {
+        if (!sessions.userType) return;
         if (sessions.userType === 'teachers') dispatch(getDrafts());
         if (sessions.userType === 'teachers')
             Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
@@ -45,7 +46,7 @@ function LeftNav({ match }) {
             .catch((err) => {
                 console.error(err);
             });
-    }, [dispatch]);
+    }, [dispatch, sessions]);
 
     return (
         <div className="left-nav-root">

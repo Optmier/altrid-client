@@ -5,9 +5,10 @@ const REFRESH_SESSION = 'REFRESH_SESSION';
 const DELETE_SESSION = 'DELETE_SESSION';
 
 /** Action creator functions */
-function saveSession(userName, userType, academyCode, academyName, issuer, iat, exp) {
+function saveSession(authId, userName, userType, academyCode, academyName, issuer, iat, exp) {
     return {
         type: SAVE_SESSION,
+        authId: authId,
         userName: userName,
         userType: userType,
         academyCode: academyCode,
@@ -40,6 +41,7 @@ function deleteSession() {
 
 /** Define initial states */
 const initStates = {
+    authId: null,
     userName: null,
     userType: null,
     academyCode: null,
@@ -68,6 +70,7 @@ function RdxSessions(state = initStates, action) {
 function applySaveSession(state, action) {
     return {
         ...state,
+        authId: action.authId,
         userName: action.userName,
         userType: action.userType,
         academyCode: action.academyCode,
@@ -95,6 +98,7 @@ function applyRefreshSession(state, action) {
 function applyDeleteSession(state, action) {
     return {
         ...state,
+        authId: null,
         userName: null,
         userType: null,
         academyCode: null,

@@ -62,7 +62,7 @@ function Share({ match }) {
                     >
                         {Object.keys(shareDatas).map((key) => (
                             <CardRoot key={key} wider cardHeight="300px">
-                                <CardShare testNum={key} cardData={shareDatas[key]} />
+                                <CardShare testNum={shareDatas[key].idx} cardData={shareDatas[key]} />
                             </CardRoot>
                         ))}
                     </CardLists>

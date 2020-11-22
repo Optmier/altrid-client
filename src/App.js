@@ -37,8 +37,8 @@ const excludesForStudentUrls = ['/admins', '/admins/members', '/admins/contents-
 function App({ history }) {
     const dispatch = useDispatch();
     const saveSessions = useCallback(
-        (userName, userType, academyCode, academyName, issuer, iat, exp) =>
-            dispatch(saveSession(userName, userType, academyCode, academyName, issuer, iat, exp)),
+        (authId, userName, userType, academyCode, academyName, issuer, iat, exp) =>
+            dispatch(saveSession(authId, userName, userType, academyCode, academyName, issuer, iat, exp)),
         [dispatch],
     );
     const updateSessions = useCallback((updateStates) => dispatch(updateSession(updateStates)), [dispatch]);
@@ -84,8 +84,8 @@ function App({ history }) {
                         }
                         break;
                 }
-                const { academyCode, exp, iat, iss, userName, userType } = res1.data;
-                saveSessions(userName, userType, academyCode, null, iss, iat, exp);
+                const { authId, academyCode, exp, iat, iss, userName, userType } = res1.data;
+                saveSessions(authId, userName, userType, academyCode, null, iss, iat, exp);
                 Axios.get(`${apiUrl}/academies/current/name`, { withCredentials: true })
                     .then((res2) => {
                         const academyName = res2.data.name;
