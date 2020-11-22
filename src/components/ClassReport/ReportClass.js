@@ -285,13 +285,14 @@ function ReportClass({ match }) {
             contentsData
                 .flatMap((m) => m.problemDatas)
                 .forEach((d) => {
-                    const cat = d.category > 6 ? 3 : d.category;
+                    const cat = d.category;
                     !_o[cat] && (_o[cat] = {});
                     !_o[cat].category && (_o[cat].category = 0);
                     !_o[cat].count && (_o[cat].count = 0);
                     _o[cat].category = cat;
                     _o[cat].count += 1;
                 });
+            console.log(_o);
             setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
         }
     }, [mainReportData]);

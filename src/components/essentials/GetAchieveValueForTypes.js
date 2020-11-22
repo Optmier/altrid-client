@@ -11,6 +11,7 @@ const getAchieveValueForTypes = (
     let value = 0.0;
     datas.sort((a, b) => b.count - a.count);
     for (let i = 0; i < nums; i++) {
+        if (!datas[i]) break;
         value += ((datas[i].count > nums ? nums : datas[i].count) / nums / nums) * 100.0;
     }
     return {
