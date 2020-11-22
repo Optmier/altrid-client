@@ -12,6 +12,8 @@ import moment from 'moment';
 import { SecondtoMinute } from '../essentials/TimeChange';
 import { useSelector, useDispatch } from 'react-redux';
 import { patchActived, changeDueDate } from '../../redux_modules/assignmentActived';
+import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
+import * as $ from 'jquery';
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -32,7 +34,7 @@ const TimeItems = ({ title, mm, ss }) => {
                 {title}
             </div>
 
-            {mm === -1 ? (
+            {mm === -2 ? (
                 <div className="card-content-p">없음</div>
             ) : (
                 <>
@@ -53,7 +55,7 @@ const DateItems = ({ title, start, end, userType, handleDateChange }) => {
                 {start} - {end}
             </div>
             <span style={{ marginRight: '6px' }}></span>
-            {userType === 'students' ? null : <ModifyButton handleDateChange={handleDateChange} />}
+            <div className="date-item">{userType === 'students' ? null : <ModifyButton handleDateChange={handleDateChange} />}</div>
         </div>
     );
 };
@@ -142,13 +144,49 @@ function CardShare({ testNum, cardData, history }) {
     const handleDateChange = () => {
         handleDialogOpen('date');
     };
-    /** */
+
+    /** ProblemPreview 메소드 */
+    const [openPreview, setOpenPreview] = useState(false);
+
+    const handlePreviewOpen = () => {
+        if (cardData['contents_data'].flatMap((m) => m.problemDatas).length === 0) {
+            return alert('아직 문제를 추가하지 않으셨습니다 :(');
+        }
+        setOpenPreview(true);
+    };
+
+    const handlePreviewClose = () => {
+        setOpenPreview(false);
+    };
+
+    const handlePreTest = (e) => {
+        const $target = $(e.target);
+        console.log($target);
+        if (
+            !(
+                $target.parents('.card-option').length ||
+                $target.attr('class') === 'card-option' ||
+                $target.parents('.date-item').length ||
+                $target.attr('class') === 'date-item'
+            )
+        ) {
+            handlePreviewOpen();
+        }
+    };
+
     return (
         <>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
             <ClassDialog type="date" subType="modify" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
 
-            <div className="class-card-root">
+            <CardProblemPreview
+                openPreview={openPreview}
+                metadata={cardData['contents_data'] ? cardData['contents_data'] : []}
+                handlePreviewClose={handlePreviewClose}
+                timeLimit={cardData['time_limit']}
+            ></CardProblemPreview>
+
+            <div className="class-card-root" onClick={handlePreTest}>
                 <div
                     className={classNames(
                         { 'class-card-header': !toggleState['checked'] },

@@ -339,13 +339,12 @@ function SmartTOFELRender({
         }
     }, [timer, forceEnd]);
 
-    useEffect(() => {}, []);
-
     return (
         <RenderRoot>
             <HeaderToolbar>
                 <HeaderTitle>
-                    <h4>{title[problemDatas[currentProblemIdx].setNum]}</h4>
+                    {console.log(title, currentProblemIdx, problemDatas)}
+                    <h4>{title[problemDatas.length ? problemDatas[currentProblemIdx].setNum : 0]}</h4>
                 </HeaderTitle>
                 <HeaderTimer
                     className={

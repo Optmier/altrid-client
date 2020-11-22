@@ -76,7 +76,7 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
         const { mm, ss } = timeInputs;
 
         let { eyetrack, timeAttack } = toggleState;
-        let time_limit = -1;
+        let time_limit = -2;
 
         if (timeAttack) {
             time_limit = MinutetoSecond(mm, ss);

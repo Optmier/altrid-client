@@ -31,7 +31,15 @@ const StylePopOverList = styled.div`
     }
 `;
 
-function CardPopOver({ contents_data, handleDialogOpen, handleDeleteDialogOpen, handleOptionClose, anchorEl, handleDrawerOpen }) {
+function CardPopOver({
+    contents_data,
+    handlePreTest,
+    handleDialogOpen,
+    handleDeleteDialogOpen,
+    handleOptionClose,
+    anchorEl,
+    handleDrawerOpen,
+}) {
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
 
@@ -53,7 +61,9 @@ function CardPopOver({ contents_data, handleDialogOpen, handleDeleteDialogOpen, 
             <StylePopOverList>
                 {contents_data ? (
                     <div className="popover-section">
-                        <div className="popover-list">과제 확인</div>
+                        <div id="pre-test" className="popover-list" onClick={handlePreTest}>
+                            과제 확인
+                        </div>
                         <div className="popover-list" onClick={handleDialogOpen}>
                             과제 게시
                         </div>

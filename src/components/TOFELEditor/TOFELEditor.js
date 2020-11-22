@@ -213,6 +213,9 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     };
 
     const handlePreviewOpen = () => {
+        if (metadata.flatMap((m) => m.problemDatas).length === 0) {
+            return alert('아직 문제를 추가하지 않으셨습니다 :(');
+        }
         setOpenPreview(true);
     };
 

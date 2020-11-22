@@ -14,6 +14,8 @@ import { deleteDraft } from '../../redux_modules/assignmentDraft';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
+import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
+import * as $ from 'jquery';
 
 const StyleDraftIng = styled.div`
     width: 100%;
@@ -36,14 +38,18 @@ const InfoItems = ({ title, contents }) => {
         </div>
     );
 };
-const TimeItems = ({ title, mm, ss }) => {
+const TimeItems = ({ title, time_limit }) => {
+    /** 제한시간 분할(분,초) 메소드 */
+    let mm = SecondtoMinute(time_limit)[0];
+    let ss = SecondtoMinute(time_limit)[1];
+
     return (
         <div className="card-item">
             <div className="card-content-title-p" title={title}>
                 {title}
             </div>
 
-            {mm === -1 ? (
+            {time_limit === -2 ? (
                 <div className="card-content-p">없음</div>
             ) : (
                 <>
@@ -61,10 +67,6 @@ function CardDraft({ cardData, match, history }) {
     /** redux actived-state */
     const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
     const dispatch = useDispatch();
-
-    /** 제한시간 분할(분,초) 메소드 */
-    let mm = SecondtoMinute(cardData['time_limit'])[0];
-    let ss = SecondtoMinute(cardData['time_limit'])[1];
 
     /** pop-over (옵션 선택) 메소드 */
     const [anchorEl, setAnchorEl] = useState(null);
@@ -85,6 +87,7 @@ function CardDraft({ cardData, match, history }) {
         setDateDialogopen(true);
         handleOptionClose();
     };
+
     const handleDateDialogClose = (e) => {
         const { name } = e.target;
         const due_date = data['due_date'] ? data['due_date'] : null;
@@ -134,14 +137,44 @@ function CardDraft({ cardData, match, history }) {
         handleOptionClose();
     };
 
+    /** ProblemPreview 메소드 */
+    const [openPreview, setOpenPreview] = useState(false);
+
+    const handlePreviewOpen = () => {
+        handleOptionClose();
+        if (cardData['contents_data'].flatMap((m) => m.problemDatas).length === 0) {
+            return alert('아직 문제를 추가하지 않으셨습니다 :(');
+        }
+        setOpenPreview(true);
+    };
+
+    const handlePreviewClose = () => {
+        setOpenPreview(false);
+    };
+
+    const handlePreTest = (e) => {
+        const $target = $(e.target);
+        if (!($target.parents('.card-option').length || $target.attr('class') === 'card-option')) {
+            handlePreviewOpen();
+        }
+    };
+
     return (
         <>
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
                 <ClassDrawer ver="modify" cardData={cardData} handleClose={toggleDrawer(false)} />
             </Drawer>
 
+            <CardProblemPreview
+                openPreview={openPreview}
+                metadata={cardData['contents_data'] ? cardData['contents_data'] : []}
+                handlePreviewClose={handlePreviewClose}
+                timeLimit={cardData['time_limit']}
+            ></CardProblemPreview>
+
             <CardPopOver
                 contents_data={cardData['contents_data']}
+                handlePreTest={handlePreTest}
                 handleDialogOpen={handleDialogOpen}
                 handleDeleteDialogOpen={handleDeleteDialogOpen}
                 handleDrawerOpen={toggleDrawer(true)}
@@ -152,7 +185,7 @@ function CardDraft({ cardData, match, history }) {
             <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
             <ClassDialogDelete open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
 
-            <div className="class-card-root">
+            <div onClick={handlePreTest} className="class-card-root">
                 {!cardData['contents_data'] ? (
                     <>
                         <div className="class-card-header class-card-wrapper">
@@ -198,12 +231,11 @@ function CardDraft({ cardData, match, history }) {
                             </div>
 
                             <div className="contents-block">
-                                {console.log(cardData['contents_data'])}
                                 <InfoItems
                                     title={'문항수'}
                                     contents={cardData['contents_data'].flatMap((m) => m.problemDatas).length + '문제'}
                                 />
-                                <TimeItems title={'제한시간'} mm={mm} ss={ss} />
+                                <TimeItems title={'제한시간'} time_limit={cardData['time_limit']} />
                                 <InfoItems title={'최종수정'} contents={moment(cardData['updated']).format('MM월 DD일 HH시 mm분')} />
                             </div>
                         </div>
