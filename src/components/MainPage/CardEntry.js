@@ -9,7 +9,7 @@ function CardEntry({ title, description, assignmentOnProgress, teacherName, tota
                     <h4 title={title}>{title}</h4>
                 </div>
                 <div className={classNames('on-progress', assignmentOnProgress ? 'on' : '')}>
-                    {assignmentOnProgress ? '게시과제 진행 중' : '게시과제 미진행 중'}
+                    {assignmentOnProgress ? '게시과제 진행 중' : '게시과제 미진행'}
                     <div className="indicator"></div>
                 </div>
             </div>
