@@ -137,7 +137,7 @@ function ClassDrawer({ handleClose, cardData, ver }) {
     //2. time-input
     let mmm, sss, time_limit;
     if (ver === 'modify') {
-        if (cardData['time_limit'] === -1) {
+        if (cardData['time_limit'] === -2) {
             mmm = '--';
             sss = '--';
             time_limit = false;

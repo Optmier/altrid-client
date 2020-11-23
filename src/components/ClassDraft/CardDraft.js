@@ -143,7 +143,7 @@ function CardDraft({ cardData, match, history }) {
     const handlePreviewOpen = () => {
         handleOptionClose();
         if (cardData['contents_data'].flatMap((m) => m.problemDatas).length === 0) {
-            return alert('아직 문제를 추가하지 않으셨습니다 :(');
+            return alert('과제 수정을 통해 에디터에서 문항을 추가해주세요 !');
         }
         setOpenPreview(true);
     };
@@ -185,7 +185,7 @@ function CardDraft({ cardData, match, history }) {
             <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
             <ClassDialogDelete open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
 
-            <div onClick={handlePreTest} className="class-card-root">
+            <div className="class-card-root">
                 {!cardData['contents_data'] ? (
                     <>
                         <div className="class-card-header class-card-wrapper">
@@ -206,7 +206,7 @@ function CardDraft({ cardData, match, history }) {
                         </StyleDraftIng>
                     </>
                 ) : (
-                    <>
+                    <div onClick={handlePreTest}>
                         <div className="class-card-header-on class-card-wrapper">
                             <div className="card-title-p" title={cardData['title']}>
                                 {cardData['title']}
@@ -245,7 +245,7 @@ function CardDraft({ cardData, match, history }) {
                             {/* 공유 유무 */}
                             <IsPresence type={'share'} able={0} />
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
         </>

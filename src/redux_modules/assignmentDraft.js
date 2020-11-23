@@ -141,7 +141,7 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsDa
         let { eyetrack, timeAttack } = toggleState;
         const { mm, ss } = timeInputs;
 
-        let time_limit = -1;
+        let time_limit = -2;
         if (timeAttack) {
             time_limit = MinutetoSecond(mm, ss);
         }

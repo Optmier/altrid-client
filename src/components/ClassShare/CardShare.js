@@ -27,14 +27,18 @@ const InfoItems = ({ title, contents }) => {
         </div>
     );
 };
-const TimeItems = ({ title, mm, ss }) => {
+const TimeItems = ({ title, time_limit }) => {
+    /** 제한시간 분할(분,초) 메소드 */
+    let mm = SecondtoMinute(time_limit)[0];
+    let ss = SecondtoMinute(time_limit)[1];
+
     return (
         <div className="card-item">
             <div className="card-content-title-p" title={title}>
                 {title}
             </div>
 
-            {mm === -2 ? (
+            {time_limit === -2 ? (
                 <div className="card-content-p">없음</div>
             ) : (
                 <>
@@ -72,10 +76,6 @@ function CardShare({ testNum, cardData, history }) {
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
     const [testDialogopen, setTestDialogopen] = useState(false);
-
-    /** 제한시간 분할(분,초) 메소드 */
-    let mm = SecondtoMinute(cardData['time_limit'])[0];
-    let ss = SecondtoMinute(cardData['time_limit'])[1];
 
     /** dialog 메소드 */
     const handleDialogOpen = (type) => {
@@ -150,7 +150,7 @@ function CardShare({ testNum, cardData, history }) {
 
     const handlePreviewOpen = () => {
         if (cardData['contents_data'].flatMap((m) => m.problemDatas).length === 0) {
-            return alert('아직 문제를 추가하지 않으셨습니다 :(');
+            return alert('과제 수정을 통해 에디터에서 문항을 추가해주세요 !');
         }
         setOpenPreview(true);
     };
@@ -236,7 +236,7 @@ function CardShare({ testNum, cardData, history }) {
                                     title={'문항수'}
                                     contents={cardData['contents_data'].flatMap((m) => m.problemDatas).length + '문제'}
                                 />
-                                <TimeItems title={'제한시간'} mm={mm} ss={ss} />
+                                <TimeItems title={'제한시간'} time_limit={cardData['time_limit']} />
                                 <DateItems
                                     title={'과제기한'}
                                     start={moment(cardData['created']).format('YY.MM.DD HH:mm')}
