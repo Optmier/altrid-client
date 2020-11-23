@@ -35,7 +35,18 @@ function ClassDrawer({ handleClose, cardData, ver }) {
 
     /** 과제 생성 state */
     const [attachFiles, setAttachFiles] = useState(new FormData());
-    const [contentsData, setContentsData] = useState(ver === 'draft' ? null : cardData['contents_data']);
+    const [contentsData, setContentsData] = useState(
+        ver === 'draft'
+            ? [
+                  {
+                      title: '',
+                      passageForRender: '',
+                      passageForEditor: `{"ops":[{"insert":"\n"}]}`,
+                      problemDatas: [],
+                  },
+              ]
+            : cardData['contents_data'],
+    );
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectState, setSelectSate] = useState(ver === 'draft' ? '' : 'right');
     const [selectName, setSelectName] = useState(
@@ -43,9 +54,9 @@ function ClassDrawer({ handleClose, cardData, ver }) {
             ? ''
             : !cardData['contents_data']
             ? '과제 파일 변환중'
-            : cardData['contents_data']['title'] === ''
+            : cardData['contents_data'][0]['title'] === ''
             ? '파일 제목 없음'
-            : cardData['contents_data']['title'],
+            : cardData['contents_data'][0]['title'],
     );
 
     const handleEditDialogOpen = () => {
@@ -80,13 +91,15 @@ function ClassDrawer({ handleClose, cardData, ver }) {
         handleEditDialogOpen();
     };
     const handleChangeContents = (metadata) => {
-        setContentsData(metadata);
-
         if (metadata[0]['title']) {
             setSelectName(metadata[0]['title']);
         } else {
             setSelectName('에디터 타이틀을 입력해주세요.');
         }
+    };
+
+    const handleEditFinished = (metadata) => {
+        setContentsData(metadata);
     };
 
     /** 여러개 input 상태 관리 */
@@ -274,11 +287,13 @@ function ClassDrawer({ handleClose, cardData, ver }) {
     return (
         <>
             <Dialog fullScreen open={editDialogOpen} onClose={handleEditDialogClose}>
-                {ver === 'draft' ? (
-                    <TOFELEditor mode onChange={handleChangeContents} onClose={handleEditDialogClose} />
-                ) : (
-                    <TOFELEditor mode datas={cardData['contents_data']} onChange={handleChangeContents} onClose={handleEditDialogClose} />
-                )}
+                <TOFELEditor
+                    mode
+                    datas={contentsData}
+                    onChange={handleChangeContents}
+                    onClose={handleEditDialogClose}
+                    onEditFinish={handleEditFinished}
+                />
             </Dialog>
             <div className="class-drawer-root">
                 <div style={{ width: '100%' }}>

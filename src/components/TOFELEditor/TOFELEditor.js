@@ -149,11 +149,10 @@ function useForceUpdate() {
     return () => setState(!value);
 }
 
-function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClose, history, children, ...rest }) {
+function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClose, onEditFinish, history, children, ...rest }) {
     const quillRef = useRef();
 
     const [metadata, setMetadata] = useState(datas);
-    window.metadata = metadata;
     const [contentsSetData, setContentsSetData] = useState(datas[0]);
     const [contentsTitle, setContentsTitle] = useState(datas[0].title);
     const [contentsPassage, setContentsPassage] = useState({ render: datas[0].passageForRender, editor: datas[0].passageForEditor });
@@ -530,7 +529,13 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                             미리보기(B)
                         </Button>
                         {mode ? (
-                            <Button color="inherit" onClick={onClose}>
+                            <Button
+                                color="inherit"
+                                onClick={() => {
+                                    onEditFinish(metadata);
+                                    onClose();
+                                }}
+                            >
                                 확인
                             </Button>
                         ) : (
