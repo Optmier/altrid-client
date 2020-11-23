@@ -31,6 +31,7 @@ function LeftNav({ match }) {
     useEffect(() => {
         if (!sessions.userType) return;
         if (sessions.userType === 'teachers') dispatch(getDrafts());
+
         if (sessions.userType === 'teachers')
             Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
                 .then((res) => {
@@ -39,6 +40,7 @@ function LeftNav({ match }) {
                 .catch((err) => {
                     console.error(err);
                 });
+
         Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
             .then((res) => {
                 setTeacherData(res.data[0]);
@@ -46,7 +48,7 @@ function LeftNav({ match }) {
             .catch((err) => {
                 console.error(err);
             });
-    }, [dispatch, sessions]);
+    }, [sessions]);
 
     return (
         <div className="left-nav-root">
@@ -133,4 +135,4 @@ function LeftNav({ match }) {
     );
 }
 
-export default React.memo(withRouter(LeftNav));
+export default withRouter(React.memo(LeftNav));

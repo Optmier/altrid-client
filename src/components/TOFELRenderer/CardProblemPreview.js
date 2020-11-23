@@ -11,7 +11,6 @@ const PreviewDialog = withStyles((theme) => ({
 }))(Dialog);
 
 function CardProblemPreview({ openPreview, metadata, timeLimit, handlePreviewClose }) {
-    console.log(metadata);
     return (
         <PreviewDialog open={openPreview} onClose={handlePreviewClose}>
             <div>

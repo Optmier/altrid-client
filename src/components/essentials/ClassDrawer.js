@@ -82,10 +82,10 @@ function ClassDrawer({ handleClose, cardData, ver }) {
     const handleChangeContents = (metadata) => {
         setContentsData(metadata);
 
-        if (metadata['title']) {
-            setSelectName(metadata['title']);
+        if (metadata[0]['title']) {
+            setSelectName(metadata[0]['title']);
         } else {
-            setSelectName('직접 제작..');
+            setSelectName('에디터 타이틀을 입력해주세요.');
         }
     };
 

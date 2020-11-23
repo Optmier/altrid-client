@@ -6,8 +6,7 @@ import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
 import ClassHeaderBox from '../essentials/ClassHeaderBox';
-import { useSelector, useDispatch } from 'react-redux';
-import { getDrafts } from '../../redux_modules/assignmentDraft';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 function Draft() {
