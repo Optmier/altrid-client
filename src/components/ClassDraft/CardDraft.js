@@ -185,69 +185,67 @@ function CardDraft({ cardData, match, history }) {
             <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
             <ClassDialogDelete open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
 
-            <div className="class-card-root">
-                {!cardData['contents_data'] ? (
-                    <>
-                        <div className="class-card-header class-card-wrapper">
-                            <div className="card-title-p" title={cardData['title']}>
-                                {cardData['title']}
-                            </div>
-                            <span className="card-option" onClick={handleOptionClick}>
-                                <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
-                                    <circle cx="16.5" cy="2.5" r="2.5" fill="#C4C4C4" />
-                                    <circle cx="9.5" cy="2.5" r="2.5" fill="#C4C4C4" />
-                                </svg>
-                            </span>
+            {!cardData['contents_data'] ? (
+                <div className="class-card-root">
+                    <div className="class-card-header class-card-wrapper">
+                        <div className="card-title-p" title={cardData['title']}>
+                            {cardData['title']}
                         </div>
-                        <div></div>
-                        <StyleDraftIng>
-                            <h4>과제 제작중 ...</h4>
-                        </StyleDraftIng>
-                    </>
-                ) : (
-                    <div onClick={handlePreTest}>
-                        <div className="class-card-header-on class-card-wrapper">
-                            <div className="card-title-p" title={cardData['title']}>
-                                {cardData['title']}
-                            </div>
-                            <span className="card-option" onClick={handleOptionClick}>
-                                <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
-                                    <circle cx="16.5" cy="2.5" r="2.5" fill="white" />
-                                    <circle cx="9.5" cy="2.5" r="2.5" fill="white" />
-                                </svg>
-                            </span>
+                        <span className="card-option" onClick={handleOptionClick}>
+                            <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
+                                <circle cx="16.5" cy="2.5" r="2.5" fill="#C4C4C4" />
+                                <circle cx="9.5" cy="2.5" r="2.5" fill="#C4C4C4" />
+                            </svg>
+                        </span>
+                    </div>
+                    <div></div>
+                    <StyleDraftIng>
+                        <h4>과제 제작중 ...</h4>
+                    </StyleDraftIng>
+                </div>
+            ) : (
+                <div className="class-card-root" onClick={handlePreTest}>
+                    <div className="class-card-header-on class-card-wrapper">
+                        <div className="card-title-p" title={cardData['title']}>
+                            {cardData['title']}
                         </div>
+                        <span className="card-option" onClick={handleOptionClick}>
+                            <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
+                                <circle cx="16.5" cy="2.5" r="2.5" fill="white" />
+                                <circle cx="9.5" cy="2.5" r="2.5" fill="white" />
+                            </svg>
+                        </span>
+                    </div>
 
-                        <div></div>
-                        <div className="class-card-contents class-card-wrapper">
-                            <div className="contents-block">
-                                <div className="card-item">
-                                    <div className="card-subTitle-p" title={cardData['description']}>
-                                        {cardData['description']}
-                                    </div>
+                    <div></div>
+                    <div className="class-card-contents class-card-wrapper">
+                        <div className="contents-block">
+                            <div className="card-item">
+                                <div className="card-subTitle-p" title={cardData['description']}>
+                                    {cardData['description']}
                                 </div>
                             </div>
-
-                            <div className="contents-block">
-                                <InfoItems
-                                    title={'문항수'}
-                                    contents={cardData['contents_data'].flatMap((m) => m.problemDatas).length + '문제'}
-                                />
-                                <TimeItems title={'제한시간'} time_limit={cardData['time_limit']} />
-                                <InfoItems title={'최종수정'} contents={moment(cardData['updated']).format('MM월 DD일 HH시 mm분')} />
-                            </div>
                         </div>
-                        <div className="class-card-bottom-right">
-                            {/* 시선흐름 유무 */}
-                            <IsPresence type={'eye'} able={cardData['eyetrack']} />
-                            {/* 공유 유무 */}
-                            <IsPresence type={'share'} able={0} />
+
+                        <div className="contents-block">
+                            <InfoItems
+                                title={'문항수'}
+                                contents={cardData['contents_data'].flatMap((m) => m.problemDatas).length + '문제'}
+                            />
+                            <TimeItems title={'제한시간'} time_limit={cardData['time_limit']} />
+                            <InfoItems title={'최종수정'} contents={moment(cardData['updated']).format('MM월 DD일 HH시 mm분')} />
                         </div>
                     </div>
-                )}
-            </div>
+                    <div className="class-card-bottom-right">
+                        {/* 시선흐름 유무 */}
+                        <IsPresence type={'eye'} able={cardData['eyetrack']} />
+                        {/* 공유 유무 */}
+                        <IsPresence type={'share'} able={0} />
+                    </div>
+                </div>
+            )}
         </>
     );
 }
