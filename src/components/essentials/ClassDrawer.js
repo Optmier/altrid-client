@@ -262,12 +262,6 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         dispatch(changeDueDate(''));
     };
 
-    /** 생성하기, 생성 및 공유하기 */
-    const onCardDraft = () => {};
-
-    /** card 정보 수정하기 */
-    const onCardModify = (e) => {};
-
     /** 최종적으로 drawer input들 error 체크 */
     const onDrawerErrorCheck = (e) => {
         const { name } = e.target;

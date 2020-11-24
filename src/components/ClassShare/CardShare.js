@@ -11,9 +11,10 @@ import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { SecondtoMinute } from '../essentials/TimeChange';
 import { useSelector, useDispatch } from 'react-redux';
-import { patchActived, changeDueDate } from '../../redux_modules/assignmentActived';
+import { patchActived, changeDueDate, deleteActived } from '../../redux_modules/assignmentActived';
 import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
 import * as $ from 'jquery';
+import ClassDialogDelete from '../essentials/ClassDialogDelete';
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -76,29 +77,46 @@ function CardShare({ testNum, cardData, history }) {
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
     const [testDialogopen, setTestDialogopen] = useState(false);
+    const [deleteDialogopen, setDeleteDialogopen] = useState(false);
 
-    /** dialog 메소드 */
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
     };
 
-    //과제 toggle 클릭
+    const handleDeleteDialogOpen = () => {
+        setDeleteDialogopen(true);
+    };
+    const handleDeleteDateDialogClose = (e) => {
+        const { name } = e.target;
+
+        if (name === 'yes') {
+            console.log(cardData['idx']);
+            dispatch(deleteActived(cardData['idx']));
+            setDeleteDialogopen(false);
+        } else {
+            setDeleteDialogopen(false);
+        }
+    };
+
+    /** toggle 버튼 메소드 */
     const handleTestDialogClose = (e) => {
         const { name } = e.target;
 
         if (name === 'button-complete') {
             dispatch(patchActived(cardData['idx'], null));
+            setTestDialogopen(false);
         } else if (name === 'button-restart') {
             if (data['due_date']) {
                 dispatch(patchActived(cardData['idx'], data['due_date']));
             } else {
                 alert('과제 기한 변경은 필수항목입니다.');
             }
+            setTestDialogopen(false);
         } else if (name === 'button-delete') {
-            console.log('삭제 !!');
+            setTestDialogopen(false);
+            handleDeleteDialogOpen();
         }
 
-        setTestDialogopen(false);
         dispatch(changeDueDate(''));
     };
 
@@ -181,6 +199,7 @@ function CardShare({ testNum, cardData, history }) {
         <>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
             <ClassDialog type="date" subType="modify" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
+            <ClassDialogDelete open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
 
             <CardProblemPreview
                 openPreview={openPreview}
