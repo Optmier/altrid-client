@@ -94,7 +94,10 @@ function CardShare({ testNum, cardData, history }) {
             } else {
                 alert('과제 기한 변경은 필수항목입니다.');
             }
+        } else if (name === 'button-delete') {
+            console.log('삭제 !!');
         }
+
         setTestDialogopen(false);
         dispatch(changeDueDate(''));
     };

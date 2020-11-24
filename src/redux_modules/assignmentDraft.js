@@ -1,6 +1,7 @@
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
 import { MinutetoSecond } from '../components/essentials/TimeChange';
+import { postActived } from './assignmentActived';
 
 /* 액션 타입 선언 */
 // draft 여러개 조회하기
@@ -69,7 +70,7 @@ export const getDrafts = () => async (dispatch) => {
     }
 };
 export const getDraft = (idx) => async (dispatch) => {};
-export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFiles, contentsData) => async (dispatch) => {
+export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, activedDirect) => async (dispatch) => {
     dispatch({ type: POST_DRAFT }); // 요청이 시작됨
 
     try {
@@ -128,7 +129,15 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
             contents_data: contentsData,
             file_url: file_url,
         };
+
         dispatch({ type: POST_DRAFT_SUCCESS, postData }); // 성공
+
+        if (activedDirect) {
+            const { num, due_date, history } = activedDirect;
+            const cardData = postData;
+
+            dispatch(postActived(cardData, num, due_date, history));
+        }
     } catch (e) {
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패
     }

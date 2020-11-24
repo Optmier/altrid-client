@@ -95,7 +95,7 @@ function CardDraft({ cardData, match, history }) {
         setAnchorEl(null);
     };
 
-    /** class-modal 메소드 */
+    /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
     const [deleteDialogopen, setDeleteDialogopen] = useState(false);
@@ -262,7 +262,7 @@ function CardDraft({ cardData, match, history }) {
                                 {cardData['class_name']
                                     ? Array.from(new Set(cardData['class_name'].split(','))).map((name, key) => (
                                           <div key={key} className="class-button">
-                                              {name}반
+                                              {key !== 0 ? ' / ' : ''} {name}반
                                           </div>
                                       ))
                                     : '게시중인 반 없음'}
@@ -273,7 +273,6 @@ function CardDraft({ cardData, match, history }) {
                             {/* 시선흐름 유무 */}
                             <IsPresence type={'eye'} able={cardData['eyetrack']} />
                             {/* 공유 유무 */}
-
                             <IsPresence type={'share'} able={cardData['actived_count']} />
                         </div>
                     </HtmlTooltip>

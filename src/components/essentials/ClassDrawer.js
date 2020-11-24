@@ -8,6 +8,8 @@ import { Dialog } from '@material-ui/core';
 import TOFELEditor from '../TOFELEditor/TOFELEditor';
 import styled from 'styled-components';
 import { SecondtoMinute } from './TimeChange';
+import ClassDialog from '../essentials/ClassDialog';
+import { changeDueDate } from '../../redux_modules/assignmentActived';
 
 const StyleSelectdiv = styled.div`
     font-size: 0.85rem;
@@ -25,9 +27,10 @@ const StyleSelectdiv = styled.div`
 `;
 
 //ver : draft(생성), modify(수정)
-function ClassDrawer({ handleClose, cardData, ver }) {
+function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     /** redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
+    const activedData = useSelector((state) => state.assignmentActived.activedData.data);
     const dispatch = useDispatch();
 
     let titleArr = [];
@@ -227,6 +230,38 @@ function ClassDrawer({ handleClose, cardData, ver }) {
         }
     };
 
+    /** class-dialog 메소드 */
+    // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
+    const [dateDialogopen, setDateDialogopen] = useState(false);
+    const handleDialogOpen = (type) => {
+        setDateDialogopen(true);
+    };
+    const handleDateDialogClose = (e) => {
+        const { name } = e.target;
+        const due_date = activedData['due_date'] ? activedData['due_date'] : null;
+
+        if (name === 'button') {
+            if (due_date) {
+                //과제 게시하기 버튼 클릭
+                const { num } = match.params; //클래스 번호
+                const activedDirect = {
+                    num: num,
+                    due_date: due_date,
+                    history: history,
+                };
+
+                setDateDialogopen(false);
+                dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, activedDirect));
+            } else {
+                alert('과제 기한 변경은 필수항목입니다.');
+            }
+        } else {
+            setDateDialogopen(false);
+        }
+
+        dispatch(changeDueDate(''));
+    };
+
     /** 생성하기, 생성 및 공유하기 */
     const onCardDraft = () => {};
 
@@ -235,6 +270,8 @@ function ClassDrawer({ handleClose, cardData, ver }) {
 
     /** 최종적으로 drawer input들 error 체크 */
     const onDrawerErrorCheck = (e) => {
+        const { name } = e.target;
+
         //1. 제한시간 설정
         if (toggleState['timeAttack'] === true) {
             if (timeInputs['mm'] === '' && timeInputs['ss'] === '') {
@@ -272,12 +309,21 @@ function ClassDrawer({ handleClose, cardData, ver }) {
 
         //5. axios 작업
         if (ver === 'draft') {
-            dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData));
+            if (name === 'drawer-draft') {
+                dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData));
+
+                handleClose(e);
+            } else if (name === 'drawer-share') {
+                if (selectState === 'right') {
+                    handleDialogOpen();
+                } else {
+                    alert('파일 업로드시, 과제 생성 기간이 필요하므로 바로 게시할 수 없습니다 :(');
+                }
+            }
         } else if (ver === 'modify') {
             dispatch(patchDraft(cardData, inputs, timeInputs, toggleState, contentsData));
+            handleClose(e);
         }
-
-        handleClose(e);
     };
 
     if (loading) return <div style={{ width: '700px' }}>로딩 중!!!!</div>; // 로딩중이고 데이터 없을때만
@@ -295,6 +341,8 @@ function ClassDrawer({ handleClose, cardData, ver }) {
                     onEditFinish={handleEditFinished}
                 />
             </Dialog>
+            <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
+
             <div className="class-drawer-root">
                 <div style={{ width: '100%' }}>
                     {ver === 'draft' ? (
@@ -489,11 +537,11 @@ function ClassDrawer({ handleClose, cardData, ver }) {
                 <div className="drawer-footer">
                     {ver === 'draft' ? (
                         <>
+                            <button className="drawer-button" name="drawer-share" onClick={onDrawerErrorCheck}>
+                                생성 및 게시하기
+                            </button>
                             <button className="drawer-button" name="drawer-draft" onClick={onDrawerErrorCheck}>
                                 생성하기
-                            </button>
-                            <button className="drawer-button" name="drawer-share">
-                                생성 및 공유하기
                             </button>
                         </>
                     ) : (

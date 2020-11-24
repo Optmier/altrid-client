@@ -13,10 +13,11 @@ const StyleModalButton = styled.button`
     background-color: #13e2a1;
     color: white;
     font-size: 0.9rem;
+    min-width: 120px;
 `;
 
 function ClassDialog({ type, subType, open, handleDialogClose }) {
-    /** class-modal 메소드 */
+    /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
 
     return (
@@ -32,7 +33,7 @@ function ClassDialog({ type, subType, open, handleDialogClose }) {
                     )}
                 </DialogContent>
 
-                <DialogActions>
+                <DialogActions style={{ width: '320px', textAlign: 'right' }}>
                     {type === 'date' ? (
                         subType === 'init' ? (
                             <StyleModalButton name="button" onClick={handleDialogClose} color="primary">
@@ -44,9 +45,14 @@ function ClassDialog({ type, subType, open, handleDialogClose }) {
                             </StyleModalButton>
                         )
                     ) : subType === 'init' ? (
-                        <StyleModalButton name="button-complete" onClick={handleDialogClose} color="primary">
-                            완료하기
-                        </StyleModalButton>
+                        <>
+                            <StyleModalButton name="button-delete" onClick={handleDialogClose} color="primary">
+                                완료 후 삭제
+                            </StyleModalButton>
+                            <StyleModalButton name="button-complete" onClick={handleDialogClose} color="primary">
+                                완료하기
+                            </StyleModalButton>
+                        </>
                     ) : (
                         <StyleModalButton name="button-restart" onClick={handleDialogClose} color="primary">
                             다시 시작하기

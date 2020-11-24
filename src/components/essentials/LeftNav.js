@@ -48,7 +48,7 @@ function LeftNav({ match }) {
             .catch((err) => {
                 console.error(err);
             });
-    }, [sessions]);
+    }, [dispatch, sessions]);
 
     return (
         <div className="left-nav-root">
