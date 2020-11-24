@@ -14,6 +14,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { patchActived, changeDueDate } from '../../redux_modules/assignmentActived';
 import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
 import * as $ from 'jquery';
+import Axios from 'axios';
+import { apiUrl } from '../../configs/configs';
+
+const pad = (n, width) => {
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+};
 
 const InfoItems = ({ title, contents }) => {
     return (
@@ -27,14 +34,18 @@ const InfoItems = ({ title, contents }) => {
         </div>
     );
 };
-const TimeItems = ({ title, mm, ss }) => {
+const TimeItems = ({ title, time_limit }) => {
+    /** 제한시간 분할(분,초) 메소드 */
+    let mm = SecondtoMinute(time_limit)[0];
+    let ss = SecondtoMinute(time_limit)[1];
+
     return (
         <div className="card-item">
             <div className="card-content-title-p" title={title}>
                 {title}
             </div>
 
-            {mm === -2 ? (
+            {time_limit === -2 ? (
                 <div className="card-content-p">없음</div>
             ) : (
                 <>
@@ -59,10 +70,17 @@ const DateItems = ({ title, start, end, userType, handleDateChange }) => {
         </div>
     );
 };
+const TriesItems = ({ title, tries }) => {
+    return (
+        <div className="card-item">
+            <div className="card-content-title-p">{title}</div>
+            <div className="card-content-p">{tries}</div>
+        </div>
+    );
+};
 
-function CardShare({ testNum, cardData, history }) {
+function CardShare({ testNum, cardData, tries, totalStudents, history, match }) {
     let path = history.location.pathname;
-
     /** Redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
     const sessions = useSelector((state) => state.RdxSessions);
@@ -140,6 +158,60 @@ function CardShare({ testNum, cardData, history }) {
     };
     /**===================== */
 
+    /** 학생인 경우 과제 수행 */
+    const onAssignmentCardItemClick = (idx, classNumber, assignmentTitle) => {
+        const conf = window.confirm(
+            '과제를 시작하시겠습니까?\n열림과 동시에 시도횟수가 증가하며, 끝낼 때는 반드시 종료 버튼을 눌러주세요!\n\n제한시간이 있는 과제는 중간에 종료하시면 재시도가 불가하오니 유의하시기 바랍니다.',
+        );
+        if (!conf) return;
+        if (window.mobile || (window.screen.width < 1440 && window.screen.height < 900)) {
+            if (window.mobile) {
+                alert('시선흐름 분석 서비스는\n테스크탑 브라우저에서만\n지원하고 있습니다.');
+            } else {
+                alert(
+                    '시선흐름 분석 서비스를 위한 최소 해상도를 지켜주세요 :(\n최소 해상도 : 1440*900\n권장 해상도 : 1920*1080 (125% 이하)',
+                );
+            }
+        } else {
+            let screenWidth = window.screen.availWidth;
+            let screenHeight = window.screen.availHeight;
+
+            // 스크린 크기는 일단 고정해 놓음!
+            screenWidth = 1280;
+            screenHeight = 751;
+
+            // let centerX = window.screen.width / 2 - screenWidth / 2;
+            // let centerY = window.screen.height / 2 - (screenHeight * 2) / 3;
+
+            /* const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+        const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
+        const width = window.innerWidth
+            ? window.innerWidth
+            : document.documentElement.clientWidth
+            ? document.documentElement.clientWidth
+            : window.screen.width;
+        const height = window.innerHeight
+            ? window.innerHeight
+            : document.documentElement.clientHeight
+            ? document.documentElement.clientHeight
+            : window.screen.height;
+        const systemZoom = width / window.screen.availWidth;
+        const centerX = (width - screenWidth) / 2 / systemZoom + dualScreenLeft;
+        const centerY = (height - screenHeight) / 2 / systemZoom + dualScreenTop; */
+
+            let centerX = (window.screen.width - screenWidth) / 2;
+            let centerY = (window.screen.height - screenHeight) / 4;
+
+            const open = window.open(
+                `/assignments/do-it-now/${classNumber}/${idx}`,
+                'Assignments',
+                `height=${screenHeight}, width=${screenWidth}, left=${centerX}, top=${centerY}, toolbar=no, scrollbars=no, resizable=no, status=no`,
+                true,
+            );
+            // open.addEventListener('load', windowOpened);
+        }
+    };
+
     /** modify state */
     const handleDateChange = () => {
         handleDialogOpen('date');
@@ -161,16 +233,27 @@ function CardShare({ testNum, cardData, history }) {
 
     const handlePreTest = (e) => {
         const $target = $(e.target);
-        console.log($target);
         if (
             !(
                 $target.parents('.card-option').length ||
                 $target.attr('class') === 'card-option' ||
                 $target.parents('.date-item').length ||
-                $target.attr('class') === 'date-item'
+                $target.attr('class') === 'date-item' ||
+                $target.parents('.goto-reports').length ||
+                $target.attr('class') === 'goto-reports'
             )
         ) {
-            handlePreviewOpen();
+            if (new Date(cardData.due_date) < new Date() && sessions.userType === 'students') {
+                alert('기간이 지난 과제이므로 리포트 조회만 가능합니다.');
+                return;
+            } else if (tries && cardData.time_limit !== -2) {
+                alert('시도횟수를 초과하셨습니다.\n문제가 발생한 경우는 선생님께 문의해 주세요!');
+                return;
+            }
+
+            if (sessions.userType === 'students') {
+                onAssignmentCardItemClick(testNum, match.params.num, cardData['title']);
+            } else handlePreviewOpen();
         }
     };
 
@@ -201,7 +284,13 @@ function CardShare({ testNum, cardData, history }) {
                         {sessions.userType === 'students' ? (
                             <>
                                 {toggleState['checked'] ? (
-                                    <span style={{ color: '#ffffff', fontSize: 14 }}>진행중</span>
+                                    <span style={{ color: '#ffffff', fontSize: 14 }}>
+                                        {cardData.time_limit === -2 && tries
+                                            ? '제출됨, 재시도 가능'
+                                            : cardData.time_limit !== -2 && tries
+                                            ? '제출됨'
+                                            : '진행중'}
+                                    </span>
                                 ) : (
                                     <span style={{ color: '#989696', fontSize: 14 }}>완료됨</span>
                                 )}
@@ -217,8 +306,6 @@ function CardShare({ testNum, cardData, history }) {
                         )}
                     </span>
                 </div>
-
-                <div></div>
 
                 <div className="class-card-flex">
                     <div className="class-card-left">
@@ -236,7 +323,10 @@ function CardShare({ testNum, cardData, history }) {
                                     title={'문항수'}
                                     contents={cardData['contents_data'].flatMap((m) => m.problemDatas).length + '문제'}
                                 />
-                                <TimeItems title={'제한시간'} mm={mm} ss={ss} />
+                                <TimeItems title={'제한시간'} time_limit={cardData['time_limit']} />
+                                {sessions.userType === 'students' ? (
+                                    <TriesItems title={'시도횟수'} tries={!tries ? '없음' : tries} />
+                                ) : null}
                                 <DateItems
                                     title={'과제기한'}
                                     start={moment(cardData['created']).format('YY.MM.DD HH:mm')}
@@ -254,24 +344,27 @@ function CardShare({ testNum, cardData, history }) {
                         <div className="class-card-contents class-card-wrapper">
                             {sessions.userType === 'students' ? null : (
                                 <>
-                                    <StudentNum completeNum={'00'} totalNum={'00'} />
+                                    <StudentNum completeNum={pad(cardData['submitted_number'], 2)} totalNum={pad(totalStudents, 2)} />
                                     <div className="student-complete-text">제출한 학생</div>
                                 </>
                             )}
                         </div>
 
                         <div className="class-card-bottom-right card-bottom-p">
-                            <Link
-                                to={
-                                    sessions.userType === 'students'
-                                        ? `${path}/${testNum}/details?user=${sessions.authId}`
-                                        : `${path}/${testNum}`
-                                }
-                            >
-                                <div className="share-report">
-                                    {sessions.userType === 'students' ? '나의 리포트' : '과제별 리포트 보기'} <IoIosArrowForward />
-                                </div>
-                            </Link>
+                            {(sessions.userType === 'students' && tries) || sessions.userType !== 'students' ? (
+                                <Link
+                                    className="goto-reports"
+                                    to={
+                                        sessions.userType === 'students'
+                                            ? `${path}/${testNum}/details?user=${sessions.authId}`
+                                            : `${path}/${testNum}`
+                                    }
+                                >
+                                    <div className="share-report">
+                                        {sessions.userType === 'students' ? '나의 리포트' : '과제별 리포트 보기'} <IoIosArrowForward />
+                                    </div>
+                                </Link>
+                            ) : null}
                         </div>
                     </div>
                 </div>

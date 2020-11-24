@@ -16,7 +16,8 @@ import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import problemCategories from '../TOFELEditor/ProblemCategories';
-import { to } from 'mathjs';
+import { Element, Link as AnimScrollTo } from 'react-scroll';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const pad = (n, width) => {
     n = n + '';
@@ -38,12 +39,16 @@ const StyleItems = styled.div`
     color: #706d6d;
     font-weight: 400;
 
+    &.critical {
+        color: #f57c7c;
+    }
+
     & + & {
         margin-top: 1.25rem;
     }
     & .header-title {
         font-weight: 600;
-        width: 100px;
+        width: 92px;
         margin-left: 10px;
     }
 `;
@@ -60,6 +65,44 @@ const StyleArrowButton = styled.div`
         font-size: 1rem;
         color: black;
         font-weight: 500;
+    }
+
+    & .guide-show-analyze {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        color: #2e2c2c;
+        line-height: 20px;
+        font-size: 16px;
+        font-weight: 600;
+        width: 100%;
+        text-align: center;
+        margin: 16px 0 36px 0;
+        user-select: none;
+
+        & .expand-icons {
+            display: flex;
+            flex-direction: column;
+            margin-left: 6px;
+
+            & .first {
+                margin-top: -6px;
+                animation: expandIconOpacity 0.5s 0.6s infinite alternate;
+            }
+            & .second {
+                margin-top: -18px;
+                animation: expandIconOpacity 0.5s 0.8s infinite alternate;
+            }
+        }
+    }
+
+    @keyframes expandIconOpacity {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
     }
 `;
 
@@ -78,16 +121,14 @@ const ScoreItems = ({ title, score, total, children }) => {
         <StyleItems>
             {children}
             <div className="header-title">{title}</div>
-            {score === '-' ? (
-                <div>{score}</div>
-            ) : (
+            {
                 <>
                     <div>
                         {score}문제 / {total}문제
                     </div>
                     <div style={{ color: '#13e2a1', paddingLeft: '5px' }}>({percent}%)</div>
                 </>
-            )}
+            }
         </StyleItems>
     );
 };
@@ -96,13 +137,30 @@ const CompareItems = ({ title, contents, children }) => {
         <StyleItems>
             {children}
             <div className="header-title">{title}</div>
-            {contents[0] === '-' ? (
-                <div style={{ fontSize: '30px', color: '#F57C7C', fontWeight: '400' }}>- {contents[1]} %</div>
-            ) : contents[0] === '0' ? (
-                <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>0 %</div>
+            {contents < 0 ? (
+                <div style={{ fontSize: '1.1rem', color: '#F57C7C', fontWeight: '600' }}>{contents.toFixed(1)}%</div>
+            ) : contents === 0 ? (
+                <div style={{ fontSize: '1.1rem', color: '#C4C4C4', fontWeight: '600' }}>-</div>
             ) : (
-                <div style={{ fontSize: '30px', color: '#7C88F5', fontWeight: '400' }}>+ {contents[1]} %</div>
+                <div style={{ fontSize: '1.1rem', color: '#7C88F5', fontWeight: '600' }}>+ {contents.toFixed(1)}%</div>
             )}
+        </StyleItems>
+    );
+};
+const TriesItems = ({ title, tries, children }) => {
+    return (
+        <StyleItems>
+            {children}
+            <div className="header-title">{title}</div>
+            <div>{tries}회</div>
+        </StyleItems>
+    );
+};
+const EraseResultItems = ({ title, children, ...rest }) => {
+    return (
+        <StyleItems {...rest} className="critical" style={{ cursor: 'pointer' }}>
+            {children}
+            <div className="header-title">{title}</div>
         </StyleItems>
     );
 };
@@ -133,7 +191,7 @@ const division = (arr, n) => {
 function ReportStudent({ history, match }) {
     const urlSearchParams = new URLSearchParams(history.location.search);
     const queryUserId = urlSearchParams.get('user');
-    let { activedNum } = match.params;
+    let { activedNum, num } = match.params;
     /** 전체 학생 리포트 데이터 저장 */
     const [studentsData, setStudentsData] = useState([]);
     /** 이름 */
@@ -147,7 +205,7 @@ function ReportStudent({ history, match }) {
     /** 총 문제 수 */
     const [totalProblems, setTotalProblems] = useState('-');
     /** 맞은 문제 수 */
-    const [correctProblems, setCorrectProblems] = useState('-');
+    const [correctProblems, setCorrectProblems] = useState(0);
     /** 소요 시간 */
     const [durTimes, setDurTimes] = useState('-');
     /** 제출 횟수 */
@@ -158,6 +216,8 @@ function ReportStudent({ history, match }) {
     const [aftChangedFaileds, setAftChangedFailds] = useState('-');
     /** 현재 학생 데이터 */
     const [currentStudentData, setCurrentStudentData] = useState({});
+    /** 이전 학생 데이터 */
+    const [prevStudentData, setPrevStudentData] = useState(null);
     /** 문제 번호별 그룹화된 학생들 패턴 데이터 */
     const [patternDatas, setPatternDatas] = useState([]);
     /** 유형 분석 활성화 달성률 */
@@ -171,12 +231,24 @@ function ReportStudent({ history, match }) {
 
     const studentNum = '01';
 
+    const handleEraseResult = () => {
+        console.log();
+        const conf1 = window.confirm('과제 수행에 문제가 발생한 경우 이 학생의 결과를 초기화 할 수 있습니다.');
+        if (!conf1) return;
+    };
+
     useEffect(() => {
-        Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, { withCredentials: true })
+        Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
+            params: {
+                classNumber: num,
+            },
+            withCredentials: true,
+        })
             .then((res) => {
                 if (!res.data) return;
+                setPrevStudentData(res.data['prev'].filter((p) => p.student_id === queryUserId)[0] || null);
                 setStudentsData(
-                    res.data.map((e) => {
+                    res.data['curr'].map((e) => {
                         let unparsedUserData = e.user_data;
                         try {
                             unparsedUserData
@@ -250,10 +322,6 @@ function ReportStudent({ history, match }) {
             });
     }, []);
 
-    const testSquareArr = division(studentDummy[studentNum]['test'].split(','), 16);
-
-    //console.log(testSquareArr.map((i) => console.log(i)));
-
     useEffect(() => {
         if (!studentsData || !studentsData.length) return;
         const currentStudent = studentsData.filter((d) => d.student_id === queryUserId)[0];
@@ -315,8 +383,8 @@ function ReportStudent({ history, match }) {
                                 _currentPattern[currentPatternIdx].userAnswer = data.answerAfter;
                                 _currentPattern[currentPatternIdx].correctAnswer = currentSelections[data.pid].answerCorrect;
                                 _currentPattern[currentPatternIdx].correct = data.correct;
-                                _currentPattern[currentPatternIdx].answerChanges = changeCount ? changeCount : 0;
-                                changeCount++;
+                                _currentPattern[currentPatternIdx].answerChanges += 1;
+                                // changeCount++;
                                 break;
                             case 'end':
                                 _currentPattern[currentPatternIdx].data.push(data);
@@ -337,10 +405,12 @@ function ReportStudent({ history, match }) {
                         !_currentGroupedByPid[_currentPattern[s].pid] && (_currentGroupedByPid[_currentPattern[s].pid] = {});
                         !_currentGroupedByPid[_currentPattern[s].pid].data && (_currentGroupedByPid[_currentPattern[s].pid].data = []);
                         !_currentGroupedByPid[_currentPattern[s].pid].time && (_currentGroupedByPid[_currentPattern[s].pid].time = 0);
+                        !_currentGroupedByPid[_currentPattern[s].pid].answerChanges &&
+                            (_currentGroupedByPid[_currentPattern[s].pid].answerChanges = 0);
                         _currentGroupedByPid[_currentPattern[s].pid].pid = _currentPattern[s].pid;
                         _currentGroupedByPid[_currentPattern[s].pid].time += _currentPattern[s].time;
                         _currentGroupedByPid[_currentPattern[s].pid].correct = _currentPattern[s].correct;
-                        _currentGroupedByPid[_currentPattern[s].pid].answerChanges = _currentPattern[s].answerChanges;
+                        _currentGroupedByPid[_currentPattern[s].pid].answerChanges += _currentPattern[s].answerChanges;
                         _currentGroupedByPid[_currentPattern[s].pid].data.push(_currentPattern[s]);
                     });
                     return {
@@ -357,8 +427,6 @@ function ReportStudent({ history, match }) {
                 }
             }),
         );
-        console.log(studentsData);
-
         /************* 영역별 점수 값 내기 ************/
         const currentForWeaks = studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0];
         const totalForWeaks = studentsData.filter((d) => d.submitted);
@@ -405,18 +473,22 @@ function ReportStudent({ history, match }) {
 
     useEffect(() => {
         if (!patternDatas || !patternDatas.length) return;
-        console.log(patternDatas);
+        const curentStudentsPatterns = patternDatas.filter((d) => d.student_id === queryUserId)[0];
         setAnswerChangedProblems(
-            patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid.filter((g) => g.answerChanges).length,
+            curentStudentsPatterns.patternsGroupedByPid
+                ? curentStudentsPatterns.patternsGroupedByPid.filter((g) => g.answerChanges > 1).length
+                : '-',
         );
         setAftChangedFailds(
-            patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid.filter((g) => g.answerChanges && !g.correct)
-                .length,
+            curentStudentsPatterns.patternsGroupedByPid
+                ? curentStudentsPatterns.patternsGroupedByPid.filter((g) => g.answerChanges > 1 && !g.correct).length
+                : '-',
         );
     }, [patternDatas]);
 
     return (
         <ClassWrapper col={true}>
+            {console.log(prevStudentData)}
             <BranchNav deps="3" />
             <div className="student-report-root">
                 <section className="student-report-header">
@@ -457,9 +529,11 @@ function ReportStudent({ history, match }) {
                     </div>
 
                     <div className="student-report-right">
-                        {testSquareArr.map((arr, idx) => (
-                            <Progress key={idx} test={arr} />
-                        ))}
+                        {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
+                            ? division(currentStudentData.user_data.selections.slice(), 15).map((arr, idx) => (
+                                  <Progress mode key={idx} selections={arr} problemNumbers={999} />
+                              ))
+                            : null}
 
                         <div className="right-bottom">
                             <div className="right-bottom-col">
@@ -479,6 +553,14 @@ function ReportStudent({ history, match }) {
                                         />
                                     </svg>
                                 </InfoItems>
+                                <TriesItems title={'시도 횟수'} tries={tries}>
+                                    <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M2.66683 3H13.3335C13.6871 3 14.0263 3.15804 14.2763 3.43934C14.5264 3.72064 14.6668 4.10218 14.6668 4.5V13.5C14.6668 13.8978 14.5264 14.2794 14.2763 14.5607C14.0263 14.842 13.6871 15 13.3335 15H2.66683C2.31321 15 1.97407 14.842 1.72402 14.5607C1.47397 14.2794 1.3335 13.8978 1.3335 13.5V4.5C1.3335 4.10218 1.47397 3.72064 1.72402 3.43934C1.97407 3.15804 2.31321 3 2.66683 3V3ZM2.66683 4.5V13.5H7.3335V4.5H2.66683ZM13.3335 13.5V4.5H12.5068C12.6668 4.905 12.6335 5.3025 12.6335 5.3475C12.5868 5.85 12.2735 6.375 12.1602 6.5625L10.6068 8.475L12.8202 8.46L12.8268 9.375L9.36016 9.3525L9.3335 8.6025C9.3335 8.6025 11.3668 6.18 11.4668 5.9625C11.5602 5.7525 11.9402 4.5 11.0002 4.5C10.1802 4.5375 10.2735 5.475 10.2735 5.475L9.24683 5.4825C9.24683 5.4825 9.2535 4.9875 9.50016 4.5H8.66683V13.5H10.3868L10.3802 12.855L11.0268 12.8475C11.0268 12.8475 11.6335 12.7275 11.6402 12.06C11.6668 11.31 11.1002 11.31 11.0002 11.31C10.9135 11.31 10.2868 11.3475 10.2868 11.9625H9.2735C9.2735 11.9625 9.30016 10.4175 11.0002 10.4175C12.7335 10.4175 12.6402 11.9325 12.6402 11.9325C12.6402 11.9325 12.6668 12.87 11.9002 13.2225L12.2468 13.5H13.3335ZM5.94683 12H4.94683V7.65L3.74683 8.07V7.1475L5.84016 6.3075H5.94683V12Z"
+                                            fill="#706D6D"
+                                        />
+                                    </svg>
+                                </TriesItems>
                             </div>
                             <div className="right-bottom-col">
                                 <ScoreItems title={'점수'} score={correctProblems} total={totalProblems}>
@@ -489,20 +571,34 @@ function ReportStudent({ history, match }) {
                                         />
                                     </svg>
                                 </ScoreItems>
-                                <CompareItems title={'비교 성취도'} contents={studentDummy[studentNum]['compare']}>
+                                <CompareItems
+                                    title={'비교 성취도'}
+                                    contents={
+                                        currentStudentData.score_percentage -
+                                        (!prevStudentData || !prevStudentData.score_percentage ? 0 : prevStudentData.score_percentage)
+                                    }
+                                >
                                     <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M11 14.01V7H9V14.01H6L10 18L14 14.01H11ZM4 0L0 3.99H3V11H5V3.99H8L4 0Z" fill="#706D6D" />
                                     </svg>
                                 </CompareItems>
+                                <EraseResultItems title={'결과 초기화'} onClick={handleEraseResult}>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M13.58 6.68262L12.9133 7.98012L4.82667 2.73012L5.49333 1.43262L7.52 2.74512L8.42667 2.46762L11.3133 4.34262L11.56 5.37012L13.58 6.68262ZM4 14.2501V5.25012H7.38L12 8.25012V14.2501C12 14.6479 11.8595 15.0295 11.6095 15.3108C11.3594 15.5921 11.0203 15.7501 10.6667 15.7501H5.33333C4.97971 15.7501 4.64057 15.5921 4.39052 15.3108C4.14048 15.0295 4 14.6479 4 14.2501Z"
+                                            fill="#F57C7C"
+                                        />
+                                    </svg>
+                                </EraseResultItems>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <div className="class-report-title">유형별 정답률</div>
+                {achievesForTypes.value < 100 ? null : <div className="class-report-title">유형별 정답률</div>}
                 <section>
-                    <StudentTypeScore current={currentScoresPerType} total={averageScoresPerType} />
-                    <StyleArrowButton>
+                    {achievesForTypes.value < 100 ? null : <StudentTypeScore current={currentScoresPerType} total={averageScoresPerType} />}
+                    {/* <StyleArrowButton>
                         <p>관찰데이터 확인하기</p>
                         <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -510,8 +606,21 @@ function ReportStudent({ history, match }) {
                                 fill="#2E2C2C"
                             />
                         </svg>
+                    </StyleArrowButton> */}
+                    <StyleArrowButton>
+                        <AnimScrollTo className="guide-show-analyze" to="analyze_page_start" spy={true} smooth={true} duration={700}>
+                            {/* <div className="guide-show-analyze"> */}
+                            관찰 데이터 확인하기
+                            <div className="expand-icons">
+                                <ExpandMoreIcon className="first" />
+                                <ExpandMoreIcon className="second" />
+                            </div>
+                            {/* </div> */}
+                        </AnimScrollTo>
                     </StyleArrowButton>
                 </section>
+
+                <Element name="analyze_page_start"></Element>
 
                 <section className="student-report-observe">
                     <div className="ment-ai observe-ment">

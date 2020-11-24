@@ -53,7 +53,7 @@ function LineChartTime({ currents, averages }) {
             },
             yaxis: {
                 min: 0,
-                max: 100,
+                // max: 100,
             },
             legend: {
                 position: 'top',

@@ -8,6 +8,8 @@ import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector, useDispatch } from 'react-redux';
 import { getActivedes } from '../../redux_modules/assignmentActived';
 import moment from 'moment';
+import Axios from 'axios';
+import { apiUrl } from '../../configs/configs';
 
 function Share({ match }) {
     const { num } = match.params;
@@ -20,11 +22,35 @@ function Share({ match }) {
         data: null,
         error: null,
     }; // 아예 데이터가 존재하지 않을 때가 있으므로, 비구조화 할당이 오류나지 않도록
+    const sessions = useSelector((state) => state.RdxSessions);
     const dispatch = useDispatch();
+    const [tries, setTries] = useState(undefined);
 
     useEffect(() => {
         dispatch(getActivedes(num));
     }, [dispatch]);
+
+    const [totalStudents, setTotalStudents] = useState(0);
+
+    useEffect(() => {
+        if (sessions.userType === 'students') {
+            Axios.get(`${apiUrl}/others/assignment-tries/${num}`, { withCredentials: true })
+                .then((res) => {
+                    setTries(res.data);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        } else {
+            Axios.get(`${apiUrl}/students-in-class/${match.params.num}`, { withCredentials: true })
+                .then((res) => {
+                    setTotalStudents(res.data.length);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+    }, [sessions]);
 
     if (data) {
         shareDatas = data;
@@ -60,11 +86,22 @@ function Share({ match }) {
                             </div>
                         }
                     >
-                        {Object.keys(shareDatas).map((key) => (
-                            <CardRoot key={key} wider cardHeight="300px">
-                                <CardShare testNum={shareDatas[key]['idx']} cardData={shareDatas[key]} />
-                            </CardRoot>
-                        ))}
+                        {(sessions.userType === 'students' && tries) || sessions.userType !== 'students'
+                            ? Object.keys(shareDatas).map((key) => (
+                                  <CardRoot key={key} wider cardHeight="300px">
+                                      <CardShare
+                                          testNum={shareDatas[key]['idx']}
+                                          cardData={shareDatas[key]}
+                                          tries={
+                                              sessions.userType === 'students'
+                                                  ? tries.find((o) => o.idx === shareDatas[key]['idx']).tries
+                                                  : 0
+                                          }
+                                          totalStudents={totalStudents}
+                                      />
+                                  </CardRoot>
+                              ))
+                            : null}
                     </CardLists>
                 </div>
             </div>

@@ -36,10 +36,10 @@ function IsPresence({ type, able, align }) {
             {type === 'eye' ? (
                 able ? (
                     <BottomSpan color="black" fill="red" align={align}>
-                        시선흐름 포함
+                        시선흐름 분석 포함
                     </BottomSpan>
                 ) : (
-                    <BottomSpan align={align}>시선흐름 미포함</BottomSpan>
+                    <BottomSpan align={align}>시선흐름 분석 미포함</BottomSpan>
                 )
             ) : able ? (
                 <BottomSpan color="black" fill="#3b168a" align={align}>

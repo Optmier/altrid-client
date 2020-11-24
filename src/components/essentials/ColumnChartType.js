@@ -1,14 +1,18 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import ProblemCategories from '../TOFELEditor/ProblemCategories';
 
-function ColumnChartProblem() {
+function ColumnChartProblem({ datas }) {
+    console.log(datas);
     let state = {};
 
     state = {
         series: [
             {
                 name: '정답률',
-                data: [59, 60, 32, 36, 55, 30, 40, 50, 29, 74],
+                data: Object.keys(datas)
+                    .filter((k) => k != 0)
+                    .map((k) => datas[k] * 100),
             },
         ],
         options: {
@@ -32,18 +36,7 @@ function ColumnChartProblem() {
                 colors: ['transparent'],
             },
             xaxis: {
-                categories: [
-                    '세부내용찾기',
-                    '세부내용찾기',
-                    '세부내용찾기',
-                    '세부내용찾기',
-                    '세부내용찾기',
-                    '세부내용찾기',
-                    '세부내용찾기',
-                    '세부내용찾기',
-                    '세부내용찾기',
-                    '세부내용찾기',
-                ],
+                categories: ProblemCategories.filter((c) => c.id != 0).map((c) => c.name),
             },
             yaxis: {},
             fill: {

@@ -34,7 +34,10 @@ function ColumnChartProblem({ datas }) {
             xaxis: {
                 categories: datas && datas.length ? datas.map((d, i) => i + 1 + '번') : [],
             },
-            yaxis: {},
+            yaxis: {
+                min: 0,
+                max: 100,
+            },
             fill: {
                 opacity: 1,
             },

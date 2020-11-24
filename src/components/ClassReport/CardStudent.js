@@ -5,6 +5,8 @@ import classNames from 'classnames';
 import styled from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment-timezone';
+import { useEffect } from 'react';
+import ProblemCategories from '../TOFELEditor/ProblemCategories';
 
 const StyleState = styled.div`
     width: 52px;
@@ -65,22 +67,48 @@ const CompareItems = ({ title, contents, children }) => {
         <div className="card-item-student">
             {children}
             <div className="card-content-title-p">{title}</div>
-            {contents[0] === '-' ? (
-                <div style={{ fontSize: '30px', color: '#F57C7C', fontWeight: '400' }}>- {contents[1]} %</div>
-            ) : contents[0] === '0' ? (
-                <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>0 %</div>
+            {contents < 0 ? (
+                <div style={{ fontSize: '30px', color: '#F57C7C', fontWeight: '400' }}>{contents.toFixed(1)}%</div>
+            ) : contents === 0 ? (
+                <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>-</div>
             ) : (
-                <div style={{ fontSize: '30px', color: '#7C88F5', fontWeight: '400' }}>+ {contents[1]} %</div>
+                <div style={{ fontSize: '30px', color: '#7C88F5', fontWeight: '400' }}>+ {contents.toFixed(1)}%</div>
             )}
         </div>
     );
 };
 
-function CardStudent({ id, data, totalProblems, history }) {
+function CardStudent({ id, data, prevData, totalProblems, achieveRates, history }) {
     let path = history.location.pathname;
-    // console.log(data);
 
     const [num, setTempnum] = useState('01');
+    /** 현재 학생 영역별 점수 데이터 */
+    const [currentScoresPerType, setCurrentScoresPerType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
+    /** 취약 영역 Top 3 */
+    const [top3Weaks, setTop3Weaks] = useState([]);
+
+    useEffect(() => {
+        if (!data || !data.category_score) return;
+        console.log(data);
+        const currentCategoryScores = data.category_score;
+        const _currentObjs = {};
+        Object.keys(currentCategoryScores).map((c) => {
+            const sum = currentCategoryScores[c].sum;
+            const count = currentCategoryScores[c].count;
+            !_currentObjs[c] && (_currentObjs[c] = 0);
+            _currentObjs[c] = (sum / count) * 1.0;
+        });
+        setCurrentScoresPerType({ ...currentScoresPerType, ..._currentObjs });
+    }, [data.category_score]);
+
+    useEffect(() => {
+        const toArray = Object.keys(currentScoresPerType)
+            .filter((f) => f !== '0')
+            .map((c) => ({ category: c, scores: currentScoresPerType[c] }));
+        toArray.push({ category: '0', scores: currentScoresPerType['0'] });
+        toArray.sort((a, b) => a.scores - b.scores);
+        setTop3Weaks(toArray.filter((d, i) => i < 3));
+    }, [currentScoresPerType]);
 
     return (
         <>
@@ -136,15 +164,27 @@ function CardStudent({ id, data, totalProblems, history }) {
                                 />
                             </svg>
                         </InfoItems>
-                        <InfoItems title={'취약 영역'} contents={studentDummy[num]['weak']}>
-                            <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M10.1818 0H3.63636C3.03273 0 2.51636 0.363636 2.29818 0.887273L0.101818 6.01455C0.0363636 6.18182 0 6.35636 0 6.54545V8C0 8.8 0.654545 9.45455 1.45455 9.45455H6.04364L5.35273 12.7782L5.33091 13.0109C5.33091 13.3091 5.45455 13.5855 5.65091 13.7818L6.42182 14.5455L11.2145 9.75273C11.4764 9.49091 11.6364 9.12727 11.6364 8.72727V1.45455C11.6364 0.654545 10.9818 0 10.1818 0ZM13.0909 0V8.72727H16V0H13.0909Z"
-                                    fill="#706D6D"
-                                />
-                            </svg>
-                        </InfoItems>
-                        <CompareItems title={'비교 성취도'} contents={studentDummy[num]['compare']}>
+                        {achieveRates >= 100 ? (
+                            <InfoItems
+                                title={'취약 영역'}
+                                contents={
+                                    top3Weaks.length && top3Weaks[0]
+                                        ? ProblemCategories.filter((p) => p.id == top3Weaks[0].category)[0].name
+                                        : 'null'
+                                }
+                            >
+                                <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M10.1818 0H3.63636C3.03273 0 2.51636 0.363636 2.29818 0.887273L0.101818 6.01455C0.0363636 6.18182 0 6.35636 0 6.54545V8C0 8.8 0.654545 9.45455 1.45455 9.45455H6.04364L5.35273 12.7782L5.33091 13.0109C5.33091 13.3091 5.45455 13.5855 5.65091 13.7818L6.42182 14.5455L11.2145 9.75273C11.4764 9.49091 11.6364 9.12727 11.6364 8.72727V1.45455C11.6364 0.654545 10.9818 0 10.1818 0ZM13.0909 0V8.72727H16V0H13.0909Z"
+                                        fill="#706D6D"
+                                    />
+                                </svg>
+                            </InfoItems>
+                        ) : null}
+                        <CompareItems
+                            title={'비교 성취도'}
+                            contents={data.score_percentage - (!prevData || !prevData.score_percentage ? 0 : prevData.score_percentage)}
+                        >
                             <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M11 14.01V7H9V14.01H6L10 18L14 14.01H11ZM4 0L0 3.99H3V11H5V3.99H8L4 0Z" fill="#706D6D" />
                             </svg>

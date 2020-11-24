@@ -52,6 +52,12 @@ const PassageContainer = styled.div`
     padding: 8px;
     width: 60%;
     height: 100%;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+
+    &::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera*/
+    }
 `;
 const ProblemsContainer = styled.div`
     border-left: 1px solid #cccccc;
@@ -59,6 +65,13 @@ const ProblemsContainer = styled.div`
     overflow: auto;
     width: 40%;
     height: 100%;
+
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+
+    &::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera*/
+    }
 
     & p,
     & blockquote {
@@ -343,7 +356,6 @@ function SmartTOFELRender({
         <RenderRoot>
             <HeaderToolbar>
                 <HeaderTitle>
-                    {console.log(title, currentProblemIdx, problemDatas)}
                     <h4>{title[problemDatas.length ? problemDatas[currentProblemIdx].setNum : 0]}</h4>
                 </HeaderTitle>
                 <HeaderTimer

@@ -128,7 +128,9 @@ function EyeTrackBox({ hasEyetrack, eyetrackData, contentsData, patternData, cur
                         </div>
                     </div>
                 )}
-                {hasEyetrack ? <EyetrackingPlayer data={eyetrackData} testContent={contentsData} goto={trackTimeGoTo} /> : null}
+                {hasEyetrack && eyetrackData ? (
+                    <EyetrackingPlayer data={eyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
+                ) : null}
             </div>
 
             <div className="eyetrack-right">

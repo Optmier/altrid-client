@@ -42,7 +42,10 @@ function TotalProgress({ studentList, problemNumbers }) {
             {Object.keys(studentList).map((num) => (
                 <div key={num} className="progress-list">
                     <div className="name">{studentList[num]['name']}</div>
-                    <Progress test={studentList[num].user_data} problemNumbers={problemNumbers} />
+                    <Progress
+                        selections={studentList[num].user_data ? studentList[num].user_data.selections : null}
+                        problemNumbers={problemNumbers}
+                    />
                 </div>
             ))}
         </StyleTotalProgress>

@@ -76,7 +76,10 @@ function ColumnChart({ currentObjs, averageObjs }) {
                     '기타',
                 ],
             },
-            yaxis: {},
+            yaxis: {
+                min: 0,
+                max: 100,
+            },
             fill: {
                 opacity: 1,
             },

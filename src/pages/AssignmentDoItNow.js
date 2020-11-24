@@ -213,10 +213,14 @@ function AssignmentDoItNow({ history, match }) {
                     { activedNumber: res.data.idx, eyetrack: res.data.eyetrack },
                     { withCredentials: true },
                 )
-                    .then((res) => {
-                        // console.log(res);
-                        if (res.data.savedData) {
-                            const data = res.data.savedData;
+                    .then((res2) => {
+                        // console.log(res2);
+                        if (res2.data.savedData) {
+                            const data = res2.data.savedData;
+                            if (res.data.time_limit !== -2 && data.tries) {
+                                alert('시도횟수를 초과하였습니다.\n문제가 발생한 경우 선생님께 문의 바랍니다.');
+                                window.close();
+                            }
                             let userData = data.user_data;
                             let eyetrackData = data.eyetrack_data;
                             try {
@@ -250,7 +254,15 @@ function AssignmentDoItNow({ history, match }) {
                                 eyetrackData = null;
                             }
                             setSavedData({ ...data, user_data: userData, eyetrack_data: eyetrackData });
+                            if (!res.data.eyetrack) {
+                                console.log('asdfasd');
+                                upCountTries();
+                            }
                         } else {
+                            if (!res.data.eyetrack) {
+                                console.log('asdfasd');
+                                upCountTries();
+                            }
                             setSavedData(null);
                         }
                     })
@@ -271,7 +283,6 @@ function AssignmentDoItNow({ history, match }) {
                     .replace(/\\f/g, '\\f');
                 // remove non-printable and other non-valid JSON chars
                 unparsedContents = unparsedContents.replace(/[\u0000-\u0019]+/g, '');
-                if (!res.data.eyetrack) upCountTries();
                 setOriginalDatas({ ...originalDatas, ...res.data, contents_data: JSON.parse(unparsedContents) });
                 setRemainTime(res.data.time_limit);
             })
@@ -319,7 +330,7 @@ function AssignmentDoItNow({ history, match }) {
         }
     }, [savedData]);
 
-    // useBeforeunload((e) => e.preventDefault());
+    useBeforeunload((e) => e.preventDefault());
 
     return (
         <>

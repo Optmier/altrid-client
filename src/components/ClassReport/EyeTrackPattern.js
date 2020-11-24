@@ -151,7 +151,7 @@ const PatternList = ({
                     {userAnswer ? userAnswer : '미선택'}/{correctAnswer}
                 </div>
                 <div className="pattern-item">
-                    <div>변경 사항</div>
+                    <div>패턴 내 변경</div>
                     <AnswerRoute route={data.map((d) => (d.action === 'changed' ? d.answerAfter : null))} />
                 </div>
                 <div className="pattern-item">
@@ -176,21 +176,23 @@ const PatternList = ({
 function EyeTrackPattern({ data, hasEyetrack, onEyetrackGoTo }) {
     return (
         <StylePatternBox>
-            {Object.keys(data).map((patternIdx) => (
-                <PatternList
-                    key={patternIdx}
-                    data={data[patternIdx].data}
-                    pattern={patternIdx}
-                    problemNumber={data[patternIdx].pid + 1}
-                    userAnswer={data[patternIdx].userAnswer}
-                    correctAnswer={data[patternIdx].correctAnswer}
-                    correct={data[patternIdx].correct}
-                    time={data[patternIdx].time}
-                    elapsedAtStart={data[patternIdx].elapsedAtStart}
-                    hasEyetrack={hasEyetrack}
-                    onEyetrackGoTo={onEyetrackGoTo}
-                />
-            ))}
+            {data
+                ? Object.keys(data).map((patternIdx) => (
+                      <PatternList
+                          key={patternIdx}
+                          data={data[patternIdx].data}
+                          pattern={patternIdx}
+                          problemNumber={data[patternIdx].pid + 1}
+                          userAnswer={data[patternIdx].userAnswer}
+                          correctAnswer={data[patternIdx].correctAnswer}
+                          correct={data[patternIdx].correct}
+                          time={data[patternIdx].time}
+                          elapsedAtStart={data[patternIdx].elapsedAtStart}
+                          hasEyetrack={hasEyetrack}
+                          onEyetrackGoTo={onEyetrackGoTo}
+                      />
+                  ))
+                : null}
         </StylePatternBox>
     );
 }

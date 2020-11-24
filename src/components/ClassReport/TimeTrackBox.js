@@ -63,7 +63,7 @@ function TimeTrackBox({ data, total }) {
             <div className="time-header">
                 <div>최장 소요시간 문제</div> {arranged[0].pid + 1}번 ({timeValueToTimer(arranged[0].time)})
             </div>
-            <LineChartTime currents={data.map((d) => d.time)} averages={totalAvgs} />
+            {data ? <LineChartTime currents={data.map((d) => d.time)} averages={totalAvgs} /> : null}
         </StyleTimeTrackBox>
     );
 }

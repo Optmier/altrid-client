@@ -22,6 +22,7 @@ import moment from 'moment-timezone';
 import { useDispatch } from 'react-redux';
 import { setReportData } from '../../redux_modules/reports';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
+import ProblemCategories from '../TOFELEditor/ProblemCategories';
 
 const pad = (n, width) => {
     n = n + '';
@@ -92,6 +93,8 @@ function ReportClass({ match }) {
     const [avgScoresOfNumber, setAvgScoresOfNumber] = useState([]);
     /** 전체 학생 영역별 평균 점수 데이터 */
     const [averageScoresOfType, setAverageScoresOfType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
+    /** 학생 별 이전 로우 데이터 */
+    const [prevStudentsDataRaw, setPrevStudentsDataRaw] = useState([]);
 
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
@@ -138,7 +141,19 @@ function ReportClass({ match }) {
                 // 제출 순
                 case '0':
                     setStudentsData(
-                        studentsData.sort((a, b) => (a.updated < b.updated ? 1 : b.updated < a.updated ? -1 : 0)).map((d) => d),
+                        studentsData
+                            .sort((a, b) => {
+                                if (a.updated === b.updated) {
+                                    return 0;
+                                } else if (!a.updated) {
+                                    return 1;
+                                } else if (!b.updated) {
+                                    return -1;
+                                } else {
+                                    return a.updated < b.updated ? 1 : -1;
+                                }
+                            })
+                            .map((d) => d),
                     );
                     break;
                 // 이름 순
@@ -149,15 +164,37 @@ function ReportClass({ match }) {
                 case '2':
                     setStudentsData(
                         studentsData
-                            .sort((a, b) =>
-                                a.score_percentage < b.score_percentage ? 1 : b.score_percentage < a.score_percentage ? -1 : 0,
-                            )
+                            .sort((a, b) => {
+                                if (a.score_percentage === b.score_percentage) {
+                                    return 0;
+                                } else if (a.score_percentage === null) {
+                                    return 1;
+                                } else if (b.score_percentage === null) {
+                                    return -1;
+                                } else {
+                                    return a.score_percentage < b.score_percentage ? 1 : -1;
+                                }
+                            })
                             .map((d) => d),
                     );
                     break;
                 // 소요시간 순
                 case '3':
-                    setStudentsData(studentsData.sort((a, b) => (a.time < b.time ? 1 : b.time < a.time ? -1 : 0)).map((d) => d));
+                    setStudentsData(
+                        studentsData
+                            .sort((a, b) => {
+                                if (a.time === b.time) {
+                                    return 0;
+                                } else if (a.time === null) {
+                                    return 1;
+                                } else if (b.time === null) {
+                                    return -1;
+                                } else {
+                                    return a.time < b.time ? 1 : -1;
+                                }
+                            })
+                            .map((d) => d),
+                    );
                     break;
                 default:
                     break;
@@ -196,13 +233,14 @@ function ReportClass({ match }) {
         // 학생별 정보 불러오기
         Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
             params: {
-                order: 1,
+                classNumber: num,
             },
             withCredentials: true,
         })
             .then((res) => {
                 // console.log(res);
-                const convertedData = res.data.map((data) => {
+                setPrevStudentsDataRaw(res.data['prev']);
+                const convertedData = res.data['curr'].map((data) => {
                     let unparsedUserData = data.user_data;
                     try {
                         unparsedUserData
@@ -292,7 +330,6 @@ function ReportClass({ match }) {
                     _o[cat].category = cat;
                     _o[cat].count += 1;
                 });
-            console.log(_o);
             setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
         }
     }, [mainReportData]);
@@ -303,7 +340,7 @@ function ReportClass({ match }) {
         /** 여기에 계산함수 구현하면 됩니다. */
         const _sumOfScoresPerNumbers = {};
         const len = studentsData
-            .filter(({ submitted }) => submitted)
+            .filter(({ submitted, user_data }) => submitted && user_data)
             .map(({ user_data }) => {
                 const curSelections = user_data.selections;
                 curSelections.forEach((s, i) => {
@@ -406,24 +443,44 @@ function ReportClass({ match }) {
                     </section>
                     {/* {console.log(achievesForTypes)} */}
                     <section className="class-report-graph">
-                        <div className="class-report-title">영역별 리포트</div>
+                        <div className="class-report-title">점수 비교 그래프</div>
                         <div className="graph-box">
                             <div className="graph-header">
                                 <div className="graph-header-text">
-                                    <span>가장 취약한 문제 </span> 3번(21%)
+                                    <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
+                                    {Math.min(...avgScoresOfNumber)}%)
                                 </div>
-                                {achievesForTypes.value >= 100 ? (
+                                {achievesForTypes.value > 100 ? (
                                     <div className="graph-header-text">
-                                        <span>가장 취약한 유형 </span> 세부내용 찾기(29%)
+                                        <span>가장 취약한 유형 </span>{' '}
+                                        {
+                                            ProblemCategories.filter(
+                                                (p) =>
+                                                    p.id ==
+                                                    Object.keys(averageScoresOfType)
+                                                        .filter((k) => k != 0)
+                                                        .reduceRight((a, b) => (averageScoresOfType[a] < averageScoresOfType[b] ? a : b)),
+                                            )[0].name
+                                        }{' '}
+                                        (
+                                        {averageScoresOfType[
+                                            Object.keys(averageScoresOfType)
+                                                .filter((k) => k != 0)
+                                                .reduceRight((a, b) => (averageScoresOfType[a] < averageScoresOfType[b] ? a : b))
+                                        ] * 100}
+                                        %)
                                     </div>
                                 ) : null}
                                 <select name="chart-option" onChange={handleSelect}>
                                     <option value="0">문제별 정답률</option>
-                                    {achievesForTypes.value >= 100 ? <option value="1">유형별 정답률</option> : null}
+                                    {achievesForTypes.value > 100 ? <option value="1">유형별 정답률</option> : null}
                                 </select>
                             </div>
-
-                            {selectState === '0' ? <ColumnChartProblem datas={avgScoresOfNumber} /> : <ColumnChartType />}
+                            {selectState === '0' ? (
+                                <ColumnChartProblem datas={avgScoresOfNumber} />
+                            ) : (
+                                <ColumnChartType datas={averageScoresOfType} />
+                            )}
                         </div>
                     </section>
 
@@ -446,13 +503,19 @@ function ReportClass({ match }) {
                                 <option value="3">소요시간 순</option>
                             </select>
                         </div>
-                        <FilterButton />
+                        {/* <FilterButton /> */}
                     </StudentCardHeader>
                 }
             >
                 {studentsData.map((data) => (
                     <CardRoot key={data.student_id} cardHeight="250px">
-                        <CardStudent id={data.student_id} data={data} totalProblems={problemNumbers} />
+                        <CardStudent
+                            id={data.student_id}
+                            data={data}
+                            prevData={prevStudentsDataRaw.filter((p) => p.student_id === data.student_id)[0]}
+                            totalProblems={problemNumbers}
+                            achieveRates={achievesForTypes.value}
+                        />
                     </CardRoot>
                 ))}
             </CardLists>
