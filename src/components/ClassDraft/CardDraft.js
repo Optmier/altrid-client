@@ -4,12 +4,13 @@ import IsPresence from '../essentials/IsPresence';
 import CardPopOver from '../essentials/CardPopOver';
 import ClassDialog from '../essentials/ClassDialog';
 import styled from 'styled-components';
-import { Drawer } from '@material-ui/core';
+import { Drawer, Tooltip } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
 import { SecondtoMinute } from '../essentials/TimeChange';
 import { useDispatch, useSelector } from 'react-redux';
 import { postActived, changeDueDate } from '../../redux_modules/assignmentActived';
 import { deleteDraft } from '../../redux_modules/assignmentDraft';
+import { withStyles } from '@material-ui/core/styles';
 
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
@@ -62,6 +63,22 @@ const TimeItems = ({ title, time_limit }) => {
         </div>
     );
 };
+
+const HtmlTooltip = withStyles((theme) => ({
+    tooltip: {
+        padding: '1rem 1.5rem',
+        fontSize: '1rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: '600',
+        borderRadius: '11px',
+
+        '& .class-button + .class-button': {
+            paddingLeft: '0.5rem',
+        },
+    },
+}))(Tooltip);
 
 function CardDraft({ cardData, match, history }) {
     /** redux actived-state */
@@ -238,12 +255,28 @@ function CardDraft({ cardData, match, history }) {
                             <InfoItems title={'최종수정'} contents={moment(cardData['updated']).format('MM월 DD일 HH시 mm분')} />
                         </div>
                     </div>
-                    <div className="class-card-bottom-right">
-                        {/* 시선흐름 유무 */}
-                        <IsPresence type={'eye'} able={cardData['eyetrack']} />
-                        {/* 공유 유무 */}
-                        <IsPresence type={'share'} able={0} />
-                    </div>
+                    <HtmlTooltip
+                        placement="bottom-end"
+                        title={
+                            <>
+                                {cardData['class_name']
+                                    ? Array.from(new Set(cardData['class_name'].split(','))).map((name, key) => (
+                                          <div key={key} className="class-button">
+                                              {name}반
+                                          </div>
+                                      ))
+                                    : '게시중인 반 없음'}
+                            </>
+                        }
+                    >
+                        <div className="class-card-bottom-right">
+                            {/* 시선흐름 유무 */}
+                            <IsPresence type={'eye'} able={cardData['eyetrack']} />
+                            {/* 공유 유무 */}
+
+                            <IsPresence type={'share'} able={cardData['actived_count']} />
+                        </div>
+                    </HtmlTooltip>
                 </div>
             )}
         </>
