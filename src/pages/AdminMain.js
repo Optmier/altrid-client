@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Divider, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import { Link, NavLink, Redirect, Route } from 'react-router-dom';
+import { NavLink, Route } from 'react-router-dom';
 import ResponsiveDrawer from '../components/AdminMainPage/ResponsiveDrawer';
 import AdminMembersPage from '../components/AdminMainPage/AdminMembersPage';
 import ContentsRequests from '../components/AdminMainPage/ContentsRequests';

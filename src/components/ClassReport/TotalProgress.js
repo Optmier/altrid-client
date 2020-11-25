@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import studentDummy from '../../datas/studentDummy.json';
 import Progress from './Progress.js';
 
 const StyleTotalProgress = styled.div`

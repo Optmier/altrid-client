@@ -7,7 +7,6 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Button, IconButton } from '@material-ui/core';
 import ProblemComponent from './ProblemComponent';
-import * as $ from 'jquery';
 
 const pad = (n, width) => {
     n = n + '';

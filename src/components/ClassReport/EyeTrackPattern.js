@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import patternDummy from '../../datas/patternDummy.json';
 import styled from 'styled-components';
 import classNames from 'classnames';
 

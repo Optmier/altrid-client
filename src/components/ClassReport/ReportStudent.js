@@ -2,15 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import BranchNav from '../essentials/BranchNav';
 import ClassWrapper from '../essentials/ClassWrapper';
-import studentDummy from '../../datas/studentDummy.json';
 import Progress from './Progress';
 import styled from 'styled-components';
 import StudentTypeScore from './StudentTypeScore';
 import MoreBox from '../essentials/MoreBox';
 import EyeTrackBox from './EyeTrackBox';
-import { Tooltip } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Tooltip } from '@material-ui/core';
 import TimeTrackBox from './TimeTrackBox';
-import { useSelector } from 'react-redux';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
@@ -228,13 +226,72 @@ function ReportStudent({ history, match }) {
     const [averageScoresPerType, setAverageScoresPerType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
     /** 취약 영역 Top 3 */
     const [top3Weaks, setTop3Weaks] = useState([]);
-
-    const studentNum = '01';
+    /** 리포트 초기화 확인 다이얼로그 오픈 여부 */
+    const [eraseConfirmOpen, setEraseConfirmOpen] = useState(false);
+    /** 리포트 초기화 확인 다이얼로그 텍스트 필드 */
+    const [eraseConfirmFields, setEraseConfirmFields] = useState({
+        student_name: '',
+        teacher_email: '',
+    });
+    /** 리포트 초기화 확인 다이얼로그 텍스트 필드 에러 여부 */
+    const [eraseConfirmFieldsError, setEraseConfirmFieldsError] = useState({
+        student_name: false,
+        teacher_email: false,
+    });
 
     const handleEraseResult = () => {
-        console.log();
-        const conf1 = window.confirm('과제 수행에 문제가 발생한 경우 이 학생의 결과를 초기화 할 수 있습니다.');
-        if (!conf1) return;
+        setEraseConfirmOpen(true);
+    };
+
+    const handleEraseConfirm = () => {
+        if (stdName !== eraseConfirmFields.student_name) {
+            setEraseConfirmFieldsError({
+                ...eraseConfirmFieldsError,
+                student_name: true,
+            });
+            return;
+        }
+        Axios.post(`${apiUrl}/auth/check-email-self`, { email: eraseConfirmFields.teacher_email }, { withCredentials: true })
+            .then((res) => {
+                console.log(res);
+                if (res.data.ok) {
+                    const conf = window.confirm('정말로 이 학생의 리포트를 초기화 하시겠습니까?');
+                    if (!conf) return;
+                    Axios.delete(`${apiUrl}/assignment-result/${activedNum}/${queryUserId}`, { withCredentials: true })
+                        .then((res) => {
+                            console.log(res);
+                            history.replace(`/class/${num}/share/${activedNum}`);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                        .finally(() => {
+                            handleEraseConfirmClose();
+                        });
+                } else {
+                    setEraseConfirmFieldsError({
+                        ...eraseConfirmFieldsError,
+                        teacher_email: true,
+                    });
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+    const handleEraseConfirmClose = () => {
+        setEraseConfirmOpen(false);
+    };
+    const handleEraseConfirmFieldsChange = ({ target }) => {
+        const { name, value } = target;
+        setEraseConfirmFields({
+            ...eraseConfirmFields,
+            [name]: value,
+        });
+        setEraseConfirmFieldsError({
+            ...eraseConfirmFieldsError,
+            [name]: false,
+        });
     };
 
     useEffect(() => {
@@ -339,7 +396,7 @@ function ReportStudent({ history, match }) {
             currentStudent.contents_data
                 .flatMap((m) => m.problemDatas)
                 .forEach((d) => {
-                    const cat = d.category > 6 ? 3 : d.category;
+                    const cat = d.category;
                     !_o[cat] && (_o[cat] = {});
                     !_o[cat].category && (_o[cat].category = 0);
                     !_o[cat].count && (_o[cat].count = 0);
@@ -488,7 +545,6 @@ function ReportStudent({ history, match }) {
 
     return (
         <ClassWrapper col={true}>
-            {console.log(prevStudentData)}
             <BranchNav deps="3" />
             <div className="student-report-root">
                 <section className="student-report-header">
@@ -598,15 +654,6 @@ function ReportStudent({ history, match }) {
                 {achievesForTypes.value < 100 ? null : <div className="class-report-title">유형별 정답률</div>}
                 <section>
                     {achievesForTypes.value < 100 ? null : <StudentTypeScore current={currentScoresPerType} total={averageScoresPerType} />}
-                    {/* <StyleArrowButton>
-                        <p>관찰데이터 확인하기</p>
-                        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M1.41 0.589844L6 5.16984L10.59 0.589844L12 1.99984L6 7.99984L0 1.99984L1.41 0.589844Z"
-                                fill="#2E2C2C"
-                            />
-                        </svg>
-                    </StyleArrowButton> */}
                     <StyleArrowButton>
                         <AnimScrollTo className="guide-show-analyze" to="analyze_page_start" spy={true} smooth={true} duration={700}>
                             {/* <div className="guide-show-analyze"> */}
@@ -634,8 +681,8 @@ function ReportStudent({ history, match }) {
                 </section>
 
                 <div className="class-report-title">
-                    <div>시선 흐름 분석</div>
-                    <Tooltip title="설명 설명 설명 설명">
+                    <div>시선 흐름 및 패턴 분석</div>
+                    <Tooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
@@ -659,7 +706,7 @@ function ReportStudent({ history, match }) {
 
                 <div className="class-report-title">
                     <div>문제별 시간 분석</div>
-                    <Tooltip title="설명 설명 설명 설명">
+                    <Tooltip title="각 문제별 풀이 소요 시간과 최장 소요시간의 문제와 시간을 나타냅니다.">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
@@ -677,8 +724,54 @@ function ReportStudent({ history, match }) {
                     ) : null}
                 </section>
             </div>
+            <Dialog open={eraseConfirmOpen} onClose={handleEraseConfirmClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" color="secondary">
+                    리포트 초기화
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        과제 수행에 문제가 발생한 경우 이 학생의 리포트를 초기화 할 수 있습니다.<br></br>
+                        {stdName} 학생의 리포트를 초기화 하려면 학생 성명이랑 선생님 본인의 이메일을 입력하고 초기화를 눌러주세요.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        error={eraseConfirmFieldsError.student_name}
+                        required
+                        margin="dense"
+                        id="student_name"
+                        name="student_name"
+                        label="학생 성명"
+                        type="text"
+                        fullWidth
+                        value={eraseConfirmFields.student_name}
+                        helperText={eraseConfirmFieldsError.student_name ? '리포트와 동일한 학생 성명을 입력해 주세요.' : ''}
+                        onChange={handleEraseConfirmFieldsChange}
+                    />
+                    <TextField
+                        error={eraseConfirmFieldsError.teacher_email}
+                        required
+                        margin="dense"
+                        id="teacher_email"
+                        name="teacher_email"
+                        label="본인 이메일"
+                        type="email"
+                        fullWidth
+                        value={eraseConfirmFields.teacher_email}
+                        helperText={eraseConfirmFieldsError.teacher_email ? '본인 이메일 주소를 입력해 주세요.' : ''}
+                        onChange={handleEraseConfirmFieldsChange}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleEraseConfirmClose} color="default">
+                        취소
+                    </Button>
+                    <Button onClick={handleEraseConfirm} color="secondary">
+                        초기화
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </ClassWrapper>
     );
 }
 
-export default withRouter(ReportStudent);
+export default withRouter(React.memo(ReportStudent));

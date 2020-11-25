@@ -3,7 +3,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import { Button, withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import * as $ from 'jquery';
-import MultipleAutocomplete from '../essentials/MultipleAutocomplete';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 

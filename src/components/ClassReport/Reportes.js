@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Route } from 'react-router-dom';
 import RestrictRoute from '../essentials/RestrictRoute';
 import ReportClass from './ReportClass';
 import ReportStudent from './ReportStudent';

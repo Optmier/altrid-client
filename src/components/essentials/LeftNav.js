@@ -8,7 +8,6 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { useSelector, useDispatch } from 'react-redux';
 import { getDrafts } from '../../redux_modules/assignmentDraft';
-import RdxSessions from '../../redux_modules/sessions';
 import { Tooltip } from '@material-ui/core';
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {

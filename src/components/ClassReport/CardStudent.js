@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../../styles/class_card.scss';
-import studentDummy from '../../datas/studentDummy.json';
 import classNames from 'classnames';
 import styled from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
@@ -80,8 +79,6 @@ const CompareItems = ({ title, contents, children }) => {
 
 function CardStudent({ id, data, prevData, totalProblems, achieveRates, history }) {
     let path = history.location.pathname;
-
-    const [num, setTempnum] = useState('01');
     /** 현재 학생 영역별 점수 데이터 */
     const [currentScoresPerType, setCurrentScoresPerType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
     /** 취약 영역 Top 3 */
@@ -89,7 +86,6 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, history 
 
     useEffect(() => {
         if (!data || !data.category_score) return;
-        console.log(data);
         const currentCategoryScores = data.category_score;
         const _currentObjs = {};
         Object.keys(currentCategoryScores).map((c) => {
@@ -105,7 +101,7 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, history 
         const toArray = Object.keys(currentScoresPerType)
             .filter((f) => f !== '0')
             .map((c) => ({ category: c, scores: currentScoresPerType[c] }));
-        toArray.push({ category: '0', scores: currentScoresPerType['0'] });
+        // toArray.push({ category: '0', scores: currentScoresPerType['0'] });
         toArray.sort((a, b) => a.scores - b.scores);
         setTop3Weaks(toArray.filter((d, i) => i < 3));
     }, [currentScoresPerType]);
@@ -196,4 +192,4 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, history 
     );
 }
 
-export default withRouter(CardStudent);
+export default withRouter(React.memo(CardStudent));

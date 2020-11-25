@@ -20,7 +20,7 @@ function RadarChart({ objDatas }) {
                     objDatas[8] * 100,
                     objDatas[9] * 100,
                     objDatas[10] * 100,
-                    objDatas[0] ? objDatas[0] : null,
+                    // objDatas[0] ? objDatas[0] : null,
                 ],
             },
         ],
@@ -70,7 +70,7 @@ function RadarChart({ objDatas }) {
                     problemCategories[7].name,
                     problemCategories[8].name,
                     problemCategories[9].name,
-                    '기타',
+                    // '기타',
                 ],
             },
             yaxis: {

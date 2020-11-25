@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import assignmentDummy from '../../datas/assignmentDummy.json';
 import BranchNav from '../essentials/BranchNav';
 import ClassWrapper from '../essentials/ClassWrapper';
 import IsPresence from '../essentials/IsPresence';
@@ -7,20 +6,16 @@ import ToggleSwitch from '../essentials/ToggleSwitch';
 import ClassDialog from '../essentials/ClassDialog';
 import ModifyButton from '../essentials/ModifyButton';
 import StudentNum from '../essentials/StudentNum';
-import studentDummy from '../../datas/studentDummy.json';
 import TotalProgress from './TotalProgress';
 import CardStudent from './CardStudent';
 import CardRoot from '../essentials/CardRoot';
 import CardLists from '../essentials/CardLists';
 import styled from 'styled-components';
-import FilterButton from '../essentials/FilterButton';
 import ColumnChartProblem from '../essentials/ColumnChartProblem';
 import ColumnChartType from '../essentials/ColumnChartType';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
-import { useDispatch } from 'react-redux';
-import { setReportData } from '../../redux_modules/reports';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
 
@@ -63,8 +58,6 @@ const StudentCardHeader = styled.div`
 `;
 
 function ReportClass({ match }) {
-    let { activedNum } = match.params;
-
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
@@ -205,7 +198,6 @@ function ReportClass({ match }) {
     useEffect(() => {
         // 메인 정보 불러오기
         const { num, activedNum } = match.params;
-        console.log(num, activedNum);
         Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, { withCredentials: true })
             .then((res) => {
                 // console.log(res);
@@ -302,7 +294,6 @@ function ReportClass({ match }) {
 
     useEffect(() => {
         if (!mainReportData) return;
-        console.log(mainReportData);
         setTitle(mainReportData.title);
         setDescription(mainReportData.description);
         setEyetrack(mainReportData.eyetrack);
@@ -336,7 +327,6 @@ function ReportClass({ match }) {
 
     useEffect(() => {
         if (!studentsData || studentsData.length < 1) return;
-        console.log(studentsData);
         /** 여기에 계산함수 구현하면 됩니다. */
         const _sumOfScoresPerNumbers = {};
         const len = studentsData
@@ -523,4 +513,4 @@ function ReportClass({ match }) {
     );
 }
 
-export default ReportClass;
+export default React.memo(ReportClass);

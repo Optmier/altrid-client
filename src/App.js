@@ -6,33 +6,22 @@ import Class from './pages/Class';
 import Main from './pages/Main';
 import { Route, withRouter } from 'react-router-dom';
 import ScrollTop from './components/essentials/ScrollTop';
-import Footer from './components/essentials/Footer';
 import TrashButton from './components/essentials/TrashButton';
-import UserExample from './components/TOFELRenderer/UserExample';
-import EyetrackingPlayer from './components/TOFELRenderer/EyetrackingPlayer';
-import PlayerExample from './components/TOFELRenderer/PlayerExample';
 import Login from './pages/Login';
 import LoginAdmin from './pages/LoginAdmin';
 import { apiUrl } from './configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveSession, deleteSession, updateSession } from './redux_modules/sessions';
 import { $_loginAdmin, $_loginDefault, $_loginStudent, $_loginTeacher, $_root } from './configs/front_urls';
-import MakeContents from './pages/MakeContents';
 import AdminMain from './pages/AdminMain';
 import AssignmentDoItNow from './pages/AssignmentDoItNow';
 import RestrictRoute from './components/essentials/RestrictRoute';
 
 window.lastUrl = '/';
 const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin];
-const excludesForAdminUrls = [];
-const excludesForTeacherUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
-const excludesForStudentUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
-
-// Array.prototype.findUrlMatch = function (match) {
-//     return this.filter(function (item) {
-//         return typeof item == 'string' && item.indexOf(match) > -1;
-//     });
-// };
+// const excludesForAdminUrls = [];
+// const excludesForTeacherUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
+// const excludesForStudentUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
 
 function App({ history }) {
     const dispatch = useDispatch();
@@ -64,26 +53,26 @@ function App({ history }) {
         Axios.get(apiUrl + '/auth', { withCredentials: true })
             .then((res1) => {
                 if (loginUrls.includes(history.location.pathname)) history.replace(window.lastUrl);
-                switch (res1.data.userType) {
-                    case 'admins':
-                        if (excludesForAdminUrls.includes(history.location.pathname)) {
-                            history.replace($_root);
-                            alert('권한이 없는 사용자 입니다.');
-                        }
-                        break;
-                    case 'teachers':
-                        if (excludesForTeacherUrls.includes(history.location.pathname)) {
-                            history.replace($_root);
-                            alert('권한이 없는 사용자 입니다.');
-                        }
-                        break;
-                    case 'students':
-                        if (excludesForStudentUrls.includes(history.location.pathname)) {
-                            // history.replace($_root);
-                            // alert('권한이 없는 사용자 입니다.');
-                        }
-                        break;
-                }
+                // switch (res1.data.userType) {
+                //     case 'admins':
+                //         if (excludesForAdminUrls.includes(history.location.pathname)) {
+                //             history.replace($_root);
+                //             alert('권한이 없는 사용자 입니다.');
+                //         }
+                //         break;
+                //     case 'teachers':
+                //         if (excludesForTeacherUrls.includes(history.location.pathname)) {
+                //             history.replace($_root);
+                //             alert('권한이 없는 사용자 입니다.');
+                //         }
+                //         break;
+                //     case 'students':
+                //         if (excludesForStudentUrls.includes(history.location.pathname)) {
+                //             // history.replace($_root);
+                //             // alert('권한이 없는 사용자 입니다.');
+                //         }
+                //         break;
+                // }
                 const { authId, academyCode, exp, iat, iss, userName, userType } = res1.data;
                 saveSessions(authId, userName, userType, academyCode, null, iss, iat, exp);
                 Axios.get(`${apiUrl}/academies/current/name`, { withCredentials: true })
@@ -119,8 +108,8 @@ function App({ history }) {
                     <RestrictRoute path="/admins" component={AdminMain} role={sessions.userType} allowedTypes={['admins']} />
                     {/* <Route path={'/admins'} component={AdminMain} /> */}
                     <Route path="/class/:num/:id" component={Class} />
-                    <Route path="/user-example" component={UserExample} />
-                    <Route path="/player-example" component={PlayerExample} />
+                    {/* <Route path="/user-example" component={UserExample} />
+                    <Route path="/player-example" component={PlayerExample} /> */}
                     <Route path="/assignments/do-it-now/:classnum/:assignmentid" component={AssignmentDoItNow} exact></Route>
                 </main>
             </ScrollTop>

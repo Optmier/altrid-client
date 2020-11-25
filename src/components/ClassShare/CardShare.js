@@ -14,8 +14,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { patchActived, changeDueDate } from '../../redux_modules/assignmentActived';
 import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
 import * as $ from 'jquery';
-import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
 
 const pad = (n, width) => {
     n = n + '';

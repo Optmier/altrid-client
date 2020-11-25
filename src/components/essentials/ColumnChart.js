@@ -20,7 +20,7 @@ function ColumnChart({ currentObjs, averageObjs }) {
                     currentObjs[8] * 100,
                     currentObjs[9] * 100,
                     currentObjs[10] * 100,
-                    currentObjs[0] ? currentObjs[0] : null,
+                    // currentObjs[0] ? currentObjs[0] : null,
                 ],
             },
             {
@@ -36,7 +36,7 @@ function ColumnChart({ currentObjs, averageObjs }) {
                     averageObjs[8] * 100,
                     averageObjs[9] * 100,
                     averageObjs[10] * 100,
-                    averageObjs[0] ? averageObjs[0] : null,
+                    // averageObjs[0] ? averageObjs[0] : null,
                 ],
             },
         ],
@@ -73,7 +73,7 @@ function ColumnChart({ currentObjs, averageObjs }) {
                     problemCategories[7].name,
                     problemCategories[8].name,
                     problemCategories[9].name,
-                    '기타',
+                    // '기타',
                 ],
             },
             yaxis: {

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import LineChartTime from '../essentials/LineChartTime';
-import EyeTrackPattern from './EyeTrackPattern';
 
 const pad = (n, width) => {
     n = n + '';

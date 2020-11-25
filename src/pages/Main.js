@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import HeaderBar from '../components/essentials/HeaderBar';
 import { Element } from 'react-scroll';
-import { Grid, Drawer, Divider, Button } from '@material-ui/core';
+import { Drawer, Divider, Button } from '@material-ui/core';
 import '../styles/main_page.scss';
 import CardRoot from '../components/essentials/CardRoot';
 import CardLists from '../components/essentials/CardLists';
 import CardAddNew from '../components/essentials/CardAddNew';
 import CardEntry from '../components/MainPage/CardEntry';
 import CreateNewEntry from '../components/MainPage/CreateNewEntry';
-import { Link } from 'react-router-dom';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import Footer from '../components/essentials/Footer';
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
 import { useSelector } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import AddTeacher from '../components/MainPage/AddTeacher';
 import classNames from 'classnames';
 import { $_classDefault } from '../configs/front_urls';
-import { cos } from 'mathjs';
 
 function Main({ history }) {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -163,12 +160,6 @@ function Main({ history }) {
                                 <Button size="large" variant="outlined" startIcon={<GroupAddIcon />} onClick={toggleAddTeacherDrawer(true)}>
                                     선생님 추가하기
                                 </Button>
-                                <button type="button" onClick={onAssignmentCardItemClick(95, 10, '시선흐름 측정이 있는 과제 샘플')}>
-                                    학생용 시선흐름 있는 테스트 창 열기
-                                </button>
-                                <button type="button" onClick={onAssignmentCardItemClick(94, 10, '시선흐름 측정이 없는 과제 샘플')}>
-                                    학생용 시선흐름 없는 테스트 창 열기
-                                </button>
                             </div>
                         </CardLists>
                     ) : null}

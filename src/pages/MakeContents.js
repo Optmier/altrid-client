@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import TOFELEditor from '../components/TOFELEditor/TOFELEditor';
-import testData2 from '../datas/contentsDataDummy.json';
 import * as $ from 'jquery';
 import { apiUrl } from '../configs/configs';
 import styled from 'styled-components';

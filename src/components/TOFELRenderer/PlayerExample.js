@@ -11,7 +11,6 @@ function PlayerExample() {
     );
 }
 
-console.log(seqExample);
 const sequences = seqExample;
 const testData = {
     title: '샘플 컨텐츠 입니다.',

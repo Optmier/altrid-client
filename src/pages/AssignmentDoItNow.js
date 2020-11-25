@@ -5,7 +5,7 @@ import { variance } from 'mathjs';
 import { apiUrl } from '../configs/configs';
 import EyetrackerCore from '../components/essentials/EyetrackerCore';
 import { useSelector, useDispatch } from 'react-redux';
-import { startTimer, addSecond, jumpTo } from '../redux_modules/timer';
+import { startTimer, addSecond } from '../redux_modules/timer';
 import { useBeforeunload } from 'react-beforeunload';
 
 const getDistance = (pos1, pos2) => {
@@ -66,21 +66,21 @@ function AssignmentDoItNow({ history, match }) {
         const eyetrackData = JSON.stringify(window.etRes);
         const activedNumber = match.params.assignmentid;
         /** 1. Total number of fixations */
-        console.log('1. Total number of fixations : ' + window.numOfFixations);
+        // console.log('1. Total number of fixations : ' + window.numOfFixations);
         /** 2. Average of fixation durations */
-        console.log('2. Average of fixation durations : ' + window.avgOfFixationDurations);
+        // console.log('2. Average of fixation durations : ' + window.avgOfFixationDurations);
         /** 3. Average of fixation velocities */
-        console.log('3. Average of fixation velocities : ' + window.avgOfFixationVelocities);
+        // console.log('3. Average of fixation velocities : ' + window.avgOfFixationVelocities);
         /** 4. Total number of saccades */
-        console.log('4. Total number of saccades : ' + window.numOfSaccades);
+        // console.log('4. Total number of saccades : ' + window.numOfSaccades);
         /** 5. Variance of saccade velocities */
-        console.log('*** Saccade velocities :: ' + window.saccadeVelocities);
+        // console.log('*** Saccade velocities :: ' + window.saccadeVelocities);
         if (window.saccadeVelocities.length > 0) window.varOfSaccadeVelocities = variance(window.saccadeVelocities);
-        console.log('5. Variance of saccade velocities : ' + window.varOfSaccadeVelocities);
+        // console.log('5. Variance of saccade velocities : ' + window.varOfSaccadeVelocities);
         /** 6. Cluster area of fixations */
-        console.log('6. Cluster area of fixations : ' + window.clusterAreaOfFixations);
+        // console.log('6. Cluster area of fixations : ' + window.clusterAreaOfFixations);
         /** 7. Cluster counts of fixations */
-        console.log('7. Cluster counts of fixations : ' + window.clusterCountsOfFixations);
+        // console.log('7. Cluster counts of fixations : ' + window.clusterCountsOfFixations);
         /** 8. Number of regressions */
         window.numberOfRegressions = 0;
         const eData = window.etRes.sequences;
@@ -107,15 +107,14 @@ function AssignmentDoItNow({ history, match }) {
             }
             lastData = data;
         });
-        console.log('8. Number of regressions : ' + window.numberOfRegressions);
-        console.log(metadata);
+        // console.log('8. Number of regressions : ' + window.numberOfRegressions);
+        // console.log(metadata);
 
         const scorePercentage =
             (metadata.selections.filter((selection) => selection.correct === true).length /
                 originalDatas.contents_data.flatMap((m) => m.problemDatas).length) *
             100.0;
         const scorePoints = metadata.selections.reduce((acc, cur) => acc + parseInt(cur.score), 0);
-        console.log(scorePercentage, scorePoints);
         Axios.patch(
             `${apiUrl}/assignment-result`,
             {

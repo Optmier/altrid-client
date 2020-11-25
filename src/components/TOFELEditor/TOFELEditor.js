@@ -153,7 +153,6 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     const quillRef = useRef();
 
     const [metadata, setMetadata] = useState(datas);
-    window.metadata = metadata;
     const [contentsSetData, setContentsSetData] = useState(datas[0]);
     const [contentsTitle, setContentsTitle] = useState(datas[0].title);
     const [contentsPassage, setContentsPassage] = useState({ render: datas[0].passageForRender, editor: datas[0].passageForEditor });
@@ -172,10 +171,8 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
         severity: 'success',
     });
     const [setNum, setSetNum] = useState(0);
-    const [deleteMode, setDeleteMode] = useState(false);
 
     let forceUpdate = useForceUpdate();
-    window.forceUpdate = forceUpdate;
 
     const handleAlertBarOpen = () => {
         setAlertBarOpen(true);
@@ -229,13 +226,13 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
         toggleDrawer(true)(event);
     };
 
-    const handleSwapProblemPosition = (a, b) => {
-        let arr = contentsProblemDatas.slice();
-        swapArray(arr, a, b);
-        setContentsProblemDatas(arr);
-    };
+    // const handleSwapProblemPosition = (a, b) => {
+    //     let arr = contentsProblemDatas.slice();
+    //     swapArray(arr, a, b);
+    //     setContentsProblemDatas(arr);
+    // };
 
-    window.testChangePosition = handleSwapProblemPosition;
+    // window.testChangePosition = handleSwapProblemPosition;
 
     const onProblemCreate = (newData) => {
         // console.log(newData);
@@ -348,7 +345,6 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
         setMetadata((arr) => {
             if (arr.length < 2) return arr;
             const f = arr.filter((d, i) => i !== setNum);
-            console.log(f);
             if (setNum < 1) {
                 setContentsSetData(f[0]);
                 setContentsTitle(f[0].title);
@@ -402,7 +398,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     }, [contentsSetData]);
 
     useEffect(() => {
-        console.log('최종 컨텐츠 데이터:: ', metadata);
+        // console.log('최종 컨텐츠 데이터:: ', metadata);
         onChange(metadata);
     }, [metadata]);
 

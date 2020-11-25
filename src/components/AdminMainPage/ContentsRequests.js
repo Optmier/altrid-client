@@ -1,5 +1,4 @@
 import {
-    Button,
     Fab,
     fade,
     makeStyles,
@@ -18,7 +17,6 @@ import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import moment from 'moment';
-import * as $ from 'jquery';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -239,7 +237,6 @@ function ContentsRequests({ history }) {
     const [rowSelected, setRowSelected] = useState('');
     const [rowDatas, setRowDatas] = useState([]);
     const [selectedContentId, setSelectedContentId] = useState(null);
-    const [attachFiles, setAttachFiles] = useState(new FormData());
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -292,29 +289,6 @@ function ContentsRequests({ history }) {
 
     return (
         <>
-            <input
-                type="file"
-                onChange={({ target }) => {
-                    const name = target.files[0].name;
-                    const value = target.files[0];
-                    const fileName = target.files[0].name;
-                    if (!name) return;
-                    attachFiles.append(name, value, fileName);
-                }}
-            />
-            <button
-                onClick={() => {
-                    Axios.post(`${apiUrl}/files/requests-contents`, attachFiles, { withCredentials: true })
-                        .then((res) => {
-                            console.log(res);
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                        });
-                }}
-            >
-                파일 전송 테스트!
-            </button>
             <TableContainer className={classes.tableContainer} /* component={Paper} */>
                 <Table stickyHeader className={classes.table} aria-label="simple table">
                     <EnhancedTableHead

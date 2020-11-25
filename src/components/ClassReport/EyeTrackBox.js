@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import EyeTrackVideo from './EyeTrackVideo';
 import styled from 'styled-components';
 import EyeTrackPattern from './EyeTrackPattern';
 import EyetrackingPlayer from '../TOFELRenderer/EyetrackingPlayer';
@@ -61,7 +60,6 @@ function EyeTrackBox({ hasEyetrack, eyetrackData, contentsData, patternData, cur
         setTrackTimeGoTo(0);
         for (let i = 0; i < eyetrackData.sequences.length; i++) {
             if (eyetrackData.sequences[i].elapsedTime === time) {
-                console.log('asdfasd', i);
                 setTrackTimeGoTo(i);
                 break;
             }
