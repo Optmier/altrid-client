@@ -63,7 +63,6 @@ export const getDrafts = () => async (dispatch) => {
             }
         });
 
-        console.log(draftDatas);
         dispatch({ type: GET_DRAFTS_SUCCESS, draftDatas }); // 성공
     } catch (e) {
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패

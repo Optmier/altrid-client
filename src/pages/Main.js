@@ -42,7 +42,6 @@ function Main({ history }) {
     const fetchCardData = () => {
         Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
             .then((res) => {
-                console.log(res);
                 setCardDatas(res.data);
             })
             .catch((err) => {
@@ -55,7 +54,6 @@ function Main({ history }) {
     }, []);
 
     const onAssignmentCardItemClick = (idx, classNumber, assignmentTitle) => () => {
-        console.log(idx, classNumber);
         const conf = window.confirm('과제를 시작하시겠습니까?\n제한 시간이 있는 과제는 열림과 동시에 시작됩니다.');
         if (!conf) return;
         if (window.mobile || (window.screen.width < 1440 && window.screen.height < 900)) {
