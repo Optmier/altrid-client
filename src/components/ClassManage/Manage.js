@@ -13,11 +13,11 @@ function Manage({ match }) {
     const [inputState, setInputState] = useState({
         entry_new_name: '',
         entry_new_description: '',
-        entry_new_students: [{ name: 'aaa', student_id: '11' }],
+        entry_new_students: null,
     });
     const [selectOpen, setSelectOpen] = useState(false);
     const [inputError, setInputError] = useState(false);
-    const [studentsData, setStudentsData] = useState([]);
+    const [studentsData, setStudentsData] = useState(['123123', '123123']);
     const [loading, setLoading] = useState(false);
 
     const handleInputChange = (e, value) => {
@@ -39,8 +39,7 @@ function Manage({ match }) {
         Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
             .then((res) => {
                 console.log('선생님의 학생들 : ', res.data);
-
-                setStudentsData(res.data);
+                //setStudentsData(['aa', 'aasdfasdf']);
             })
             .catch((err) => {
                 console.error(err);
@@ -75,17 +74,14 @@ function Manage({ match }) {
             });
     }, []);
 
-    useEffect(() => {}, []);
-
     useEffect(() => {
         if (!selectOpen) {
-            setStudentsData([]);
+            //setStudentsData([]);
         } else {
             fetchStudents();
         }
     }, [selectOpen]);
 
-    console.log(inputState);
     return (
         <div className="class-manage-root">
             <ClassWrapper col="col">
@@ -114,21 +110,23 @@ function Manage({ match }) {
                         value={inputState['entry_new_description']}
                     />
                     <div className="multiple-input">
-                        <MultipleAutocomplete
-                            id="entry_new_students"
-                            onOpen={() => {
-                                setSelectOpen(true);
-                            }}
-                            onClose={() => {
-                                setSelectOpen(false);
-                            }}
-                            onChange={handleInputChange}
-                            value={inputState['entry_new_students']}
-                            options={studentsData}
-                            getOptionLabel={(option) => option.name + ' - ' + option.student_id}
-                            loading={loading}
-                            placeholder="수강생 선택"
-                        />
+                        {inputState.entry_new_students ? (
+                            <MultipleAutocomplete
+                                id="entry_new_students"
+                                onOpen={() => {
+                                    setSelectOpen(true);
+                                }}
+                                onClose={() => {
+                                    setSelectOpen(false);
+                                }}
+                                onChange={handleInputChange}
+                                value={inputState['entry_new_students']}
+                                options={studentsData}
+                                getOptionLabel={(option) => option.name}
+                                loading={loading}
+                                placeholder="수강생 선택"
+                            />
+                        ) : null}
                     </div>
                 </div>
             </ClassWrapper>

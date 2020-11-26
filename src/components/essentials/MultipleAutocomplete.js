@@ -97,11 +97,7 @@ function MultipleAutocomplete({
             options={options.filter((option) => selectedValue.filter((selected) => selected.student_id === option.student_id).length < 1)}
             getOptionLabel={getOptionLabel}
             loading={loading}
-            renderOption={(option, state) => (
-                <React.Fragment>
-                    {option.name} - {option.student_id}
-                </React.Fragment>
-            )}
+            renderOption={(option, state) => <React.Fragment>{option.name}</React.Fragment>}
             renderInput={(params) => (
                 <EdTextField
                     {...params}
