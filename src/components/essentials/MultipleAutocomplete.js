@@ -41,6 +41,7 @@ const EdTextField = withStyles((theme) => ({
                 fontFamily: 'inherit',
                 padding: 0,
                 margin: '0 0 0 21px',
+                height: '2rem',
                 '&::placeholder': {
                     color: '#000000',
                 },
@@ -86,6 +87,7 @@ function MultipleAutocomplete({
     return (
         <Autocomplete
             multiple
+            noOptionsText="남은 학생이 없습니다!"
             id={id}
             onOpen={onOpen}
             onClose={onClose}

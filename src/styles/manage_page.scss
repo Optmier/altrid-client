@@ -1,13 +1,23 @@
 .class-manage-root {
-    width: 50%;
+    width: 70%;
+    height: 100vh;
     margin: 0 auto;
-    padding-top: 90px;
+    padding: 90px 0;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     & .manage-header {
         margin-bottom: 2.5rem;
 
         & .manage-title {
             margin-bottom: 1rem;
+        }
+        & .manage-subTitle {
+            color: #969393;
+            font-size: 1rem;
         }
     }
 
@@ -42,6 +52,36 @@
         }
     }
 
+    & .manage-footer {
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        margin-top: 4.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+
+        & button {
+            cursor: pointer;
+            border-radius: 11px;
+            background-color: #c4c4c4;
+            color: white;
+            width: 150px;
+            height: 56px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        & button:hover {
+            background-color: #b3b3b3f2;
+        }
+
+        & button + button {
+            margin-left: 1rem;
+        }
+    }
     @media (min-width: 0px) and (max-width: 1231px) {
         & {
             width: 100%;

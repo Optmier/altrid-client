@@ -7,8 +7,9 @@ import * as $ from 'jquery';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { withRouter } from 'react-router-dom';
+import ClassDialogDelete from '../essentials/ClassDialogDelete';
 
-function Manage({ match }) {
+function Manage({ match, history }) {
     const { num } = match.params;
     const [inputState, setInputState] = useState({
         entry_new_name: '',
@@ -17,7 +18,7 @@ function Manage({ match }) {
     });
     const [selectOpen, setSelectOpen] = useState(false);
     const [inputError, setInputError] = useState(false);
-    const [studentsData, setStudentsData] = useState(['123123', '123123']);
+    const [studentsData, setStudentsData] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const handleInputChange = (e, value) => {
@@ -39,7 +40,7 @@ function Manage({ match }) {
         Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
             .then((res) => {
                 console.log('선생님의 학생들 : ', res.data);
-                //setStudentsData(['aa', 'aasdfasdf']);
+                setStudentsData(res.data);
             })
             .catch((err) => {
                 console.error(err);
@@ -76,61 +77,163 @@ function Manage({ match }) {
 
     useEffect(() => {
         if (!selectOpen) {
-            //setStudentsData([]);
+            setStudentsData([]);
         } else {
             fetchStudents();
         }
     }, [selectOpen]);
 
-    return (
-        <div className="class-manage-root">
-            <ClassWrapper col="col">
-                <div className="manage-header">
-                    <h2 className="manage-title">클래스 편집이 가능합니다.</h2>
-                    <p className="manage-subTitle">과제의 기본적인 정보를 입력해주세요.</p>
-                </div>
+    /** delete-dialog 메소드 */
+    const [deleteDialogopen, setDeleteDialogopen] = useState(false);
+    const handleDeleteDialogOpen = () => {
+        setDeleteDialogopen(true);
+    };
+    /** 수강생 데이터 처리 */
+    const handleStudentInClass = (name) => {
+        Axios.delete(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
+            .then((res1) => {
+                // 수정버튼 클릭시,
+                if (name === 'modify' && inputState.entry_new_students.length !== 0) {
+                    //수강생이 있는 경우.. post 작업
 
-                <div className="manage-inputs">
-                    <input
-                        className={classNames('default', inputError ? 'error' : '')}
-                        type="text"
-                        name="entry_new_name"
-                        id="entry_new_name"
-                        placeholder="클래스 이름"
-                        onChange={handleInputChange}
-                        value={inputState['entry_new_name']}
-                    />
-                    <input
-                        className="default"
-                        type="text"
-                        name="entry_new_description"
-                        id="entry_new_description"
-                        placeholder="클래스 한줄 설명"
-                        onChange={handleInputChange}
-                        value={inputState['entry_new_description']}
-                    />
-                    <div className="multiple-input">
-                        {inputState.entry_new_students ? (
-                            <MultipleAutocomplete
-                                id="entry_new_students"
-                                onOpen={() => {
-                                    setSelectOpen(true);
-                                }}
-                                onClose={() => {
-                                    setSelectOpen(false);
-                                }}
+                    Axios.post(
+                        `${apiUrl}/students-in-class`,
+                        {
+                            classNumber: num,
+                            students: inputState.entry_new_students,
+                        },
+                        { withCredentials: true },
+                    )
+                        .then((res2) => {
+                            //console.log('추가', res2.data);
+                            alert('과제 수정이 완료되었습니다 !');
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
+                }
+                // 삭제버튼 클릭시, 삭제만 진행
+                else {
+                    alert('삭제 완료되었습니다!');
+                    history.replace('/');
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
+    /** 클래스 데이터 삭제 */
+    const handleClassDelete = (name) => {
+        Axios.delete(`${apiUrl}/classes/${num}`, { withCredentials: true })
+            .then((res) => {
+                //class table - name, description 삭제 완료!
+                handleStudentInClass(name); //수강생 데이터 처리...
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+    /** 수정, 삭제하기 버튼 */
+    const handleButton = (e) => {
+        const { name } = e.target;
+
+        if (name === 'modify') {
+            Axios.patch(
+                `${apiUrl}/classes/${num}`,
+                {
+                    name: inputState.entry_new_name,
+                    description: inputState.entry_new_description,
+                },
+                { withCredentials: true },
+            )
+                .then((res) => {
+                    //name, description 수정 완료!
+                    handleStudentInClass(name); //수강생 데이터 처리...
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        } else if (name === 'delete') {
+            handleDeleteDialogOpen();
+        }
+    };
+
+    const handleDeleteDateDialogClose = (e) => {
+        const { name } = e.target;
+
+        if (name === 'yes') {
+            handleClassDelete(name);
+            setDeleteDialogopen(false);
+        } else {
+            setDeleteDialogopen(false);
+        }
+    };
+
+    return (
+        <>
+            <ClassDialogDelete open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
+
+            <ClassWrapper col="col">
+                <div className="class-manage-root">
+                    <div>
+                        <div className="manage-header">
+                            <h2 className="manage-title">클래스 편집이 가능합니다.</h2>
+                            <p className="manage-subTitle">과제의 기본적인 정보를 입력해주세요.</p>
+                        </div>
+
+                        <div className="manage-inputs">
+                            <input
+                                className={classNames('default', inputError ? 'error' : '')}
+                                type="text"
+                                name="entry_new_name"
+                                id="entry_new_name"
+                                placeholder="클래스 이름"
                                 onChange={handleInputChange}
-                                value={inputState['entry_new_students']}
-                                options={studentsData}
-                                getOptionLabel={(option) => option.name}
-                                loading={loading}
-                                placeholder="수강생 선택"
+                                value={inputState['entry_new_name']}
                             />
-                        ) : null}
+                            <input
+                                className="default"
+                                type="text"
+                                name="entry_new_description"
+                                id="entry_new_description"
+                                placeholder="클래스 한줄 설명"
+                                onChange={handleInputChange}
+                                value={inputState['entry_new_description']}
+                            />
+                            <div className="multiple-input">
+                                {inputState.entry_new_students ? (
+                                    <MultipleAutocomplete
+                                        id="entry_new_students"
+                                        onOpen={() => {
+                                            setSelectOpen(true);
+                                        }}
+                                        onClose={() => {
+                                            setSelectOpen(false);
+                                        }}
+                                        onChange={handleInputChange}
+                                        value={inputState['entry_new_students']}
+                                        options={studentsData}
+                                        getOptionLabel={(option) => option.name}
+                                        loading={loading}
+                                        placeholder="수강생 선택"
+                                    />
+                                ) : null}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="manage-footer">
+                        <button name="delete" onClick={handleButton}>
+                            삭제하기
+                        </button>
+                        <button name="modify" onClick={handleButton}>
+                            수정하기
+                        </button>
                     </div>
                 </div>
             </ClassWrapper>
-        </div>
+        </>
     );
 }
 
