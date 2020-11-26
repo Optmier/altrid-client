@@ -112,7 +112,7 @@ function AccountPopOver({ targetEl, userName }) {
                         aria-label="secondary mailbox folders"
                         onClick={handleAccountPopoverClose}
                     >
-                        <ListItemLink href={'/'}>마이페이지</ListItemLink>
+                        {/* <ListItemLink href={'/'}>마이페이지</ListItemLink> */}
                         <EdListItem button onClick={handleLogout}>
                             로그아웃
                         </EdListItem>

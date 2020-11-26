@@ -84,7 +84,7 @@ function Login({ history }) {
     };
 
     const onSuccessGoogleAuth = ({ profileObj }) => {
-        console.log(profileObj);
+        // console.log(profileObj);
         setProfileData({
             ...profileData,
             email: profileObj.email,
@@ -119,7 +119,7 @@ function Login({ history }) {
 
     const onSuccessKakaoAuth = ({ profile }) => {
         // console.log(profile.kakao_account.email || profile.id);
-        console.log(profile);
+        // console.log(profile);
         setProfileData({
             ...profileData,
             email: profile.kakao_account.email,

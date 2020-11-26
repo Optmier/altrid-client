@@ -16,6 +16,7 @@ import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import problemCategories from '../TOFELEditor/ProblemCategories';
 import { Element, Link as AnimScrollTo } from 'react-scroll';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { useSelector } from 'react-redux';
 
 const pad = (n, width) => {
     n = n + '';
@@ -187,6 +188,7 @@ const division = (arr, n) => {
     return tmp;
 };
 function ReportStudent({ history, match }) {
+    const sessions = useSelector((state) => state.RdxSessions);
     const urlSearchParams = new URLSearchParams(history.location.search);
     const queryUserId = urlSearchParams.get('user');
     let { activedNum, num } = match.params;
@@ -638,14 +640,16 @@ function ReportStudent({ history, match }) {
                                         <path d="M11 14.01V7H9V14.01H6L10 18L14 14.01H11ZM4 0L0 3.99H3V11H5V3.99H8L4 0Z" fill="#706D6D" />
                                     </svg>
                                 </CompareItems>
-                                <EraseResultItems title={'결과 초기화'} onClick={handleEraseResult}>
-                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M13.58 6.68262L12.9133 7.98012L4.82667 2.73012L5.49333 1.43262L7.52 2.74512L8.42667 2.46762L11.3133 4.34262L11.56 5.37012L13.58 6.68262ZM4 14.2501V5.25012H7.38L12 8.25012V14.2501C12 14.6479 11.8595 15.0295 11.6095 15.3108C11.3594 15.5921 11.0203 15.7501 10.6667 15.7501H5.33333C4.97971 15.7501 4.64057 15.5921 4.39052 15.3108C4.14048 15.0295 4 14.6479 4 14.2501Z"
-                                            fill="#F57C7C"
-                                        />
-                                    </svg>
-                                </EraseResultItems>
+                                {sessions.userType === 'students' ? null : (
+                                    <EraseResultItems title={'결과 초기화'} onClick={handleEraseResult}>
+                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M13.58 6.68262L12.9133 7.98012L4.82667 2.73012L5.49333 1.43262L7.52 2.74512L8.42667 2.46762L11.3133 4.34262L11.56 5.37012L13.58 6.68262ZM4 14.2501V5.25012H7.38L12 8.25012V14.2501C12 14.6479 11.8595 15.0295 11.6095 15.3108C11.3594 15.5921 11.0203 15.7501 10.6667 15.7501H5.33333C4.97971 15.7501 4.64057 15.5921 4.39052 15.3108C4.14048 15.0295 4 14.6479 4 14.2501Z"
+                                                fill="#F57C7C"
+                                            />
+                                        </svg>
+                                    </EraseResultItems>
+                                )}
                             </div>
                         </div>
                     </div>

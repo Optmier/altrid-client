@@ -16,8 +16,10 @@ import { $_loginAdmin, $_loginDefault, $_loginStudent, $_loginTeacher, $_root } 
 import AdminMain from './pages/AdminMain';
 import AssignmentDoItNow from './pages/AssignmentDoItNow';
 import RestrictRoute from './components/essentials/RestrictRoute';
+import RefreshToken from './components/essentials/Authentication';
 
 window.lastUrl = '/';
+window.tokenRefresher = null;
 const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin];
 // const excludesForAdminUrls = [];
 // const excludesForTeacherUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
@@ -31,6 +33,7 @@ function App({ history }) {
         [dispatch],
     );
     const updateSessions = useCallback((updateStates) => dispatch(updateSession(updateStates)), [dispatch]);
+    // window.updateSessions =
     const deleteSessions = useCallback(() => dispatch(deleteSession()), [dispatch]);
     const sessions = useSelector((state) => state.RdxSessions);
 
@@ -75,6 +78,7 @@ function App({ history }) {
                 // }
                 const { authId, academyCode, exp, iat, iss, userName, userType } = res1.data;
                 saveSessions(authId, userName, userType, academyCode, null, iss, iat, exp);
+
                 Axios.get(`${apiUrl}/academies/current/name`, { withCredentials: true })
                     .then((res2) => {
                         const academyName = res2.data.name;
@@ -85,7 +89,7 @@ function App({ history }) {
                     });
             })
             .catch((err) => {
-                console.log(err.response);
+                // console.log(err.response);
                 if (err.response.status === 401) {
                     if (!loginUrls.includes(history.location.pathname)) {
                         alert('로그인이 필요합니다.');
@@ -97,6 +101,25 @@ function App({ history }) {
                 }
             });
     }, [history.location]);
+
+    useEffect(() => {
+        if (!sessions || !sessions.exp) return;
+        !window.tokenRefresher &&
+            (window.tokenRefresher = setInterval(() => {
+                /** Token 만료 전 재발급 */
+                RefreshToken(sessions.exp, 1800)
+                    .then((res) => {
+                        updateSessions({ iat: res.auth.iat, exp: res.auth.exp });
+                        clearInterval(window.tokenRefresher);
+                        window.tokenRefresher = null;
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+                /******************* */
+            }, 10000));
+    }, [sessions]);
+
     return (
         <>
             <Element name="main_top_start" />
