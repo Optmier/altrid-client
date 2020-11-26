@@ -211,7 +211,7 @@ body {
                 margin: 0 auto 0 5%;
 
                 & img {
-                    height: 40px;
+                    height: 48px;
                 }
             }
 
@@ -262,6 +262,7 @@ body {
                         & a {
                             text-decoration: none;
                             color: $textFooterMenu;
+                            line-height: 1.125rem;
                         }
 
                         & + .item {
@@ -289,7 +290,7 @@ body {
 
                     & img {
                         height: 36px;
-                        filter: invert(1) brightness(0.6);
+                        filter: brightness(0.4);
                     }
                 }
 
