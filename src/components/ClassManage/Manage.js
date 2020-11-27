@@ -90,6 +90,10 @@ function Manage({ match, history }) {
             .catch((err) => {
                 console.error(err);
             });
+
+        // return () => {
+        //     setInputState(null);
+        // };
     }, []);
 
     useEffect(() => {

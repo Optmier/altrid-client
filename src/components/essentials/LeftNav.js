@@ -6,12 +6,9 @@ import People from '../../images/people.png';
 import Avatar from '../../images/avatar.png';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
-import { useSelector, useDispatch } from 'react-redux';
-import { getDrafts } from '../../redux_modules/assignmentDraft';
+import { useSelector } from 'react-redux';
 import RdxSessions from '../../redux_modules/sessions';
 import { Tooltip } from '@material-ui/core';
-import Error from '../../pages/Error';
-import BackdropComponent from './BackdropComponent';
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -21,18 +18,18 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-function LeftNav({ match, data }) {
+function LeftNav({ match }) {
     const { num } = match.params;
-    //const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
+
+    /** redux-module 불러내기 */
+    const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
     const sessions = useSelector((state) => state.RdxSessions);
-    const dispatch = useDispatch();
 
     const [studentData, setStudentData] = useState([]);
     const [teacherData, setTeacherData] = useState([]);
 
     useEffect(() => {
         if (!sessions.userType) return;
-        //if (sessions.userType === 'teachers') dispatch(getDrafts());
 
         if (sessions.userType === 'teachers')
             Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })

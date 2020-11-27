@@ -11,12 +11,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import BackdropComponent from '../components/essentials/BackdropComponent';
 import { getDrafts } from '../redux_modules/assignmentDraft';
 
-const ClassPageSwitcher = ({ match, data }) => {
+const ClassPageSwitcher = ({ match }) => {
     let { id } = match.params;
 
     switch (id) {
         case `draft`:
-            return <Draft data={data} />;
+            return <Draft />;
         case 'manage':
             return <Manage />;
         case 'share':
@@ -37,29 +37,31 @@ const ClassPageSwitcher = ({ match, data }) => {
 };
 
 function Class({ match }) {
+    const dispatch = useDispatch();
+
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
         loading: false,
         data: null,
         error: null,
     };
-    const dispatch = useDispatch();
+    const sessions = useSelector((state) => state.RdxSessions);
 
     useEffect(() => {
-        dispatch(getDrafts());
-    }, [dispatch]);
-    if (loading && !data) {
-        return <BackdropComponent open={true} />; // 로딩중이고 데이터 없을때만
-    }
-
-    if (error) return <Error />;
-
-    if (!data) return null;
+        if (sessions.userType === 'teachers') dispatch(getDrafts());
+    }, [sessions]);
 
     return (
         <>
-            <LeftNav data={data} />
+            <LeftNav />
+
             <div className="class-page-root">
-                <ClassPageSwitcher match={match} data={data} />
+                {loading && !data ? (
+                    <BackdropComponent open={true} />
+                ) : error ? (
+                    <Error />
+                ) : !data ? null : (
+                    <ClassPageSwitcher match={match} />
+                )}
             </div>
         </>
     );
