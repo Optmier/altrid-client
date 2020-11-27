@@ -5,7 +5,7 @@ import CardLists from '../essentials/CardLists';
 import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
-import ClassHeaderBox from '../essentials/ClassHeaderBox';
+// import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
