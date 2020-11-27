@@ -8,6 +8,8 @@ import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector, useDispatch } from 'react-redux';
 import { getActivedes } from '../../redux_modules/assignmentActived';
 import moment from 'moment';
+import Error from '../../pages/Error';
+import BackdropComponent from '../essentials/BackdropComponent';
 
 function Share({ match }) {
     const { num } = match.params;
@@ -39,8 +41,8 @@ function Share({ match }) {
         setOpenCreateNewDrawer(open);
     };
 
-    if (loading && !data) return <div>로딩 중....</div>; // 로딩중이고 데이터 없을때만
-    if (error) return <div>에러 발생!</div>;
+    if (loading && !data) return <BackdropComponent open={true} />; // 로딩중이고 데이터 없을때만
+    if (error) return <Error />;
     if (!data) return null;
 
     return (

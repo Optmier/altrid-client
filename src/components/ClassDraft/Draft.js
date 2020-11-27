@@ -9,13 +9,7 @@ import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-function Draft() {
-    /** redux state */
-    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
-        loading: false,
-        data: null,
-        error: null,
-    }; // 아예 데이터가 존재하지 않을 때가 있으므로, 비구조화 할당이 오류나지 않도록
+function Draft({ data }) {
     const sessions = useSelector((state) => state.RdxSessions);
 
     let cardDatas = {};
@@ -34,10 +28,6 @@ function Draft() {
         }
         setOpenCreateNewDrawer(open);
     };
-
-    if (loading && !data) return <div>로딩 중....</div>; // 로딩중이고 데이터 없을때만
-    if (error) return <div>에러 발생!</div>;
-    if (!data) return null;
 
     return (
         <>

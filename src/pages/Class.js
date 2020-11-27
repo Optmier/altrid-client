@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import LeftNav from '../components/essentials/LeftNav';
 import '../styles/class.scss';
 import Draft from '../components/ClassDraft/Draft';
@@ -6,17 +6,17 @@ import Manage from '../components/ClassManage/Manage';
 import Share from '../components/ClassShare/Share';
 import { Route } from 'react-router-dom';
 import Reportes from '../components/ClassReport/Reportes';
-import MakeContents from './MakeContents';
+import Error from './Error';
+import { useSelector, useDispatch } from 'react-redux';
+import BackdropComponent from '../components/essentials/BackdropComponent';
+import { getDrafts } from '../redux_modules/assignmentDraft';
 
-const ClassPageSwitcher = ({ match }) => {
+const ClassPageSwitcher = ({ match, data }) => {
     let { id } = match.params;
-
-    // console.log(num, id);
-    // console.log(match);
 
     switch (id) {
         case `draft`:
-            return <Draft />;
+            return <Draft data={data} />;
         case 'manage':
             return <Manage />;
         case 'share':
@@ -30,18 +30,36 @@ const ClassPageSwitcher = ({ match }) => {
         default:
             return (
                 <>
-                    존재하지 않는 페이지입니다. <br /> 404 :(
+                    <Error></Error>
                 </>
             );
     }
 };
 
 function Class({ match }) {
+    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
+        loading: false,
+        data: null,
+        error: null,
+    };
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getDrafts());
+    }, [match.url]);
+    if (loading && !data) {
+        return <BackdropComponent open={true} />; // 로딩중이고 데이터 없을때만
+    }
+
+    if (error) return <Error />;
+
+    if (!data) return null;
+
     return (
         <>
-            <LeftNav />
+            <LeftNav data={data} />
             <div className="class-page-root">
-                <ClassPageSwitcher match={match} />
+                <ClassPageSwitcher match={match} data={data} />
             </div>
         </>
     );

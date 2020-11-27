@@ -200,7 +200,7 @@ function CardDraft({ cardData, match, history }) {
                 anchorEl={anchorEl}
             />
             <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
-            <ClassDialogDelete open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
+            <ClassDialogDelete ver="assignment" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
 
             {!cardData['contents_data'] ? (
                 <div className="class-card-root">

@@ -296,7 +296,7 @@ export default function eyetrackingSelect(state = initialState, action) {
             };
 
         case DRAFT_ERROR:
-            alert('데이터 베이스 오류 입니다. 관리자에게 문의해주세요:(\n** 관리자 이메일 cwd094@gmail.com');
+            alert('draft.js 오류 입니다. 관리자에게 문의해주세요:(\n** 관리자 이메일 cwd094@gmail.com');
             console.error('error type : ', action.type);
             console.error('error 내용 :\n', action.error);
 

@@ -4,7 +4,7 @@ import './styles/common.scss';
 import { Element } from 'react-scroll';
 import Class from './pages/Class';
 import Main from './pages/Main';
-import { Route, withRouter } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import ScrollTop from './components/essentials/ScrollTop';
 import Footer from './components/essentials/Footer';
 import TrashButton from './components/essentials/TrashButton';
@@ -12,6 +12,8 @@ import UserExample from './components/TOFELRenderer/UserExample';
 import EyetrackingPlayer from './components/TOFELRenderer/EyetrackingPlayer';
 import PlayerExample from './components/TOFELRenderer/PlayerExample';
 import Login from './pages/Login';
+import Error from './pages/Error';
+
 import LoginAdmin from './pages/LoginAdmin';
 import { apiUrl } from './configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -113,15 +115,20 @@ function App({ history }) {
             <Element name="main_top_start" />
             <ScrollTop>
                 <main>
-                    <Route path={$_root} component={Main} exact />
-                    <Route path={$_loginDefault} component={Login} exact />
-                    <Route path={$_loginAdmin} component={LoginAdmin} exact />
-                    <RestrictRoute path="/admins" component={AdminMain} role={sessions.userType} allowedTypes={['admins']} />
-                    {/* <Route path={'/admins'} component={AdminMain} /> */}
-                    <Route path="/class/:num/:id" component={Class} />
-                    <Route path="/user-example" component={UserExample} />
-                    <Route path="/player-example" component={PlayerExample} />
-                    <Route path="/assignments/do-it-now/:classnum/:assignmentid" component={AssignmentDoItNow} exact></Route>
+                    <Switch>
+                        <Route path={$_root} component={Main} exact />
+                        <Route path={$_loginDefault} component={Login} exact />
+                        <Route path={$_loginAdmin} component={LoginAdmin} exact />
+                        <RestrictRoute path="/admins" component={AdminMain} role={sessions.userType} allowedTypes={['admins']} />
+                        {/* <Route path={'/admins'} component={AdminMain} /> */}
+                        <Route path="/class/:num/:id" component={Class} />
+                        <Route path="/user-example" component={UserExample} />
+                        <Route path="/player-example" component={PlayerExample} />
+                        <Route path="/assignments/do-it-now/:classnum/:assignmentid" component={AssignmentDoItNow} exact></Route>
+                        <Route>
+                            <Error />
+                        </Route>
+                    </Switch>
                 </main>
             </ScrollTop>
             {history.location.pathname === '/class/draft' || history.location.pathname === '/class/share' ? <TrashButton /> : ''}

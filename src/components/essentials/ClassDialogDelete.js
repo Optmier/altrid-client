@@ -40,7 +40,7 @@ const StyleModalContents = styled.div`
     }
 `;
 
-function ClassDialogDelete({ open, handleDialogClose }) {
+function ClassDialogDelete({ ver, open, handleDialogClose }) {
     /** redux state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
         loading: false,
@@ -57,8 +57,8 @@ function ClassDialogDelete({ open, handleDialogClose }) {
             <div style={{ padding: '2rem' }}>
                 <DialogContent>
                     <StyleModalContents>
-                        <h4 className="modal-share-title">과제를 정말 삭제하시겠습니까?</h4>
-                        <p className="modal-share-subTitle">삭제된 과제는 복구가 불가능합니다.</p>
+                        <h4 className="modal-share-title">{ver === 'class' ? '클래스를 ' : '과제를 '}정말 삭제하시겠습니까?</h4>
+                        <p className="modal-share-subTitle">삭제된 {ver === 'class' ? '클래스는 ' : '과제는 '} 복구가 불가능합니다.</p>
                     </StyleModalContents>
                 </DialogContent>
 

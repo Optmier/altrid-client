@@ -8,6 +8,17 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { withRouter } from 'react-router-dom';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
+import { Button, withStyles } from '@material-ui/core';
+
+const CreateButton = withStyles((theme) => ({
+    root: {
+        borderRadius: '11px',
+        backgroundColor: '#c4c4c4',
+        color: 'white',
+        width: '150px',
+        height: '56px',
+    },
+}))(Button);
 
 function Manage({ match, history }) {
     const { num } = match.params;
@@ -20,6 +31,7 @@ function Manage({ match, history }) {
     const [inputError, setInputError] = useState(false);
     const [studentsData, setStudentsData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [createButtonEnabled, setCreateButtonEnabled] = useState(false);
 
     const handleInputChange = (e, value) => {
         if ($(e.target).hasClass('default')) {
@@ -49,6 +61,16 @@ function Manage({ match, history }) {
                 setLoading(false);
             });
     };
+
+    useEffect(() => {
+        if (!inputState['entry_new_name'].trim()) {
+            setCreateButtonEnabled(false);
+        } else {
+            setCreateButtonEnabled(true);
+        }
+
+        // 중복 체크하기
+    }, [inputState]);
 
     useEffect(() => {
         Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
@@ -90,27 +112,33 @@ function Manage({ match, history }) {
     };
     /** 수강생 데이터 처리 */
     const handleStudentInClass = (name) => {
+        //수정의 경우 : 학생 데이터 없는 경우-> delete만 진행 // 있는 경우 -> delete 후 post작업 진행
+        //삭제의 경우 : 무조건 delete
+
         Axios.delete(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
             .then((res1) => {
-                // 수정버튼 클릭시,
-                if (name === 'modify' && inputState.entry_new_students.length !== 0) {
-                    //수강생이 있는 경우.. post 작업
-
-                    Axios.post(
-                        `${apiUrl}/students-in-class`,
-                        {
-                            classNumber: num,
-                            students: inputState.entry_new_students,
-                        },
-                        { withCredentials: true },
-                    )
-                        .then((res2) => {
-                            //console.log('추가', res2.data);
-                            alert('과제 수정이 완료되었습니다 !');
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                        });
+                // 수정버튼 클릭시
+                if (name === 'modify') {
+                    //수강생이 있는 경우에만, post 작업
+                    if (inputState.entry_new_students.length === 0) {
+                        alert('과제 수정이 완료되었습니다 !');
+                    } else {
+                        Axios.post(
+                            `${apiUrl}/students-in-class`,
+                            {
+                                classNumber: num,
+                                students: inputState.entry_new_students,
+                            },
+                            { withCredentials: true },
+                        )
+                            .then((res2) => {
+                                alert('과제 수정이 완료되었습니다 !');
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                            });
+                    }
+                    history.replace(`/class/${num}/manage`);
                 }
                 // 삭제버튼 클릭시, 삭제만 진행
                 else {
@@ -136,8 +164,23 @@ function Manage({ match, history }) {
     };
     /** 수정, 삭제하기 버튼 */
     const handleButton = (e) => {
-        const { name } = e.target;
+        const $target = $(e.target);
 
+        if (!inputState['entry_new_name'].trim()) {
+            setInputError(true);
+            return;
+        } else {
+            setInputError(false);
+        }
+
+        let name = '';
+        if ($target.parents('.button-modify').length !== 0 || $target.attr('class').includes('button-modify')) {
+            name = 'modify';
+        } else if ($target.parents('.button-delete').length !== 0 || $target.attr('class').includes('button-delete')) {
+            name = 'delete';
+        }
+
+        console.log(name);
         if (name === 'modify') {
             Axios.patch(
                 `${apiUrl}/classes/${num}`,
@@ -172,7 +215,7 @@ function Manage({ match, history }) {
 
     return (
         <>
-            <ClassDialogDelete open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
+            <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
 
             <ClassWrapper col="col">
                 <div className="class-manage-root">
@@ -224,12 +267,26 @@ function Manage({ match, history }) {
                     </div>
 
                     <div className="manage-footer">
-                        <button name="delete" onClick={handleButton}>
+                        <CreateButton
+                            className="button-delete"
+                            size="large"
+                            variant="contained"
+                            disabled={!createButtonEnabled}
+                            name="delete"
+                            onClick={handleButton}
+                        >
                             삭제하기
-                        </button>
-                        <button name="modify" onClick={handleButton}>
+                        </CreateButton>
+                        <CreateButton
+                            className="button-modify"
+                            size="large"
+                            variant="contained"
+                            disabled={!createButtonEnabled}
+                            name="modify"
+                            onClick={handleButton}
+                        >
                             수정하기
-                        </button>
+                        </CreateButton>
                     </div>
                 </div>
             </ClassWrapper>

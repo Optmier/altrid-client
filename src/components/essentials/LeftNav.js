@@ -10,6 +10,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getDrafts } from '../../redux_modules/assignmentDraft';
 import RdxSessions from '../../redux_modules/sessions';
 import { Tooltip } from '@material-ui/core';
+import Error from '../../pages/Error';
+import BackdropComponent from './BackdropComponent';
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -19,9 +21,9 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-function LeftNav({ match }) {
+function LeftNav({ match, data }) {
     const { num } = match.params;
-    const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
+    //const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
     const sessions = useSelector((state) => state.RdxSessions);
     const dispatch = useDispatch();
 
@@ -30,7 +32,7 @@ function LeftNav({ match }) {
 
     useEffect(() => {
         if (!sessions.userType) return;
-        if (sessions.userType === 'teachers') dispatch(getDrafts());
+        //if (sessions.userType === 'teachers') dispatch(getDrafts());
 
         if (sessions.userType === 'teachers')
             Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
@@ -92,10 +94,10 @@ function LeftNav({ match }) {
 
             <div className="left-nav-box">
                 <div className="box-wrapper">
-                    <h5>{teacherData['class_name']} 반</h5>
+                    <h5>{teacherData ? teacherData['class_name'] : ''} 반</h5>
                     {sessions.userType === 'students' ? null : (
                         <>
-                            <p>{teacherData['description']}</p>
+                            <p>{teacherData ? teacherData['description'] : ''}</p>
                             <div className="info-num">
                                 <img alt="student_num" src={People} />
                                 <p>학생 수 {studentData.length}명</p>

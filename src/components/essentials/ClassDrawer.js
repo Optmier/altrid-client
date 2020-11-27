@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { SecondtoMinute } from './TimeChange';
 import ClassDialog from '../essentials/ClassDialog';
 import { changeDueDate } from '../../redux_modules/assignmentActived';
+import BackdropComponent from './BackdropComponent';
 
 const StyleSelectdiv = styled.div`
     font-size: 0.85rem;
@@ -319,10 +320,6 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
             handleClose(e);
         }
     };
-
-    if (loading) return <div style={{ width: '700px' }}>로딩 중!!!!</div>; // 로딩중이고 데이터 없을때만
-    if (error) return <div>에러 발생!</div>;
-    if (!data) return null;
 
     return (
         <>
