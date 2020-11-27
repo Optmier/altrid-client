@@ -10,8 +10,57 @@ import { getActivedes } from '../../redux_modules/assignmentActived';
 import moment from 'moment';
 import Error from '../../pages/Error';
 import BackdropComponent from '../essentials/BackdropComponent';
+import styled from 'styled-components';
+import ClassWrapper from '../essentials/ClassWrapper';
 
-function Share({ match }) {
+const GoDraftDiv = styled.div`
+    margin-top: 100px;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-self: flex-start;
+
+    & h1 {
+        color: #706d6d;
+        font-size: 2.4rem;
+        font-weight: 600;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.06;
+        letter-spacing: -2.75px;
+        text-align: left;
+
+        margin-bottom: 1.5rem;
+    }
+    & button {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 1.5rem;
+        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+        margin-top: 30px;
+        border-radius: 11px;
+        cursor: pointer;
+        background-color: #13e2a1;
+
+        & p {
+            font-size: 1.4rem;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: -1.2px;
+            text-align: left;
+            color: #ffffff;
+
+            margin-right: 1rem;
+        }
+    }
+`;
+
+function Share({ match, history }) {
     const { num } = match.params;
     let shareDatas = [];
     let cnt = 0;
@@ -53,23 +102,48 @@ function Share({ match }) {
 
             <ClassHeaderBox />
 
-            <div className="class-section-root">
-                <div className="class-draft-card">
-                    <CardLists
-                        upperDeck={
-                            <div className="class-title">
-                                <b>총 {shareDatas.length}개</b>의 과제중 <b>{cnt}개</b>의 과제가 <span>진행중</span>입니다.
-                            </div>
-                        }
-                    >
-                        {Object.keys(shareDatas).map((key) => (
-                            <CardRoot key={key} wider cardHeight="300px">
-                                <CardShare testNum={shareDatas[key]['idx']} cardData={shareDatas[key]} />
-                            </CardRoot>
-                        ))}
-                    </CardLists>
+            {shareDatas.length === 0 ? (
+                <ClassWrapper>
+                    <GoDraftDiv>
+                        <h1>현재 진행중인 과제가 없습니다 :( </h1>
+                        <button
+                            onClick={() => {
+                                history.replace(`/class/${num}/draft`);
+                            }}
+                        >
+                            <p>과제 생성하러 가기</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30.414" height="9.978" viewBox="0 0 30.414 9.978">
+                                <path
+                                    id="icon"
+                                    d="M0 0h28l-8.27 8.27"
+                                    fill="none"
+                                    stroke="#fff"
+                                    strokeWidth="2px"
+                                    transform="translate(0 1)"
+                                />
+                            </svg>
+                        </button>
+                    </GoDraftDiv>
+                </ClassWrapper>
+            ) : (
+                <div className="class-section-root">
+                    <div className="class-draft-card">
+                        <CardLists
+                            upperDeck={
+                                <div className="class-title">
+                                    <b>총 {shareDatas.length}개</b>의 과제중 <b>{cnt}개</b>의 과제가 <span>진행중</span>입니다.
+                                </div>
+                            }
+                        >
+                            {Object.keys(shareDatas).map((key) => (
+                                <CardRoot key={key} wider cardHeight="300px">
+                                    <CardShare testNum={shareDatas[key]['idx']} cardData={shareDatas[key]} />
+                                </CardRoot>
+                            ))}
+                        </CardLists>
+                    </div>
                 </div>
-            </div>
+            )}
         </>
     );
 }

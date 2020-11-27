@@ -46,7 +46,7 @@ function Class({ match }) {
 
     useEffect(() => {
         dispatch(getDrafts());
-    }, [match.url]);
+    }, [dispatch]);
     if (loading && !data) {
         return <BackdropComponent open={true} />; // 로딩중이고 데이터 없을때만
     }

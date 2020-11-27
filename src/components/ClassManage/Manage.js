@@ -30,7 +30,6 @@ function Manage({ match, history }) {
     const [selectOpen, setSelectOpen] = useState(false);
     const [inputError, setInputError] = useState(false);
     const [studentsData, setStudentsData] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [createButtonEnabled, setCreateButtonEnabled] = useState(false);
 
     const handleInputChange = (e, value) => {
@@ -48,7 +47,6 @@ function Manage({ match, history }) {
     };
 
     const fetchStudents = () => {
-        setLoading(true);
         Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
             .then((res) => {
                 console.log('선생님의 학생들 : ', res.data);
@@ -56,9 +54,6 @@ function Manage({ match, history }) {
             })
             .catch((err) => {
                 console.error(err);
-            })
-            .finally(() => {
-                setLoading(false);
             });
     };
 
@@ -258,7 +253,6 @@ function Manage({ match, history }) {
                                         value={inputState['entry_new_students']}
                                         options={studentsData}
                                         getOptionLabel={(option) => option.name}
-                                        loading={loading}
                                         placeholder="수강생 선택"
                                     />
                                 ) : null}

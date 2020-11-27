@@ -50,7 +50,7 @@ function LeftNav({ match, data }) {
             .catch((err) => {
                 console.error(err);
             });
-    }, [dispatch, sessions]);
+    }, [data, sessions]);
 
     return (
         <div className="left-nav-root">

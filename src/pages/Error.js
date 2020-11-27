@@ -23,6 +23,16 @@ function Error({ history, match }) {
                             }}
                         >
                             홈으로 이동
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30.414" height="9.978" viewBox="0 0 30.414 9.978">
+                                <path
+                                    id="icon"
+                                    d="M0 0h28l-8.27 8.27"
+                                    fill="none"
+                                    stroke="#fff"
+                                    strokeWidth="2px"
+                                    transform="translate(0 1)"
+                                />
+                            </svg>
                         </button>
                     </div>
                 </ClassWrapper>
