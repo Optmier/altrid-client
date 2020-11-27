@@ -26,9 +26,11 @@ function Footer() {
                     </div>
                     <div className="infos">
                         대표 전광휘 | 전화<a href="tel:010-5912-1545"> 010-5912-1545</a> | 이메일
-                        <a href="mailto:rikjeon94@optmier.com"> rikjeon94@optmier.com</a>
-                        <br /> 사업자등록번호 309-30-62706 <br />
-                        주소 서울시 광진구 광나루로19길 23 1층 104호 (세종대학교 캠퍼스타운 가온누리1)
+                        <a href="mailto:rikjeon94@optmier.com"> rikjeon94@optmier.com</a> | 사업자등록번호 309-30-62706 <br />
+                        기술 지원 <a href="mailto:chsi1995@optmier.com"> chsi1995@optmier.com(최세인)</a> |{' '}
+                        <a href="mailto:jun094@optmier.com"> jun094@optmier.com(최준영)</a>
+                        <br />
+                        주소 서울시 광진구 광나루로19길 23 1층 104호(세종대학교 캠퍼스타운 가온누리1)
                     </div>
                 </div>
                 <div className="right">
