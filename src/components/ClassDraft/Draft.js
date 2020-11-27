@@ -6,18 +6,18 @@ import CardRoot from '../essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
 import ClassHeaderBox from '../essentials/ClassHeaderBox';
+import { getDrafts } from '../../redux_modules/assignmentDraft';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 function Draft({ data }) {
+    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
     const sessions = useSelector((state) => state.RdxSessions);
 
     let cardDatas = {};
 
     // cardDatas 변수에 불러온 값 저장하기
     data ? (cardDatas = data) : (cardDatas = {});
-
-    window.data = data;
 
     /** draft.js 자체 메소드 */
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
@@ -35,7 +35,7 @@ function Draft({ data }) {
                 <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>
 
-            <ClassHeaderBox />
+            {/* <ClassHeaderBox /> */}
 
             <div className="class-section-root">
                 <div className="class-draft-card">

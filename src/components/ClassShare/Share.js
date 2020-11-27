@@ -38,7 +38,7 @@ const GoDraftDiv = styled.div`
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        padding: 1.5rem;
+        padding: 1.2rem 1.5rem;
         filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
         margin-top: 30px;
         border-radius: 11px;
@@ -46,7 +46,7 @@ const GoDraftDiv = styled.div`
         background-color: #13e2a1;
 
         & p {
-            font-size: 1.4rem;
+            font-size: 1.125rem;
             font-weight: 500;
             font-stretch: normal;
             font-style: normal;
@@ -100,7 +100,7 @@ function Share({ match, history }) {
                 <ClassDrawer />
             </Drawer>
 
-            <ClassHeaderBox />
+            {/* <ClassHeaderBox /> */}
 
             {shareDatas.length === 0 ? (
                 <ClassWrapper>
