@@ -10,20 +10,14 @@ import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 function Draft() {
-    /** redux state */
-    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
-        loading: false,
-        data: null,
-        error: null,
-    }; // 아예 데이터가 존재하지 않을 때가 있으므로, 비구조화 할당이 오류나지 않도록
+    const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
+
     const sessions = useSelector((state) => state.RdxSessions);
 
     let cardDatas = {};
 
     // cardDatas 변수에 불러온 값 저장하기
     data ? (cardDatas = data) : (cardDatas = {});
-
-    window.data = data;
 
     /** draft.js 자체 메소드 */
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
@@ -35,17 +29,13 @@ function Draft() {
         setOpenCreateNewDrawer(open);
     };
 
-    if (loading && !data) return <div>로딩 중....</div>; // 로딩중이고 데이터 없을때만
-    if (error) return <div>에러 발생!</div>;
-    if (!data) return null;
-
     return (
         <>
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
                 <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>
 
-            <ClassHeaderBox />
+            {/* <ClassHeaderBox /> */}
 
             <div className="class-section-root">
                 <div className="class-draft-card">

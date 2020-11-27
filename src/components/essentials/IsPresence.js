@@ -43,7 +43,7 @@ function IsPresence({ type, able, align }) {
                 )
             ) : able ? (
                 <BottomSpan color="black" fill="#3b168a" align={align}>
-                    00회 게시
+                    {able}회 게시
                 </BottomSpan>
             ) : (
                 <BottomSpan align={align}>미게시</BottomSpan>

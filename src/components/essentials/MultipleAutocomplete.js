@@ -41,6 +41,7 @@ const EdTextField = withStyles((theme) => ({
                 fontFamily: 'inherit',
                 padding: 0,
                 margin: '0 0 0 21px',
+                height: '2rem',
                 '&::placeholder': {
                     color: '#000000',
                 },
@@ -86,6 +87,7 @@ function MultipleAutocomplete({
     return (
         <Autocomplete
             multiple
+            noOptionsText="남은 학생이 없습니다!"
             id={id}
             onOpen={onOpen}
             onClose={onClose}
@@ -97,11 +99,7 @@ function MultipleAutocomplete({
             options={options.filter((option) => selectedValue.filter((selected) => selected.student_id === option.student_id).length < 1)}
             getOptionLabel={getOptionLabel}
             loading={loading}
-            renderOption={(option, state) => (
-                <React.Fragment>
-                    {option.name} - {option.student_id}
-                </React.Fragment>
-            )}
+            renderOption={(option, state) => <React.Fragment>{option.name}</React.Fragment>}
             renderInput={(params) => (
                 <EdTextField
                     {...params}

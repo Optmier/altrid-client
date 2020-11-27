@@ -6,8 +6,7 @@ import People from '../../images/people.png';
 import Avatar from '../../images/avatar.png';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
-import { useSelector, useDispatch } from 'react-redux';
-import { getDrafts } from '../../redux_modules/assignmentDraft';
+import { useSelector } from 'react-redux';
 import { Tooltip } from '@material-ui/core';
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
@@ -20,16 +19,17 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
 
 function LeftNav({ match }) {
     const { num } = match.params;
+
+    /** redux-module 불러내기 */
     const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
     const sessions = useSelector((state) => state.RdxSessions);
-    const dispatch = useDispatch();
 
     const [studentData, setStudentData] = useState([]);
     const [teacherData, setTeacherData] = useState([]);
 
     useEffect(() => {
         if (!sessions.userType) return;
-        if (sessions.userType === 'teachers') dispatch(getDrafts());
+
         if (sessions.userType === 'teachers')
             Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
                 .then((res) => {
@@ -38,6 +38,7 @@ function LeftNav({ match }) {
                 .catch((err) => {
                     console.error(err);
                 });
+
         Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
             .then((res) => {
                 setTeacherData(res.data[0]);
@@ -45,7 +46,7 @@ function LeftNav({ match }) {
             .catch((err) => {
                 console.error(err);
             });
-    }, [dispatch, sessions]);
+    }, [data, sessions]);
 
     return (
         <div className="left-nav-root">
@@ -89,10 +90,10 @@ function LeftNav({ match }) {
 
             <div className="left-nav-box">
                 <div className="box-wrapper">
-                    <h5>{teacherData['class_name']} 반</h5>
+                    <h5>{teacherData ? teacherData['class_name'] : ''} 반</h5>
                     {sessions.userType === 'students' ? null : (
                         <>
-                            <p>{teacherData['description']}</p>
+                            <p>{teacherData ? teacherData['description'] : ''}</p>
                             <div className="info-num">
                                 <img alt="student_num" src={People} />
                                 <p>학생 수 {studentData.length}명</p>
@@ -103,6 +104,17 @@ function LeftNav({ match }) {
             </div>
 
             <div className="left-nav-box">
+                <div className="a-wrapper">
+                    <LeftNavItem linkTo={`/class/${num}/share`}>
+                        <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M11.25 10.56C10.68 10.56 10.17 10.785 9.78 11.1375L4.4325 8.025C4.47 7.8525 4.5 7.68 4.5 7.5C4.5 7.32 4.47 7.1475 4.4325 6.975L9.72 3.8925C10.125 4.2675 10.6575 4.5 11.25 4.5C12.495 4.5 13.5 3.495 13.5 2.25C13.5 1.005 12.495 0 11.25 0C10.005 0 9 1.005 9 2.25C9 2.43 9.03 2.6025 9.0675 2.775L3.78 5.8575C3.375 5.4825 2.8425 5.25 2.25 5.25C1.005 5.25 0 6.255 0 7.5C0 8.745 1.005 9.75 2.25 9.75C2.8425 9.75 3.375 9.5175 3.78 9.1425L9.12 12.2625C9.0825 12.42 9.06 12.585 9.06 12.75C9.06 13.9575 10.0425 14.94 11.25 14.94C12.4575 14.94 13.44 13.9575 13.44 12.75C13.44 11.5425 12.4575 10.56 11.25 10.56Z"
+                                fill="white"
+                            />
+                        </svg>
+                        <p>과제 게시판</p>
+                    </LeftNavItem>
+                </div>
                 {sessions.userType === 'students' ? null : (
                     <div className="a-wrapper">
                         <LeftNavItem linkTo={`/class/${num}/manage`}>
@@ -116,20 +128,9 @@ function LeftNav({ match }) {
                         </LeftNavItem>
                     </div>
                 )}
-                <div className="a-wrapper">
-                    <LeftNavItem linkTo={`/class/${num}/share`}>
-                        <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M11.25 10.56C10.68 10.56 10.17 10.785 9.78 11.1375L4.4325 8.025C4.47 7.8525 4.5 7.68 4.5 7.5C4.5 7.32 4.47 7.1475 4.4325 6.975L9.72 3.8925C10.125 4.2675 10.6575 4.5 11.25 4.5C12.495 4.5 13.5 3.495 13.5 2.25C13.5 1.005 12.495 0 11.25 0C10.005 0 9 1.005 9 2.25C9 2.43 9.03 2.6025 9.0675 2.775L3.78 5.8575C3.375 5.4825 2.8425 5.25 2.25 5.25C1.005 5.25 0 6.255 0 7.5C0 8.745 1.005 9.75 2.25 9.75C2.8425 9.75 3.375 9.5175 3.78 9.1425L9.12 12.2625C9.0825 12.42 9.06 12.585 9.06 12.75C9.06 13.9575 10.0425 14.94 11.25 14.94C12.4575 14.94 13.44 13.9575 13.44 12.75C13.44 11.5425 12.4575 10.56 11.25 10.56Z"
-                                fill="white"
-                            />
-                        </svg>
-                        <p>과제 게시판</p>
-                    </LeftNavItem>
-                </div>
             </div>
         </div>
     );
 }
 
-export default React.memo(withRouter(LeftNav));
+export default withRouter(React.memo(LeftNav));

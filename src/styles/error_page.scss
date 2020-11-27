@@ -1,0 +1,55 @@
+.error-root {
+    & .error-wrapper {
+        margin-top: 100px;
+        min-height: calc(100vh - 80px);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-self: flex-start;
+
+        & h1 {
+            font-size: 80px;
+            font-weight: 700;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.06;
+            letter-spacing: -2.75px;
+            text-align: left;
+
+            margin-bottom: 1.5rem;
+        }
+
+        & p {
+            font-size: 20px;
+            font-weight: normal;
+            line-height: 1.73;
+            color: #666666;
+        }
+
+        & button {
+            font-size: 24px;
+            font-weight: 500;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: -1.2px;
+            text-align: left;
+            color: #ffffff;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 1.4rem 2rem;
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+            margin-top: 56px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #13e2a1;
+
+            & svg {
+                margin-left: 1rem;
+            }
+        }
+    }
+}

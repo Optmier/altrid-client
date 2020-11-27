@@ -1,6 +1,7 @@
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
 import { MinutetoSecond } from '../components/essentials/TimeChange';
+import { postActived } from './assignmentActived';
 
 /* 액션 타입 선언 */
 // draft 여러개 조회하기
@@ -68,7 +69,7 @@ export const getDrafts = () => async (dispatch) => {
     }
 };
 export const getDraft = (idx) => async (dispatch) => {};
-export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFiles, contentsData) => async (dispatch) => {
+export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, activedDirect) => async (dispatch) => {
     dispatch({ type: POST_DRAFT }); // 요청이 시작됨
 
     try {
@@ -127,7 +128,15 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
             contents_data: contentsData,
             file_url: file_url,
         };
+
         dispatch({ type: POST_DRAFT_SUCCESS, postData }); // 성공
+
+        if (activedDirect) {
+            const { num, due_date, history } = activedDirect;
+            const cardData = postData;
+
+            dispatch(postActived(cardData, num, due_date, history));
+        }
     } catch (e) {
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패
     }
@@ -141,7 +150,7 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsDa
         let { eyetrack, timeAttack } = toggleState;
         const { mm, ss } = timeInputs;
 
-        let time_limit = -1;
+        let time_limit = -2;
         if (timeAttack) {
             time_limit = MinutetoSecond(mm, ss);
         }
@@ -287,7 +296,7 @@ export default function eyetrackingSelect(state = initialState, action) {
             };
 
         case DRAFT_ERROR:
-            alert('데이터 베이스 오류 입니다. 관리자에게 문의해주세요:(\n** 관리자 이메일 cwd094@gmail.com');
+            alert('draft.js 오류 입니다. 관리자에게 문의해주세요:(\n** 관리자 이메일 cwd094@gmail.com');
             console.error('error type : ', action.type);
             console.error('error 내용 :\n', action.error);
 

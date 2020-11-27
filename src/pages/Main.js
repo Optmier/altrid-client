@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import AddTeacher from '../components/MainPage/AddTeacher';
 import classNames from 'classnames';
 import { $_classDefault } from '../configs/front_urls';
+import moment from 'moment';
 
 function Main({ history }) {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -82,12 +83,18 @@ function Main({ history }) {
                                 <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
                             </CardRoot>
                         ) : null}
-                        {cardDatas.map(({ idx, name, class_count, description, teacher_name, num_of_students }) => (
+                        {cardDatas.map(({ idx, name, class_count, max_due_date, description, teacher_name, num_of_students }) => (
                             <CardRoot key={idx}>
                                 <CardEntry
                                     title={name}
                                     description={description}
-                                    assignmentOnProgress={false}
+                                    assignmentOnProgress={
+                                        moment(max_due_date).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss')
+                                            ? max_due_date !== null
+                                                ? true
+                                                : false
+                                            : false
+                                    }
                                     teacherName={teacher_name}
                                     totalStudents={num_of_students}
                                     totalAssignment={class_count}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import LeftNav from '../components/essentials/LeftNav';
 import '../styles/class.scss';
 import Draft from '../components/ClassDraft/Draft';
@@ -6,13 +6,13 @@ import Manage from '../components/ClassManage/Manage';
 import Share from '../components/ClassShare/Share';
 import { Route } from 'react-router-dom';
 import Reportes from '../components/ClassReport/Reportes';
-import MakeContents from './MakeContents';
+import Error from './Error';
+import { useSelector, useDispatch } from 'react-redux';
+import BackdropComponent from '../components/essentials/BackdropComponent';
+import { getDrafts } from '../redux_modules/assignmentDraft';
 
 const ClassPageSwitcher = ({ match }) => {
     let { id } = match.params;
-
-    // console.log(num, id);
-    // console.log(match);
 
     switch (id) {
         case `draft`:
@@ -30,18 +30,38 @@ const ClassPageSwitcher = ({ match }) => {
         default:
             return (
                 <>
-                    존재하지 않는 페이지입니다. <br /> 404 :(
+                    <Error></Error>
                 </>
             );
     }
 };
 
 function Class({ match }) {
+    const dispatch = useDispatch();
+
+    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
+        loading: false,
+        data: null,
+        error: null,
+    };
+    const sessions = useSelector((state) => state.RdxSessions);
+
+    useEffect(() => {
+        if (sessions.userType === 'teachers') dispatch(getDrafts());
+    }, [sessions]);
+
     return (
         <>
             <LeftNav />
+
             <div className="class-page-root">
-                <ClassPageSwitcher match={match} />
+                {loading && !data ? (
+                    <BackdropComponent open={true} />
+                ) : error ? (
+                    <Error />
+                ) : !data ? null : (
+                    <ClassPageSwitcher match={match} />
+                )}
             </div>
         </>
     );

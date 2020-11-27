@@ -17,6 +17,10 @@ const POST_ACTIVED_SUCCESS = 'assignmentActived/POST_ACTIVED_SUCCESS';
 const PATCH_ACTIVED = 'assignmentActived/PATCH_ACTIVED';
 const PATCH_ACTIVED_SUCCESS = 'assignmentActived/PATCH_ACTIVED_SUCCESS';
 
+//atived 과제 삭제
+const DELETE_ACTIVED = 'assignmentActived/DELETE_ACTIVED';
+const DELETE_ACTIVED_SUCCESS = 'assignmentActived/DELETE_ACTIVED_SUCCESS';
+
 //atived 과제 날짜 변경
 const CHANGE_DUE_DATE = 'assignmentActived/CHANGE_DUE_DATE';
 
@@ -119,6 +123,17 @@ export const patchActived = (idx, date) => async (dispatch) => {
         dispatch({ type: ACTIVEDES_ERROR, error: e }); // 실패
     }
 };
+export const deleteActived = (idx) => async (dispatch) => {
+    dispatch({ type: DELETE_ACTIVED }); // 요청이 시작됨
+
+    try {
+        await Axios.delete(`${apiUrl}/assignment-actived/${idx}`, { withCredentials: true }); // API 호출
+
+        dispatch({ type: DELETE_ACTIVED_SUCCESS, idx }); // 성공
+    } catch (e) {
+        dispatch({ type: ACTIVEDES_ERROR, error: e }); // 실패
+    }
+};
 
 export const changeDueDate = (value) => ({
     type: CHANGE_DUE_DATE,
@@ -210,6 +225,26 @@ export default function eyetrackingSelect(state = initialState, action) {
                               }
                             : obj,
                     ),
+                    error: null,
+                },
+            };
+
+        case DELETE_ACTIVED:
+            return {
+                ...state,
+                activedDatas: {
+                    loading: true,
+                    data: state.activedDatas.data,
+                    error: null,
+                },
+            };
+        case DELETE_ACTIVED_SUCCESS:
+            alert('삭제가 완료되었습니다.');
+            return {
+                ...state,
+                activedDatas: {
+                    loading: false,
+                    data: state.activedDatas.data.filter((dt) => dt.idx !== action.idx),
                     error: null,
                 },
             };
