@@ -17,9 +17,11 @@ import AddTeacher from '../components/MainPage/AddTeacher';
 import classNames from 'classnames';
 import { $_classDefault } from '../configs/front_urls';
 import moment from 'moment';
+import BackdropComponent from '../components/essentials/BackdropComponent';
 
 function Main({ history }) {
     const sessions = useSelector((state) => state.RdxSessions);
+    const [backdropOpen, setBackdropOpen] = useState(false);
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const [openAddTeacher, setOpenAddTeacher] = useState(false);
     const toggleDrawer = (open) => (event) => {
@@ -43,15 +45,20 @@ function Main({ history }) {
             })
             .catch((err) => {
                 console.error(err);
+            })
+            .finally(() => {
+                setBackdropOpen(false);
             });
     };
 
     useEffect(() => {
+        setBackdropOpen(true);
         fetchCardData();
     }, []);
 
     return (
         <>
+            <BackdropComponent open={backdropOpen} blind="#f7f9f8" />
             <Element name="main_top_start" />
             <HeaderBar />
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
@@ -74,6 +81,15 @@ function Main({ history }) {
                                 <div className="academy-name">
                                     <h4>{sessions.userName}님의 클래스</h4>
                                 </div>
+                                {sessions.userType === 'students' && (!cardDatas || !cardDatas.length) ? (
+                                    <div className="no-classes">
+                                        <h5>만들어진 클래스가 없습니다.</h5>
+                                        <h5>
+                                            아직 선생님을 추가하지 않으셨다면, 선생님들께서 클래스를 생성할 수 있도록 아래 버튼을 눌러 나의
+                                            선생님을 추가해 보세요!
+                                        </h5>
+                                    </div>
+                                ) : null}
                             </>
                         }
                         maxColumn={3}
@@ -105,7 +121,7 @@ function Main({ history }) {
                             </CardRoot>
                         ))}
                     </CardLists>
-                    <Divider className="main-divider" />
+                    {sessions.userType === 'students' && (!cardDatas || !cardDatas.length) ? null : <Divider className="main-divider" />}
                     {sessions.userType === 'students' ? (
                         <CardLists>
                             <div className="below-card-container">

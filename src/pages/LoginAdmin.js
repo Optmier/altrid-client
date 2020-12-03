@@ -19,7 +19,7 @@ function LoginAdmin({ history }) {
         )
             .then((res) => {
                 console.log(res);
-                history.replace(window.lastUrl);
+                history.replace('/admins');
             })
             .catch((err) => {
                 console.log(err.response);
@@ -35,7 +35,7 @@ function LoginAdmin({ history }) {
     };
 
     const onFailedGoogleAuth = (err) => {
-        console.err(err);
+        console.error(err);
         alert('로그인에 실패했습니다. 에러코드 :: ' + err);
     };
 
@@ -50,7 +50,7 @@ function LoginAdmin({ history }) {
         )
             .then((res) => {
                 console.log(res);
-                history.replace(window.lastUrl);
+                history.replace('/admins');
             })
             .catch((err) => {
                 switch (err.response.data.code) {

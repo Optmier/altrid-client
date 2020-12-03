@@ -150,7 +150,7 @@ function createData(idx, title, teacher_name, academy_name, has_contents, has_fi
 
 const headCells = [
     { id: 'idx', align: 'center', disablePadding: false, label: '컨텐츠 번호' },
-    { id: 'title', align: 'left', disablePadding: false, label: '선생님 성함' },
+    { id: 'title', align: 'left', disablePadding: false, label: '과제명' },
     { id: 'teacher_name', align: 'left', disablePadding: false, label: '선생님 성함' },
     { id: 'academy_name', align: 'left', disablePadding: false, label: '학원 이름' },
     { id: 'has_contents', align: 'left', disablePadding: false, label: '컨텐츠 여부' },

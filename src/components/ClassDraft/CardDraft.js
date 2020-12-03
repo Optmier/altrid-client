@@ -71,7 +71,7 @@ const HtmlTooltip = withStyles((theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
         fontWeight: '600',
-        borderRadius: '11px',
+        borderRadius: '10px',
 
         '& .class-button + .class-button': {
             paddingLeft: '0.5rem',
@@ -117,7 +117,7 @@ function CardDraft({ cardData, match, history }) {
 
                 dispatch(postActived(cardData, num, due_date, history));
             } else {
-                alert('과제 기한 변경은 필수항목입니다.');
+                alert('과제 기한 변경은 필수사항 입니다.');
             }
         } else {
             setDateDialogopen(false);
@@ -177,7 +177,7 @@ function CardDraft({ cardData, match, history }) {
 
     return (
         <>
-            <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
+            <Drawer anchor="right" open={openCreateNewDrawer}>
                 <ClassDrawer ver="modify" cardData={cardData} handleClose={toggleDrawer(false)} />
             </Drawer>
 
@@ -261,7 +261,7 @@ function CardDraft({ cardData, match, history }) {
                                 {cardData['class_name']
                                     ? Array.from(new Set(cardData['class_name'].split(','))).map((name, key) => (
                                           <div key={key} className="class-button">
-                                              {key !== 0 ? ' / ' : ''} {name}반
+                                              {key !== 0 ? ' / ' : ''} {name} 반
                                           </div>
                                       ))
                                     : '게시중인 반 없음'}

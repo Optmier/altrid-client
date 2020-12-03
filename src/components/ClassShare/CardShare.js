@@ -83,6 +83,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
     /** Redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
     const sessions = useSelector((state) => state.RdxSessions);
+    const serverdate = useSelector((state) => state.RdxServerDate);
     const dispatch = useDispatch();
 
     /** class-dialog 메소드 */
@@ -102,7 +103,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         const { name } = e.target;
 
         if (name === 'yes') {
-            console.log(cardData['idx']);
+            // console.log(cardData['idx']);
             dispatch(deleteActived(cardData['idx']));
             setDeleteDialogopen(false);
         } else {
@@ -121,12 +122,15 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
             if (data['due_date']) {
                 dispatch(patchActived(cardData['idx'], data['due_date']));
             } else {
-                alert('과제 기한 변경은 필수항목입니다.');
+                alert('과제 기한 변경은 필수사항 입니다.');
             }
             setTestDialogopen(false);
         } else if (name === 'button-delete') {
             setTestDialogopen(false);
             handleDeleteDialogOpen();
+        } else {
+            //바깥 클릭했을때
+            setTestDialogopen(false);
         }
 
         dispatch(changeDueDate(''));
@@ -141,7 +145,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                 dispatch(patchActived(cardData['idx'], data['due_date']));
                 setDateDialogopen(false);
             } else {
-                alert('과제 기한 변경은 필수항목입니다.');
+                alert('과제 기한 변경은 필수사항 입니다.');
             }
         } else {
             setDateDialogopen(false);
@@ -153,15 +157,20 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
 
     /** toggle state */
     const [toggleState, setToggleState] = useState({
-        checked: moment(cardData['due_date']).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss'),
+        checked:
+            new Date(cardData['due_date']).getTime() >= serverdate.datetime &&
+            new Date(cardData['created']).getTime() <= serverdate.datetime,
     });
 
     useEffect(() => {
+        if (!serverdate.datetime) return;
         setToggleState({
             ...toggleState,
-            checked: moment(cardData['due_date']).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss'),
+            checked:
+                new Date(cardData['due_date']).getTime() >= serverdate.datetime &&
+                new Date(cardData['created']).getTime() <= serverdate.datetime,
         });
-    }, [cardData['due_date']]);
+    }, [cardData['due_date'], serverdate.datetime]);
 
     const [subTypeState, setSubTypeState] = useState('init');
 
@@ -258,7 +267,10 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                 $target.attr('class') === 'goto-reports'
             )
         ) {
-            if (new Date(cardData.due_date) < new Date() && sessions.userType === 'students') {
+            if (new Date(cardData.created).getTime() > serverdate.datetime && sessions.userType === 'students') {
+                alert('아직 시작되지 않은 과제입니다.');
+                return;
+            } else if (new Date(cardData.due_date).getTime() < serverdate.datetime && sessions.userType === 'students') {
                 alert('기간이 지난 과제이므로 리포트 조회만 가능합니다.');
                 return;
             } else if (tries && cardData.time_limit !== -2) {
@@ -302,18 +314,21 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                 {toggleState['checked'] ? (
                                     <span style={{ color: '#ffffff', fontSize: 14 }}>
                                         {cardData.time_limit === -2 && tries
-                                            ? '제출됨, 재시도 가능'
+                                            ? '제출됨, 재시도'
                                             : cardData.time_limit !== -2 && tries
                                             ? '제출됨'
                                             : '진행중'}
                                     </span>
                                 ) : (
-                                    <span style={{ color: '#989696', fontSize: 14 }}>완료됨</span>
+                                    <span style={{ color: '#989696', fontSize: 14 }}>
+                                        {new Date(cardData.created).getTime() > serverdate.datetime ? '시작전' : '완료됨'}
+                                    </span>
                                 )}
                             </>
                         ) : null}
                         {sessions.userType === 'students' ? null : (
                             <ToggleSwitch
+                                isStarted={new Date(cardData.created).getTime() <= serverdate.datetime}
                                 toggle={toggleState['checked']}
                                 handleToggleChange={handleToggleChange}
                                 type="share"
@@ -367,7 +382,10 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                         </div>
 
                         <div className="class-card-bottom-right card-bottom-p">
-                            {(sessions.userType === 'students' && tries) || sessions.userType !== 'students' ? (
+                            {(sessions.userType === 'students' &&
+                                tries &&
+                                new Date(cardData['due_date']).getTime() < serverdate.datetime) ||
+                            sessions.userType !== 'students' ? (
                                 <Link
                                     className="goto-reports"
                                     to={
@@ -380,6 +398,10 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                         {sessions.userType === 'students' ? '나의 리포트' : '과제별 리포트 보기'} <IoIosArrowForward />
                                     </div>
                                 </Link>
+                            ) : sessions.userType === 'students' && tries ? (
+                                <span style={{ color: 'rgb(152, 150, 150)', fontSize: '0.75rem', minWidth: '9.1rem' }}>
+                                    기한 종료 후 리포트 활성화
+                                </span>
                             ) : null}
                         </div>
                     </div>

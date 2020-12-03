@@ -77,6 +77,18 @@ const ProblemsContainer = styled.div`
         font-family: 'Times New Roman';
         font-size: 1rem;
         line-height: 1.5rem;
+
+        &.ql-indent-1 {
+            text-indent: 1rem;
+        }
+
+        &.ql-indent-2 {
+            text-indent: 1.5rem;
+        }
+
+        &.ql-indent-3 {
+            text-indent: 2rem;
+        }
     }
 `;
 const HeaderTitle = styled.div``;
@@ -222,7 +234,8 @@ function SmartTOFELRender({
             onEnd();
             return;
         }
-        if (timeLimit === -2) {
+        if (timeLimit === -3) {
+        } else if (timeLimit === -2) {
             const conf = window.confirm('정말로 종료하시겠습니까?\n현재까지 변경사항이 저장됩니다.');
             if (!conf) return;
         } else if (timer > 0) {
@@ -230,10 +243,11 @@ function SmartTOFELRender({
             if (!conf) return;
         }
         setCurrentLog((currentLog) => {
+            console.log(timeLimit, timer);
             const state = {
                 ...currentLog,
                 action: 'end',
-                time: timeLimit === -2 ? timer : timeLimit - timer,
+                time: timeLimit === -2 || timeLimit === -3 ? timer : timeLimit - timer,
                 answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
                 correct: userSelectionDatas[currentProblemIdx].correct,
                 setNum: userSelectionDatas[currentProblemIdx].setNum,
@@ -346,7 +360,9 @@ function SmartTOFELRender({
 
     useEffect(() => {
         if (preview || forceEnd) return;
-        if (timeLimit !== -2 && Math.floor(timer) === 0) {
+        if (timeLimit === -3) {
+            handleEnd();
+        } else if (timeLimit !== -2 && Math.floor(timer) === 0) {
             handleEnd();
         }
     }, [timer, forceEnd]);

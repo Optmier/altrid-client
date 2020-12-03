@@ -10,7 +10,7 @@ const RefreshToken = (exp, threshold) => {
                     resolve(res.data);
                 })
                 .catch((err) => {
-                    console.err('token refresh error!', err);
+                    console.error('token refresh error!', err);
                     reject(err);
                 });
         }

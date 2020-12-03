@@ -84,7 +84,7 @@ function AddTeacher({ handleClose }) {
                 <CloseIcon />
             </div>
             <div className="title">
-                <h2>선생님의 이메일 또는 인증 아이디를 입력해 주세요.</h2>
+                <h2>선생님의 이메일 주소를 입력해 주세요.</h2>
             </div>
             <div className="form-container">
                 <input
@@ -92,7 +92,7 @@ function AddTeacher({ handleClose }) {
                     type="text"
                     name="teacher_id"
                     id="teacher_id"
-                    placeholder="선생님 이메일 또는 인증 아이디"
+                    placeholder="선생님 이메일"
                     onChange={handleInputChange}
                     value={inputState}
                 />

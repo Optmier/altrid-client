@@ -11,6 +11,7 @@ const StylePopOverList = styled.div`
     font-weight: 400;
     background-color: #222222;
     color: white;
+    user-select: none;
 
     & .popover-section {
         cursor: pointer;

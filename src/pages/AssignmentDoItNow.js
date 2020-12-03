@@ -6,6 +6,7 @@ import { apiUrl } from '../configs/configs';
 import EyetrackerCore from '../components/essentials/EyetrackerCore';
 import { useSelector, useDispatch } from 'react-redux';
 import { startTimer, addSecond } from '../redux_modules/timer';
+import { getServerDate } from '../redux_modules/serverdate';
 import { useBeforeunload } from 'react-beforeunload';
 
 const getDistance = (pos1, pos2) => {
@@ -25,9 +26,12 @@ function AssignmentDoItNow({ history, match }) {
     const [activeStep, setActiveStep] = useState(0);
     const [userAnswer, setUserAnswer] = useState(0);
     const [timerInterval, setTimerInterval] = useState(null);
+    const [enableBeforeUnload, setEnableBeforeUnload] = useState(true);
 
     /** Rdx timer */
+    const [lastElapsedSeconds, setLastElapsedSeconds] = useState(null);
     const timerState = useSelector((state) => state.RdxTimer);
+    const serverdate = useSelector((state) => state.RdxServerDate);
     const dispatch = useDispatch();
     const handleStart = useCallback((duration, startedTime, from) => dispatch(startTimer(duration, startedTime, from)), [dispatch]);
     // const handleRestart = useCallback((duration, startedTime) => dispatch(restartTimer(duration, startedTime)), [dispatch]);
@@ -141,7 +145,7 @@ function AssignmentDoItNow({ history, match }) {
             })
             .catch((err) => {
                 console.error(err);
-                alert('저장 에러가 발생하였습니다.\n증상이 지속될 경우 관리자에 문의 바랍니다.');
+                alert('저장 에러가 발생하였습니다.\n증상이 지속될 경우 기술 지원으로 문의 바랍니다.');
             });
     };
 
@@ -173,8 +177,10 @@ function AssignmentDoItNow({ history, match }) {
             clearInterval(timerInterval);
         }
         updateResultData(metadata, timerState.elapsedTime, () => {
-            alert('종료되었습니다.');
-            // window.close();
+            setEnableBeforeUnload(false);
+            if (originalDatas.time_limit === -3) alert('과제 기한이 종료되었습니다.\n지금까지 진행 사항은 저장됩니다.');
+            else alert('종료되었습니다.');
+            window.close();
         });
     };
 
@@ -197,6 +203,8 @@ function AssignmentDoItNow({ history, match }) {
             return;
         }
 
+        if (!serverdate.datetime) return;
+
         const { classnum, assignmentid } = match.params;
         Axios.get(`${apiUrl}/assignment-actived/${classnum}/${assignmentid}`, { withCredentials: true })
             .then((res) => {
@@ -206,118 +214,139 @@ function AssignmentDoItNow({ history, match }) {
                     window.close();
                     return;
                 }
+                // 시간이 유효한지 체크
+                if (
+                    new Date(res.data.due_date).getTime() < serverdate.datetime ||
+                    new Date(res.data.created).getTime() > serverdate.datetime
+                ) {
+                    alert('과제 기한이 현재 날짜와 맞지 않습니다.');
+                    window.close();
+                } else {
+                    Axios.post(
+                        `${apiUrl}/assignment-result`,
+                        { activedNumber: res.data.idx, eyetrack: res.data.eyetrack },
+                        { withCredentials: true },
+                    )
+                        .then((res2) => {
+                            // console.log(res2);
+                            if (res2.data.savedData) {
+                                const data = res2.data.savedData;
+                                if (res.data.time_limit !== -2 && data.tries) {
+                                    alert('시도횟수를 초과하였습니다.\n문제가 발생한 경우 선생님께 문의 바랍니다.');
+                                    window.close();
+                                }
+                                let userData = data.user_data;
+                                let eyetrackData = data.eyetrack_data;
+                                try {
+                                    userData
+                                        .replace(/\\n/g, '\\n')
+                                        .replace(/\\'/g, "\\'")
+                                        .replace(/\\"/g, '\\"')
+                                        .replace(/\\&/g, '\\&')
+                                        .replace(/\\r/g, '\\r')
+                                        .replace(/\\t/g, '\\t')
+                                        .replace(/\\b/g, '\\b')
+                                        .replace(/\\f/g, '\\f')
+                                        .replace(/[\u0000-\u0019]+/g, '');
+                                    userData = JSON.parse(userData);
+                                } catch (e) {
+                                    userData = null;
+                                }
+                                try {
+                                    eyetrackData
+                                        .replace(/\\n/g, '\\n')
+                                        .replace(/\\'/g, "\\'")
+                                        .replace(/\\"/g, '\\"')
+                                        .replace(/\\&/g, '\\&')
+                                        .replace(/\\r/g, '\\r')
+                                        .replace(/\\t/g, '\\t')
+                                        .replace(/\\b/g, '\\b')
+                                        .replace(/\\f/g, '\\f')
+                                        .replace(/[\u0000-\u0019]+/g, '');
+                                    eyetrackData = JSON.parse(eyetrackData);
+                                } catch (e) {
+                                    eyetrackData = null;
+                                }
+                                setSavedData({ ...data, user_data: userData, eyetrack_data: eyetrackData });
+                                if (!res.data.eyetrack) {
+                                    upCountTries();
+                                }
+                            } else {
+                                if (!res.data.eyetrack) {
+                                    upCountTries();
+                                }
+                                setSavedData(null);
+                            }
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                            alert('초기화 에러가 발생하였습니다.\n증상이 지속될 경우 관리자에 문의 바랍니다.');
+                            window.close();
+                        });
 
-                Axios.post(
-                    `${apiUrl}/assignment-result`,
-                    { activedNumber: res.data.idx, eyetrack: res.data.eyetrack },
-                    { withCredentials: true },
-                )
-                    .then((res2) => {
-                        // console.log(res2);
-                        if (res2.data.savedData) {
-                            const data = res2.data.savedData;
-                            if (res.data.time_limit !== -2 && data.tries) {
-                                alert('시도횟수를 초과하였습니다.\n문제가 발생한 경우 선생님께 문의 바랍니다.');
-                                window.close();
-                            }
-                            let userData = data.user_data;
-                            let eyetrackData = data.eyetrack_data;
-                            try {
-                                userData
-                                    .replace(/\\n/g, '\\n')
-                                    .replace(/\\'/g, "\\'")
-                                    .replace(/\\"/g, '\\"')
-                                    .replace(/\\&/g, '\\&')
-                                    .replace(/\\r/g, '\\r')
-                                    .replace(/\\t/g, '\\t')
-                                    .replace(/\\b/g, '\\b')
-                                    .replace(/\\f/g, '\\f')
-                                    .replace(/[\u0000-\u0019]+/g, '');
-                                userData = JSON.parse(userData);
-                            } catch (e) {
-                                userData = null;
-                            }
-                            try {
-                                eyetrackData
-                                    .replace(/\\n/g, '\\n')
-                                    .replace(/\\'/g, "\\'")
-                                    .replace(/\\"/g, '\\"')
-                                    .replace(/\\&/g, '\\&')
-                                    .replace(/\\r/g, '\\r')
-                                    .replace(/\\t/g, '\\t')
-                                    .replace(/\\b/g, '\\b')
-                                    .replace(/\\f/g, '\\f')
-                                    .replace(/[\u0000-\u0019]+/g, '');
-                                eyetrackData = JSON.parse(eyetrackData);
-                            } catch (e) {
-                                eyetrackData = null;
-                            }
-                            setSavedData({ ...data, user_data: userData, eyetrack_data: eyetrackData });
-                            if (!res.data.eyetrack) {
-                                console.log('asdfasd');
-                                upCountTries();
-                            }
-                        } else {
-                            if (!res.data.eyetrack) {
-                                console.log('asdfasd');
-                                upCountTries();
-                            }
-                            setSavedData(null);
-                        }
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                        alert('초기화 에러가 발생하였습니다.\n증상이 지속될 경우 관리자에 문의 바랍니다.');
-                        window.close();
-                    });
-
-                let unparsedContents = res.data.contents_data
-                    .replace(/\\n/g, '\\n')
-                    .replace(/\\'/g, "\\'")
-                    .replace(/\\"/g, '\\"')
-                    .replace(/\\&/g, '\\&')
-                    .replace(/\\r/g, '\\r')
-                    .replace(/\\t/g, '\\t')
-                    .replace(/\\b/g, '\\b')
-                    .replace(/\\f/g, '\\f');
-                // remove non-printable and other non-valid JSON chars
-                unparsedContents = unparsedContents.replace(/[\u0000-\u0019]+/g, '');
-                setOriginalDatas({ ...originalDatas, ...res.data, contents_data: JSON.parse(unparsedContents) });
-                setRemainTime(res.data.time_limit);
+                    let unparsedContents = res.data.contents_data
+                        .replace(/\\n/g, '\\n')
+                        .replace(/\\'/g, "\\'")
+                        .replace(/\\"/g, '\\"')
+                        .replace(/\\&/g, '\\&')
+                        .replace(/\\r/g, '\\r')
+                        .replace(/\\t/g, '\\t')
+                        .replace(/\\b/g, '\\b')
+                        .replace(/\\f/g, '\\f');
+                    // remove non-printable and other non-valid JSON chars
+                    unparsedContents = unparsedContents.replace(/[\u0000-\u0019]+/g, '');
+                    setOriginalDatas({ ...originalDatas, ...res.data, contents_data: JSON.parse(unparsedContents) });
+                    setRemainTime(res.data.time_limit < 0 ? 0 : res.data.time_limit);
+                }
             })
             .catch((err) => {
                 console.error(err);
             });
-    }, []);
+    }, [serverdate]);
 
     useEffect(() => {
         if (!originalDatas.contents_data) return;
         if (!originalDatas.eyetrack && originalDatas.time_limit === -2);
+        // console.log(originalDatas);
     }, [originalDatas]);
 
     useEffect(() => {
         if (!originalDatas.contents_data) return;
         // console.log(timerState.elapsedTime);
+        if (lastElapsedSeconds !== null && timerState.elapsedTime - lastElapsedSeconds < 0) {
+            alert('비정상적인 시간 변경이 감지되었습니다!\n강제로 종료됩니다.');
+            setEnableBeforeUnload(false);
+            window.close();
+        }
         if (originalDatas.time_limit !== -2) {
             setRemainTime(originalDatas.time_limit - timerState.elapsedTime);
         } else {
             setRemainTime(timerState.elapsedTime);
         }
+        if (new Date(originalDatas.due_date).getTime() < new Date().getTime()) {
+            setOriginalDatas({
+                ...originalDatas,
+                time_limit: -3,
+            });
+        }
+        setLastElapsedSeconds(timerState.elapsedTime);
     }, [timerState]);
 
     useEffect(() => {
         if (!originalDatas.eyetrack && savedData === null) {
             startTestTimer(0, originalDatas.time_limit === -2);
         }
+        // console.log(originalDatas);
         if (!savedData) return;
-        if (!originalDatas.eyetrack && originalDatas.time_limit !== -2) {
-            setRemainTime(originalDatas.time_limit - savedData.time);
-            startTestTimer(savedData.time);
-        } else if (originalDatas.time_limit === -2) {
+        // 시간 관련
+        if (originalDatas.time_limit === -2) {
             setRemainTime(0);
             startTestTimer(savedData.time, originalDatas.time_limit === -2);
+        } else if (!originalDatas.eyetrack && originalDatas.time_limit !== -2) {
+            setRemainTime(originalDatas.time_limit - savedData.time);
+            startTestTimer(savedData.time);
         }
-
+        // 유저 데이터 관련
         if (originalDatas.eyetrack && savedData.eyetrack_data) {
             window.etRes = savedData.eyetrack_data;
             window._etNxtSetNum = window.etRes.sequences[window.etRes.sequences.length - 1].setNumber + 1;
@@ -329,7 +358,7 @@ function AssignmentDoItNow({ history, match }) {
         }
     }, [savedData]);
 
-    useBeforeunload((e) => e.preventDefault());
+    useBeforeunload((e) => (enableBeforeUnload ? e.preventDefault() : null));
 
     return (
         <>

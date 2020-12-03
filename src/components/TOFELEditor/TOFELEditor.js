@@ -211,7 +211,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
 
     const handlePreviewOpen = () => {
         if (metadata.flatMap((m) => m.problemDatas).length === 0) {
-            return alert('과제 수정을 통해 에디터에서 문항을 추가해주세요 !');
+            return alert('문항이 없습니다!\n에디터에서 문항을 하나 이상 추가해야 합니다.');
         }
         setOpenPreview(true);
     };
@@ -470,6 +470,11 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                 // addParagraphSplitter();
             }
         });
+
+        const unblock = history.block('편집을 취소 하시겠습니까?\n저장되지 않은 사항들은 삭제됩니다.');
+        return () => {
+            unblock();
+        };
     }, []);
 
     useBeforeunload((e) => e.preventDefault());

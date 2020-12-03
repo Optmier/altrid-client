@@ -43,7 +43,7 @@ const GoDraftDiv = styled.div`
         padding: 1.2rem 1.5rem;
         filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
         margin-top: 30px;
-        border-radius: 11px;
+        border-radius: 10px;
         cursor: pointer;
         background-color: #13e2a1;
 
@@ -76,14 +76,11 @@ function Share({ match, history }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const dispatch = useDispatch();
     const [tries, setTries] = useState(undefined);
+    const [totalStudents, setTotalStudents] = useState(window.studentsInCurrentClass);
 
     useEffect(() => {
+        if (!sessions || !sessions.userType || !sessions.academyName) return;
         dispatch(getActivedes(num));
-    }, [dispatch]);
-
-    const [totalStudents, setTotalStudents] = useState(0);
-
-    useEffect(() => {
         if (sessions.userType === 'students') {
             Axios.get(`${apiUrl}/others/assignment-tries/${num}`, { withCredentials: true })
                 .then((res) => {
@@ -92,16 +89,8 @@ function Share({ match, history }) {
                 .catch((err) => {
                     console.error(err);
                 });
-        } else {
-            Axios.get(`${apiUrl}/students-in-class/${match.params.num}`, { withCredentials: true })
-                .then((res) => {
-                    setTotalStudents(res.data.length);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
         }
-    }, [sessions]);
+    }, [sessions.authId]);
 
     if (data) {
         shareDatas = data;
@@ -115,20 +104,19 @@ function Share({ match, history }) {
         }
         setOpenCreateNewDrawer(open);
     };
-
-    if (loading && !data) return <BackdropComponent open={true} />; // 로딩중이고 데이터 없을때만
     if (error) return <Error />;
     if (!data) return null;
 
     return (
         <>
+            <BackdropComponent open={loading && !data && !error} />
             <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
                 <ClassDrawer />
             </Drawer>
 
             {/* <ClassHeaderBox /> */}
 
-            {shareDatas.length === 0 ? (
+            {shareDatas.length === 0 && sessions.userType !== 'students' ? (
                 <ClassWrapper>
                     <GoDraftDiv>
                         <h1>현재 진행중인 과제가 없습니다 :( </h1>

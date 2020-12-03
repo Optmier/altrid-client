@@ -156,7 +156,7 @@ const initialState = {
     },
 };
 
-window.state = initialState;
+// window.state = initialState;
 
 /* reducer 함수 */
 export default function eyetrackingSelect(state = initialState, action) {
@@ -263,7 +263,7 @@ export default function eyetrackingSelect(state = initialState, action) {
             };
 
         case ACTIVED_ERROR:
-            alert('데이터 베이스 오류 입니다. 관리자에게 문의해주세요:(\n** 관리자 이메일 cwd094@gmail.com');
+            alert('데이터베이스 오류가 발생했습니다.\n기술 지원으로 문의해주세요!');
             console.error('error type : ', action.type);
             console.error('error 내용 :\n', action.error);
 
@@ -277,7 +277,7 @@ export default function eyetrackingSelect(state = initialState, action) {
             };
 
         case ACTIVEDES_ERROR:
-            alert('데이터 베이스 오류 입니다. 관리자에게 문의해주세요:(\n** 관리자 이메일 cwd094@gmail.com');
+            alert('데이터베이스 오류가 발생했습니다.\n기술 지원으로 문의해주세요!');
             console.error('error type : ', action.type);
             console.error('error 내용 :\n', action.error);
 

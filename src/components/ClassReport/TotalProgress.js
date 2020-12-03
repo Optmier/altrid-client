@@ -5,7 +5,7 @@ import Progress from './Progress.js';
 const StyleTotalProgress = styled.div`
     background-color: white;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 11px;
+    border-radius: 10px;
     padding: 30px 32px;
     height: 250px;
     overflow: auto;

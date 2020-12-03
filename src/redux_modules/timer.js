@@ -83,7 +83,7 @@ function applyRestartTimer(state, action) {
 }
 
 function applyAddSecond(state) {
-    if (state.timerDuration === "no" || state.elapsedTime < state.timerDuration) {
+    if (state.timerDuration === 'no' || state.elapsedTime < state.timerDuration) {
         return {
             ...state,
             elapsedTime: parseInt((new Date().getTime() - state.startedTimeStamp) / 1000),

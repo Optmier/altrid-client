@@ -3,25 +3,35 @@ import React, { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
-        zIndex: 9999,
+        zIndex: 9999 + 1,
         color: '#fff',
+    },
+    blind: {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        zIndex: 9999,
     },
 }));
 
-function BackdropComponent({ open, disableShrink }) {
+function BackdropComponent({ open, blind, disableShrink }) {
     const classes = useStyles();
-    // const [open, setOpen] = useState(false);
-    // const handleClose = () => {
-    //     setOpen(false);
-    // };
-    // const handleToggle = () => {
-    //     setOpen(!open);
-    // };
     return (
-        <Backdrop className={classes.backdrop} open={open}>
-            <CircularProgress disableShrink={disableShrink} color="inherit" />
-        </Backdrop>
+        <>
+            {blind && open ? <div className={classes.blind} style={{ backgroundColor: blind }}></div> : null}
+            <Backdrop className={classes.backdrop} open={open}>
+                <CircularProgress disableShrink={disableShrink} color="inherit" />
+            </Backdrop>
+        </>
     );
 }
+
+BackdropComponent.defaultProps = {
+    open: false,
+    blind: false,
+    disableShrink: false,
+};
 
 export default BackdropComponent;

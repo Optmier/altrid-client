@@ -4,15 +4,25 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
+import CloseIcon from '@material-ui/icons/Close';
 
 const StyleModalButton = styled.button`
     min-width: 114px;
     cursor: pointer;
-    border-radius: 11px;
+    border-radius: 10px;
     padding: 0.5rem 2rem;
     background-color: #13e2a1;
     color: white;
     font-size: 0.9rem;
+
+    &.default {
+        background-color: #d4d4d4;
+        color: #000;
+    }
+
+    &.critical {
+        background-color: rgba(255, 92, 92, 0.85);
+    }
 `;
 const StyleModalContents = styled.div`
     & > h4 {
@@ -40,6 +50,13 @@ const StyleModalContents = styled.div`
     }
 `;
 
+const ModalCloseButton = styled.div`
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+`;
+
 function ClassDialogDelete({ ver, open, handleDialogClose }) {
     /** redux state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
@@ -54,6 +71,9 @@ function ClassDialogDelete({ ver, open, handleDialogClose }) {
 
     return (
         <Dialog open={open} onClose={handleDialogClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+            <ModalCloseButton className="close-icon" onClick={handleDialogClose}>
+                <CloseIcon />
+            </ModalCloseButton>
             <div style={{ padding: '2rem' }}>
                 <DialogContent>
                     <StyleModalContents>
@@ -63,10 +83,10 @@ function ClassDialogDelete({ ver, open, handleDialogClose }) {
                 </DialogContent>
 
                 <DialogActions>
-                    <StyleModalButton name="no" onClick={handleDialogClose} color="primary">
+                    <StyleModalButton className="default" name="no" onClick={handleDialogClose} color="primary">
                         아니오
                     </StyleModalButton>
-                    <StyleModalButton name="yes" onClick={handleDialogClose} color="primary">
+                    <StyleModalButton className="critical" name="yes" onClick={handleDialogClose} color="primary">
                         삭제하기
                     </StyleModalButton>
                 </DialogActions>

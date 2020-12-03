@@ -12,11 +12,17 @@ import { Button, withStyles } from '@material-ui/core';
 
 const CreateButton = withStyles((theme) => ({
     root: {
-        borderRadius: '11px',
-        backgroundColor: '#c4c4c4',
-        color: 'white',
+        borderRadius: '10px',
+        backgroundColor: '#d4d4d4',
+        fontFamily: 'inherit',
+        fontSize: '0.9rem',
         width: '150px',
         height: '56px',
+
+        '&.critical': {
+            backgroundColor: 'rgba(255, 92, 92, 0.85)',
+            color: '#fff',
+        },
     },
 }))(Button);
 
@@ -120,7 +126,7 @@ function Manage({ match, history }) {
                 if (name === 'modify') {
                     //수강생이 있는 경우에만, post 작업
                     if (inputState.entry_new_students.length === 0) {
-                        alert('과제 수정이 완료되었습니다 !');
+                        alert('클래스 정보 수정이 완료되었습니다!');
                     } else {
                         Axios.post(
                             `${apiUrl}/students-in-class`,
@@ -131,7 +137,7 @@ function Manage({ match, history }) {
                             { withCredentials: true },
                         )
                             .then((res2) => {
-                                alert('과제 수정이 완료되었습니다 !');
+                                alert('클래스 정보 수정이 완료되었습니다!');
                             })
                             .catch((err) => {
                                 console.error(err);
@@ -178,8 +184,6 @@ function Manage({ match, history }) {
         } else if ($target.parents('.button-delete').length !== 0 || $target.attr('class').includes('button-delete')) {
             name = 'delete';
         }
-
-        console.log(name);
         if (name === 'modify') {
             Axios.patch(
                 `${apiUrl}/classes/${num}`,
@@ -215,15 +219,13 @@ function Manage({ match, history }) {
     return (
         <>
             <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
-
             <ClassWrapper col="col">
                 <div className="class-manage-root">
                     <div>
                         <div className="manage-header">
                             <h2 className="manage-title">클래스 편집이 가능합니다.</h2>
-                            <p className="manage-subTitle">과제의 기본적인 정보를 입력해주세요.</p>
+                            <p className="manage-subTitle">클래스의 기본적인 정보를 입력해주세요.</p>
                         </div>
-
                         <div className="manage-inputs">
                             <input
                                 className={classNames('default', inputError ? 'error' : '')}
@@ -266,16 +268,6 @@ function Manage({ match, history }) {
 
                     <div className="manage-footer">
                         <CreateButton
-                            className="button-delete"
-                            size="large"
-                            variant="contained"
-                            disabled={!createButtonEnabled}
-                            name="delete"
-                            onClick={handleButton}
-                        >
-                            삭제하기
-                        </CreateButton>
-                        <CreateButton
                             className="button-modify"
                             size="large"
                             variant="contained"
@@ -284,6 +276,16 @@ function Manage({ match, history }) {
                             onClick={handleButton}
                         >
                             수정하기
+                        </CreateButton>
+                        <CreateButton
+                            className="button-delete critical"
+                            size="large"
+                            variant="contained"
+                            disabled={!createButtonEnabled}
+                            name="delete"
+                            onClick={handleButton}
+                        >
+                            삭제하기
                         </CreateButton>
                     </div>
                 </div>

@@ -13,7 +13,7 @@ const StyleEyeTrackBox = styled.div`
         box-sizing: border-box;
         background-color: white;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 11px;
+        border-radius: 10px;
         padding: 30px 32px;
     }
     & .eyetrack-right {
@@ -22,7 +22,7 @@ const StyleEyeTrackBox = styled.div`
         box-sizing: border-box;
         background-color: white;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 11px;
+        border-radius: 10px;
         padding: 30px 32px;
         overflow: auto;
     }

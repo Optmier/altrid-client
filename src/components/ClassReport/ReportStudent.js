@@ -385,7 +385,7 @@ function ReportStudent({ history, match }) {
         if (!studentsData || !studentsData.length) return;
         const currentStudent = studentsData.filter((d) => d.student_id === queryUserId)[0];
         setCurrentStudentData(currentStudent);
-        // console.log(currentStudent);
+        console.log(currentStudent);
         setStdName(currentStudent.name);
         setSubmittedDate(moment(currentStudent.updated).format('YY.MM.DD HH:mm'));
         setScorePercentage(currentStudent.score_percentage);

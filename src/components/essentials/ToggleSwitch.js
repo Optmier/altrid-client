@@ -103,7 +103,7 @@ const DrawerSwitch = withStyles((theme) => ({
 //type : share(과제진행 vs 과제완료), drawer (drawer에 있는 toggle)
 //toggle : toggle 초기 state -> true, false
 //name :
-function ToggleSwitch({ type, toggle, handleToggleChange, name }) {
+function ToggleSwitch({ isStarted, type, toggle, handleToggleChange, name }) {
     toggle ? (toggle = true) : (toggle = false);
     return (
         <div style={{ display: 'inline' }}>
@@ -117,7 +117,11 @@ function ToggleSwitch({ type, toggle, handleToggleChange, name }) {
                             onChange={handleToggleChange}
                             name={name}
                         />
-                        {toggle ? <div className="toggle-on-ment">과제 진행중</div> : <div className="toggle-off-ment">과제 완료됨</div>}
+                        {toggle ? (
+                            <div className="toggle-on-ment">과제 진행중</div>
+                        ) : (
+                            <div className="toggle-off-ment">{isStarted ? '과제 완료됨' : '과제 시작전'}</div>
+                        )}
                     </>
                 ) : type === 'share2' ? (
                     <>
@@ -133,7 +137,7 @@ function ToggleSwitch({ type, toggle, handleToggleChange, name }) {
                                 과제 진행중
                             </div>
                         ) : (
-                            <div className="toggle-off-ment">과제 완료됨</div>
+                            <div className="toggle-off-ment">{isStarted ? '과제 완료됨' : '과제 시작전'}</div>
                         )}
                     </>
                 ) : (

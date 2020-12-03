@@ -46,7 +46,6 @@ function Login({ history }) {
         teachers: [],
     });
     const [requestButtonEnable, setRequestButtonEnable] = useState(true);
-    window.setLoginStep = setLoginStep;
 
     const loginMethod = (email, authId) => {
         Axios.post(
@@ -324,6 +323,7 @@ function Login({ history }) {
             localStorage.setItem('loginFor', queryUserType);
             setUsertype(queryUserType);
         }
+        setLoginStep(0);
     }, [history.location]);
 
     const getContentsForStep = (step) => {

@@ -5,15 +5,27 @@ import DialogContent from '@material-ui/core/DialogContent';
 import ClassDialoglDate from './ClassDialoglDate';
 import ClassDialogTest from './ClassDialogTest';
 import styled from 'styled-components';
+import CloseIcon from '@material-ui/icons/Close';
 
 const StyleModalButton = styled.button`
     cursor: pointer;
-    border-radius: 11px;
+    border-radius: 10px;
     padding: 0.5rem 2rem;
     background-color: #13e2a1;
     color: white;
     font-size: 0.9rem;
     min-width: 120px;
+
+    &.critical {
+        background-color: rgba(255, 92, 92, 0.85);
+    }
+`;
+
+const ModalCloseButton = styled.div`
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
 `;
 
 function ClassDialog({ type, subType, open, handleDialogClose }) {
@@ -22,6 +34,9 @@ function ClassDialog({ type, subType, open, handleDialogClose }) {
 
     return (
         <Dialog open={open} onClose={handleDialogClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+            <ModalCloseButton className="close-icon" onClick={handleDialogClose}>
+                <CloseIcon />
+            </ModalCloseButton>
             <div style={{ padding: '2rem' }}>
                 <DialogContent>
                     {type === 'date' ? (

@@ -28,12 +28,12 @@ function LeftNav({ match }) {
     const [teacherData, setTeacherData] = useState([]);
 
     useEffect(() => {
-        if (!sessions.userType) return;
-
+        if (!sessions || !sessions.userType || !sessions.academyName) return;
         if (sessions.userType === 'teachers')
             Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
                 .then((res) => {
                     setStudentData(res.data);
+                    window.studentsInCurrentClass = res.data.length || 0;
                 })
                 .catch((err) => {
                     console.error(err);
@@ -46,7 +46,7 @@ function LeftNav({ match }) {
             .catch((err) => {
                 console.error(err);
             });
-    }, [data, sessions]);
+    }, [sessions]);
 
     return (
         <div className="left-nav-root">
@@ -72,7 +72,7 @@ function LeftNav({ match }) {
                             <div className="draft-ment">
                                 현재 생성된 과제는
                                 <br />
-                                <b>총 {data ? data.length : 0}개</b> 입니다.
+                                <b>총 {data ? data.length : '-'}개</b> 입니다.
                             </div>
 
                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -91,15 +91,15 @@ function LeftNav({ match }) {
             <div className="left-nav-box">
                 <div className="box-wrapper">
                     <h5>{teacherData ? teacherData['class_name'] : ''} 반</h5>
-                    {sessions.userType === 'students' ? null : (
-                        <>
-                            <p>{teacherData ? teacherData['description'] : ''}</p>
+                    <>
+                        <p>{teacherData ? teacherData['description'] : ''}</p>
+                        {sessions.userType === 'students' ? null : (
                             <div className="info-num">
                                 <img alt="student_num" src={People} />
                                 <p>학생 수 {studentData.length}명</p>
                             </div>
-                        </>
-                    )}
+                        )}
+                    </>
                 </div>
             </div>
 

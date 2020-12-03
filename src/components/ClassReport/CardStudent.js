@@ -12,7 +12,7 @@ const StyleState = styled.div`
     height: 22px;
     font-size: 8px;
     color: white;
-    border-radius: 11px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;

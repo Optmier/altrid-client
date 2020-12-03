@@ -18,6 +18,7 @@ import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
+import { useSelector } from 'react-redux';
 
 const pad = (n, width) => {
     n = n + '';
@@ -58,6 +59,7 @@ const StudentCardHeader = styled.div`
 `;
 
 function ReportClass({ match }) {
+    const serverdate = useSelector((state) => state.RdxServerDate);
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
@@ -301,7 +303,10 @@ function ReportClass({ match }) {
         setStartDate(moment(mainReportData.created).format('MM.DD HH:mm'));
         setDueDate(moment(mainReportData.due_date).format('MM.DD HH:mm'));
 
-        if (new Date() >= new Date(moment(mainReportData.due_date).format())) {
+        if (
+            serverdate.datetime > new Date(mainReportData.due_date).getTime() ||
+            serverdate.datetime < new Date(mainReportData.created).getTime()
+        ) {
             setToggleState({ checked: false });
         } else {
             setToggleState({ checked: true });
@@ -384,6 +389,9 @@ function ReportClass({ match }) {
                                 <div className="left-bottom">
                                     <IsPresence type="eye" able={eyetrack} align="right" />
                                     <ToggleSwitch
+                                        isStarted={
+                                            new Date(mainReportData ? mainReportData.created : null).getTime() <= serverdate.datetime
+                                        }
                                         toggle={toggleState['checked']}
                                         handleToggleChange={handleToggleChange}
                                         type="share2"

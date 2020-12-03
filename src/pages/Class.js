@@ -10,57 +10,63 @@ import Error from './Error';
 import { useSelector, useDispatch } from 'react-redux';
 import BackdropComponent from '../components/essentials/BackdropComponent';
 import { getDrafts } from '../redux_modules/assignmentDraft';
+import ErrorRestricted from './ErrorRestricted';
+import { useState } from 'react';
 
-const ClassPageSwitcher = ({ match }) => {
-    let { id } = match.params;
-
+const ClassPageSwitcher = (match, sessions) => {
+    if (!match.id || !match.path) return <></>;
+    const { id, path } = match;
     switch (id) {
         case `draft`:
+            if (sessions.userType === 'students') return <ErrorRestricted />;
             return <Draft />;
         case 'manage':
+            if (sessions.userType === 'students') return <ErrorRestricted />;
             return <Manage />;
         case 'share':
             return (
                 <>
-                    <Route path={`${match.path}`} exact component={Share} />
-                    <Route path={`${match.path}/:activedNum`} component={Reportes} />
+                    <Route path={`${path}`} exact component={Share} />
+                    <Route path={`${path}/:activedNum`} component={Reportes} />
                 </>
             );
-
         default:
-            return (
-                <>
-                    <Error></Error>
-                </>
-            );
+            return <Error />;
     }
 };
 
 function Class({ match }) {
     const dispatch = useDispatch();
-
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
         loading: false,
         data: null,
         error: null,
     };
     const sessions = useSelector((state) => state.RdxSessions);
+    const [stMatch, setStMatch] = useState({ id: null, path: null });
+    const [RenderSubPage, setRenderSubPage] = useState(null);
 
     useEffect(() => {
+        if (!sessions || !sessions.userType || !sessions.academyName) return;
+        setStMatch({ ...stMatch, id: match.params.id, path: match.path });
         if (sessions.userType === 'teachers') dispatch(getDrafts());
     }, [sessions]);
+
+    useEffect(() => {
+        if (!stMatch.id || !stMatch.path) return;
+        setRenderSubPage(ClassPageSwitcher(stMatch, sessions));
+    }, [stMatch]);
 
     return (
         <>
             <LeftNav />
-
             <div className="class-page-root">
-                {loading && !data ? (
-                    <BackdropComponent open={true} />
-                ) : error ? (
+                <BackdropComponent open={loading && !data && !error} />
+                {error ? (
                     <Error />
-                ) : !data ? null : (
-                    <ClassPageSwitcher match={match} />
+                ) : !data && sessions.userType === 'teachers' ? null : (
+                    // <ClassPageSwitcher sessions={sessions} match={stMatch} />
+                    RenderSubPage
                 )}
             </div>
         </>

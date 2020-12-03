@@ -69,6 +69,7 @@ function TeachersList({ id, onChange, value, defaultValue, options, getOptionLab
     return (
         <Autocomplete
             multiple
+            noOptionsText="선생님이 없습니다!"
             id={id}
             onChange={onChange}
             // defaultValue={defaultValue}

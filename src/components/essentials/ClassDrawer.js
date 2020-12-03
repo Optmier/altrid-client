@@ -4,13 +4,14 @@ import ToggleSwitch from './ToggleSwitch';
 import { useSelector, useDispatch } from 'react-redux';
 import { postDraft, patchDraft } from '../../redux_modules/assignmentDraft';
 import { withRouter } from 'react-router-dom';
-import { Dialog } from '@material-ui/core';
+import { Button, Dialog, withStyles } from '@material-ui/core';
 import TOFELEditor from '../TOFELEditor/TOFELEditor';
 import styled from 'styled-components';
 import { SecondtoMinute } from './TimeChange';
 import ClassDialog from '../essentials/ClassDialog';
 import { changeDueDate } from '../../redux_modules/assignmentActived';
-import BackdropComponent from './BackdropComponent';
+// import BackdropComponent from './BackdropComponent';
+import CloseIcon from '@material-ui/icons/Close';
 
 const StyleSelectdiv = styled.div`
     font-size: 0.85rem;
@@ -26,6 +27,22 @@ const StyleSelectdiv = styled.div`
     word-wrap: break-word;
     line-height: 1.5rem;
 `;
+
+const CreateButton = withStyles((theme) => ({
+    root: {
+        borderRadius: '10px',
+        backgroundColor: '#d4d4d4',
+        fontFamily: 'inherit',
+        fontSize: '0.9rem',
+        width: '150px',
+        height: '56px',
+
+        '&.primary': {
+            backgroundColor: '#13e2a1',
+            color: '#fff',
+        },
+    },
+}))(Button);
 
 //ver : draft(생성), modify(수정)
 function ClassDrawer({ handleClose, cardData, ver, match, history }) {
@@ -254,7 +271,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                 setDateDialogopen(false);
                 dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, activedDirect));
             } else {
-                alert('과제 기한 변경은 필수항목입니다.');
+                alert('과제 기한 변경은 필수사항 입니다.');
             }
         } else {
             setDateDialogopen(false);
@@ -324,17 +341,22 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     return (
         <>
             <Dialog fullScreen open={editDialogOpen} onClose={handleEditDialogClose}>
-                <TOFELEditor
-                    mode
-                    datas={contentsData}
-                    onChange={handleChangeContents}
-                    onClose={handleEditDialogClose}
-                    onEditFinish={handleEditFinished}
-                />
+                <div style={{ height: 'calc(100% - 52px)' }}>
+                    <TOFELEditor
+                        mode
+                        datas={contentsData}
+                        onChange={handleChangeContents}
+                        onClose={handleEditDialogClose}
+                        onEditFinish={handleEditFinished}
+                    />
+                </div>
             </Dialog>
             <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
 
             <div className="class-drawer-root">
+                <div className="close-icon" onClick={handleClose}>
+                    <CloseIcon />
+                </div>
                 <div style={{ width: '100%' }}>
                     {ver === 'draft' ? (
                         <h2 className="drawer-title">과제를 생성해보세요 :)</h2>
@@ -528,17 +550,27 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                 <div className="drawer-footer">
                     {ver === 'draft' ? (
                         <>
-                            <button className="drawer-button" name="drawer-share" onClick={onDrawerErrorCheck}>
+                            <CreateButton className="drawer-button" name="drawer-share" variant="contained" onClick={onDrawerErrorCheck}>
                                 생성 및 게시하기
-                            </button>
-                            <button className="drawer-button" name="drawer-draft" onClick={onDrawerErrorCheck}>
+                            </CreateButton>
+                            <CreateButton
+                                className="drawer-button primary"
+                                name="drawer-draft"
+                                variant="contained"
+                                onClick={onDrawerErrorCheck}
+                            >
                                 생성하기
-                            </button>
+                            </CreateButton>
                         </>
                     ) : (
-                        <button className="drawer-button" name="drawer-share" onClick={onDrawerErrorCheck}>
+                        <CreateButton
+                            className="drawer-button primary"
+                            name="drawer-share"
+                            variant="contained"
+                            onClick={onDrawerErrorCheck}
+                        >
                             수정하기
-                        </button>
+                        </CreateButton>
                     )}
                 </div>
             </div>

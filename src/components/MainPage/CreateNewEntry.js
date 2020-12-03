@@ -10,10 +10,12 @@ import { $_classDefault } from '../../configs/front_urls';
 
 const CreateButton = withStyles((theme) => ({
     root: {
-        color: '#474747',
+        borderRadius: '10px',
+        backgroundColor: '#d4d4d4',
         fontFamily: 'inherit',
-        minWidth: 128,
-        minHeight: 52,
+        fontSize: '0.9rem',
+        width: '150px',
+        height: '56px',
     },
 }))(Button);
 
@@ -156,7 +158,7 @@ function CreateNewEntry({ history, handleClose }) {
                         onChange={handleInputChange}
                         value={inputState['entry_new_students']}
                         options={studentsData}
-                        getOptionLabel={(option) => option.name + ' - ' + option.student_id}
+                        getOptionLabel={(option) => option.name}
                         loading={loading}
                         placeholder="수강생 선택"
                     />

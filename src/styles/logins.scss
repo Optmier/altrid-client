@@ -27,6 +27,7 @@
         justify-content: center;
         position: relative;
         height: calc(100vh - 144px - 16px);
+        min-height: 680px;
         max-height: 800px;
 
         & .login-form {

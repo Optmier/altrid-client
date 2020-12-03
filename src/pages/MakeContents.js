@@ -19,15 +19,18 @@ function MakeContents({ match, history }) {
         Axios.get(`${apiUrl}/assignment-admin/${id}`, { withCredentials: true })
             .then((res) => {
                 const { title, time_limit, eyetrack, contents_data, file_url } = res.data;
-                let dataParsed = {
-                    title: '',
-                    passageForRender: '',
-                    passageForEditor: `{"ops":[{"insert":"\n"}]}`,
-                    problemDatas: [],
-                };
+                let dataParsed = [
+                    {
+                        title: [''],
+                        passageForRender: [''],
+                        passageForEditor: `{"ops":[{"insert":"\n"}]}`,
+                        problemDatas: [],
+                    },
+                ];
                 if (contents_data) {
                     dataParsed = JSON.parse(contents_data);
                 }
+                console.log(dataParsed);
                 setInfoData({ ...infoData, title: title, time_limit: time_limit, eyetrack: eyetrack });
                 setTestData(dataParsed);
                 setRequestFile(file_url);

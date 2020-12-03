@@ -4,6 +4,7 @@
 
 import React, { FC } from 'react';
 import { Route } from 'react-router-dom';
+import ErrorRestricted from '../../pages/ErrorRestricted';
 
 const RestrictRoute = ({ role, allowedTypes, component: Component, ...rest }) => {
     return (
@@ -12,7 +13,7 @@ const RestrictRoute = ({ role, allowedTypes, component: Component, ...rest }) =>
             render={(props) => {
                 // 권한 체크
                 if (!allowedTypes.includes(role)) {
-                    return <div>잘못된 접근입니다!</div>;
+                    return <ErrorRestricted />;
                 }
 
                 if (Component) {

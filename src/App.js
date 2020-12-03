@@ -14,6 +14,7 @@ import LoginAdmin from './pages/LoginAdmin';
 import { apiUrl } from './configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveSession, deleteSession, updateSession } from './redux_modules/sessions';
+import { getServerDate } from './redux_modules/serverdate';
 import { $_loginAdmin, $_loginDefault, $_loginStudent, $_loginTeacher, $_root } from './configs/front_urls';
 import AdminMain from './pages/AdminMain';
 import AssignmentDoItNow from './pages/AssignmentDoItNow';
@@ -94,7 +95,7 @@ function App({ history }) {
                 // console.log(err.response);
                 if (err.response.status === 401) {
                     if (!loginUrls.includes(history.location.pathname)) {
-                        alert('로그인이 필요합니다.');
+                        // alert('로그인이 필요합니다.');
                         history.replace($_loginDefault);
                     }
                 } else if (err.response.data.code === 'TokenExpiredError') {
@@ -105,10 +106,12 @@ function App({ history }) {
     }, [history.location]);
 
     useEffect(() => {
-        if (!sessions || !sessions.exp) return;
+        if (!sessions || !sessions.exp || !sessions.academyName) return;
+        dispatch(getServerDate());
         !window.tokenRefresher &&
             (window.tokenRefresher = setInterval(() => {
                 /** Token 만료 전 재발급 */
+                // dispatch(getServerDate());
                 RefreshToken(sessions.exp, 1800)
                     .then((res) => {
                         updateSessions({ iat: res.auth.iat, exp: res.auth.exp });
