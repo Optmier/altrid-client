@@ -20,6 +20,9 @@ import AdminMain from './pages/AdminMain';
 import AssignmentDoItNow from './pages/AssignmentDoItNow';
 import RestrictRoute from './components/essentials/RestrictRoute';
 import RefreshToken from './components/essentials/Authentication';
+import channelIOAccessKey from './components/ChannelIO/accessKeys';
+import ChannelService from './components/ChannelIO/ChannelService';
+import generateHash from './components/ChannelIO/generateHash';
 
 window.lastUrl = '/';
 window.tokenRefresher = null;
@@ -36,7 +39,6 @@ function App({ history }) {
         [dispatch],
     );
     const updateSessions = useCallback((updateStates) => dispatch(updateSession(updateStates)), [dispatch]);
-    // window.updateSessions =
     const deleteSessions = useCallback(() => dispatch(deleteSession()), [dispatch]);
     const sessions = useSelector((state) => state.RdxSessions);
 
@@ -106,7 +108,26 @@ function App({ history }) {
     }, [history.location]);
 
     useEffect(() => {
-        if (!sessions || !sessions.exp || !sessions.academyName) return;
+        if (channelIOAccessKey.pluginKey) {
+            ChannelService.shutdown();
+            ChannelService.boot({
+                pluginKey: channelIOAccessKey.pluginKey, //please fill with your plugin key
+                memberId: sessions.authId,
+                profile: {
+                    name: sessions.userName,
+                    email: null,
+                    mobileNumber: null,
+                    userType: sessions.userType,
+                    academyCode: sessions.academyCode,
+                    loginedAt: sessions.iat,
+                    referrer: window.location.href,
+                },
+                memberHash: generateHash(sessions.authId || ''),
+            });
+        }
+        if (!sessions || !sessions.exp || !sessions.academyName) {
+            return;
+        }
         dispatch(getServerDate());
         !window.tokenRefresher &&
             (window.tokenRefresher = setInterval(() => {

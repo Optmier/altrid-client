@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { startTimer, addSecond } from '../redux_modules/timer';
 import { getServerDate } from '../redux_modules/serverdate';
 import { useBeforeunload } from 'react-beforeunload';
+import ChannelService from '../components/ChannelIO/ChannelService';
 
 const getDistance = (pos1, pos2) => {
     const distX = Math.abs(pos1.x - pos2.x);
@@ -204,6 +205,8 @@ function AssignmentDoItNow({ history, match }) {
         }
 
         if (!serverdate.datetime) return;
+
+        ChannelService.hideButton();
 
         const { classnum, assignmentid } = match.params;
         Axios.get(`${apiUrl}/assignment-actived/${classnum}/${assignmentid}`, { withCredentials: true })
