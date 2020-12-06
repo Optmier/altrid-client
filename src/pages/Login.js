@@ -112,7 +112,7 @@ function Login({ history }) {
     };
 
     const onFailedGoogleAuth = (err) => {
-        console.err(err);
+        console.error(err);
         alert('로그인에 실패했습니다. 에러코드 :: ' + err);
     };
 
@@ -129,7 +129,7 @@ function Login({ history }) {
         Axios.get(`${apiUrl}/${usertype}/exists/${profile.id}`, { withCredentials: true })
             .then((res) => {
                 const isExists = res.data;
-                console.log(res);
+                // console.log(res);
                 // 존재하면 로그인
                 if (isExists) {
                     loginMethod(profile.kakao_account.email, profile.id + '');
@@ -199,7 +199,7 @@ function Login({ history }) {
         const approved = usertype === 'students' ? 1 : 0;
         // 현재 등록하는 대상이 학생인 경우 선생님 선택 목록 구성
         const teachers = inputState.teacher_selected.map((data) => [data.auth_id, authId, academyCode]);
-        console.log(email, name, authId, authWith, academyCode, phone, approved, teachers);
+        // console.log(email, name, authId, authWith, academyCode, phone, approved, teachers);
 
         if (usertype === 'students') {
             Axios.post(
@@ -215,7 +215,7 @@ function Login({ history }) {
                 { withCredentials: true },
             )
                 .then((res1) => {
-                    console.log(res1);
+                    // console.log(res1);
                     if (teachers.length > 0)
                         Axios.post(`${apiUrl}/students-in-teacher/first`, { teachers: teachers }, { withCredentials: true })
                             .then((res2) => {
@@ -302,7 +302,7 @@ function Login({ history }) {
     }, [usertype, academyInfo, inputState, profileData]);
 
     useEffect(() => {
-        console.log(history);
+        // console.log(history);
         if (!localStorage.getItem('loginFor')) localStorage.setItem('loginFor', 'students');
         const urlSearchParams = new URLSearchParams(history.location.search);
         const queryUserType = urlSearchParams.get('user') || localStorage.getItem('loginFor');

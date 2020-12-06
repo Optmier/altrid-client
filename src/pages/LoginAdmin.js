@@ -18,11 +18,11 @@ function LoginAdmin({ history }) {
             { withCredentials: true },
         )
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 history.replace('/admins');
             })
             .catch((err) => {
-                console.log(err.response);
+                console.error(err.response);
                 switch (err.response.data.code) {
                     case 'not-in-database':
                         alert('관리자 정보가 없습니다.\n등록을 해주세요.');
@@ -49,7 +49,7 @@ function LoginAdmin({ history }) {
             { withCredentials: true },
         )
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 history.replace('/admins');
             })
             .catch((err) => {

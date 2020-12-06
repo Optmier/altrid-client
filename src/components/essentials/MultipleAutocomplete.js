@@ -75,6 +75,7 @@ function MultipleAutocomplete({
     defaultValue,
     options,
     getOptionLabel,
+    renderOption,
     loading,
     error,
     placeholder,
@@ -99,11 +100,7 @@ function MultipleAutocomplete({
             options={options.filter((option) => selectedValue.filter((selected) => selected.student_id === option.student_id).length < 1)}
             getOptionLabel={getOptionLabel}
             loading={loading}
-            renderOption={(option, state) => (
-                <React.Fragment>
-                    {option.name} [{option.student_id}]
-                </React.Fragment>
-            )}
+            renderOption={renderOption}
             renderInput={(params) => (
                 <EdTextField
                     {...params}
@@ -138,6 +135,11 @@ MultipleAutocomplete.defaultProps = {
     error: false,
     placeholder: '다중 선택',
     getOptionLabel: (option) => option.name,
+    renderOption: (option, state) => (
+        <React.Fragment>
+            {option.name} [{option.student_id}]
+        </React.Fragment>
+    ),
     onChange() {},
 };
 

@@ -6,9 +6,17 @@ import { apiUrl } from '../configs/configs';
 import EyetrackerCore from '../components/essentials/EyetrackerCore';
 import { useSelector, useDispatch } from 'react-redux';
 import { startTimer, addSecond } from '../redux_modules/timer';
-import { getServerDate } from '../redux_modules/serverdate';
 import { useBeforeunload } from 'react-beforeunload';
 import ChannelService from '../components/ChannelIO/ChannelService';
+import styled from 'styled-components';
+
+const ActivityRoot = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+`;
 
 const getDistance = (pos1, pos2) => {
     const distX = Math.abs(pos1.x - pos2.x);
@@ -284,7 +292,7 @@ function AssignmentDoItNow({ history, match }) {
                         .catch((err) => {
                             console.error(err);
                             alert('초기화 에러가 발생하였습니다.\n증상이 지속될 경우 관리자에 문의 바랍니다.');
-                            window.close();
+                            // window.close();
                         });
 
                     let unparsedContents = res.data.contents_data
@@ -377,7 +385,7 @@ function AssignmentDoItNow({ history, match }) {
             ) : null}
 
             {originalDatas.contents_data && remainTime !== null && savedData !== undefined && timerState.isPlaying ? (
-                <div className="activity-root" ref={rootRef}>
+                <ActivityRoot className="activity-root" ref={rootRef}>
                     <SmartTOFELRender
                         timer={remainTime}
                         timeLimit={originalDatas.time_limit}
@@ -390,7 +398,7 @@ function AssignmentDoItNow({ history, match }) {
                         onEnd={onEnd}
                         onUserAnswerChanged={onUserAnswerChanged}
                     />
-                </div>
+                </ActivityRoot>
             ) : null}
         </>
     );

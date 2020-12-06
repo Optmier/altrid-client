@@ -31,15 +31,17 @@ const StyleSelectdiv = styled.div`
 const CreateButton = withStyles((theme) => ({
     root: {
         borderRadius: '10px',
-        backgroundColor: '#d4d4d4',
+        backgroundColor: '#a6a6a6',
+        color: '#fff',
         fontFamily: 'inherit',
         fontSize: '0.9rem',
         width: '150px',
         height: '56px',
-
         '&.primary': {
             backgroundColor: '#13e2a1',
-            color: '#fff',
+        },
+        '& > span': {
+            pointerEvents: 'none',
         },
     },
 }))(Button);
@@ -364,8 +366,8 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                         <>
                             <h2 className="drawer-modify-title">과제 수정이 가능합니다!</h2>
                             <p className="drawer-modify-subTitle">
-                                수정된 정보는 <b style={{ fontWeight: '600' }}>이미 공유된 과제</b>에 반영되지 않습니다. 수정된 정보의
-                                반영을 원하시는 경우에는 다시 공유를 해주시길 바랍니다.
+                                수정된 정보는 <b style={{ fontWeight: '600' }}>이미 게시된 과제</b>에 반영되지 않습니다. 수정된 정보의
+                                반영을 원하시는 경우에는 다시 게시를 해주시길 바랍니다.
                             </p>
                         </>
                     )}
@@ -550,7 +552,12 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                 <div className="drawer-footer">
                     {ver === 'draft' ? (
                         <>
-                            <CreateButton className="drawer-button" name="drawer-share" variant="contained" onClick={onDrawerErrorCheck}>
+                            <CreateButton
+                                className="drawer-button primary"
+                                name="drawer-share"
+                                variant="contained"
+                                onClick={onDrawerErrorCheck}
+                            >
                                 생성 및 게시하기
                             </CreateButton>
                             <CreateButton

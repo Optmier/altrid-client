@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
 
 function ColumnChartProblem({ datas }) {
-    console.log(datas);
+    // console.log(datas);
     let state = {};
 
     state = {

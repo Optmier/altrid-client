@@ -4,6 +4,7 @@ import { Button, Dialog } from '@material-ui/core';
 import { useRef } from 'react';
 import BackdropComponent from './BackdropComponent';
 import styled from 'styled-components';
+import { buildMode } from '../../configs/configs';
 
 const Assistance = styled.div``;
 const CalibDot = styled.div`
@@ -223,6 +224,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         completedCalib = true;
         Webgazer.removeMouseEventListeners();
         Webgazer.setVideoViewerSize(0, 0);
+        if (buildMode) Webgazer.showPredictionPoints(false);
         onAfterCalib();
     };
 
@@ -290,7 +292,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         if (!tickerTimeout)
             tickerTimeout = setTimeout(() => {
                 if (!data) {
-                    console.log('22 out of range! not recorded.');
+                    // console.log('22 out of range! not recorded.');
                     captureChanged(null, _timeElapsed);
                     tickerTimeout = null;
                     return;

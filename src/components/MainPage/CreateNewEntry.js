@@ -11,7 +11,8 @@ import { $_classDefault } from '../../configs/front_urls';
 const CreateButton = withStyles((theme) => ({
     root: {
         borderRadius: '10px',
-        backgroundColor: '#d4d4d4',
+        backgroundColor: '#a6a6a6',
+        color: '#fff',
         fontFamily: 'inherit',
         fontSize: '0.9rem',
         width: '150px',
@@ -71,14 +72,14 @@ function CreateNewEntry({ history, handleClose }) {
                         { withCredentials: true },
                     )
                         .then((res2) => {
-                            console.log('클래스가 생성됨.');
+                            // console.log('클래스가 생성됨.');
                             history.push(`${$_classDefault}/${res1.data.insertId}/draft`);
                         })
                         .catch((err) => {
                             console.error(err);
                         });
                 else {
-                    console.log('클래스가 생성됨.');
+                    // console.log('클래스가 생성됨.');
                     history.push(`${$_classDefault}/${res1.data.insertId}/draft`);
                 }
             })
@@ -159,6 +160,11 @@ function CreateNewEntry({ history, handleClose }) {
                         value={inputState['entry_new_students']}
                         options={studentsData}
                         getOptionLabel={(option) => option.name}
+                        renderOption={(option, state) => (
+                            <React.Fragment>
+                                {option.name} [{option.email}]
+                            </React.Fragment>
+                        )}
                         loading={loading}
                         placeholder="수강생 선택"
                     />

@@ -471,7 +471,7 @@ function ReportClass({ match }) {
                                 ) : null}
                                 <select name="chart-option" onChange={handleSelect}>
                                     <option value="0">문제별 정답률</option>
-                                    {achievesForTypes.value > 100 ? <option value="1">유형별 정답률</option> : null}
+                                    {achievesForTypes.value >= 100 ? <option value="1">유형별 정답률</option> : null}
                                 </select>
                             </div>
                             {selectState === '0' ? (

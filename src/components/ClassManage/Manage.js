@@ -13,7 +13,8 @@ import { Button, withStyles } from '@material-ui/core';
 const CreateButton = withStyles((theme) => ({
     root: {
         borderRadius: '10px',
-        backgroundColor: '#d4d4d4',
+        backgroundColor: '#a6a6a6',
+        color: '#fff',
         fontFamily: 'inherit',
         fontSize: '0.9rem',
         width: '150px',
@@ -21,7 +22,6 @@ const CreateButton = withStyles((theme) => ({
 
         '&.critical': {
             backgroundColor: 'rgba(255, 92, 92, 0.85)',
-            color: '#fff',
         },
     },
 }))(Button);
@@ -55,7 +55,7 @@ function Manage({ match, history }) {
     const fetchStudents = () => {
         Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
             .then((res) => {
-                console.log('선생님의 학생들 : ', res.data);
+                // console.log('선생님의 학생들 : ', res.data);
                 setStudentsData(res.data);
             })
             .catch((err) => {
@@ -259,6 +259,11 @@ function Manage({ match, history }) {
                                         value={inputState['entry_new_students']}
                                         options={studentsData}
                                         getOptionLabel={(option) => option.name}
+                                        renderOption={(option, state) => (
+                                            <React.Fragment>
+                                                {option.name} [{option.email}]
+                                            </React.Fragment>
+                                        )}
                                         placeholder="수강생 선택"
                                     />
                                 ) : null}

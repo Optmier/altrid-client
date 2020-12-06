@@ -30,7 +30,7 @@ function MakeContents({ match, history }) {
                 if (contents_data) {
                     dataParsed = JSON.parse(contents_data);
                 }
-                console.log(dataParsed);
+                // console.log(dataParsed);
                 setInfoData({ ...infoData, title: title, time_limit: time_limit, eyetrack: eyetrack });
                 setTestData(dataParsed);
                 setRequestFile(file_url);

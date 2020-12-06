@@ -81,7 +81,7 @@ function ClassDialoglDate({ subType }) {
         <StyleModalShare>
             {subType === 'init' ? (
                 <>
-                    <h4 className="modal-share-title">과제를 공유하시겠습니까?</h4>
+                    <h4 className="modal-share-title">과제를 게시하시겠습니까?</h4>
                     <p className="modal-share-subTitle">과제 게시 후에도 기한수정이 가능합니다.</p>
                 </>
             ) : (

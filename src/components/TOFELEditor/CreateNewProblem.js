@@ -71,10 +71,13 @@ const CreateButtonContainer = styled.div`
 
 const CreateButton = withStyles((theme) => ({
     root: {
-        color: '#474747',
+        borderRadius: '10px',
+        backgroundColor: '#a6a6a6',
+        color: '#fff',
         fontFamily: 'inherit',
-        minWidth: 128,
-        minHeight: 52,
+        fontSize: '0.9rem',
+        width: '150px',
+        height: '56px',
     },
 }))(Button);
 

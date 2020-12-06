@@ -8,10 +8,13 @@ import { apiUrl } from '../../configs/configs';
 
 const AddButton = withStyles((theme) => ({
     root: {
-        color: '#474747',
+        borderRadius: '10px',
+        backgroundColor: '#a6a6a6',
+        color: '#fff',
         fontFamily: 'inherit',
-        minWidth: 128,
-        minHeight: 52,
+        fontSize: '0.9rem',
+        width: '150px',
+        height: '56px',
     },
 }))(Button);
 
@@ -36,12 +39,12 @@ function AddTeacher({ handleClose }) {
         }
         Axios.get(`${apiUrl}/teachers/in-class/current/${inputState}`, { withCredentials: true })
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 if (!res.data.is_exists) {
                     setErrorMessage('존재하지 않는 이메일 또는 아이디 값입니다.');
                     setInputError(true);
                 } else {
-                    console.log(res);
+                    // console.log(res);
                     setInputError(false);
                     Axios.post(
                         `${apiUrl}/students-in-teacher`,

@@ -7,6 +7,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Button, IconButton } from '@material-ui/core';
 import ProblemComponent from './ProblemComponent';
+import * as $ from 'jquery';
 
 const pad = (n, width) => {
     n = n + '';
@@ -243,7 +244,7 @@ function SmartTOFELRender({
             if (!conf) return;
         }
         setCurrentLog((currentLog) => {
-            console.log(timeLimit, timer);
+            // console.log(timeLimit, timer);
             const state = {
                 ...currentLog,
                 action: 'end',
@@ -316,6 +317,18 @@ function SmartTOFELRender({
                 // console.log(state);
                 return state;
             });
+        }
+        // 지문
+        const $passage = $('.passages');
+        // 문제
+        const $problems = $('.problems');
+        /** 세트 번호 다를시 지문 영역 스크롤 초기화 */
+        if (problemDatas[lastProblemIdx].setNum !== problemDatas[currentProblemIdx].setNum) {
+            $passage.scrollTop(0);
+        }
+        /** 문제 바뀔시 문제 영역 스크롤 초기화 */
+        if (currentProblemIdx !== lastProblemIdx) {
+            $problems.scrollTop(0);
         }
         setMetadata({
             ...metadata,

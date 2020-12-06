@@ -255,17 +255,17 @@ function ReportStudent({ history, match }) {
         }
         Axios.post(`${apiUrl}/auth/check-email-self`, { email: eraseConfirmFields.teacher_email }, { withCredentials: true })
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 if (res.data.ok) {
                     const conf = window.confirm('정말로 이 학생의 리포트를 초기화 하시겠습니까?');
                     if (!conf) return;
                     Axios.delete(`${apiUrl}/assignment-result/${activedNum}/${queryUserId}`, { withCredentials: true })
                         .then((res) => {
-                            console.log(res);
+                            // console.log(res);
                             history.replace(`/class/${num}/share/${activedNum}`);
                         })
                         .catch((err) => {
-                            console.log(err);
+                            console.error(err);
                         })
                         .finally(() => {
                             handleEraseConfirmClose();
@@ -385,7 +385,7 @@ function ReportStudent({ history, match }) {
         if (!studentsData || !studentsData.length) return;
         const currentStudent = studentsData.filter((d) => d.student_id === queryUserId)[0];
         setCurrentStudentData(currentStudent);
-        console.log(currentStudent);
+        // console.log(currentStudent);
         setStdName(currentStudent.name);
         setSubmittedDate(moment(currentStudent.updated).format('YY.MM.DD HH:mm'));
         setScorePercentage(currentStudent.score_percentage);

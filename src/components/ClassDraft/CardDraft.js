@@ -207,7 +207,7 @@ function CardDraft({ cardData, match, history }) {
                         <div className="card-title-p" title={cardData['title']}>
                             {cardData['title']}
                         </div>
-                        <span className="card-option" onClick={handleOptionClick}>
+                        <span className="card-option" onClick={handleOptionClick} style={{ padding: '0 2px' }}>
                             <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
                                 <circle cx="16.5" cy="2.5" r="2.5" fill="#C4C4C4" />
@@ -226,7 +226,7 @@ function CardDraft({ cardData, match, history }) {
                         <div className="card-title-p" title={cardData['title']}>
                             {cardData['title']}
                         </div>
-                        <span className="card-option" onClick={handleOptionClick}>
+                        <span className="card-option" onClick={handleOptionClick} style={{ padding: '0 2px' }}>
                             <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
                                 <circle cx="16.5" cy="2.5" r="2.5" fill="white" />
@@ -271,7 +271,7 @@ function CardDraft({ cardData, match, history }) {
                         <div className="class-card-bottom-right">
                             {/* 시선흐름 유무 */}
                             <IsPresence type={'eye'} able={cardData['eyetrack']} />
-                            {/* 공유 유무 */}
+                            {/* 게시 유무 */}
                             <IsPresence type={'share'} able={cardData['actived_count']} />
                         </div>
                     </HtmlTooltip>
