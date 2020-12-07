@@ -10,9 +10,7 @@ function ColumnChartProblem({ datas }) {
         series: [
             {
                 name: '정답률',
-                data: Object.keys(datas)
-                    .filter((k) => k != 0)
-                    .map((k) => datas[k] * 100),
+                data: datas.map((v) => v.score * 100),
             },
         ],
         options: {
@@ -36,7 +34,7 @@ function ColumnChartProblem({ datas }) {
                 colors: ['transparent'],
             },
             xaxis: {
-                categories: ProblemCategories.filter((c) => c.id != 0).map((c) => c.name),
+                categories: datas.map((v) => ProblemCategories.filter((i) => i.id === v.category)[0].name),
             },
             yaxis: {},
             fill: {

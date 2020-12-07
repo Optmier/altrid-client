@@ -61,17 +61,21 @@ const ScoreItems = ({ title, score, total, children }) => {
         </div>
     );
 };
-const CompareItems = ({ title, contents, children }) => {
+const CompareItems = ({ title, contents, enabled, children }) => {
     return (
         <div className="card-item-student">
             {children}
             <div className="card-content-title-p">{title}</div>
-            {contents < 0 ? (
-                <div style={{ fontSize: '30px', color: '#F57C7C', fontWeight: '400' }}>{contents.toFixed(1)}%</div>
-            ) : contents === 0 ? (
-                <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>-</div>
+            {enabled ? (
+                contents < 0 ? (
+                    <div style={{ fontSize: '30px', color: '#F57C7C', fontWeight: '400' }}>{contents.toFixed(1)}%</div>
+                ) : contents === 0 ? (
+                    <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>-</div>
+                ) : (
+                    <div style={{ fontSize: '30px', color: '#7C88F5', fontWeight: '400' }}>+ {contents.toFixed(1)}%</div>
+                )
             ) : (
-                <div style={{ fontSize: '30px', color: '#7C88F5', fontWeight: '400' }}>+ {contents.toFixed(1)}%</div>
+                <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>-</div>
             )}
         </div>
     );
@@ -186,6 +190,7 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, history 
                         ) : null}
                         <CompareItems
                             title={'비교 성취도'}
+                            enabled={data.updated && data.tries}
                             contents={data.score_percentage - (!prevData || !prevData.score_percentage ? 0 : prevData.score_percentage)}
                         >
                             <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg">

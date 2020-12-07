@@ -9,35 +9,11 @@ function ColumnChart({ currentObjs, averageObjs }) {
         series: [
             {
                 name: '학생 정답률',
-                data: [
-                    currentObjs[1] * 100,
-                    currentObjs[2] * 100,
-                    currentObjs[3] * 100,
-                    currentObjs[4] * 100,
-                    currentObjs[5] * 100,
-                    currentObjs[6] * 100,
-                    currentObjs[7] * 100,
-                    currentObjs[8] * 100,
-                    currentObjs[9] * 100,
-                    currentObjs[10] * 100,
-                    // currentObjs[0] ? currentObjs[0] : null,
-                ],
+                data: currentObjs.map((v) => v.score * 100),
             },
             {
                 name: '평균 정답률',
-                data: [
-                    averageObjs[1] * 100,
-                    averageObjs[2] * 100,
-                    averageObjs[3] * 100,
-                    averageObjs[4] * 100,
-                    averageObjs[5] * 100,
-                    averageObjs[6] * 100,
-                    averageObjs[7] * 100,
-                    averageObjs[8] * 100,
-                    averageObjs[9] * 100,
-                    averageObjs[10] * 100,
-                    // averageObjs[0] ? averageObjs[0] : null,
-                ],
+                data: averageObjs.map((v) => v.score * 100),
             },
         ],
         options: {
@@ -62,19 +38,7 @@ function ColumnChart({ currentObjs, averageObjs }) {
                 colors: ['transparent'],
             },
             xaxis: {
-                categories: [
-                    problemCategories[0].name,
-                    problemCategories[1].name,
-                    problemCategories[2].name,
-                    problemCategories[3].name,
-                    problemCategories[4].name,
-                    problemCategories[5].name,
-                    problemCategories[6].name,
-                    problemCategories[7].name,
-                    problemCategories[8].name,
-                    problemCategories[9].name,
-                    // '기타',
-                ],
+                categories: currentObjs.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
             },
             yaxis: {
                 min: 0,

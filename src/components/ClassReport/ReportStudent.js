@@ -216,6 +216,7 @@ function ReportStudent({ history, match }) {
     const [aftChangedFaileds, setAftChangedFailds] = useState('-');
     /** 현재 학생 데이터 */
     const [currentStudentData, setCurrentStudentData] = useState({});
+    window.showdatas = currentStudentData;
     /** 이전 학생 데이터 */
     const [prevStudentData, setPrevStudentData] = useState(null);
     /** 문제 번호별 그룹화된 학생들 패턴 데이터 */
@@ -657,7 +658,13 @@ function ReportStudent({ history, match }) {
 
                 {achievesForTypes.value < 100 ? null : <div className="class-report-title">유형별 정답률</div>}
                 <section>
-                    {achievesForTypes.value < 100 ? null : <StudentTypeScore current={currentScoresPerType} total={averageScoresPerType} />}
+                    {achievesForTypes.value < 100 ? null : (
+                        <StudentTypeScore
+                            enabled={achievesForTypes.allExists}
+                            current={currentScoresPerType}
+                            total={averageScoresPerType}
+                        />
+                    )}
                     <StyleArrowButton>
                         <AnimScrollTo className="guide-show-analyze" to="analyze_page_start" spy={true} smooth={true} duration={700}>
                             {/* <div className="guide-show-analyze"> */}

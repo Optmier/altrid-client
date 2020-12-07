@@ -316,7 +316,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                                 <UCOutlinedInput
                                     variant="outlined"
                                     size="small"
-                                    placeholder="정답 입력 (띄어쓰기 제외: ABC)"
+                                    placeholder="정답 입력 (띄어쓰기 제외: 예] ABC)"
                                     fullWidth
                                     value={problemAnswer}
                                     name="short_answer_input"

@@ -17,6 +17,7 @@ const getAchieveValueForTypes = (
     return {
         value: Math.round(value),
         satisfieds: datas.filter((d, i) => d.count && i < nums),
+        allExists: datas,
     };
 };
 

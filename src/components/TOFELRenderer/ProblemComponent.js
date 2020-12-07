@@ -48,7 +48,7 @@ function ProblemComponent({ category, type, textForRender, selections, answer, s
                     <UCOutlinedInput
                         variant="outlined"
                         size="small"
-                        placeholder="정답 입력 (띄어쓰기 제외: ABC)"
+                        placeholder="정답 입력 (띄어쓰기 제외: 예] ABC)"
                         fullWidth
                         value={currentSelection}
                         name="short_answer_input"

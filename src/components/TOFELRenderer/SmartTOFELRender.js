@@ -80,15 +80,15 @@ const ProblemsContainer = styled.div`
         line-height: 1.5rem;
 
         &.ql-indent-1 {
-            text-indent: 1rem;
+            margin-left: 1rem;
         }
 
         &.ql-indent-2 {
-            text-indent: 1.5rem;
+            margin-left: 1.5rem;
         }
 
         &.ql-indent-3 {
-            text-indent: 2rem;
+            margin-left: 2rem;
         }
     }
 `;

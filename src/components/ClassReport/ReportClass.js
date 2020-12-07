@@ -477,7 +477,9 @@ function ReportClass({ match }) {
                             {selectState === '0' ? (
                                 <ColumnChartProblem datas={avgScoresOfNumber} />
                             ) : (
-                                <ColumnChartType datas={averageScoresOfType} />
+                                <ColumnChartType
+                                    datas={achievesForTypes.allExists.map((e) => ({ ...e, score: averageScoresOfType[e.category] }))}
+                                />
                             )}
                         </div>
                     </section>

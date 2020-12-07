@@ -9,19 +9,7 @@ function RadarChart({ objDatas }) {
         series: [
             {
                 name: '학생 정답률',
-                data: [
-                    objDatas[1] * 100,
-                    objDatas[2] * 100,
-                    objDatas[3] * 100,
-                    objDatas[4] * 100,
-                    objDatas[5] * 100,
-                    objDatas[6] * 100,
-                    objDatas[7] * 100,
-                    objDatas[8] * 100,
-                    objDatas[9] * 100,
-                    objDatas[10] * 100,
-                    // objDatas[0] ? objDatas[0] : null,
-                ],
+                data: objDatas.map((v) => v.score * 100),
             },
         ],
         options: {
@@ -59,19 +47,8 @@ function RadarChart({ objDatas }) {
                 },
             },
             xaxis: {
-                categories: [
-                    problemCategories[0].name,
-                    problemCategories[1].name,
-                    problemCategories[2].name,
-                    problemCategories[3].name,
-                    problemCategories[4].name,
-                    problemCategories[5].name,
-                    problemCategories[6].name,
-                    problemCategories[7].name,
-                    problemCategories[8].name,
-                    problemCategories[9].name,
-                    // '기타',
-                ],
+                categories: objDatas.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
+                // '기타',
             },
             yaxis: {
                 tickAmount: 7,

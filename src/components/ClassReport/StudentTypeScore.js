@@ -25,14 +25,17 @@ const StyleStudentTypeScore = styled.div`
     }
 `;
 
-function StudentTypeScore({ current, total }) {
+function StudentTypeScore({ enabled, current, total }) {
     return (
         <StyleStudentTypeScore>
             <div className="chart-left">
-                <RadarChart objDatas={current} />
+                <RadarChart objDatas={enabled.map((e) => ({ ...e, score: current[e.category] }))} />
             </div>
             <div className="chart-right">
-                <ColumnChart currentObjs={current} averageObjs={total} />
+                <ColumnChart
+                    currentObjs={enabled.map((e) => ({ ...e, score: current[e.category] }))}
+                    averageObjs={enabled.map((e) => ({ ...e, score: total[e.category] }))}
+                />
             </div>
         </StyleStudentTypeScore>
     );

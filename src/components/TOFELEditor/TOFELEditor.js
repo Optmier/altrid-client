@@ -134,7 +134,7 @@ const PreviewContainer = styled.div`
 `;
 const BottomContainer = styled.div`
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     padding: 8px;
 
     & .group {
