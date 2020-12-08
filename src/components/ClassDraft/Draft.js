@@ -8,6 +8,8 @@ import ClassDrawer from '../essentials/ClassDrawer';
 // import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import TypeBanner from '../essentials/TypeBanner';
+import ClassWrapper from '../essentials/ClassWrapper';
 
 function Draft() {
     const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
@@ -35,8 +37,10 @@ function Draft() {
                 <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>
 
-            {/* <ClassHeaderBox /> */}
-
+            <ClassWrapper>
+                {/* <ClassHeaderBox /> */}
+                <TypeBanner />
+            </ClassWrapper>
             <div className="class-section-root">
                 <div className="class-draft-card">
                     <CardLists
