@@ -184,9 +184,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
 
     /** 학생인 경우 과제 수행 */
     const onAssignmentCardItemClick = (idx, classNumber, assignmentTitle) => {
-        const conf = window.confirm(
-            '과제를 시작하시겠습니까?\n시작과 동시에 시도횟수가 증가하며, 끝낼 때는 반드시 종료 버튼을 눌러주세요!\n\n제한시간이 있는 과제는 중간에 종료하시면 재시도가 불가하오니 유의하시기 바랍니다.',
-        );
+        const conf = window.confirm('과제를 시작하시겠습니까?');
         if (!conf) return;
         if (window.mobile || (window.screen.width < 1440 && window.screen.height < 900)) {
             if (window.mobile) {

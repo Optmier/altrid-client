@@ -9,11 +9,11 @@ function ColumnChart({ currentObjs, averageObjs }) {
         series: [
             {
                 name: '학생 정답률',
-                data: currentObjs.map((v) => v.score * 100),
+                data: currentObjs.map((v) => (v.score * 100).toFixed(1)),
             },
             {
                 name: '평균 정답률',
-                data: averageObjs.map((v) => v.score * 100),
+                data: averageObjs.map((v) => (v.score * 100).toFixed(1)),
             },
         ],
         options: {

@@ -9,13 +9,14 @@ import ClassDrawer from '../essentials/ClassDrawer';
 import { SecondtoMinute } from '../essentials/TimeChange';
 import { useDispatch, useSelector } from 'react-redux';
 import { postActived, changeDueDate } from '../../redux_modules/assignmentActived';
-import { deleteDraft } from '../../redux_modules/assignmentDraft';
+import { copyDraft, deleteDraft } from '../../redux_modules/assignmentDraft';
 import { withStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
 import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
 import * as $ from 'jquery';
+import ClassDialogCopy from '../essentials/ClassDialogCopy';
 
 const StyleDraftIng = styled.div`
     width: 100%;
@@ -97,6 +98,7 @@ function CardDraft({ cardData, match, history }) {
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
+    const [copyDialogopen, setCopyDialogopen] = useState(false);
     const [deleteDialogopen, setDeleteDialogopen] = useState(false);
 
     const handleDialogOpen = (type) => {
@@ -175,6 +177,19 @@ function CardDraft({ cardData, match, history }) {
         }
     };
 
+    const handleCopyDialogOpen = (e) => {
+        setCopyDialogopen(true);
+        handleOptionClose();
+    };
+
+    const handleCopyDialogClose = (e, newTitle) => {
+        const { name } = e.target;
+        if (name === 'yes') {
+            dispatch(copyDraft(cardData['idx'], newTitle, cardData));
+        }
+        setCopyDialogopen(false);
+    };
+
     return (
         <>
             <Drawer anchor="right" open={openCreateNewDrawer}>
@@ -196,9 +211,16 @@ function CardDraft({ cardData, match, history }) {
                 handleDrawerOpen={toggleDrawer(true)}
                 handleOptionClick={handleOptionClick}
                 handleOptionClose={handleOptionClose}
+                handleThisCopy={handleCopyDialogOpen}
                 anchorEl={anchorEl}
             />
             <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
+            <ClassDialogCopy
+                ver="assignment"
+                open={copyDialogopen}
+                defaultTitle={cardData['title']}
+                handleDialogClose={handleCopyDialogClose}
+            />
             <ClassDialogDelete ver="assignment" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
 
             {!cardData['contents_data'] ? (

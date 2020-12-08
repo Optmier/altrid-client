@@ -222,7 +222,7 @@ function ReportStudent({ history, match }) {
     /** 문제 번호별 그룹화된 학생들 패턴 데이터 */
     const [patternDatas, setPatternDatas] = useState([]);
     /** 유형 분석 활성화 달성률 */
-    const [achievesForTypes, setAchievesForTypes] = useState({ value: 0, satisfieds: [] });
+    const [achievesForTypes, setAchievesForTypes] = useState({ value: 0, satisfieds: [], allExists: [] });
     /** 현재 학생 영역별 점수 데이터 */
     const [currentScoresPerType, setCurrentScoresPerType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
     /** 전체 학생 영역별 점수 데이터 */
@@ -526,9 +526,13 @@ function ReportStudent({ history, match }) {
         const toArray = Object.keys(currentScoresPerType)
             .filter((f) => f !== '0')
             .map((c) => ({ category: c, scores: currentScoresPerType[c] }));
-        toArray.push({ category: '0', scores: currentScoresPerType['0'] });
+        // toArray.push({ category: '0', scores: currentScoresPerType['0'] });
         toArray.sort((a, b) => a.scores - b.scores);
-        setTop3Weaks(toArray.filter((d, i) => i < 3));
+        setTop3Weaks(
+            toArray
+                .filter(({ category }) => achievesForTypes.allExists.map((d) => d.category + '').includes(category))
+                .filter((d, i) => i < 3),
+        );
     }, [currentScoresPerType]);
 
     useEffect(() => {

@@ -21,7 +21,7 @@ const StyleTotalProgress = styled.div`
             font-size: 1rem;
             font-weight: 500;
             margin-right: 15px;
-            width: 60px;
+            min-width: 4rem;
 
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -40,7 +40,9 @@ function TotalProgress({ studentList, problemNumbers }) {
         <StyleTotalProgress>
             {Object.keys(studentList).map((num) => (
                 <div key={num} className="progress-list">
-                    <div className="name">{studentList[num]['name']}</div>
+                    <div className="name" title={studentList[num]['name']}>
+                        {studentList[num]['name']}
+                    </div>
                     <Progress
                         selections={studentList[num].user_data ? studentList[num].user_data.selections : null}
                         problemNumbers={problemNumbers}

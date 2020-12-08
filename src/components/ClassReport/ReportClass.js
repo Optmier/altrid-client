@@ -83,7 +83,7 @@ function ReportClass({ match }) {
     /** 학생별 데이터 및 각 요소 */
     const [studentsData, setStudentsData] = useState([]);
     /** 유형 분석 활성화 달성률 */
-    const [achievesForTypes, setAchievesForTypes] = useState({ value: 0, satisfieds: [] });
+    const [achievesForTypes, setAchievesForTypes] = useState({ value: 0, satisfieds: [], allExists: [] });
     /** 문제별 평균 정답률 */
     const [avgScoresOfNumber, setAvgScoresOfNumber] = useState([]);
     /** 전체 학생 영역별 평균 점수 데이터 */
@@ -343,7 +343,7 @@ function ReportClass({ match }) {
                     _sumOfScoresPerNumbers[i] += s.correct ? 1 : 0;
                 });
             }).length;
-        const averagesOfNumber = Object.keys(_sumOfScoresPerNumbers).map((n) => (_sumOfScoresPerNumbers[n] / len) * 100.0);
+        const averagesOfNumber = Object.keys(_sumOfScoresPerNumbers).map((n) => ((_sumOfScoresPerNumbers[n] / len) * 100.0).toFixed(1));
         setAvgScoresOfNumber(averagesOfNumber);
         // console.log(averagesOfNumber);
         const totalForWeaks = studentsData.filter((d) => d.submitted);
@@ -445,8 +445,33 @@ function ReportClass({ match }) {
                         <div className="graph-box">
                             <div className="graph-header">
                                 <div className="graph-header-text">
-                                    <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
-                                    {Math.min(...avgScoresOfNumber)}%)
+                                    {selectState === '0' ? (
+                                        <>
+                                            <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번
+                                            ({Math.min(...avgScoresOfNumber).toFixed(1)}%)
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span>가장 취약한 영역 </span>{' '}
+                                            {
+                                                ProblemCategories.filter(
+                                                    (p) =>
+                                                        p.id ===
+                                                        achievesForTypes.allExists
+                                                            .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                                            .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0]
+                                                            .category,
+                                                )[0].name
+                                            }
+                                            (
+                                            {(
+                                                achievesForTypes.allExists
+                                                    .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                                    .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
+                                            ).toFixed(1) || 0}
+                                            %)
+                                        </>
+                                    )}
                                 </div>
                                 {achievesForTypes.value > 100 ? (
                                     <div className="graph-header-text">
@@ -515,6 +540,7 @@ function ReportClass({ match }) {
                             prevData={prevStudentsDataRaw.filter((p) => p.student_id === data.student_id)[0]}
                             totalProblems={problemNumbers}
                             achieveRates={achievesForTypes.value}
+                            existsCategories={achievesForTypes.allExists}
                         />
                     </CardRoot>
                 ))}

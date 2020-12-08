@@ -44,6 +44,15 @@ class ChannelService {
         window.ChannelIO('boot', settings);
     }
 
+    updateUser(
+        userInfo,
+        onUpdate = (err, user) => {
+            if (err) console.error(err);
+        },
+    ) {
+        window.ChannelIO('updateUser', userInfo, onUpdate);
+    }
+
     hideButton() {
         window.ChannelIO('hideChannelButton');
     }

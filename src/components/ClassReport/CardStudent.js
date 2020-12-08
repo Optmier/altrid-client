@@ -81,7 +81,7 @@ const CompareItems = ({ title, contents, enabled, children }) => {
     );
 };
 
-function CardStudent({ id, data, prevData, totalProblems, achieveRates, history }) {
+function CardStudent({ id, data, prevData, totalProblems, achieveRates, existsCategories, history }) {
     let path = history.location.pathname;
     /** 현재 학생 영역별 점수 데이터 */
     const [currentScoresPerType, setCurrentScoresPerType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
@@ -107,7 +107,9 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, history 
             .map((c) => ({ category: c, scores: currentScoresPerType[c] }));
         // toArray.push({ category: '0', scores: currentScoresPerType['0'] });
         toArray.sort((a, b) => a.scores - b.scores);
-        setTop3Weaks(toArray.filter((d, i) => i < 3));
+        setTop3Weaks(
+            toArray.filter(({ category }) => existsCategories.map((d) => d.category + '').includes(category)).filter((d, i) => i < 3),
+        );
     }, [currentScoresPerType]);
 
     return (
