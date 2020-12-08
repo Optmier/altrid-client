@@ -458,6 +458,9 @@ function ReportStudent({ history, match }) {
                                 currentPatternIdx++;
                                 changeCount = 0;
                                 break;
+
+                            default:
+                                break;
                         }
                     });
                     const _currentGroupedByPid = [];

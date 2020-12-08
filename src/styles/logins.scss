@@ -1,19 +1,34 @@
 .login-page {
     width: 100%;
-    min-height: calc(100vh - 144px);
+    min-height: calc(100vh);
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat;
+    transition: background-image 0.35s;
+
+    &.students {
+        background-image: url('/bg_images/login_bg2.png');
+    }
+    &.teachers {
+        background-image: url('/bg_images/login_bg.png');
+    }
+
+    &.admins {
+        background-image: url('/bg_images/frame_2.png');
+    }
 
     & .decorator-root {
-        background-image: url('/bg_images/frame_0.png');
+        //background-image: url('/bg_images/frame_0.png');
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
-        position: absolute;
-        width: 100%;
-        height: 80px;
+        background-repeat: repeat;
         transition: all 0.5s;
 
+        &.students {
+            background-image: url('/bg_images/frame_0.png');
+        }
         &.teachers {
-            background-image: url('/bg_images/frame_1.png');
+            background-image: url('/bg_images/login_bg.png');
         }
 
         &.admins {
@@ -26,12 +41,12 @@
         align-items: center;
         justify-content: center;
         position: relative;
-        height: calc(100vh - 144px - 16px);
+        height: 100vh;
         min-height: 680px;
         max-height: 800px;
 
         & .login-form {
-            color: #00140e;
+            color: white;
             min-width: 320px;
 
             & h3 {
@@ -40,14 +55,14 @@
                 & .bold-s {
                     padding: 0.1rem;
                     font-weight: 600;
-                    color: white;
-                    background-color: #13e2a1;
+
+                    background-color: #3b168a;
                 }
                 & .bold-t {
                     padding: 0.1rem;
                     font-weight: 600;
-                    color: white;
-                    background-color: #3b168a;
+
+                    background-color: #13e2a1;
                 }
             }
             & .usertype-change-link {

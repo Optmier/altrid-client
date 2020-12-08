@@ -68,6 +68,8 @@ function Login({ history }) {
                     case 'not-approved':
                         alert(`승인이 필요한 계정입니다.\n${usertype === 'students' ? '선생님의' : '관리자의'} 승인을 기다려주세요!`);
                         break;
+                    default:
+                        break;
                 }
             });
     };
@@ -345,7 +347,7 @@ function Login({ history }) {
                             style={{ marginTop: '1.2rem' }}
                         />
                         <div className="usertype-change-link">
-                            <Link color={usertype === 'students' ? 'textSecondary' : 'secondary'} onClick={handleChangeUsertype}>
+                            <Link color="#efefef" onClick={handleChangeUsertype}>
                                 {usertype === 'students' ? '선생님' : '학생'}이신가요?
                             </Link>
                         </div>
@@ -412,9 +414,7 @@ function Login({ history }) {
                 <div className="container center"></div>
                 <div className="container right"></div>
             </header>
-            <main className="login-page">
-                <section className="decorator-root teachers"></section>
-                <section className="decorator-root" style={{ opacity: usertype === 'students' ? 1 : 0 }}></section>
+            <main className={classNames('login-page', usertype === 'students' ? 'students' : 'teachers')}>
                 <section className="contents-root">{getContentsForStep(loginStep)}</section>
             </main>
             <Footer />
