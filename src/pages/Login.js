@@ -331,7 +331,12 @@ function Login({ history }) {
             case 0:
                 return (
                     <div className="login-form">
-                        <h4>{usertype === 'students' ? '학생' : '선생님'} 로그인</h4>
+                        {/* <h4>{usertype === 'students' ? '학생' : '선생님'} 로그인</h4> */}
+                        <h3>
+                            알트리드만의 <br />
+                            시선흐름 추적을 통해 <br />
+                            <b className={classNames(usertype === 'students' ? 'bold-s' : 'bold-t')}>학습 관리</b>를 경험해보세요.
+                        </h3>
                         <LoginButtons
                             onSuccessGoogleAuth={onSuccessGoogleAuth}
                             onFailedGoogleAuth={onFailedGoogleAuth}
@@ -341,7 +346,7 @@ function Login({ history }) {
                         />
                         <div className="usertype-change-link">
                             <Link color={usertype === 'students' ? 'textSecondary' : 'secondary'} onClick={handleChangeUsertype}>
-                                {usertype === 'students' ? '선생님' : '학생'}으로 로그인
+                                {usertype === 'students' ? '선생님' : '학생'}이신가요?
                             </Link>
                         </div>
                     </div>

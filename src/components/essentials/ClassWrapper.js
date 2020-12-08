@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const StyleWrapper = styled.div`
     max-width: 960px;
@@ -10,13 +10,29 @@ const StyleWrapper = styled.div`
     justify-content: flex-start;
     flex-direction: ${(props) => (props.col ? 'column' : 'none')};
 
-    @media (min-width: 0px) and (max-width: 1231px) {
-        max-width: 632px;
-    }
+    ${(props) =>
+        props.type === 'main_page'
+            ? css`
+                  @media (min-width: 992px) and (max-width: 1231px) {
+                      max-width: 960px;
+                  }
+                  @media (min-width: 663px) and (max-width: 991px) {
+                      max-width: 632px;
+                  }
+              `
+            : css`
+                  @media (min-width: 0px) and (max-width: 1231px) {
+                      max-width: 632px;
+                  }
+              `}
 `;
 
-function ClassWrapper({ children, col }) {
-    return <StyleWrapper col={col}>{children}</StyleWrapper>;
+function ClassWrapper({ children, col, type }) {
+    return (
+        <StyleWrapper col={col} type={type}>
+            {children}
+        </StyleWrapper>
+    );
 }
 
 ClassWrapper.defaultProps = {

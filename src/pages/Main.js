@@ -18,6 +18,8 @@ import classNames from 'classnames';
 import { $_classDefault } from '../configs/front_urls';
 import moment from 'moment';
 import BackdropComponent from '../components/essentials/BackdropComponent';
+import ClassWrapper from '../components/essentials/ClassWrapper';
+import { IoIosArrowForward } from 'react-icons/io';
 
 function Main({ history }) {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -131,6 +133,27 @@ function Main({ history }) {
                             </div>
                         </CardLists>
                     ) : null}
+                </section>
+                <section>
+                    <ClassWrapper col="none" type="main_page">
+                        <div className="contents-bottom-root">
+                            <div className="bottom-left">
+                                <div className="bottom-left-top">알트리드는 문제 풀이 중 모든 것을 관찰하고 기록합니다.</div>
+                                <div className="bottom-left-central">
+                                    시선흐름 추적 기술과 문제 패턴 데이터 수집을 통해 맞춤형 리포트를 제공합니다.
+                                </div>
+                                <div className="bottom-left-footer">
+                                    자세히 알아보기 <IoIosArrowForward style={{ marginRight: '5px' }} />
+                                </div>
+                            </div>
+                            <div className="bottom-right">
+                                <h4>
+                                    데모 클래스 <IoIosArrowForward style={{ marginLeft: '10px' }} />
+                                </h4>
+                                <h5>클래스에서 데모버전의 과제를 확인해보세요.</h5>
+                            </div>
+                        </div>
+                    </ClassWrapper>
                 </section>
             </main>
             <Footer />

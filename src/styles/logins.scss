@@ -9,7 +9,7 @@
         background-repeat: no-repeat;
         position: absolute;
         width: 100%;
-        height: 380px;
+        height: 80px;
         transition: all 0.5s;
 
         &.teachers {
@@ -31,9 +31,25 @@
         max-height: 800px;
 
         & .login-form {
-            color: #ffffff;
+            color: #00140e;
             min-width: 320px;
 
+            & h3 {
+                line-height: 1.4;
+                font-weight: 600;
+                & .bold-s {
+                    padding: 0.1rem;
+                    font-weight: 600;
+                    color: white;
+                    background-color: #13e2a1;
+                }
+                & .bold-t {
+                    padding: 0.1rem;
+                    font-weight: 600;
+                    color: white;
+                    background-color: #3b168a;
+                }
+            }
             & .usertype-change-link {
                 margin-top: 1rem;
                 & a {

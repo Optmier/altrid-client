@@ -67,6 +67,80 @@
     & .below-card-container {
         padding: 0 12px;
     }
+
+    & .contents-bottom-root {
+        width: 100%;
+        padding: 80px 0;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+
+        & .bottom-left {
+            padding: 2rem 1rem;
+            border-radius: 11px;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+
+            //background-position: center;
+            //background-size: cover;
+            //background-image: url('/bg_images/main_bottom.png');
+
+            & .bottom-left-top {
+                width: 85%;
+                color: black;
+                font-size: 1.3rem;
+                font-weight: 600;
+                line-height: 1.4;
+            }
+            & .bottom-left-central {
+                width: 85%;
+                margin-top: 0.5rem;
+                color: #969393;
+                font-size: 0.95rem;
+                font-weight: 400;
+                line-height: 1.4;
+            }
+            & .bottom-left-footer {
+                margin-top: 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                cursor: pointer;
+                text-align: right;
+                color: black;
+                font-size: 0.8rem;
+                font-weight: 400;
+                line-height: 1.3;
+            }
+        }
+
+        & .bottom-right {
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            border-radius: 11px;
+            margin-left: 24px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            & h4 {
+                display: flex;
+                align-items: center;
+                font-size: 1.25rem;
+                font-weight: 600;
+                line-height: 1.5rem;
+            }
+            & h5 {
+                color: #969393;
+                font-size: 1rem;
+                font-weight: 500;
+                line-height: 1.5rem;
+            }
+        }
+
+        & .bottom-right:hover {
+            transition: 0.5s;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        }
+    }
 }
 
 .create-new-entry-root {
