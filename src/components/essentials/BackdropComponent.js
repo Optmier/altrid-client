@@ -4,7 +4,9 @@ import React, { useState } from 'react';
 const useStyles = makeStyles((theme) => ({
     backdrop: {
         zIndex: 9999 + 1,
-        color: '#fff',
+        color: '#2d106b',
+        backgroundColor: '#f7f9f8',
+        marginLeft: '240px',
     },
     blind: {
         width: '100%',
