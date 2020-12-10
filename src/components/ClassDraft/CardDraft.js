@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/class_card.scss';
 import IsPresence from '../essentials/IsPresence';
 import CardPopOver from '../essentials/CardPopOver';
@@ -16,6 +16,7 @@ import moment from 'moment';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
 import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
 import * as $ from 'jquery';
+import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 
 const StyleDraftIng = styled.div`
     width: 100%;
@@ -175,6 +176,31 @@ function CardDraft({ cardData, match, history }) {
         }
     };
 
+    /** 유형별 분석 메소드 */
+    const [assignmentTypeState, setAssignmentTypeState] = useState(0);
+
+    const _o = {};
+    useEffect(() => {
+        cardData['contents_data']
+            .flatMap((m) => m.problemDatas)
+            .forEach((d) => {
+                const cat = d.category;
+                !_o[cat] && (_o[cat] = {});
+                !_o[cat].category && (_o[cat].category = 0);
+                !_o[cat].count && (_o[cat].count = 0);
+                _o[cat].category = cat;
+                _o[cat].count += 1;
+            });
+
+        setAssignmentTypeState(
+            getAchieveValueForTypes(
+                Object.keys(_o).map((k) => _o[k]),
+                3,
+            ).value,
+        );
+        return () => {};
+    }, []);
+
     return (
         <>
             <Drawer anchor="right" open={openCreateNewDrawer}>
@@ -252,6 +278,7 @@ function CardDraft({ cardData, match, history }) {
                             />
                             <TimeItems title={'제한시간'} time_limit={cardData['time_limit']} />
                             <InfoItems title={'최종수정'} contents={moment(cardData['updated']).format('MM월 DD일 HH시 mm분')} />
+                            <InfoItems title={'유형별 분석'} contents={assignmentTypeState < 100 ? '불가능' : '가능'} />
                         </div>
                     </div>
                     <HtmlTooltip
