@@ -1,6 +1,7 @@
-import React from 'react';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import React, { useState, useEffect } from 'react';
+import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
+import CountUp from 'react-countup';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -43,6 +44,10 @@ const useStyles = makeStyles((theme) => ({
                 },
                 '& .percent': {
                     fontSize: '1rem',
+
+                    '& span': {
+                        marginLeft: '0.5rem',
+                    },
                 },
             },
             '&:hover': {
@@ -53,42 +58,52 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function TypeBanner({ situation }) {
+function TypeBanner({ situation, value }) {
     // situation : info, warning, success
 
     const classes = useStyles({ situation });
 
     return (
         <>
-            <a className={classes.root} href="https://www.notion.so/optmier/07bd3c8f53ac4e449242cda7eccdcb4e" target="_blank">
-                <Alert severity="info">
-                    <div className="badge-left">
-                        {situation === 'info'
-                            ? '과제를 조금 더 다양한 유형과 문제로 만들어주세요!'
-                            : situation === 'warning'
-                            ? '과제 최소 조건을 맞추어 유형별 분석을 시도해보세요!'
-                            : '과제 최소 조건을 만족하셨습니다!'}
-                    </div>
+            {situation ? (
+                <a className={classes.root} href="https://www.notion.so/optmier/07bd3c8f53ac4e449242cda7eccdcb4e" target="_blank">
+                    <Alert severity={situation}>
+                        <div className="badge-left">
+                            {situation === 'info'
+                                ? '과제를 조금 더 다양한 유형과 문제로 만들어주세요!'
+                                : situation === 'warning'
+                                ? '과제 최소 조건을 맞추어 유형별 분석을 시도해보세요!'
+                                : '과제 최소 조건을 만족하셨습니다!'}
+                        </div>
 
-                    <div className="badge-right">
-                        {situation === 'info' ? (
-                            <>
-                                <p>조건 확인하기 </p>
-                                <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M0.589844 10.59L5.16984 6L0.589844 1.41L1.99984 0L7.99984 6L1.99984 12L0.589844 10.59Z"
-                                        fill="#0d3c61"
-                                    />
-                                </svg>
-                            </>
-                        ) : situation === 'warning' ? (
-                            <p className="percent">취약영역 분석까지 32%</p>
-                        ) : (
-                            <p className="percent">취약영역 분석까지 32%</p>
-                        )}
-                    </div>
-                </Alert>
-            </a>
+                        <div className="badge-right">
+                            {situation === 'info' ? (
+                                <>
+                                    <p>조건 확인하기 </p>
+                                    <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M0.589844 10.59L5.16984 6L0.589844 1.41L1.99984 0L7.99984 6L1.99984 12L0.589844 10.59Z"
+                                            fill="#0d3c61"
+                                        />
+                                    </svg>
+                                </>
+                            ) : situation === 'warning' ? (
+                                <p className="percent">
+                                    취약영역 분석까지
+                                    <CountUp start={0} end={value} delay={5}>
+                                        {({ countUpRef }) => <span ref={countUpRef} />}
+                                    </CountUp>
+                                    %
+                                </p>
+                            ) : (
+                                <p className="percent">취약영역 분석이 가능합니다.</p>
+                            )}
+                        </div>
+                    </Alert>
+                </a>
+            ) : (
+                ''
+            )}
         </>
     );
 }

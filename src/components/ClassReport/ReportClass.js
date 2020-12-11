@@ -91,8 +91,6 @@ function ReportClass({ match }) {
     const [averageScoresOfType, setAverageScoresOfType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
     /** 학생 별 이전 로우 데이터 */
     const [prevStudentsDataRaw, setPrevStudentsDataRaw] = useState([]);
-    /** 유형별 분석 타입 */
-    const [typeBannerState, setTypeBannerState] = useState('');
 
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
@@ -330,14 +328,6 @@ function ReportClass({ match }) {
                     _o[cat].count += 1;
                 });
             setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
-            setTypeBannerState(
-                getAchieveValueForTypes(
-                    Object.keys(_o).map((k) => _o[k]),
-                    3,
-                ).value < 100
-                    ? 'warning'
-                    : 'success',
-            );
         }
     }, [mainReportData]);
 
@@ -380,6 +370,7 @@ function ReportClass({ match }) {
         }
     }, [studentsData]);
 
+    console.log(achievesForTypes);
     return (
         <div style={{ paddingBottom: '200px' }}>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
@@ -387,7 +378,7 @@ function ReportClass({ match }) {
 
             <ClassWrapper col={true}>
                 {/* <ClassHeaderBox /> */}
-                <TypeBanner situation={typeBannerState} />
+                <TypeBanner situation={achievesForTypes.value < 100 ? 'warning' : 'success'} value={achievesForTypes.value} />
                 <BranchNav deps="2" />
                 <div className="class-report-root">
                     <section className="class-report-info">
