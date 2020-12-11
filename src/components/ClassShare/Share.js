@@ -14,6 +14,7 @@ import Error from '../../pages/Error';
 import BackdropComponent from '../essentials/BackdropComponent';
 import styled from 'styled-components';
 import ClassWrapper from '../essentials/ClassWrapper';
+import TypeBanner from '../essentials/TypeBanner';
 
 const GoDraftDiv = styled.div`
     margin-top: 100px;
@@ -114,7 +115,10 @@ function Share({ match, history }) {
                 <ClassDrawer />
             </Drawer>
 
-            {/* <ClassHeaderBox /> */}
+            <ClassWrapper>
+                {/* <ClassHeaderBox /> */}
+                <TypeBanner situation="info" />
+            </ClassWrapper>
 
             {shareDatas.length === 0 && sessions.userType !== 'students' ? (
                 <ClassWrapper>

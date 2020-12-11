@@ -19,6 +19,7 @@ import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
 import { useSelector } from 'react-redux';
+import TypeBanner from '../essentials/TypeBanner';
 
 const pad = (n, width) => {
     n = n + '';
@@ -90,6 +91,8 @@ function ReportClass({ match }) {
     const [averageScoresOfType, setAverageScoresOfType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
     /** 학생 별 이전 로우 데이터 */
     const [prevStudentsDataRaw, setPrevStudentsDataRaw] = useState([]);
+    /** 유형별 분석 타입 */
+    const [typeBannerState, setTypeBannerState] = useState('');
 
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
@@ -327,6 +330,14 @@ function ReportClass({ match }) {
                     _o[cat].count += 1;
                 });
             setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
+            setTypeBannerState(
+                getAchieveValueForTypes(
+                    Object.keys(_o).map((k) => _o[k]),
+                    3,
+                ).value < 100
+                    ? 'warning'
+                    : 'success',
+            );
         }
     }, [mainReportData]);
 
@@ -375,6 +386,8 @@ function ReportClass({ match }) {
             <ClassDialog type="date" subType="modify" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
 
             <ClassWrapper col={true}>
+                {/* <ClassHeaderBox /> */}
+                <TypeBanner situation={typeBannerState} />
                 <BranchNav deps="2" />
                 <div className="class-report-root">
                     <section className="class-report-info">

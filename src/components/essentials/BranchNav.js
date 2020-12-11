@@ -6,7 +6,7 @@ const StyleBranch = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding: 30px 0 50px 0;
+    padding: 40px 0 20px 0;
 `;
 
 const StyleBranchItem = styled.div`

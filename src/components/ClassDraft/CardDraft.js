@@ -17,6 +17,7 @@ import ClassDialogDelete from '../essentials/ClassDialogDelete';
 import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
 import * as $ from 'jquery';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 const StyleDraftIng = styled.div`
     width: 100%;
@@ -74,8 +75,27 @@ const HtmlTooltip = withStyles((theme) => ({
         fontWeight: '600',
         borderRadius: '10px',
 
-        '& .class-button + .class-button': {
+        '&p': {
             paddingLeft: '0.5rem',
+        },
+    },
+}))(Tooltip);
+const HtmlTooltip2 = withStyles((theme) => ({
+    tooltip: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgb(253, 236, 234)',
+        filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
+        color: '#f44336',
+        padding: '6px 16px',
+        borderRadius: '4px',
+
+        '& p': {
+            margin: '0 0 0 1rem',
+            color: 'rgb(97, 26, 21)',
+            fontSize: '0.875rem',
+            fontWeight: '400',
         },
     },
 }))(Tooltip);
@@ -233,7 +253,7 @@ function CardDraft({ cardData, match, history }) {
                         <div className="card-title-p" title={cardData['title']}>
                             {cardData['title']}
                         </div>
-                        <span className="card-option" onClick={handleOptionClick} style={{ padding: '0 2px' }}>
+                        <span className="card-option" onClick={handleOptionClick} style={{ paddingLeft: '1rem' }}>
                             <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
                                 <circle cx="16.5" cy="2.5" r="2.5" fill="#C4C4C4" />
@@ -252,7 +272,7 @@ function CardDraft({ cardData, match, history }) {
                         <div className="card-title-p" title={cardData['title']}>
                             {cardData['title']}
                         </div>
-                        <span className="card-option" onClick={handleOptionClick} style={{ padding: '0 2px' }}>
+                        <span className="card-option" onClick={handleOptionClick} style={{ paddingLeft: '1rem' }}>
                             <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
                                 <circle cx="16.5" cy="2.5" r="2.5" fill="white" />
@@ -278,7 +298,25 @@ function CardDraft({ cardData, match, history }) {
                             />
                             <TimeItems title={'제한시간'} time_limit={cardData['time_limit']} />
                             <InfoItems title={'최종수정'} contents={moment(cardData['updated']).format('MM월 DD일 HH시 mm분')} />
-                            <InfoItems title={'유형별 분석'} contents={assignmentTypeState < 100 ? '불가능' : '가능'} />
+                            <InfoItems
+                                title={'유형별 분석'}
+                                contents={
+                                    assignmentTypeState < 100 ? (
+                                        <HtmlTooltip2
+                                            title={
+                                                <>
+                                                    <ErrorOutlineIcon />
+                                                    <p>유형별 분석의 최소 조건은 상단 뱃지를 클릭하여 확인해주세요!</p>
+                                                </>
+                                            }
+                                        >
+                                            <p style={{ color: '#ff8383' }}>불가능</p>
+                                        </HtmlTooltip2>
+                                    ) : (
+                                        '가능'
+                                    )
+                                }
+                            />
                         </div>
                     </div>
                     <HtmlTooltip

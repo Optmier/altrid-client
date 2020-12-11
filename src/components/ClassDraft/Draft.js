@@ -39,7 +39,7 @@ function Draft() {
 
             <ClassWrapper>
                 {/* <ClassHeaderBox /> */}
-                <TypeBanner />
+                <TypeBanner situation="info" />
             </ClassWrapper>
             <div className="class-section-root">
                 <div className="class-draft-card">

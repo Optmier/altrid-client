@@ -173,6 +173,16 @@ body {
         white-space: nowrap;
         overflow: hidden;
     }
+    .card-content-p p {
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: #706d6d;
+
+        margin: 0;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
     .card-bottom-p {
         font-size: 0.75rem;
         font-weight: 500;

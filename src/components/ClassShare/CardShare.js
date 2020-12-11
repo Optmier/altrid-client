@@ -15,6 +15,10 @@ import { patchActived, changeDueDate, deleteActived } from '../../redux_modules/
 import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
 import * as $ from 'jquery';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
+import { Tooltip } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 
 const pad = (n, width) => {
     n = n + '';
@@ -77,6 +81,26 @@ const TriesItems = ({ title, tries }) => {
         </div>
     );
 };
+
+const HtmlTooltip2 = withStyles((theme) => ({
+    tooltip: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgb(253, 236, 234)',
+        filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
+        color: '#f44336',
+        padding: '6px 16px',
+        borderRadius: '4px',
+
+        '& p': {
+            margin: '0 0 0 1rem',
+            color: 'rgb(97, 26, 21)',
+            fontSize: '0.875rem',
+            fontWeight: '400',
+        },
+    },
+}))(Tooltip);
 
 function CardShare({ testNum, cardData, tries, totalStudents, history, match }) {
     let path = history.location.pathname;
@@ -284,6 +308,31 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         }
     };
 
+    /** 유형별 분석 메소드 */
+    const [assignmentTypeState, setAssignmentTypeState] = useState(0);
+
+    const _o = {};
+    useEffect(() => {
+        cardData['contents_data']
+            .flatMap((m) => m.problemDatas)
+            .forEach((d) => {
+                const cat = d.category;
+                !_o[cat] && (_o[cat] = {});
+                !_o[cat].category && (_o[cat].category = 0);
+                !_o[cat].count && (_o[cat].count = 0);
+                _o[cat].category = cat;
+                _o[cat].count += 1;
+            });
+
+        setAssignmentTypeState(
+            getAchieveValueForTypes(
+                Object.keys(_o).map((k) => _o[k]),
+                3,
+            ).value,
+        );
+        return () => {};
+    }, []);
+
     return (
         <>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
@@ -364,6 +413,25 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                     end={moment(cardData['due_date']).format('YY.MM.DD HH:mm')}
                                     userType={sessions.userType}
                                     handleDateChange={handleDateChange}
+                                />
+                                <InfoItems
+                                    title={'유형별 분석'}
+                                    contents={
+                                        assignmentTypeState < 100 ? (
+                                            <HtmlTooltip2
+                                                title={
+                                                    <>
+                                                        <ErrorOutlineIcon />
+                                                        <p>유형별 분석의 최소 조건은 상단 뱃지를 클릭하여 확인해주세요!</p>
+                                                    </>
+                                                }
+                                            >
+                                                <p style={{ color: '#ff8383' }}>불가능</p>
+                                            </HtmlTooltip2>
+                                        ) : (
+                                            '가능'
+                                        )
+                                    }
                                 />
                             </div>
                         </div>

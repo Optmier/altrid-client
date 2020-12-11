@@ -20,12 +20,13 @@ const useStyles = makeStyles((theme) => ({
 
 function BackdropComponent({ open, blind, disableShrink }) {
     const classes = useStyles();
+
     return (
         <>
-            {blind && open ? <div className={classes.blind} style={{ backgroundColor: blind }}></div> : null}
+            {/* {blind && open ? <div className={classes.blind} style={{ backgroundColor: blind }}></div> : null}
             <Backdrop className={classes.backdrop} open={open}>
                 <CircularProgress disableShrink={disableShrink} color="inherit" />
-            </Backdrop>
+            </Backdrop> */}
         </>
     );
 }
