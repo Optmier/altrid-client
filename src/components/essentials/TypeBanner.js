@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
                 alignItems: 'center',
 
                 '& p': {
-                    color: 'black',
                     paddingRight: '1rem',
                     fontSize: '0.7rem',
                     fontWeight: '600',
@@ -62,7 +61,7 @@ function TypeBanner({ situation }) {
     return (
         <>
             <a className={classes.root} href="https://www.notion.so/optmier/07bd3c8f53ac4e449242cda7eccdcb4e" target="_blank">
-                <Alert severity={situation}>
+                <Alert severity="info">
                     <div className="badge-left">
                         {situation === 'info'
                             ? '과제를 조금 더 다양한 유형과 문제로 만들어주세요!'
@@ -78,7 +77,7 @@ function TypeBanner({ situation }) {
                                 <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path
                                         d="M0.589844 10.59L5.16984 6L0.589844 1.41L1.99984 0L7.99984 6L1.99984 12L0.589844 10.59Z"
-                                        fill="black"
+                                        fill="#0d3c61"
                                     />
                                 </svg>
                             </>
