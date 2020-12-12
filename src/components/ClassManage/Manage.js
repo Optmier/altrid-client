@@ -273,16 +273,6 @@ function Manage({ match, history }) {
 
                     <div className="manage-footer">
                         <CreateButton
-                            className="button-modify"
-                            size="large"
-                            variant="contained"
-                            disabled={!createButtonEnabled}
-                            name="modify"
-                            onClick={handleButton}
-                        >
-                            수정하기
-                        </CreateButton>
-                        <CreateButton
                             className="button-delete critical"
                             size="large"
                             variant="contained"
@@ -291,6 +281,16 @@ function Manage({ match, history }) {
                             onClick={handleButton}
                         >
                             삭제하기
+                        </CreateButton>
+                        <CreateButton
+                            className="button-modify"
+                            size="large"
+                            variant="contained"
+                            disabled={!createButtonEnabled}
+                            name="modify"
+                            onClick={handleButton}
+                        >
+                            수정하기
                         </CreateButton>
                     </div>
                 </div>

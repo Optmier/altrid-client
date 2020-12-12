@@ -17,25 +17,21 @@ const StyleLabel = styled.label`
     ${(props) =>
         props.clicked === 'left'
             ? css`
-                  background-color: #13e2a11f;
+                  background-color: #13e2a11f !important;
                   box-sizing: border-box;
                   border: 1.5px solid #13e2a1;
               `
-            : css`
-                  background-color: #f6f7f9;
-              `}
+            : ''}
 `;
 const StyleLabel2 = styled.label`
     ${(props) =>
         props.clicked === 'right'
             ? css`
-                  background-color: #13e2a11f;
+                  background-color: #13e2a11f !important;
                   box-sizing: border-box;
                   border: 1.5px solid #13e2a1;
               `
-            : css`
-                  background-color: #f6f7f9;
-              `}
+            : ''}
 `;
 const StyleSelectdiv = styled.div`
     font-size: 0.85rem;
@@ -82,6 +78,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
 
     /** 과제 생성 state */
     const [attachFiles, setAttachFiles] = useState(new FormData());
+    const [fileValue, setFileValue] = useState(undefined);
     const [contentsData, setContentsData] = useState(
         ver === 'draft'
             ? [
@@ -114,14 +111,12 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     };
 
     //업로드 선택
-    const handleSelectLeft = () => {
-        setSelectSate('left');
-    };
     const handleChangeFile = (e) => {
         if (!e.target.files[0]) {
             setSelectName('생성방법을 선택해주세요!');
             return;
         }
+
         const name = e.target.files[0].name;
         const value = e.target.files[0];
         const fileName = e.target.files[0].name;
@@ -129,20 +124,23 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         attachFiles.append(name, value, fileName);
 
         setSelectName(name);
+        setSelectSate('left');
+    };
+    const handleClickFile = (e) => {
+        console.log(e.target.files);
     };
 
     //직접 제작 선택
-    const handleSelectRight = () => {
-        setSelectSate('right');
-
-        handleEditDialogOpen();
-    };
     const handleChangeContents = (metadata) => {
+        setFileValue(undefined);
+
+        //에디터 메타데이터로 최신화
         if (metadata[0]['title']) {
             setSelectName(metadata[0]['title']);
         } else {
             setSelectName('에디터 타이틀을 입력해주세요.');
         }
+        setSelectSate('right');
     };
 
     const handleEditFinished = (metadata) => {
@@ -348,7 +346,9 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         //5. axios 작업
         if (ver === 'draft') {
             if (name === 'drawer-draft') {
-                dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData));
+                console.log(selectState, contentsData, attachFiles);
+
+                //dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData));
 
                 handleClose(e);
             } else if (name === 'drawer-share') {
@@ -493,14 +493,15 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                         {ver === 'draft' ? (
                             <>
                                 <div className="drawer-selects">
-                                    <input id="file-click" type="file" onChange={handleChangeFile} />
+                                    <input
+                                        id="file-click"
+                                        type="file"
+                                        files={fileValue}
+                                        onChange={handleChangeFile}
+                                        onClick={handleClickFile}
+                                    />
 
-                                    <StyleLabel
-                                        clicked={selectState}
-                                        className="drawer-select"
-                                        htmlFor="file-click"
-                                        onClick={handleSelectLeft}
-                                    >
+                                    <StyleLabel clicked={selectState} className="drawer-select" htmlFor="file-click">
                                         <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M38.7 12.08C37.34 5.18 31.28 0 24 0C18.22 0 13.2 3.28 10.7 8.08C4.68 8.72 0 13.82 0 20C0 26.62 5.38 32 12 32H38C43.52 32 48 27.52 48 22C48 16.72 43.9 12.44 38.7 12.08ZM28 18V26H20V18H14L24 8L34 18H28Z"
@@ -510,7 +511,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                                         <h4>과제 파일 업로드하기</h4>
                                         <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
                                     </StyleLabel>
-                                    <StyleLabel2 clicked={selectState} className="drawer-select" onClick={handleSelectRight}>
+                                    <StyleLabel2 clicked={selectState} className="drawer-select" onClick={handleEditDialogOpen}>
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clipPath="url(#clip0)">
                                                 <path
@@ -538,7 +539,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                         ) : cardData['contents_data'] ? (
                             <>
                                 <div className="drawer-selects">
-                                    <div style={{ width: '100%' }} className="drawer-select" onClick={handleSelectRight}>
+                                    <div style={{ width: '100%' }} className="drawer-select" onClick={handleEditDialogOpen}>
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clipPath="url(#clip0)">
                                                 <path
