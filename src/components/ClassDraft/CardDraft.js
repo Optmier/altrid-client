@@ -198,26 +198,27 @@ function CardDraft({ cardData, match, history }) {
 
     /** 유형별 분석 메소드 */
     const [assignmentTypeState, setAssignmentTypeState] = useState(0);
-
     const _o = {};
     useEffect(() => {
-        cardData['contents_data']
-            .flatMap((m) => m.problemDatas)
-            .forEach((d) => {
-                const cat = d.category;
-                !_o[cat] && (_o[cat] = {});
-                !_o[cat].category && (_o[cat].category = 0);
-                !_o[cat].count && (_o[cat].count = 0);
-                _o[cat].category = cat;
-                _o[cat].count += 1;
-            });
+        if (cardData['contents_data']) {
+            cardData['contents_data']
+                .flatMap((m) => m.problemDatas)
+                .forEach((d) => {
+                    const cat = d.category;
+                    !_o[cat] && (_o[cat] = {});
+                    !_o[cat].category && (_o[cat].category = 0);
+                    !_o[cat].count && (_o[cat].count = 0);
+                    _o[cat].category = cat;
+                    _o[cat].count += 1;
+                });
 
-        setAssignmentTypeState(
-            getAchieveValueForTypes(
-                Object.keys(_o).map((k) => _o[k]),
-                3,
-            ).value,
-        );
+            setAssignmentTypeState(
+                getAchieveValueForTypes(
+                    Object.keys(_o).map((k) => _o[k]),
+                    3,
+                ).value,
+            );
+        }
         return () => {};
     }, []);
 
