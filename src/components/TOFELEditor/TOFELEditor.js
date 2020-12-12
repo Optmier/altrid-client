@@ -16,6 +16,10 @@ import { withRouter } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 import { useBeforeunload } from 'react-beforeunload';
 import { ArrowBack, ArrowForward, DeleteForever, PostAdd } from '@material-ui/icons';
+import { useCallback } from 'react';
+import { updateSession } from '../../redux_modules/sessions';
+import { useDispatch, useSelector } from 'react-redux';
+import RefreshToken from '../essentials/Authentication';
 
 $.fn.changeSize = function (handleFunction) {
     let element = this;

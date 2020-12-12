@@ -127,7 +127,7 @@ const checkRange = (pos1, pos2, allowedOffset) => {
     return allowedOffset >= getDistance(pos1, pos2);
 };
 
-const captureChanged = (position, elapsedTime) => {
+const captureChanged = (position, elapsedTime, precisionElapsedTime) => {
     // 지문 스크롤 위치
     const passageScrollPosition = $('.passages').length ? $('.passages')[0].scrollTop : 0;
     // 문제 스크롤 위치
@@ -144,6 +144,7 @@ const captureChanged = (position, elapsedTime) => {
         passageScrollPosition: 0,
         problemScrollPosition: 0,
         elapsedTime: 0,
+        eyetrackTime: 0,
     };
     // setNumber 지정
     const seqs = window.etRes.sequences;
@@ -177,6 +178,7 @@ const captureChanged = (position, elapsedTime) => {
         _obj.passageScrollPosition = passageScrollPosition;
         _obj.problemScrollPosition = problemScrollPosition;
         _obj.elapsedTime = elapsedTime;
+        _obj.eyetrackTime = precisionElapsedTime;
     } else {
         _obj.problemStep = _step;
         _obj.userAnswer = _userAnswer;
@@ -187,6 +189,7 @@ const captureChanged = (position, elapsedTime) => {
         _obj.passageScrollPosition = passageScrollPosition;
         _obj.problemScrollPosition = problemScrollPosition;
         _obj.elapsedTime = elapsedTime;
+        _obj.eyetrackTime = precisionElapsedTime;
     }
     window.etRes.sequences.push(_obj);
     _lastStep = _step;
@@ -293,7 +296,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
             tickerTimeout = setTimeout(() => {
                 if (!data) {
                     // console.log('22 out of range! not recorded.');
-                    captureChanged(null, _timeElapsed);
+                    captureChanged(null, _timeElapsed, elapsedTime);
                     tickerTimeout = null;
                     return;
                 }
@@ -350,7 +353,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                 lastElapsedTime = elapsedTime;
 
                 // console.log(lastX, lastY);
-                captureChanged({ x: lastX, y: lastY }, _timeElapsed);
+                captureChanged({ x: lastX, y: lastY }, _timeElapsed, elapsedTime);
 
                 tickerTimeout = null;
             }, 100);

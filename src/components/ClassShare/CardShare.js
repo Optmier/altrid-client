@@ -303,7 +303,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                         'class-card-wrapper',
                     )}
                 >
-                    <div className="card-title-p" title={cardData['title']}>
+                    <div className="card-title-p" title={cardData['title']} style={{ width: 'calc(100% - 128px)' }}>
                         {cardData['title']}
                     </div>
                     <span className="card-option">

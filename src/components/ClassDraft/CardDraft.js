@@ -245,7 +245,7 @@ function CardDraft({ cardData, match, history }) {
             ) : (
                 <div className="class-card-root" onClick={handlePreTest}>
                     <div className="class-card-header-on class-card-wrapper">
-                        <div className="card-title-p" title={cardData['title']}>
+                        <div className="card-title-p" title={cardData['title']} style={{ width: 'calc(100% - 36px)' }}>
                             {cardData['title']}
                         </div>
                         <span className="card-option" onClick={handleOptionClick} style={{ padding: '0 2px' }}>

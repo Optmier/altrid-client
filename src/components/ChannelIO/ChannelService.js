@@ -53,6 +53,10 @@ class ChannelService {
         window.ChannelIO('updateUser', userInfo, onUpdate);
     }
 
+    showMessenger() {
+        window.ChannelIO('showMessenger');
+    }
+
     hideButton() {
         window.ChannelIO('hideChannelButton');
     }

@@ -9,6 +9,8 @@ import { startTimer, addSecond } from '../redux_modules/timer';
 import { useBeforeunload } from 'react-beforeunload';
 import ChannelService from '../components/ChannelIO/ChannelService';
 import styled from 'styled-components';
+import RefreshToken from '../components/essentials/Authentication';
+import { updateSession } from '../redux_modules/sessions';
 
 const ActivityRoot = styled.div`
     display: flex;
@@ -45,6 +47,10 @@ function AssignmentDoItNow({ history, match }) {
     const handleStart = useCallback((duration, startedTime, from) => dispatch(startTimer(duration, startedTime, from)), [dispatch]);
     // const handleRestart = useCallback((duration, startedTime) => dispatch(restartTimer(duration, startedTime)), [dispatch]);
     const handleElapse = useCallback(() => dispatch(addSecond()), [dispatch]);
+
+    /** sessions control */
+    const updateSessions = useCallback((updateStates) => dispatch(updateSession(updateStates)), [dispatch]);
+    const sessions = useSelector((state) => state.RdxSessions);
 
     const rootRef = useRef();
 
@@ -123,11 +129,13 @@ function AssignmentDoItNow({ history, match }) {
         // console.log('8. Number of regressions : ' + window.numberOfRegressions);
         // console.log(metadata);
 
+        const acquiredPoints = metadata.selections
+            .filter((selection) => selection.correct === true)
+            .reduce((a, b) => a + parseInt(b.score), 0);
         const scorePercentage =
-            (metadata.selections.filter((selection) => selection.correct === true).length /
-                originalDatas.contents_data.flatMap((m) => m.problemDatas).length) *
+            (acquiredPoints / originalDatas.contents_data.flatMap((m) => m.problemDatas).reduce((a, b) => a + parseInt(b.score), 0)) *
             100.0;
-        const scorePoints = metadata.selections.reduce((acc, cur) => acc + parseInt(cur.score), 0);
+        const scorePoints = acquiredPoints;
         Axios.patch(
             `${apiUrl}/assignment-result`,
             {
@@ -189,6 +197,13 @@ function AssignmentDoItNow({ history, match }) {
             setEnableBeforeUnload(false);
             if (originalDatas.time_limit === -3) alert('과제 기한이 종료되었습니다.\n지금까지 진행 사항은 저장됩니다.');
             else alert('종료되었습니다.');
+
+            // 여기에 분석용 데이터 보내기
+            Axios.post(`${apiUrl}/data-analytics`, {
+                activedNumber: match.params.assignmentid,
+                userData: metadata,
+                eyetrackData: window.etRes,
+            });
             window.close();
         });
     };
@@ -202,7 +217,18 @@ function AssignmentDoItNow({ history, match }) {
             setTimerInterval(interval);
         }
     };
-    window.startTestTimer = startTestTimer;
+
+    useEffect(() => {
+        RefreshToken(sessions.exp, 1800, true)
+            .then((res) => {
+                updateSessions({ iat: res.auth.iat, exp: res.auth.exp });
+            })
+            .catch((err) => {
+                console.error(err);
+                alert('잘못된 세션 입니다.');
+                window.close();
+            });
+    }, []);
 
     useEffect(() => {
         if (!window.opener) {
@@ -211,11 +237,8 @@ function AssignmentDoItNow({ history, match }) {
             window.close();
             return;
         }
-
-        if (!serverdate.datetime) return;
-
         ChannelService.hideButton();
-
+        if (!serverdate.datetime) return;
         const { classnum, assignmentid } = match.params;
         Axios.get(`${apiUrl}/assignment-actived/${classnum}/${assignmentid}`, { withCredentials: true })
             .then((res) => {

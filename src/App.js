@@ -23,6 +23,7 @@ import RefreshToken from './components/essentials/Authentication';
 import channelIOAccessKey from './components/ChannelIO/accessKeys';
 import ChannelService from './components/ChannelIO/ChannelService';
 import generateHash from './components/ChannelIO/generateHash';
+import CustomChannelIOButton from './components/ChannelIO/CustomChannelIOButton';
 
 window.lastUrl = '/';
 window.tokenRefresher = null;
@@ -113,6 +114,7 @@ function App({ history }) {
             ChannelService.boot({
                 pluginKey: channelIOAccessKey.pluginKey, //please fill with your plugin key
                 memberId: sessions.authId,
+                hideChannelButtonOnBoot: true,
                 profile: {
                     name: sessions.userName,
                     email: null,
@@ -148,6 +150,7 @@ function App({ history }) {
 
     return (
         <>
+            <CustomChannelIOButton />
             <Element name="main_top_start" />
             <ScrollTop>
                 <main>
