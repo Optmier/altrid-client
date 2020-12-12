@@ -70,9 +70,9 @@ function TypeBanner({ situation, value }) {
                     <Alert severity={situation}>
                         <div className="badge-left">
                             {situation === 'info'
-                                ? '과제를 조금 더 다양한 유형과 문제로 만들어주세요!'
+                                ? '과제 최소 조건을 맞추면 유형별 분석이 가능합니다!'
                                 : situation === 'warning'
-                                ? '과제 최소 조건을 맞추어 유형별 분석을 시도해보세요!'
+                                ? '과제를 조금 더 다양한 유형과 문제로 만들어주세요!'
                                 : '과제 최소 조건을 만족하셨습니다!'}
                         </div>
 

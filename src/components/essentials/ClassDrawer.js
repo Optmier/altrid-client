@@ -6,13 +6,37 @@ import { postDraft, patchDraft } from '../../redux_modules/assignmentDraft';
 import { withRouter } from 'react-router-dom';
 import { Button, Dialog, withStyles } from '@material-ui/core';
 import TOFELEditor from '../TOFELEditor/TOFELEditor';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { SecondtoMinute } from './TimeChange';
 import ClassDialog from '../essentials/ClassDialog';
 import { changeDueDate } from '../../redux_modules/assignmentActived';
 // import BackdropComponent from './BackdropComponent';
 import CloseIcon from '@material-ui/icons/Close';
 
+const StyleLabel = styled.label`
+    ${(props) =>
+        props.clicked === 'left'
+            ? css`
+                  background-color: #13e2a11f;
+                  box-sizing: border-box;
+                  border: 1.5px solid #13e2a1;
+              `
+            : css`
+                  background-color: #f6f7f9;
+              `}
+`;
+const StyleLabel2 = styled.label`
+    ${(props) =>
+        props.clicked === 'right'
+            ? css`
+                  background-color: #13e2a11f;
+                  box-sizing: border-box;
+                  border: 1.5px solid #13e2a1;
+              `
+            : css`
+                  background-color: #f6f7f9;
+              `}
+`;
 const StyleSelectdiv = styled.div`
     font-size: 0.85rem;
     text-decoration: underline;
@@ -471,7 +495,12 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                                 <div className="drawer-selects">
                                     <input id="file-click" type="file" onChange={handleChangeFile} />
 
-                                    <label className="drawer-select" htmlFor="file-click" onClick={handleSelectLeft}>
+                                    <StyleLabel
+                                        clicked={selectState}
+                                        className="drawer-select"
+                                        htmlFor="file-click"
+                                        onClick={handleSelectLeft}
+                                    >
                                         <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M38.7 12.08C37.34 5.18 31.28 0 24 0C18.22 0 13.2 3.28 10.7 8.08C4.68 8.72 0 13.82 0 20C0 26.62 5.38 32 12 32H38C43.52 32 48 27.52 48 22C48 16.72 43.9 12.44 38.7 12.08ZM28 18V26H20V18H14L24 8L34 18H28Z"
@@ -480,8 +509,8 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                                         </svg>
                                         <h4>과제 파일 업로드하기</h4>
                                         <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
-                                    </label>
-                                    <label className="drawer-select" onClick={handleSelectRight}>
+                                    </StyleLabel>
+                                    <StyleLabel2 clicked={selectState} className="drawer-select" onClick={handleSelectRight}>
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clipPath="url(#clip0)">
                                                 <path
@@ -499,7 +528,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
 
                                         <h4>직접 제작하기</h4>
                                         <p>과제를 바로 제작하고 싶으시다면, 자체 에디터를 통해 과제 생성이 가능합니다.</p>
-                                    </label>
+                                    </StyleLabel2>
                                 </div>
                                 <div className="drawer-select-warn">
                                     ** 과제 파일 업로드의 경우, 과제 생성의 완료까지 최대 1일의 시간이 소요됩니다. <br />

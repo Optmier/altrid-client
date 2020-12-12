@@ -84,6 +84,13 @@
         display: flex;
         align-items: flex-end;
         justify-content: flex-end;
+        & > a {
+            padding-top: 1rem;
+            width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
         & > span + span {
             padding-left: 20px;
         }
