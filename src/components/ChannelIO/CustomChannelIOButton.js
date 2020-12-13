@@ -3,6 +3,7 @@ import { IconButton, Tooltip, withStyles } from '@material-ui/core';
 import ContactSupportIcon from '@material-ui/icons/ContactSupport';
 import ChannelService from './ChannelService';
 import { useState } from 'react';
+import { withRouter } from 'react-router-dom';
 
 const TalkIOButton = withStyles(() => ({
     root: {
@@ -47,7 +48,7 @@ const HtmlTooltip = withStyles((theme) => ({
     },
 }))(Tooltip);
 
-function CustomChannelIOButton() {
+function CustomChannelIOButton({ history, match }) {
     const [showCustomChannelButton, setShowCustomChannelButton] = useState(true);
     window.showCustomChannelButton = setShowCustomChannelButton;
     const onClick = () => {
@@ -55,7 +56,10 @@ function CustomChannelIOButton() {
     };
 
     useEffect(() => {
-        if (window.ChannelIO) ChannelService.hideButton();
+        // if (window.ChannelIO) ChannelService.hideButton();
+        if (history.location.pathname.includes('/assignments/do-it-now')) {
+            setShowCustomChannelButton(false);
+        }
     }, []);
 
     return (
@@ -71,4 +75,4 @@ function CustomChannelIOButton() {
     );
 }
 
-export default React.memo(CustomChannelIOButton);
+export default withRouter(React.memo(CustomChannelIOButton));

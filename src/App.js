@@ -24,10 +24,11 @@ import channelIOAccessKey from './components/ChannelIO/accessKeys';
 import ChannelService from './components/ChannelIO/ChannelService';
 import generateHash from './components/ChannelIO/generateHash';
 import CustomChannelIOButton from './components/ChannelIO/CustomChannelIOButton';
+import LoginCandidated from './pages/LoginCandidated';
 
 window.lastUrl = '/';
 window.tokenRefresher = null;
-const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin];
+const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin, '/login-candidated'];
 // const excludesForAdminUrls = [];
 // const excludesForTeacherUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
 // const excludesForStudentUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
@@ -157,6 +158,7 @@ function App({ history }) {
                     <Switch>
                         <Route path={$_root} component={Main} exact />
                         <Route path={$_loginDefault} component={Login} exact />
+                        <Route path={'/login-candidated'} component={LoginCandidated} exact />
                         <Route path={$_loginAdmin} component={LoginAdmin} exact />
                         <RestrictRoute path="/admins" component={AdminMain} role={sessions.userType} allowedTypes={['admins']} />
                         {/* <Route path={'/admins'} component={AdminMain} /> */}

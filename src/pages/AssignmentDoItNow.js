@@ -199,11 +199,21 @@ function AssignmentDoItNow({ history, match }) {
             else alert('종료되었습니다.');
 
             // 여기에 분석용 데이터 보내기
-            Axios.post(`${apiUrl}/data-analytics`, {
-                activedNumber: match.params.assignmentid,
-                userData: metadata,
-                eyetrackData: window.etRes,
-            });
+            Axios.post(
+                `${apiUrl}/data-analytics`,
+                {
+                    activedNumber: match.params.assignmentid,
+                    userData: metadata,
+                    eyetrackData: window.etRes,
+                },
+                { withCredentials: true },
+            )
+                .then((res) => {
+                    console.log('분석용 데이터 저장됨.', res);
+                })
+                .catch((e) => {
+                    console.error(e);
+                });
             window.close();
         });
     };

@@ -227,7 +227,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         completedCalib = true;
         Webgazer.removeMouseEventListeners();
         Webgazer.setVideoViewerSize(0, 0);
-        if (buildMode) Webgazer.showPredictionPoints(false);
+        if (buildMode === 'prod') Webgazer.showPredictionPoints(false);
         onAfterCalib();
     };
 
@@ -259,12 +259,18 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     };
 
     const getVelocity = (pos1, pos2, diffTime) => {
+        // const distX = Math.abs(pos1.x - pos2.x);
+        // const distY = Math.abs(pos1.y - pos2.y);
+        // const dist = Math.sqrt(distX * distX + distY * distY);
+        // const toSecondDivide = 1 / diffTime;
+
+        // return dist / diffTime / toSecondDivide;
         const distX = Math.abs(pos1.x - pos2.x);
         const distY = Math.abs(pos1.y - pos2.y);
         const dist = Math.sqrt(distX * distX + distY * distY);
-        const toSecondDivide = 1 / diffTime;
+        const toSecondDivide = diffTime / 1000;
 
-        return dist / diffTime / toSecondDivide;
+        return dist / toSecondDivide;
     };
 
     let clusterCounts = 0;
@@ -328,7 +334,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                         Math.abs(elapsedTime - lastElapsedTime),
                     );
                     // 속도가 400px/s 이상이므로 saccade 로 간주
-                    if (fixationVelocity >= 400) {
+                    if (fixationVelocity >= 800) {
                         window.saccadeVelocities.push(fixationVelocity);
                         // saccade 로 카운팅
                         window.numOfSaccades++;

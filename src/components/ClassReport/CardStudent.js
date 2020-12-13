@@ -40,8 +40,8 @@ const InfoItems = ({ title, contents, children }) => {
         </div>
     );
 };
-const ScoreItems = ({ title, score, total, children }) => {
-    let percent = ((score / total) * 100).toFixed(1);
+const ScoreItems = ({ title, score, total, percent, children }) => {
+    // let percent = ((score / total) * 100).toFixed(1);
     return (
         <div className="card-item-student">
             {children}
@@ -54,12 +54,15 @@ const ScoreItems = ({ title, score, total, children }) => {
                         {score}문제 / {total}문제
                     </div>
                     <div className="card-content-p" style={{ color: '#13e2a1', paddingLeft: '5px' }}>
-                        ({percent}%)
+                        ({percent.toFixed(1)}%)
                     </div>
                 </>
             )}
         </div>
     );
+};
+ScoreItems.defaultProps = {
+    percent: 0,
 };
 const CompareItems = ({ title, contents, enabled, children }) => {
     return (
@@ -155,6 +158,7 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, existsCa
                             title={'점수'}
                             score={!data.user_data ? '-' : data.user_data.selections.filter((s) => s.correct === true).length}
                             total={totalProblems}
+                            percent={data.score_percentage}
                         >
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
