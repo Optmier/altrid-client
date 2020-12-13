@@ -20,6 +20,10 @@ const POST_DRAFT_SUCCESS = 'assignmentDraft/POST_DRAFT_SUCCESS';
 const PATCH_DRAFT = 'assignmentDraft/PATCH_DRAFT';
 const PATCH_DRAFT_SUCCESS = 'assignmentDraft/PATCH_DRAFT_SUCCESS';
 
+// draft 복사하기
+const COPY_DRAFT = 'assignmentDraft/COPY_DRAFT';
+const COPY_DRAFT_SUCCESS = 'assingmentDraft/COPY_DRAFT';
+
 // draft 삭제하기
 const DELETE_DRAFT = 'assignmentDraft/DELETE_DRAFT';
 const DELETE_DRAFT_SUCCESS = 'assignmentDraft/DELETE_DRAFT_SUCCESS';
@@ -188,6 +192,15 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsDa
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패
     }
 };
+export const copyDraft = (idx, title, originalCardData) => async (dispatch) => {
+    dispatch({ type: COPY_DRAFT });
+    try {
+        await Axios.post(`${apiUrl}/assignment-draft/copy/${idx}`, { title: title }, { withCredentials: true });
+        dispatch({ type: COPY_DRAFT_SUCCESS, originalCardData, title: title });
+    } catch (e) {
+        dispatch({ type: DRAFT_ERROR, error: e });
+    }
+};
 export const deleteDraft = (idx) => async (dispatch) => {
     dispatch({ type: DELETE_DRAFT }); // 요청이 시작됨
 
@@ -275,6 +288,27 @@ export default function eyetrackingSelect(state = initialState, action) {
                     error: null,
                 },
             };
+        case COPY_DRAFT:
+            return {
+                ...state,
+                draftDatas: {
+                    loading: true,
+                    data: state.draftDatas.data,
+                    error: null,
+                },
+            };
+        case COPY_DRAFT_SUCCESS: {
+            return {
+                ...state,
+                draftDatas: {
+                    loading: false,
+                    data: [{ ...action.originalCardData, title: action.title, created: new Date(), updated: new Date() }].concat(
+                        state.draftDatas.data,
+                    ),
+                    error: null,
+                },
+            };
+        }
         case DELETE_DRAFT:
             return {
                 ...state,
@@ -294,7 +328,6 @@ export default function eyetrackingSelect(state = initialState, action) {
                     error: null,
                 },
             };
-
         case DRAFT_ERROR:
             alert('데이터베이스 오류가 발생했습니다.\n기술 지원으로 문의해주세요!');
             console.error('error type : ', action.type);

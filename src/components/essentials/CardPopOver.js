@@ -40,6 +40,7 @@ function CardPopOver({
     handleOptionClose,
     anchorEl,
     handleDrawerOpen,
+    handleThisCopy,
 }) {
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
@@ -74,7 +75,13 @@ function CardPopOver({
                 )}
 
                 <div className="popover-section">
-                    {/* {contents_data ? <div className="popover-list">복사하기</div> : ''} */}
+                    {contents_data ? (
+                        <div className="popover-list" onClick={handleThisCopy}>
+                            복사하기
+                        </div>
+                    ) : (
+                        ''
+                    )}
                     <div className="popover-list" onClick={handleDrawerOpen}>
                         수정하기
                     </div>

@@ -114,8 +114,8 @@ const InfoItems = ({ title, contents, children }) => {
         </StyleItems>
     );
 };
-const ScoreItems = ({ title, score, total, children }) => {
-    let percent = ((score / total) * 100).toFixed(1);
+const ScoreItems = ({ title, score, total, percent, children }) => {
+    // let percent = ((score / total) * 100).toFixed(1);
     return (
         <StyleItems>
             {children}
@@ -125,11 +125,14 @@ const ScoreItems = ({ title, score, total, children }) => {
                     <div>
                         {score}문제 / {total}문제
                     </div>
-                    <div style={{ color: '#13e2a1', paddingLeft: '5px' }}>({percent}%)</div>
+                    <div style={{ color: '#13e2a1', paddingLeft: '5px' }}>({percent.toFixed(1)}%)</div>
                 </>
             }
         </StyleItems>
     );
+};
+ScoreItems.defaultProps = {
+    percent: 0,
 };
 const CompareItems = ({ title, contents, children }) => {
     return (
@@ -199,7 +202,7 @@ function ReportStudent({ history, match }) {
     /** 제출 날짜 */
     const [submittedDate, setSubmittedDate] = useState('-');
     /** 백분율 점수 */
-    const [scorePercentage, setScorePercentage] = useState('-');
+    const [scorePercentage, setScorePercentage] = useState(0);
     /** 배점 점수 */
     const [scorePoints, setScorePoints] = useState('-');
     /** 총 문제 수 */
@@ -222,7 +225,7 @@ function ReportStudent({ history, match }) {
     /** 문제 번호별 그룹화된 학생들 패턴 데이터 */
     const [patternDatas, setPatternDatas] = useState([]);
     /** 유형 분석 활성화 달성률 */
-    const [achievesForTypes, setAchievesForTypes] = useState({ value: 0, satisfieds: [] });
+    const [achievesForTypes, setAchievesForTypes] = useState({ value: 0, satisfieds: [], allExists: [] });
     /** 현재 학생 영역별 점수 데이터 */
     const [currentScoresPerType, setCurrentScoresPerType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
     /** 전체 학생 영역별 점수 데이터 */
@@ -529,9 +532,13 @@ function ReportStudent({ history, match }) {
         const toArray = Object.keys(currentScoresPerType)
             .filter((f) => f !== '0')
             .map((c) => ({ category: c, scores: currentScoresPerType[c] }));
-        toArray.push({ category: '0', scores: currentScoresPerType['0'] });
+        // toArray.push({ category: '0', scores: currentScoresPerType['0'] });
         toArray.sort((a, b) => a.scores - b.scores);
-        setTop3Weaks(toArray.filter((d, i) => i < 3));
+        setTop3Weaks(
+            toArray
+                .filter(({ category }) => achievesForTypes.allExists.map((d) => d.category + '').includes(category))
+                .filter((d, i) => i < 3),
+        );
     }, [currentScoresPerType]);
 
     useEffect(() => {
@@ -625,7 +632,7 @@ function ReportStudent({ history, match }) {
                                 </TriesItems>
                             </div>
                             <div className="right-bottom-col">
-                                <ScoreItems title={'점수'} score={correctProblems} total={totalProblems}>
+                                <ScoreItems title={'점수'} score={correctProblems} total={totalProblems} percent={scorePercentage}>
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path
                                             d="M14.2222 0H1.77778C0.8 0 0 0.8 0 1.77778V14.2222C0 15.2 0.8 16 1.77778 16H14.2222C15.2 16 16 15.2 16 14.2222V1.77778C16 0.8 15.2 0 14.2222 0ZM5.33333 12.4444H3.55556V6.22222H5.33333V12.4444ZM8.88889 12.4444H7.11111V3.55556H8.88889V12.4444ZM12.4444 12.4444H10.6667V8.88889H12.4444V12.4444Z"

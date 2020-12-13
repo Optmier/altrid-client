@@ -50,7 +50,7 @@ function Class({ match }) {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
         setStMatch({ ...stMatch, id: match.params.id, path: match.path });
         if (sessions.userType === 'teachers') dispatch(getDrafts());
-    }, [sessions]);
+    }, [sessions.authId, sessions.academyName]);
 
     useEffect(() => {
         if (!stMatch.id || !stMatch.path) return;

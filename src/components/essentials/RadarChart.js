@@ -9,7 +9,7 @@ function RadarChart({ objDatas }) {
         series: [
             {
                 name: '학생 정답률',
-                data: objDatas.map((v) => v.score * 100),
+                data: objDatas.map((v) => (v.score * 100).toFixed(1)),
             },
         ],
         options: {

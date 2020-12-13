@@ -40,8 +40,8 @@ const InfoItems = ({ title, contents, children }) => {
         </div>
     );
 };
-const ScoreItems = ({ title, score, total, children }) => {
-    let percent = ((score / total) * 100).toFixed(1);
+const ScoreItems = ({ title, score, total, percent, children }) => {
+    // let percent = ((score / total) * 100).toFixed(1);
     return (
         <div className="card-item-student">
             {children}
@@ -54,12 +54,15 @@ const ScoreItems = ({ title, score, total, children }) => {
                         {score}문제 / {total}문제
                     </div>
                     <div className="card-content-p" style={{ color: '#13e2a1', paddingLeft: '5px' }}>
-                        ({percent}%)
+                        ({percent.toFixed(1)}%)
                     </div>
                 </>
             )}
         </div>
     );
+};
+ScoreItems.defaultProps = {
+    percent: 0,
 };
 const CompareItems = ({ title, contents, enabled, children }) => {
     return (
@@ -81,7 +84,7 @@ const CompareItems = ({ title, contents, enabled, children }) => {
     );
 };
 
-function CardStudent({ id, data, prevData, totalProblems, achieveRates, history }) {
+function CardStudent({ id, data, prevData, totalProblems, achieveRates, existsCategories, history }) {
     let path = history.location.pathname;
     /** 현재 학생 영역별 점수 데이터 */
     const [currentScoresPerType, setCurrentScoresPerType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
@@ -107,7 +110,9 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, history 
             .map((c) => ({ category: c, scores: currentScoresPerType[c] }));
         // toArray.push({ category: '0', scores: currentScoresPerType['0'] });
         toArray.sort((a, b) => a.scores - b.scores);
-        setTop3Weaks(toArray.filter((d, i) => i < 3));
+        setTop3Weaks(
+            toArray.filter(({ category }) => existsCategories.map((d) => d.category + '').includes(category)).filter((d, i) => i < 3),
+        );
     }, [currentScoresPerType]);
 
     return (
@@ -153,6 +158,7 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, history 
                             title={'점수'}
                             score={!data.user_data ? '-' : data.user_data.selections.filter((s) => s.correct === true).length}
                             total={totalProblems}
+                            percent={data.score_percentage}
                         >
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path

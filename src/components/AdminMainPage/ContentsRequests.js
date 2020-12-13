@@ -256,8 +256,8 @@ function ContentsRequests({ history }) {
     const handleRowDoubleClick = (idx) => {
         setRowSelected(idx);
         setSelectedContentId(idx);
-        window.open(`/admins/contents-requests/${idx}`);
-        // history.push();
+        // window.open(`/admins/contents-requests/${idx}`);
+        history.push(`/admins/contents-requests/${idx}`);
     };
 
     const getRequestLists = () => {

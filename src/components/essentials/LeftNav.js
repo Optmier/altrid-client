@@ -46,7 +46,7 @@ function LeftNav({ match }) {
             .catch((err) => {
                 console.error(err);
             });
-    }, [sessions]);
+    }, [sessions.authId, sessions.academyName]);
 
     return (
         <div className="left-nav-root">

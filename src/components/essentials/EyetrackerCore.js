@@ -127,7 +127,7 @@ const checkRange = (pos1, pos2, allowedOffset) => {
     return allowedOffset >= getDistance(pos1, pos2);
 };
 
-const captureChanged = (position, elapsedTime) => {
+const captureChanged = (position, elapsedTime, precisionElapsedTime) => {
     // 지문 스크롤 위치
     const passageScrollPosition = $('.passages').length ? $('.passages')[0].scrollTop : 0;
     // 문제 스크롤 위치
@@ -144,6 +144,7 @@ const captureChanged = (position, elapsedTime) => {
         passageScrollPosition: 0,
         problemScrollPosition: 0,
         elapsedTime: 0,
+        eyetrackTime: 0,
     };
     // setNumber 지정
     const seqs = window.etRes.sequences;
@@ -177,6 +178,7 @@ const captureChanged = (position, elapsedTime) => {
         _obj.passageScrollPosition = passageScrollPosition;
         _obj.problemScrollPosition = problemScrollPosition;
         _obj.elapsedTime = elapsedTime;
+        _obj.eyetrackTime = precisionElapsedTime;
     } else {
         _obj.problemStep = _step;
         _obj.userAnswer = _userAnswer;
@@ -187,6 +189,7 @@ const captureChanged = (position, elapsedTime) => {
         _obj.passageScrollPosition = passageScrollPosition;
         _obj.problemScrollPosition = problemScrollPosition;
         _obj.elapsedTime = elapsedTime;
+        _obj.eyetrackTime = precisionElapsedTime;
     }
     window.etRes.sequences.push(_obj);
     _lastStep = _step;
@@ -224,7 +227,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         completedCalib = true;
         Webgazer.removeMouseEventListeners();
         Webgazer.setVideoViewerSize(0, 0);
-        if (buildMode) Webgazer.showPredictionPoints(false);
+        if (buildMode === 'prod') Webgazer.showPredictionPoints(false);
         onAfterCalib();
     };
 
@@ -256,12 +259,18 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     };
 
     const getVelocity = (pos1, pos2, diffTime) => {
+        // const distX = Math.abs(pos1.x - pos2.x);
+        // const distY = Math.abs(pos1.y - pos2.y);
+        // const dist = Math.sqrt(distX * distX + distY * distY);
+        // const toSecondDivide = 1 / diffTime;
+
+        // return dist / diffTime / toSecondDivide;
         const distX = Math.abs(pos1.x - pos2.x);
         const distY = Math.abs(pos1.y - pos2.y);
         const dist = Math.sqrt(distX * distX + distY * distY);
-        const toSecondDivide = 1 / diffTime;
+        const toSecondDivide = diffTime / 1000;
 
-        return dist / diffTime / toSecondDivide;
+        return dist / toSecondDivide;
     };
 
     let clusterCounts = 0;
@@ -293,7 +302,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
             tickerTimeout = setTimeout(() => {
                 if (!data) {
                     // console.log('22 out of range! not recorded.');
-                    captureChanged(null, _timeElapsed);
+                    captureChanged(null, _timeElapsed, elapsedTime);
                     tickerTimeout = null;
                     return;
                 }
@@ -325,7 +334,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                         Math.abs(elapsedTime - lastElapsedTime),
                     );
                     // 속도가 400px/s 이상이므로 saccade 로 간주
-                    if (fixationVelocity >= 400) {
+                    if (fixationVelocity >= 800) {
                         window.saccadeVelocities.push(fixationVelocity);
                         // saccade 로 카운팅
                         window.numOfSaccades++;
@@ -350,7 +359,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                 lastElapsedTime = elapsedTime;
 
                 // console.log(lastX, lastY);
-                captureChanged({ x: lastX, y: lastY }, _timeElapsed);
+                captureChanged({ x: lastX, y: lastY }, _timeElapsed, elapsedTime);
 
                 tickerTimeout = null;
             }, 100);
