@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import '../../styles/class_drawer.scss';
 import ToggleSwitch from './ToggleSwitch';
 import { useSelector, useDispatch } from 'react-redux';
@@ -78,7 +78,6 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
 
     /** 과제 생성 state */
     const [attachFiles, setAttachFiles] = useState(new FormData());
-    const [fileValue, setFileValue] = useState(undefined);
     const [contentsData, setContentsData] = useState(
         ver === 'draft'
             ? [
@@ -126,13 +125,13 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         setSelectName(name);
         setSelectSate('left');
     };
-    const handleClickFile = (e) => {
-        console.log(e.target.files);
-    };
 
     //직접 제작 선택
+    const filesInput = useRef();
     const handleChangeContents = (metadata) => {
-        setFileValue(undefined);
+        if (filesInput.current.files.length) {
+            filesInput.current.value = '';
+        }
 
         //에디터 메타데이터로 최신화
         if (metadata[0]['title']) {
@@ -346,9 +345,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         //5. axios 작업
         if (ver === 'draft') {
             if (name === 'drawer-draft') {
-                console.log(selectState, contentsData, attachFiles);
-
-                //dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData));
+                dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData));
 
                 handleClose(e);
             } else if (name === 'drawer-share') {
@@ -493,13 +490,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                         {ver === 'draft' ? (
                             <>
                                 <div className="drawer-selects">
-                                    <input
-                                        id="file-click"
-                                        type="file"
-                                        files={fileValue}
-                                        onChange={handleChangeFile}
-                                        onClick={handleClickFile}
-                                    />
+                                    <input ref={filesInput} id="file-click" type="file" onChange={handleChangeFile} />
 
                                     <StyleLabel clicked={selectState} className="drawer-select" htmlFor="file-click">
                                         <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
