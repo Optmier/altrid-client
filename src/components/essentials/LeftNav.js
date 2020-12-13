@@ -90,7 +90,7 @@ function LeftNav({ match }) {
 
             <div className="left-nav-box">
                 <div className="box-wrapper">
-                    <h5>{teacherData ? teacherData['class_name'] : ''} 반</h5>
+                    <h5>{teacherData ? teacherData['class_name'] : ''}</h5>
                     <>
                         <p>{teacherData ? teacherData['description'] : ''}</p>
                         {sessions.userType === 'students' ? null : (

@@ -142,11 +142,16 @@ function Main({ history }) {
                                 <div className="bottom-left-central">
                                     시선흐름 추적 기술과 문제 패턴 데이터 수집을 통해 맞춤형 리포트를 제공합니다.
                                 </div>
-                                <div className="bottom-left-footer">
+                                <div className="bottom-left-footer" onClick={() => alert('준비중입니다 !')}>
                                     자세히 알아보기 <IoIosArrowForward style={{ marginRight: '5px' }} />
                                 </div>
                             </div>
-                            <div className="bottom-right">
+                            <div
+                                className="bottom-right"
+                                onClick={() =>
+                                    alert('데모버전 확인을 위해서는 인증절차가 필요합니다. \n 1대1 문의를 통해 연락주시면 감사하겠습니다.')
+                                }
+                            >
                                 <h4>
                                     데모 클래스 <IoIosArrowForward style={{ marginLeft: '10px' }} />
                                 </h4>

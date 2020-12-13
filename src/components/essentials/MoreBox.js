@@ -45,9 +45,9 @@ function MoreBox() {
                 모든 것을 관찰하고 기록합니다.
             </div>
             <div className="more-eyetrack-button">
-                <a href="http://eduityedu.com/" target="_blank">
+                <div onClick={() => alert('준비중입니다 !')}>
                     <IoIosArrowForward style={{ marginRight: '5px' }} />더 알아보기
-                </a>
+                </div>
             </div>
         </StyleMoreBox>
     );
