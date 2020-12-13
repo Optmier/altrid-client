@@ -112,23 +112,20 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     //업로드 선택
     const filesInput = useRef();
     const handleChangeFile = (e) => {
-        if (!e.target.files[0]) {
-            setSelectName('생성방법을 선택해주세요!');
-            return;
-        }
+        if (!e.target.files[0]) return;
+
+        attachFiles.delete(selectName);
 
         const name = e.target.files[0].name;
         const value = e.target.files[0];
         const fileName = e.target.files[0].name;
 
-        attachFiles.delete(selectName);
         attachFiles.append(name, value, fileName);
 
         setSelectName(name);
         setSelectSate('left');
     };
 
-    window.attachFiles = attachFiles;
     //직접 제작 선택
     const handleChangeContents = (metadata) => {
         if (filesInput.current.files.length) {
