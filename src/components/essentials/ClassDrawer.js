@@ -128,7 +128,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
 
     //직접 제작 선택
     const handleChangeContents = (metadata) => {
-        if (filesInput.current.files.length) {
+        if (ver === 'draft' && filesInput.current.files.length) {
             filesInput.current.value = '';
         }
 
