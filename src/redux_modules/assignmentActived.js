@@ -75,10 +75,10 @@ export const getActivedes = (num) => async (dispatch) => {
 export const postActived = (cardData, num, due_date, history) => async (dispatch) => {
     dispatch({ type: POST_ACTIVED }); // 요청이 시작됨
 
+    console.log(due_date);
     try {
         const { idx, title, time_limit, description, eyetrack, contents_data, file_url } = cardData;
         const class_number = num;
-
         await Axios.post(
             `${apiUrl}/assignment-actived`,
             {
@@ -90,7 +90,7 @@ export const postActived = (cardData, num, due_date, history) => async (dispatch
                 eyetrack: eyetrack,
                 contents_data: JSON.stringify(contents_data),
                 file_url: file_url,
-                due_date: due_date,
+                due_date: moment(due_date),
             },
             { withCredentials: true },
         ); // API 호출
@@ -106,19 +106,21 @@ export const patchActived = (idx, date) => async (dispatch) => {
 
     let now = moment().format('YYYY-MM-DD HH:mm:ss');
     let patchData = {};
+    //date = moment(date).format('YYYY-MM-DD HH:mm:ss');
+    console.log(date);
     try {
         //과제 재시작하는 경우,
         if (date) {
             await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: date }, { withCredentials: true }); // API 호출
             patchData = { idx: idx, now: date };
+            dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData, date }); // 성공
         }
         //과제 완료하는 경우,
         else {
             await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: now }, { withCredentials: true }); // API 호출
             patchData = { idx: idx, now: now };
+            dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData, now }); // 성공
         }
-
-        dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData, date }); // 성공
     } catch (e) {
         dispatch({ type: ACTIVEDES_ERROR, error: e }); // 실패
     }

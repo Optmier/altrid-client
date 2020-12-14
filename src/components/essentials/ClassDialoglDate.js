@@ -74,7 +74,7 @@ function ClassDialoglDate({ subType }) {
 
         if (moment(value).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss')) {
             setDateState(value);
-            dispatch(changeDueDate(moment(value).format('YYYY-MM-DD HH:mm:ss')));
+            dispatch(changeDueDate(moment(value)));
         }
     };
     return (

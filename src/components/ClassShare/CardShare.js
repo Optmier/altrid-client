@@ -139,21 +139,27 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
     const handleTestDialogClose = (e) => {
         const { name } = e.target;
 
-        if (name === 'button-complete') {
-            dispatch(patchActived(cardData['idx'], null));
-            setTestDialogopen(false);
-        } else if (name === 'button-restart') {
+        //과제 재시작
+        if (name === 'button-restart') {
             if (data['due_date']) {
                 dispatch(patchActived(cardData['idx'], data['due_date']));
             } else {
                 alert('과제 기한 변경은 필수사항 입니다.');
             }
             setTestDialogopen(false);
-        } else if (name === 'button-delete') {
+        }
+        //과제 완료하기
+        else if (name === 'button-complete') {
+            dispatch(patchActived(cardData['idx'], null));
+            setTestDialogopen(false);
+        }
+        //과제 완료 후, 삭제
+        else if (name === 'button-delete') {
             setTestDialogopen(false);
             handleDeleteDialogOpen();
-        } else {
-            //바깥 클릭했을때
+        }
+        //x 또는 바깥 클릭했을때
+        else {
             setTestDialogopen(false);
         }
 
