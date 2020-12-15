@@ -18,8 +18,11 @@ import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
-import { useSelector } from 'react-redux';
 import TypeBanner from '../essentials/TypeBanner';
+import { patchActived, changeDueDate, deleteActived } from '../../redux_modules/assignmentActived';
+import { useSelector, useDispatch } from 'react-redux';
+import ClassDialogDelete from '../essentials/ClassDialogDelete';
+import { getActivedes } from '../../redux_modules/assignmentActived';
 
 const pad = (n, width) => {
     n = n + '';
@@ -60,10 +63,15 @@ const StudentCardHeader = styled.div`
 `;
 
 function ReportClass({ match }) {
+    const { num, activedNum } = match.params;
+    const dispatch = useDispatch();
     const serverdate = useSelector((state) => state.RdxServerDate);
+    const RdxDueDate = useSelector((state) => state.assignmentActived.dueData.data);
+
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
+    const [deleteDialogopen, setDeleteDialogopen] = useState(false);
     const [testDialogopen, setTestDialogopen] = useState(false);
     /** 메인 데이터 및 각 요소 */
     const [mainReportData, setMainReportData] = useState(undefined);
@@ -95,12 +103,52 @@ function ReportClass({ match }) {
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
     };
+    const handleDeleteDialogOpen = () => {
+        setDeleteDialogopen(true);
+    };
 
-    const handleTestDialogClose = () => {
-        setTestDialogopen(false);
+    const handleTestDialogClose = (e) => {
+        const { name } = e.target;
+
+        //과제 재시작
+        if (name === 'button-restart') {
+            if (RdxDueDate) {
+                dispatch(patchActived(mainReportData.idx, RdxDueDate));
+            } else {
+                alert('과제 기한 변경은 필수사항 입니다.');
+            }
+            setTestDialogopen(false);
+            dispatch(changeDueDate(''));
+        }
+        //과제 완료하기
+        else if (name === 'button-complete') {
+            dispatch(patchActived(mainReportData.idx, null));
+            setTestDialogopen(false);
+        }
+        //과제 완료 후, 삭제
+        else if (name === 'button-delete') {
+            setTestDialogopen(false);
+            handleDeleteDialogOpen();
+        }
+        //x 또는 바깥 클릭했을때
+        else {
+            setTestDialogopen(false);
+            dispatch(changeDueDate(''));
+        }
     };
     const handleDateDialogClose = () => {
         setDateDialogopen(false);
+    };
+    const handleDeleteDateDialogClose = (e) => {
+        const { name } = e.target;
+
+        if (name === 'yes') {
+            // console.log(cardData['idx']);
+            dispatch(deleteActived(mainReportData.idx));
+            setDeleteDialogopen(false);
+        } else {
+            setDeleteDialogopen(false);
+        }
     };
 
     /** toggle state */
@@ -109,8 +157,8 @@ function ReportClass({ match }) {
     });
     const [subTypeState, setSubTypeState] = useState('init');
 
-    const handleToggleChange = (event) => {
-        setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
+    const handleToggleChange = () => {
+        //setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
 
         toggleState['checked'] ? setSubTypeState('init') : setSubTypeState('modify');
         handleDialogOpen('test');
@@ -131,7 +179,7 @@ function ReportClass({ match }) {
     /** 학생 카드 정렬 */
     const handleSortStudentsCard = ({ target }) => {
         const { name, value } = target;
-        // console.log(name, value);
+
         if (name === 'student-option') {
             switch (value) {
                 // 제출 순
@@ -200,7 +248,7 @@ function ReportClass({ match }) {
 
     useEffect(() => {
         // 메인 정보 불러오기
-        const { num, activedNum } = match.params;
+
         Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, { withCredentials: true })
             .then((res) => {
                 // console.log(res);
@@ -303,7 +351,7 @@ function ReportClass({ match }) {
         setTimeLimit(mainReportData.time_limit);
         setStartDate(moment(mainReportData.created).format('MM.DD HH:mm'));
         setDueDate(moment(mainReportData.due_date).format('MM.DD HH:mm'));
-
+        dispatch(getActivedes(num));
         if (
             serverdate.datetime > new Date(mainReportData.due_date).getTime() ||
             serverdate.datetime < new Date(mainReportData.created).getTime()
@@ -370,11 +418,11 @@ function ReportClass({ match }) {
         }
     }, [studentsData]);
 
-    console.log(achievesForTypes);
     return (
         <div style={{ paddingBottom: '200px' }}>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
             <ClassDialog type="date" subType="modify" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
+            <ClassDialogDelete ver="assignment" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
 
             <ClassWrapper col={true}>
                 {/* <ClassHeaderBox /> */}

@@ -105,7 +105,7 @@ const HtmlTooltip2 = withStyles((theme) => ({
 function CardShare({ testNum, cardData, tries, totalStudents, history, match }) {
     let path = history.location.pathname;
     /** Redux-state */
-    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
+    const { data } = useSelector((state) => state.assignmentActived.dueData);
     const sessions = useSelector((state) => state.RdxSessions);
     const serverdate = useSelector((state) => state.RdxServerDate);
     const dispatch = useDispatch();
@@ -141,12 +141,13 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
 
         //과제 재시작
         if (name === 'button-restart') {
-            if (data['due_date']) {
-                dispatch(patchActived(cardData['idx'], data['due_date']));
+            if (data) {
+                dispatch(patchActived(cardData['idx'], data));
             } else {
                 alert('과제 기한 변경은 필수사항 입니다.');
             }
             setTestDialogopen(false);
+            dispatch(changeDueDate(''));
         }
         //과제 완료하기
         else if (name === 'button-complete') {
@@ -161,9 +162,8 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         //x 또는 바깥 클릭했을때
         else {
             setTestDialogopen(false);
+            dispatch(changeDueDate(''));
         }
-
-        dispatch(changeDueDate(''));
     };
 
     //과제 기한 수정 클릭
@@ -171,8 +171,8 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         const { name } = e.target;
 
         if (name === 'button-modify') {
-            if (data['due_date']) {
-                dispatch(patchActived(cardData['idx'], data['due_date']));
+            if (data) {
+                dispatch(patchActived(cardData['idx'], data));
                 setDateDialogopen(false);
             } else {
                 alert('과제 기한 변경은 필수사항 입니다.');
@@ -204,7 +204,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
 
     const [subTypeState, setSubTypeState] = useState('init');
 
-    const handleToggleChange = (event) => {
+    const handleToggleChange = () => {
         //setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
 
         toggleState['checked'] ? setSubTypeState('init') : setSubTypeState('modify');

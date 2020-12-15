@@ -9,6 +9,10 @@ import moment from 'moment';
 const GET_ACTIVEDES = 'assignmentActived/GET_ACTIVEDES';
 const GET_ACTIVEDES_SUCCESS = 'assignmentActived/GET_ACTIVEDES_SUCCESS';
 
+//atived 과제 하나 조회
+const GET_ACTIVED = 'assignmentActived/GET_ACTIVED';
+const GET_ACTIVED_SUCCESS = 'assignmentActived/GET_ACTIVED_SUCCESS';
+
 //atived 과제 등록
 const POST_ACTIVED = 'assignmentActived/POST_ACTIVED';
 const POST_ACTIVED_SUCCESS = 'assignmentActived/POST_ACTIVED_SUCCESS';
@@ -72,6 +76,17 @@ export const getActivedes = (num) => async (dispatch) => {
     }
 };
 
+export const getActived = (num) => async (dispatch) => {
+    dispatch({ type: GET_ACTIVEDES }); // 요청이 시작됨
+
+    try {
+        const activedData = {};
+        dispatch({ type: GET_ACTIVEDES_SUCCESS, activedData }); // 성공
+    } catch (e) {
+        dispatch({ type: ACTIVED_ERROR, error: e }); // 실패
+    }
+};
+
 export const postActived = (cardData, num, due_date, history) => async (dispatch) => {
     dispatch({ type: POST_ACTIVED }); // 요청이 시작됨
 
@@ -110,6 +125,7 @@ export const patchActived = (idx, date) => async (dispatch) => {
         //과제 재시작하는 경우,
         if (date) {
             date = moment(date).format('YYYY-MM-DD HH:mm:ss');
+
             await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: date }, { withCredentials: true }); // API 호출
             patchData = { idx: idx, now: date };
             dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData, date }); // 성공
@@ -150,9 +166,12 @@ const initialState = {
     },
     activedData: {
         loading: false,
-        data: {
-            due_date: '',
-        },
+        data: null,
+        error: null,
+    },
+    dueData: {
+        loading: false,
+        data: '',
         error: null,
     },
 };
@@ -184,22 +203,10 @@ export default function eyetrackingSelect(state = initialState, action) {
         case POST_ACTIVED:
             return {
                 ...state,
-                activedData: {
-                    loading: true,
-                    data: state.activedData.data,
-                    error: null,
-                },
             };
         case POST_ACTIVED_SUCCESS:
             return {
                 ...state,
-                activedData: {
-                    loading: false,
-                    data: {
-                        due_date: '',
-                    },
-                    error: null,
-                },
             };
 
         case PATCH_ACTIVED:
@@ -253,12 +260,9 @@ export default function eyetrackingSelect(state = initialState, action) {
         case CHANGE_DUE_DATE:
             return {
                 ...state,
-                activedData: {
+                dueData: {
                     loading: false,
-                    data: {
-                        ...state['activedData']['data'],
-                        due_date: action.value,
-                    },
+                    data: action.value,
                     error: null,
                 },
             };
@@ -270,11 +274,6 @@ export default function eyetrackingSelect(state = initialState, action) {
 
             return {
                 ...state,
-                activedData: {
-                    loading: false,
-                    data: null,
-                    error: action.error,
-                },
             };
 
         case ACTIVEDES_ERROR:

@@ -103,7 +103,7 @@ const HtmlTooltip2 = withStyles((theme) => ({
 
 function CardDraft({ cardData, match, history }) {
     /** redux actived-state */
-    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
+    const { data, loading, error } = useSelector((state) => state.assignmentActived.dueData);
     const dispatch = useDispatch();
 
     /** pop-over (옵션 선택) 메소드 */
@@ -129,7 +129,7 @@ function CardDraft({ cardData, match, history }) {
 
     const handleDateDialogClose = (e) => {
         const { name } = e.target;
-        const due_date = data['due_date'] ? data['due_date'] : null;
+        const due_date = data ? data : null;
 
         if (name === 'button') {
             if (due_date) {

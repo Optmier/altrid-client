@@ -70,7 +70,7 @@ const CreateButton = withStyles((theme) => ({
 function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     /** redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
-    const activedData = useSelector((state) => state.assignmentActived.activedData.data);
+    const activedData = useSelector((state) => state.assignmentActived.dueData.data);
     const dispatch = useDispatch();
 
     let titleArr = [];
@@ -278,7 +278,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     };
     const handleDateDialogClose = (e) => {
         const { name } = e.target;
-        const due_date = activedData['due_date'] ? activedData['due_date'] : null;
+        const due_date = activedData ? activedData : null;
 
         if (name === 'button') {
             if (due_date) {
