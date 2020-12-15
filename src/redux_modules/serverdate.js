@@ -3,6 +3,9 @@ import { apiUrl } from '../configs/configs';
 
 /** Action types */
 const GET = 'serverdate/GET';
+const GET_SUCCESS = 'serverdate/GET_SUCCESS';
+const GET_ERROR = 'serverdate/GET_ERROR';
+
 const UPDATE = 'serverdate/UPDATE';
 
 /** Action creators */
@@ -10,10 +13,11 @@ export const getServerDate = () => async (dispatch) => {
     dispatch({ type: GET });
     try {
         const datetime = await Axios.get(`${apiUrl}/auth/datetime`, { withCredentials: true });
-        dispatch({ type: GET, datetime: datetime['data'] });
+
+        dispatch({ type: GET_SUCCESS, datetime: datetime['data'] });
     } catch (e) {
         console.error(e);
-        dispatch({ type: GET, error: e });
+        dispatch({ type: GET_ERROR, error: e });
     }
 };
 
@@ -31,6 +35,7 @@ export const updateServerDate = () => async (dispatch) => {
 /** Initial state */
 const initialState = {
     datetime: null,
+    loading: false,
     error: null,
 };
 
@@ -40,7 +45,22 @@ export default function RdxServerDate(state = initialState, action) {
         case GET:
             return {
                 ...state,
+                datetime: null,
+                loading: true,
+                error: null,
+            };
+        case GET_SUCCESS:
+            return {
+                ...state,
                 datetime: action.datetime,
+                loading: false,
+                error: null,
+            };
+        case GET_ERROR:
+            return {
+                ...state,
+                datetime: null,
+                loading: false,
                 error: action.error,
             };
         case UPDATE:

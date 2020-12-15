@@ -75,7 +75,6 @@ export const getActivedes = (num) => async (dispatch) => {
 export const postActived = (cardData, num, due_date, history) => async (dispatch) => {
     dispatch({ type: POST_ACTIVED }); // 요청이 시작됨
 
-    console.log(due_date);
     try {
         const { idx, title, time_limit, description, eyetrack, contents_data, file_url } = cardData;
         const class_number = num;
@@ -90,7 +89,7 @@ export const postActived = (cardData, num, due_date, history) => async (dispatch
                 eyetrack: eyetrack,
                 contents_data: JSON.stringify(contents_data),
                 file_url: file_url,
-                due_date: moment(due_date),
+                due_date: moment(due_date).format('YYYY-MM-DD HH:mm:ss'),
             },
             { withCredentials: true },
         ); // API 호출
@@ -106,11 +105,11 @@ export const patchActived = (idx, date) => async (dispatch) => {
 
     let now = moment().format('YYYY-MM-DD HH:mm:ss');
     let patchData = {};
-    //date = moment(date).format('YYYY-MM-DD HH:mm:ss');
-    console.log(date);
+
     try {
         //과제 재시작하는 경우,
         if (date) {
+            date = moment(date).format('YYYY-MM-DD HH:mm:ss');
             await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: date }, { withCredentials: true }); // API 호출
             patchData = { idx: idx, now: date };
             dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData, date }); // 성공
@@ -223,7 +222,7 @@ export default function eyetrackingSelect(state = initialState, action) {
                             ? {
                                   ...obj,
                                   ...action.patchData,
-                                  due_date: action.date ? action.date : new Date(),
+                                  due_date: action.date,
                               }
                             : obj,
                     ),

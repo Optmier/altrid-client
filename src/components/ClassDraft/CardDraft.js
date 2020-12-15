@@ -137,7 +137,6 @@ function CardDraft({ cardData, match, history }) {
                 const { num } = match.params; //클래스 번호
 
                 setDateDialogopen(false);
-
                 dispatch(postActived(cardData, num, due_date, history));
             } else {
                 alert('과제 기한 변경은 필수사항 입니다.');

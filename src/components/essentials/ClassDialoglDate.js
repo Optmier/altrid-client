@@ -63,11 +63,10 @@ const StyleModalShare = styled.div`
 `;
 
 function ClassDialoglDate({ subType }) {
+    const classes = useStyles();
     const dispatch = useDispatch();
 
     const [dateState, setDateState] = useState(moment().add('minutes', 1).format('YYYY-MM-DDTHH:mm'));
-
-    const classes = useStyles();
 
     const onChange = (e) => {
         let { value } = e.target;
@@ -77,6 +76,7 @@ function ClassDialoglDate({ subType }) {
             dispatch(changeDueDate(moment(value)));
         }
     };
+
     return (
         <StyleModalShare>
             {subType === 'init' ? (
