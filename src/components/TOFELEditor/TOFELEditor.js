@@ -20,6 +20,12 @@ import { useCallback } from 'react';
 import { updateSession } from '../../redux_modules/sessions';
 import { useDispatch, useSelector } from 'react-redux';
 import RefreshToken from '../essentials/Authentication';
+/** https://github.com/jeanlescure/short-unique-id
+ * Copyright (c) 2018-2020 Short Unique ID Contributors.
+ * Licensed under the Apache License 2.0.
+ */
+import ShortUniqueId from 'short-unique-id';
+import { data } from 'jquery';
 
 $.fn.changeSize = function (handleFunction) {
     let element = this;
@@ -155,8 +161,10 @@ function useForceUpdate() {
 
 function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClose, onEditFinish, history, children, ...rest }) {
     const quillRef = useRef();
+    const generateUid = useRef();
 
     const [metadata, setMetadata] = useState(datas);
+    window.contentsMeta = metadata;
     const [contentsSetData, setContentsSetData] = useState(datas[0]);
     const [contentsTitle, setContentsTitle] = useState(datas[0].title);
     const [contentsPassage, setContentsPassage] = useState({ render: datas[0].passageForRender, editor: datas[0].passageForEditor });
@@ -246,7 +254,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                     idx === problemEditIdx ? { ...newData, setNum: setNum } : { ...origData, setNum: setNum },
                 ),
             );
-        else setContentsProblemDatas([...contentsProblemDatas, { ...newData, setNum: setNum }]);
+        else setContentsProblemDatas([...contentsProblemDatas, { ...newData, setNum: setNum, uuid: generateUid.current(8) }]);
     };
 
     const onProblemEdit = (editIdx) => (event) => {
@@ -315,6 +323,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                 title: '',
                 passageForRender: '',
                 passageForEditor: `{"ops":[{"insert":"\n"}]}`,
+                uuid: generateUid.current(7),
                 problemDatas: [],
             },
         ]);
@@ -329,6 +338,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                 title: '',
                 passageForRender: '',
                 passageForEditor: `{"ops":[{"insert":"\n"}]}`,
+                uuid: generateUid.current(7),
                 problemDatas: [],
             });
             setContentsTitle('');
@@ -407,6 +417,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     }, [metadata]);
 
     useEffect(() => {
+        if (!datas[0].uuid) datas[0].uuid = new ShortUniqueId().randomUUID(7);
         setMetadata(datas);
         setContentsSetData(datas[0]);
         setContentsTitle(datas[0].title);
@@ -475,6 +486,9 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
             }
         });
 
+        // assign ShortUniqueId function
+        generateUid.current = new ShortUniqueId();
+
         const unblock = history.block('편집을 취소 하시겠습니까?\n저장되지 않은 사항들은 삭제됩니다.');
         return () => {
             unblock();
@@ -495,6 +509,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                     <SmartTOFELRender
                         preview
                         title={metadata.map((m) => m.title)}
+                        pUUIDs={metadata.map((m) => m.uuid)}
                         passageForRender={metadata.map((m) => m.passageForRender)}
                         problemDatas={metadata.flatMap((m) => m.problemDatas)}
                         timer={contentsTimeLimit}
@@ -632,6 +647,7 @@ TOFELEditor.defaultProps = {
             title: '',
             passageForRender: '',
             passageForEditor: `{"ops":[{"insert":"\n"}]}`,
+            uuid: '',
             problemDatas: [],
         },
     ],

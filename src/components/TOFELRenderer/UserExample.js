@@ -109,6 +109,7 @@ function UserExample() {
                     timer={remainTime}
                     timeLimit={testData.timeLimit}
                     title={testData.title}
+                    pUUIDs={testData.map((m) => m.uuid)}
                     passageForRender={testData.passageForRender}
                     problemDatas={testData.problemDatas}
                     onPrev={onPrev}

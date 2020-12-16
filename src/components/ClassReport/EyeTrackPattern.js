@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import classNames from 'classnames';
+import DigitZeroPads from '../essentials/DigitsZeroPad';
 
 const StylePatternBox = styled.div`
     width: 100%;
@@ -77,6 +78,12 @@ const StylePatternContent = styled.div`
         margin-top: 0.5rem;
     }
 `;
+
+const timeValueToTimer = (seconds) => {
+    const secs = seconds < 0 ? 0 : seconds;
+    if (seconds === -2) return '제한 없음';
+    else return `${DigitZeroPads(parseInt(secs / 60), 1)}분 ${DigitZeroPads(Math.floor(secs % 60), 1)}초`;
+};
 
 const AnswerRoute = ({ route }) => {
     let routeArr = route.filter((d) => d);
@@ -155,7 +162,7 @@ const PatternList = ({
                 </div>
                 <div className="pattern-item">
                     <div>소요시간</div>
-                    {time}초
+                    {timeValueToTimer(time)}
                 </div>
                 {hasEyetrack ? (
                     <div className="pattern-item pattern-click">

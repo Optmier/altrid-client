@@ -168,27 +168,32 @@ const EraseResultItems = ({ title, children, ...rest }) => {
 };
 
 //배열 원하는 길이만큼 2차원 배열로 만들기
-const division = (arr, n) => {
-    let len = arr.length;
-    let cnt = Math.floor(len / n) + (Math.floor(len % n) > 0 ? 1 : 0);
-    let tmp = [];
-    let last_tmp = [];
+const division = (arr, original, n) => {
+    // console.log(original);
+    const _arr = arr.slice();
+    const _original = original.slice();
+    const arrLen = _arr.length;
+    const origLen = _original.length;
+    const splitCnt = Math.floor(origLen / n) + (Math.floor(origLen % n) > 0 ? 1 : 0);
+    const results = [];
 
-    for (let i = 0; i < cnt; i++) {
-        if (arr.length >= n) {
-            tmp.push(arr.splice(0, n));
-        } else {
-            for (let j = 0; j < arr.length; j++) {
-                last_tmp.push(arr[j]);
+    console.log(_arr, _original, arrLen, origLen, splitCnt);
+
+    for (let i = 0; i < splitCnt; i++) {
+        const _spliced = _original.splice(0, n);
+        console.log(_spliced);
+
+        if (_spliced.length >= n) results.push(_spliced.map((d, idx) => (_arr[idx + i * 15] ? _arr[idx + i * 15] : -1)));
+        else {
+            const _rests = [];
+            for (let idx = 0; idx < n; idx++) {
+                _rests.push(_spliced[idx] ? (_arr[idx + i * 15] ? _arr[idx + i * 15] : -1) : -2);
             }
-            for (let k = arr.length; k < n; k++) {
-                last_tmp.push('-2');
-            }
+            results.push(_rests);
         }
     }
 
-    tmp.push(last_tmp);
-    return tmp;
+    return results;
 };
 function ReportStudent({ history, match }) {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -599,9 +604,11 @@ function ReportStudent({ history, match }) {
 
                     <div className="student-report-right">
                         {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
-                            ? division(currentStudentData.user_data.selections.slice(), 15).map((arr, idx) => (
-                                  <Progress mode key={idx} selections={arr} problemNumbers={999} />
-                              ))
+                            ? division(
+                                  currentStudentData.user_data.selections,
+                                  currentStudentData.contents_data.flatMap((m) => m.problemDatas),
+                                  15,
+                              ).map((arr, idx) => <Progress mode key={idx} selections={arr} problemNumbers={999} />)
                             : null}
 
                         <div className="right-bottom">

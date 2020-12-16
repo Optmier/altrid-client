@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import HtmlParser from 'react-html-parser';
 import styled from 'styled-components';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
@@ -30,7 +30,9 @@ const UCOutlinedInput = withStyles((theme) => ({
     },
 }))(OutlinedInput);
 
-function ProblemComponent({ category, type, textForRender, selections, answer, score, currentSelection, onSelect }) {
+function ProblemComponent({ problemNumber, category, type, textForRender, selections, answer, score, currentSelection, onSelect }) {
+    const shortAnswerFieldRef = useRef();
+    const textContainerRef = useRef();
     const handleSelection = (id) => () => {
         onSelect(id, answer === id);
     };
@@ -40,9 +42,25 @@ function ProblemComponent({ category, type, textForRender, selections, answer, s
         onSelect(value.toUpperCase(), answer === value.toUpperCase());
     };
 
+    useEffect(() => {
+        const firstP = textContainerRef.current.getElementsByTagName('p')[0];
+        const exists = firstP.getElementsByClassName('problem-number');
+        exists.length && firstP.removeChild(exists[0]);
+        const nums = document.createElement('span');
+        nums.className = 'problem-number';
+        nums.style.fontWeight = 600;
+        nums.innerHTML = problemNumber + '. ';
+        firstP.prepend(nums);
+    }, [problemNumber]);
+
+    useEffect(() => {
+        if (!shortAnswerFieldRef.current) return;
+        shortAnswerFieldRef.current.value = currentSelection;
+    }, [currentSelection]);
+
     return (
         <Root>
-            <TextsContainer>{HtmlParser(textForRender)}</TextsContainer>
+            <TextsContainer ref={textContainerRef}>{HtmlParser(textForRender)}</TextsContainer>
             {type === 'short-answer' ? (
                 <SelectionsContainer>
                     <UCOutlinedInput
@@ -50,9 +68,9 @@ function ProblemComponent({ category, type, textForRender, selections, answer, s
                         size="small"
                         placeholder="정답 입력 (띄어쓰기 제외: 예] ABC)"
                         fullWidth
-                        value={currentSelection}
+                        inputRef={shortAnswerFieldRef}
                         name="short_answer_input"
-                        onChange={onTextFieldChange}
+                        onBlur={onTextFieldChange}
                     />
                 </SelectionsContainer>
             ) : (

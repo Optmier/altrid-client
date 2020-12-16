@@ -23,12 +23,6 @@ import QuillEditorToolbarOption from './QuillEditorToolbarOption';
 import ProblemCategories from './ProblemCategories';
 import * as $ from 'jquery';
 
-const jsonParse = (string) => {
-    return eval('(' + string.replace(/[\n\r]/gi, '\\n') + ')')
-        ? eval('(' + string.replace(/[\n\r]/gi, '\\n') + ')')
-        : { ops: [{ insert: '\n' }] };
-};
-
 const Root = styled.div`
     padding: 48px 72px;
     max-width: 600px;
@@ -101,7 +95,6 @@ const CategorySelect = withStyles((theme) => ({
 function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     const rootRef = useRef();
     const [createButtonEnabled, setCreateButtonEnabled] = useState(false);
-
     const [metadata, setMetadata] = useState(problemDatas);
     const [problemCategory, setProblemCategory] = useState(problemDatas.category);
     const [problemType, setProblemType] = useState(problemDatas.type);
@@ -117,14 +110,19 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     const handleChangeCategory = (e) => {
         const cat = e.target.value;
         setProblemCategory(cat);
-        switch (cat) {
-            case 9:
-                setProblemType('short-answer');
-                break;
-            default:
-                setProblemType('multiple-choice');
-                break;
-        }
+        // switch (cat) {
+        //     case 9:
+        //         setProblemType('short-answer');
+        //         break;
+        //     default:
+        //         setProblemType('multiple-choice');
+        //         break;
+        // }
+    };
+
+    const handleChangeType = (e) => {
+        const type = e.target.value;
+        setProblemType(type);
     };
 
     const onSelectionButtonClick = (id) => (event) => {
@@ -135,7 +133,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
         const { name, value } = target;
         switch (name) {
             case 'short_answer_input':
-                if (typeof value === 'string' && problemCategory === 9) setProblemAnswer(value.toUpperCase());
+                if (typeof value === 'string' && problemType === 'short-answer') setProblemAnswer(value.toUpperCase());
                 else setProblemAnswer(value);
                 break;
             case 'score_input':
@@ -157,6 +155,17 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     };
 
     const handleOnCreate = () => {
+        if (!metadata.score) metadata.score = 0;
+        /** 유효성 검사 */
+        // 문제 텍스트 비어있는지 검사
+        if (!metadata.textForRender.trim()) return alert('문제 내용을 입력해 주세요.');
+        // 선택지 입력 검사
+        if (metadata.type === 'multiple-choice' && !Object.keys(metadata.selections).filter((s) => metadata.selections[s]).length)
+            return alert('선택지를 하나 이상 입력해 주세요.');
+        // 정답 입력 여부 검사
+        if ((metadata.type === 'multiple-choice' && !metadata.answer) || (metadata.type === 'short-answer' && !metadata.answer.trim()))
+            return alert('정답을 선택 또는 입력해 주세요.');
+
         onCreate(metadata);
         handleClose(false);
     };
@@ -225,9 +234,9 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
             </TitleContainer>
             <FormBox>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <FormControl variant="outlined" fullWidth size={problemCategory < 1 ? 'medium' : 'small'}>
-                            <InputLabel id="problem_category-label">유형 선택</InputLabel>
+                    <Grid item xs={12} sm={5}>
+                        <FormControl variant="outlined" fullWidth size={problemCategory === '' ? 'medium' : 'small'}>
+                            <InputLabel id="problem_category-label">영역 선택</InputLabel>
                             <CategorySelect
                                 labelId="problem_category-label"
                                 id="problem_category"
@@ -260,7 +269,22 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                             </CategorySelect>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={5}>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel id="problem_type-label">문제 유형</InputLabel>
+                            <Select
+                                labelId="problem_type-label"
+                                id="problem_type"
+                                value={problemType}
+                                onChange={handleChangeType}
+                                label="type"
+                            >
+                                <MenuItem value="multiple-choice">선택형</MenuItem>
+                                <MenuItem value="short-answer">단답형</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
                         <TextField
                             type="number"
                             variant="outlined"
@@ -276,7 +300,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                     <ReactQuill
                         id="texts_editor"
                         modules={{ toolbar: QuillEditorToolbarOption }}
-                        placeholder="여기에 문제 내용을 입력해 주세요."
+                        placeholder="여기에 문제 내용을 입력해 주세요. (번호는 제외)"
                         defaultValue={JSON.parse(
                             problemDatas.textForEditor
                                 .replace(/\\n/g, '\\n')
@@ -311,7 +335,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                         style={{ marginTop: 8 }}
                     />
                     <SelectorsContainer>
-                        {problemCategory === 9 ? (
+                        {problemType === 'short-answer' ? (
                             <>
                                 <UCOutlinedInput
                                     variant="outlined"

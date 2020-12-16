@@ -12,6 +12,20 @@ import * as $ from 'jquery';
 import TeachersList from '../components/Login/TeachersList';
 import { $_loginDefault, $_loginStudent, $_loginTeacher } from '../configs/front_urls';
 
+const LoginDemoButton = withStyles((theme) => ({
+    root: {
+        color: 'white',
+        fontFamily: 'inherit',
+        fontSize: '1rem',
+        fontWeight: 600,
+
+        '&.MuiButton-outlined': {
+            borderWidth: 2,
+            borderColor: 'white',
+        },
+    },
+}))(Button);
+
 const RequestButton = withStyles((theme) => ({
     root: {
         color: '#474747',
@@ -342,18 +356,21 @@ function LoginCandidated({ history }) {
                             placeholder="데모 코드"
                             onChange={handleInputChange}
                             value={inputState['candidated_code']}
+                            style={{ marginTop: 16 }}
                         />
-                        <Button
+                        <LoginDemoButton
                             fullWidth
                             variant="outlined"
                             onClick={() => {
                                 loginMethod(inputState['candidated_code'], inputState['candidated_code']);
                             }}
+                            style={{ marginTop: 16 }}
+                            color="default"
                         >
                             로그인
-                        </Button>
+                        </LoginDemoButton>
                         <div className="usertype-change-link">
-                            <Link color={usertype === 'students' ? 'textSecondary' : 'secondary'} onClick={handleChangeUsertype}>
+                            <Link color="#efefef" onClick={handleChangeUsertype}>
                                 {usertype === 'students' ? '선생님' : '학생'} 데모 버전 보기
                             </Link>
                         </div>
@@ -420,9 +437,7 @@ function LoginCandidated({ history }) {
                 <div className="container center"></div>
                 <div className="container right"></div>
             </header>
-            <main className="login-page">
-                <section className="decorator-root teachers"></section>
-                <section className="decorator-root" style={{ opacity: usertype === 'students' ? 1 : 0 }}></section>
+            <main className={classNames('login-page', usertype === 'students' ? 'students' : 'teachers')}>
                 <section className="contents-root">{getContentsForStep(loginStep)}</section>
             </main>
             <Footer />

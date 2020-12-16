@@ -31,7 +31,6 @@ const HtmlTooltip = withStyles((theme) => ({
     },
 }))(Tooltip);
 function Progress({ mode, selections, problemNumbers }) {
-    // console.log(selections);
     const [squares, setSquars] = useState([]);
 
     let testArr = new Array();
@@ -45,7 +44,7 @@ function Progress({ mode, selections, problemNumbers }) {
         const limiter = mode ? selections.length : problemNumbers;
 
         for (let i = 0; i < limiter; i++) {
-            if (!selections || !selections[i]) {
+            if (!selections || !selections[i] || selections[i] === -1) {
                 setSquars((squares) => [
                     ...squares,
                     <HtmlTooltip key={i} title={i + 1 + '번'} placement="top">
