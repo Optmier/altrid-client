@@ -6,7 +6,7 @@ import { Drawer } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
 // import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector, useDispatch } from 'react-redux';
-import { getActivedes } from '../../redux_modules/assignmentActived';
+import { getActived } from '../../redux_modules/assignmentActived';
 import moment from 'moment';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
@@ -88,7 +88,7 @@ function Share({ match, history }) {
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
-        dispatch(getActivedes(num));
+        dispatch(getActived(num));
         if (sessions.userType === 'students') {
             Axios.get(`${apiUrl}/others/assignment-tries/${num}`, { withCredentials: true })
                 .then((res) => {

@@ -6,12 +6,12 @@ import moment from 'moment';
 
 /* 액션 타입 선언 */
 //atived 과제 모두 조회
-const GET_ACTIVEDES = 'assignmentActived/GET_ACTIVEDES';
-const GET_ACTIVEDES_SUCCESS = 'assignmentActived/GET_ACTIVEDES_SUCCESS';
-
-//atived 과제 하나 조회
 const GET_ACTIVED = 'assignmentActived/GET_ACTIVED';
 const GET_ACTIVED_SUCCESS = 'assignmentActived/GET_ACTIVED_SUCCESS';
+
+//atived 과제 하나 조회
+const GET_ACTIVED_ONLY = 'assignmentActived/GET_ACTIVED_ONLY';
+const GET_ACTIVED_SUCCESS_ONLY = 'assignmentActived/GET_ACTIVED_SUCCESS_ONLY';
 
 //atived 과제 등록
 const POST_ACTIVED = 'assignmentActived/POST_ACTIVED';
@@ -20,6 +20,10 @@ const POST_ACTIVED_SUCCESS = 'assignmentActived/POST_ACTIVED_SUCCESS';
 //atived 과제 수정
 const PATCH_ACTIVED = 'assignmentActived/PATCH_ACTIVED';
 const PATCH_ACTIVED_SUCCESS = 'assignmentActived/PATCH_ACTIVED_SUCCESS';
+
+//atived 과제 하나 수정
+const PATCH_ACTIVED_ONLY = 'assignmentActived/PATCH_ACTIVED_ONLY';
+const PATCH_ACTIVED_SUCCESS_ONLY = 'assignmentActived/PATCH_ACTIVED_SUCCESS_ONLY';
 
 //atived 과제 삭제
 const DELETE_ACTIVED = 'assignmentActived/DELETE_ACTIVED';
@@ -33,8 +37,8 @@ const ACTIVED_ERROR = 'assignmentActived/ACTIVED_ERROR';
 const ACTIVEDES_ERROR = 'assignmentActived/ACTIVEDES_ERROR';
 
 /* 액션 생성함수 선언 */
-export const getActivedes = (num) => async (dispatch) => {
-    dispatch({ type: GET_ACTIVEDES }); // 요청이 시작됨
+export const getActived = (num) => async (dispatch) => {
+    dispatch({ type: GET_ACTIVED }); // 요청이 시작됨
 
     try {
         const activedes = await Axios.get(`${apiUrl}/assignment-actived/${num}`, { withCredentials: true }); // API 호출
@@ -70,23 +74,26 @@ export const getActivedes = (num) => async (dispatch) => {
             }
         });
 
-        dispatch({ type: GET_ACTIVEDES_SUCCESS, activedDatas }); // 성공
+        dispatch({ type: GET_ACTIVED_SUCCESS, activedDatas }); // 성공
     } catch (e) {
-        dispatch({ type: ACTIVED_ERROR, error: e }); // 실패
+        dispatch({ type: ACTIVEDES_ERROR, error: e }); // 실패
     }
 };
-
-export const getActived = (num) => async (dispatch) => {
-    dispatch({ type: GET_ACTIVEDES }); // 요청이 시작됨
+export const getActivedOnly = (idx, created, due_date) => async (dispatch) => {
+    dispatch({ type: GET_ACTIVED_ONLY }); // 요청이 시작됨
 
     try {
-        const activedData = {};
-        dispatch({ type: GET_ACTIVEDES_SUCCESS, activedData }); // 성공
+        const activedData = {
+            idx: idx,
+            created: created,
+            due_date: due_date,
+        };
+
+        dispatch({ type: GET_ACTIVED_SUCCESS_ONLY, activedData }); // 성공
     } catch (e) {
         dispatch({ type: ACTIVED_ERROR, error: e }); // 실패
     }
 };
-
 export const postActived = (cardData, num, due_date, history) => async (dispatch) => {
     dispatch({ type: POST_ACTIVED }); // 요청이 시작됨
 
@@ -112,7 +119,7 @@ export const postActived = (cardData, num, due_date, history) => async (dispatch
         dispatch({ type: POST_ACTIVED_SUCCESS }); // 성공
         history.replace($_root + `class/${class_number}/share`);
     } catch (e) {
-        dispatch({ type: ACTIVED_ERROR, error: e }); //실패
+        dispatch({ type: ACTIVEDES_ERROR, error: e }); //실패
     }
 };
 export const patchActived = (idx, date) => async (dispatch) => {
@@ -127,17 +134,42 @@ export const patchActived = (idx, date) => async (dispatch) => {
             date = moment(date).format('YYYY-MM-DD HH:mm:ss');
 
             await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: date }, { withCredentials: true }); // API 호출
-            patchData = { idx: idx, now: date };
-            dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData, date }); // 성공
+            patchData = { idx: idx, due_date: date };
         }
         //과제 완료하는 경우,
         else {
             await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: now }, { withCredentials: true }); // API 호출
-            patchData = { idx: idx, now: now };
-            dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData, now }); // 성공
+            patchData = { idx: idx, due_date: now };
         }
+
+        dispatch({ type: PATCH_ACTIVED_SUCCESS, patchData }); // 성공
     } catch (e) {
         dispatch({ type: ACTIVEDES_ERROR, error: e }); // 실패
+    }
+};
+export const patchActivedOnly = (idx, date) => async (dispatch) => {
+    dispatch({ type: PATCH_ACTIVED_ONLY }); // 요청이 시작됨
+
+    let now = moment().format('YYYY-MM-DD HH:mm:ss');
+    let patchData = {};
+
+    try {
+        //과제 재시작하는 경우,
+        if (date) {
+            date = moment(date).format('YYYY-MM-DD HH:mm:ss');
+
+            await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: date }, { withCredentials: true }); // API 호출
+            patchData = { idx: idx, due_date: date };
+        }
+        //과제 완료하는 경우,
+        else {
+            await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: now }, { withCredentials: true }); // API 호출
+            patchData = { idx: idx, due_date: now };
+        }
+
+        dispatch({ type: PATCH_ACTIVED_SUCCESS_ONLY, patchData }); // 성공
+    } catch (e) {
+        dispatch({ type: ACTIVED_ERROR, error: e }); // 실패
     }
 };
 export const deleteActived = (idx) => async (dispatch) => {
@@ -151,7 +183,6 @@ export const deleteActived = (idx) => async (dispatch) => {
         dispatch({ type: ACTIVEDES_ERROR, error: e }); // 실패
     }
 };
-
 export const changeDueDate = (value) => ({
     type: CHANGE_DUE_DATE,
     value,
@@ -181,7 +212,7 @@ const initialState = {
 /* reducer 함수 */
 export default function eyetrackingSelect(state = initialState, action) {
     switch (action.type) {
-        case GET_ACTIVEDES:
+        case GET_ACTIVED:
             return {
                 ...state,
                 activedDatas: {
@@ -190,12 +221,31 @@ export default function eyetrackingSelect(state = initialState, action) {
                     error: null,
                 },
             };
-        case GET_ACTIVEDES_SUCCESS:
+        case GET_ACTIVED_SUCCESS:
             return {
                 ...state,
                 activedDatas: {
                     loading: false,
                     data: action.activedDatas,
+                    error: null,
+                },
+            };
+
+        case GET_ACTIVED_ONLY:
+            return {
+                ...state,
+                activedData: {
+                    loading: true,
+                    data: null,
+                    error: null,
+                },
+            };
+        case GET_ACTIVED_SUCCESS_ONLY:
+            return {
+                ...state,
+                activedData: {
+                    loading: false,
+                    data: action.activedData,
                     error: null,
                 },
             };
@@ -208,7 +258,6 @@ export default function eyetrackingSelect(state = initialState, action) {
             return {
                 ...state,
             };
-
         case PATCH_ACTIVED:
             return {
                 ...state,
@@ -229,10 +278,32 @@ export default function eyetrackingSelect(state = initialState, action) {
                             ? {
                                   ...obj,
                                   ...action.patchData,
-                                  due_date: action.date,
                               }
                             : obj,
                     ),
+                    error: null,
+                },
+            };
+
+        case PATCH_ACTIVED_ONLY:
+            return {
+                ...state,
+                activedData: {
+                    loading: true,
+                    data: state.activedData.data,
+                    error: null,
+                },
+            };
+        case PATCH_ACTIVED_SUCCESS_ONLY:
+            alert('수정 완료되었습니다!');
+            return {
+                ...state,
+                activedData: {
+                    loading: false,
+                    data: {
+                        ...state.activedData.data,
+                        due_date: action.patchData.due_date,
+                    },
                     error: null,
                 },
             };
@@ -256,7 +327,6 @@ export default function eyetrackingSelect(state = initialState, action) {
                     error: null,
                 },
             };
-
         case CHANGE_DUE_DATE:
             return {
                 ...state,
@@ -266,7 +336,6 @@ export default function eyetrackingSelect(state = initialState, action) {
                     error: null,
                 },
             };
-
         case ACTIVED_ERROR:
             alert('데이터베이스 오류가 발생했습니다.\n기술 지원으로 문의해주세요!');
             console.error('error type : ', action.type);
@@ -274,6 +343,11 @@ export default function eyetrackingSelect(state = initialState, action) {
 
             return {
                 ...state,
+                activedData: {
+                    loading: false,
+                    data: null,
+                    error: action.error,
+                },
             };
 
         case ACTIVEDES_ERROR:
@@ -289,7 +363,6 @@ export default function eyetrackingSelect(state = initialState, action) {
                     error: action.error,
                 },
             };
-
         default:
             return state;
     }

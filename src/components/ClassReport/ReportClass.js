@@ -19,10 +19,11 @@ import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
 import TypeBanner from '../essentials/TypeBanner';
-import { patchActived, changeDueDate, deleteActived } from '../../redux_modules/assignmentActived';
 import { useSelector, useDispatch } from 'react-redux';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
-import { getActivedes } from '../../redux_modules/assignmentActived';
+import { patchActivedOnly, changeDueDate, deleteActived, getActivedOnly, patchActived } from '../../redux_modules/assignmentActived';
+import { getServerDate } from '../../redux_modules/serverdate';
+import BackdropComponent from '../essentials/BackdropComponent';
 
 const pad = (n, width) => {
     n = n + '';
@@ -67,6 +68,7 @@ function ReportClass({ match }) {
     const dispatch = useDispatch();
     const serverdate = useSelector((state) => state.RdxServerDate);
     const RdxDueDate = useSelector((state) => state.assignmentActived.dueData.data);
+    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
 
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
@@ -100,6 +102,8 @@ function ReportClass({ match }) {
     /** 학생 별 이전 로우 데이터 */
     const [prevStudentsDataRaw, setPrevStudentsDataRaw] = useState([]);
 
+    const [mainLoading, setMainLoading] = useState(true);
+
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
     };
@@ -113,7 +117,8 @@ function ReportClass({ match }) {
         //과제 재시작
         if (name === 'button-restart') {
             if (RdxDueDate) {
-                dispatch(patchActived(mainReportData.idx, RdxDueDate));
+                //console.log(mainReportData.idx, RdxDueDate);
+                dispatch(patchActivedOnly(mainReportData.idx, RdxDueDate));
             } else {
                 alert('과제 기한 변경은 필수사항 입니다.');
             }
@@ -122,7 +127,9 @@ function ReportClass({ match }) {
         }
         //과제 완료하기
         else if (name === 'button-complete') {
-            dispatch(patchActived(mainReportData.idx, null));
+            dispatch(patchActivedOnly(mainReportData.idx, null));
+            dispatch(getServerDate());
+
             setTestDialogopen(false);
         }
         //과제 완료 후, 삭제
@@ -130,14 +137,27 @@ function ReportClass({ match }) {
             setTestDialogopen(false);
             handleDeleteDialogOpen();
         }
-        //x 또는 바깥 클릭했을때
+        //x 또는 바깥 클릭했을 때
         else {
             setTestDialogopen(false);
             dispatch(changeDueDate(''));
         }
     };
-    const handleDateDialogClose = () => {
-        setDateDialogopen(false);
+    const handleDateDialogClose = (e) => {
+        const { name } = e.target;
+
+        if (name === 'button-modify') {
+            if (RdxDueDate) {
+                dispatch(patchActivedOnly(mainReportData.idx, RdxDueDate));
+                setDateDialogopen(false);
+            } else {
+                alert('과제 기한 변경은 필수사항 입니다.');
+            }
+        } else {
+            setDateDialogopen(false);
+        }
+
+        dispatch(changeDueDate(''));
     };
     const handleDeleteDateDialogClose = (e) => {
         const { name } = e.target;
@@ -351,16 +371,9 @@ function ReportClass({ match }) {
         setTimeLimit(mainReportData.time_limit);
         setStartDate(moment(mainReportData.created).format('MM.DD HH:mm'));
         setDueDate(moment(mainReportData.due_date).format('MM.DD HH:mm'));
-        dispatch(getActivedes(num));
-        if (
-            serverdate.datetime > new Date(mainReportData.due_date).getTime() ||
-            serverdate.datetime < new Date(mainReportData.created).getTime()
-        ) {
-            setToggleState({ checked: false });
-        } else {
-            setToggleState({ checked: true });
-        }
 
+        dispatch(getActivedOnly(mainReportData.idx, mainReportData.created, mainReportData.due_date));
+        setMainLoading(false);
         if (mainReportData.contents_data) {
             const contentsData = mainReportData.contents_data;
             setProblemNumbers(contentsData.flatMap((m) => m.problemDatas).length);
@@ -378,6 +391,17 @@ function ReportClass({ match }) {
             setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
         }
     }, [mainReportData]);
+
+    useEffect(() => {
+        if (!data) return;
+        setStartDate(moment(data.created).format('MM.DD HH:mm'));
+        setDueDate(moment(data.due_date).format('MM.DD HH:mm'));
+
+        setToggleState({
+            checked: new Date(data.due_date).getTime() >= serverdate.datetime && new Date(data.created).getTime() <= serverdate.datetime,
+        });
+        return () => {};
+    }, [data]);
 
     useEffect(() => {
         if (!studentsData || studentsData.length < 1) return;
@@ -417,6 +441,9 @@ function ReportClass({ match }) {
             setAverageScoresOfType({ ...averageScoresOfType, ..._averages });
         }
     }, [studentsData]);
+
+    if (data === null && loading) return <BackdropComponent open={true} />;
+    if (mainLoading) return <BackdropComponent open={true} />;
 
     return (
         <div style={{ paddingBottom: '200px' }}>
@@ -527,7 +554,7 @@ function ReportClass({ match }) {
                                 </div>
                                 {achievesForTypes.value > 100 ? (
                                     <div className="graph-header-text">
-                                        <span>가장 취약한 유형 </span>{' '}
+                                        <span>가장 취약한 유형 </span>
                                         {
                                             ProblemCategories.filter(
                                                 (p) =>
@@ -536,7 +563,7 @@ function ReportClass({ match }) {
                                                         .filter((k) => k != 0)
                                                         .reduceRight((a, b) => (averageScoresOfType[a] < averageScoresOfType[b] ? a : b)),
                                             )[0].name
-                                        }{' '}
+                                        }
                                         (
                                         {averageScoresOfType[
                                             Object.keys(averageScoresOfType)

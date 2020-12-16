@@ -12,6 +12,7 @@ import moment from 'moment';
 import { SecondtoMinute } from '../essentials/TimeChange';
 import { useSelector, useDispatch } from 'react-redux';
 import { patchActived, changeDueDate, deleteActived } from '../../redux_modules/assignmentActived';
+import { getServerDate } from '../../redux_modules/serverdate';
 import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
 import * as $ from 'jquery';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
@@ -19,6 +20,7 @@ import { Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
+import Error from '../../pages/Error';
 
 const pad = (n, width) => {
     n = n + '';
@@ -107,7 +109,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
     /** Redux-state */
     const { data } = useSelector((state) => state.assignmentActived.dueData);
     const sessions = useSelector((state) => state.RdxSessions);
-    const serverdate = useSelector((state) => state.RdxServerDate);
+    const { datetime, loading, error } = useSelector((state) => state.RdxServerDate);
     const dispatch = useDispatch();
 
     /** class-dialog 메소드 */
@@ -142,6 +144,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         //과제 재시작
         if (name === 'button-restart') {
             if (data) {
+                //console.log(cardData['idx'], data);
                 dispatch(patchActived(cardData['idx'], data));
             } else {
                 alert('과제 기한 변경은 필수사항 입니다.');
@@ -152,6 +155,8 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         //과제 완료하기
         else if (name === 'button-complete') {
             dispatch(patchActived(cardData['idx'], null));
+            dispatch(getServerDate());
+
             setTestDialogopen(false);
         }
         //과제 완료 후, 삭제
@@ -187,20 +192,16 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
 
     /** toggle state */
     const [toggleState, setToggleState] = useState({
-        checked:
-            new Date(cardData['due_date']).getTime() >= serverdate.datetime &&
-            new Date(cardData['created']).getTime() <= serverdate.datetime,
+        checked: new Date(cardData['due_date']).getTime() >= datetime && new Date(cardData['created']).getTime() <= datetime,
     });
 
     useEffect(() => {
-        if (!serverdate.datetime) return;
+        if (!datetime) return;
         setToggleState({
             ...toggleState,
-            checked:
-                new Date(cardData['due_date']).getTime() >= serverdate.datetime &&
-                new Date(cardData['created']).getTime() <= serverdate.datetime,
+            checked: new Date(cardData['due_date']).getTime() >= datetime && new Date(cardData['created']).getTime() <= datetime,
         });
-    }, [cardData['due_date'], serverdate.datetime]);
+    }, [cardData['due_date'], datetime]);
 
     const [subTypeState, setSubTypeState] = useState('init');
 
@@ -295,10 +296,10 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                 $target.attr('class') === 'goto-reports'
             )
         ) {
-            if (new Date(cardData.created).getTime() > serverdate.datetime && sessions.userType === 'students') {
+            if (new Date(cardData.created).getTime() > datetime && sessions.userType === 'students') {
                 alert('아직 시작되지 않은 과제입니다.');
                 return;
-            } else if (new Date(cardData.due_date).getTime() < serverdate.datetime && sessions.userType === 'students') {
+            } else if (new Date(cardData.due_date).getTime() < datetime && sessions.userType === 'students') {
                 alert('기간이 지난 과제이므로 리포트 조회만 가능합니다.');
                 return;
             } else if (tries && cardData.time_limit !== -2) {
@@ -337,6 +338,9 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         return () => {};
     }, []);
 
+    if (loading === true && datetime === null)
+        return <div style={{ backgroundColor: '#eeeeee', width: '100%', height: '100%', borderRadius: '10px' }}></div>;
+    if (error) return <Error />;
     return (
         <>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
@@ -374,14 +378,14 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                     </span>
                                 ) : (
                                     <span style={{ color: '#989696', fontSize: 14 }}>
-                                        {new Date(cardData.created).getTime() > serverdate.datetime ? '시작전' : '완료됨'}
+                                        {new Date(cardData.created).getTime() > datetime ? '시작전' : '완료됨'}
                                     </span>
                                 )}
                             </>
                         ) : null}
                         {sessions.userType === 'students' ? null : (
                             <ToggleSwitch
-                                isStarted={new Date(cardData.created).getTime() <= serverdate.datetime}
+                                isStarted={new Date(cardData.created).getTime() <= datetime}
                                 toggle={toggleState['checked']}
                                 handleToggleChange={handleToggleChange}
                                 type="share"
@@ -413,8 +417,8 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                 ) : null}
                                 <DateItems
                                     title={'과제기한'}
-                                    start={moment(cardData['created']).format('YY.MM.DD HH:mm')}
-                                    end={moment(cardData['due_date']).format('YY.MM.DD HH:mm')}
+                                    start={moment(cardData['created']).format('MM.DD HH:mm')}
+                                    end={moment(cardData['due_date']).format('MM.DD HH:mm')}
                                     userType={sessions.userType}
                                     handleDateChange={handleDateChange}
                                 />
@@ -454,9 +458,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                         </div>
 
                         <div className="class-card-bottom-right card-bottom-p">
-                            {(sessions.userType === 'students' &&
-                                tries &&
-                                new Date(cardData['due_date']).getTime() < serverdate.datetime) ||
+                            {(sessions.userType === 'students' && tries && new Date(cardData['due_date']).getTime() < datetime) ||
                             sessions.userType !== 'students' ? (
                                 <Link
                                     className="goto-reports"
