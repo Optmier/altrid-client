@@ -18,10 +18,11 @@ const StyleTotalProgress = styled.div`
         justify-content: flex-start;
 
         & .name {
+            cursor: pointer;
             font-size: 1rem;
             font-weight: 500;
             margin-right: 15px;
-            min-width: 4rem;
+            width: 67px;
 
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -43,6 +44,7 @@ function TotalProgress({ studentList, problemNumbers }) {
                     <div className="name" title={studentList[num]['name']}>
                         {studentList[num]['name']}
                     </div>
+
                     <Progress
                         selections={studentList[num].user_data ? studentList[num].user_data.selections : null}
                         problemNumbers={problemNumbers}

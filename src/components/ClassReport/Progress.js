@@ -1,6 +1,6 @@
-import { square } from 'mathjs';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Tooltip, withStyles } from '@material-ui/core';
 
 const StyleTestSquareList = styled.div`
     width: 100%;
@@ -22,11 +22,18 @@ const StyleTestSquareList = styled.div`
         margin-top: 5px;
     }
 `;
-
+const HtmlTooltip = withStyles((theme) => ({
+    tooltip: {
+        padding: '0.5rem 1rem',
+        fontSize: '0.75rem',
+        fontWeight: '500',
+        borderRadius: '5px',
+    },
+}))(Tooltip);
 function Progress({ mode, selections, problemNumbers }) {
     // console.log(selections);
     const [squares, setSquars] = useState([]);
-    window.squares = squares;
+
     let testArr = new Array();
 
     // test.map((i) => {
@@ -39,13 +46,33 @@ function Progress({ mode, selections, problemNumbers }) {
 
         for (let i = 0; i < limiter; i++) {
             if (!selections || !selections[i]) {
-                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#E5E5E5' }}></div>]);
-            } else if (selections[i] == -2) {
-                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#f7f9f8' }}></div>]);
+                setSquars((squares) => [
+                    ...squares,
+                    <HtmlTooltip key={i} title={i + 1 + '번'} placement="top">
+                        <div key={i} className="square" style={{ backgroundColor: '#E5E5E5' }}></div>
+                    </HtmlTooltip>,
+                ]);
+            } else if (selections[i] === -2) {
+                setSquars((squares) => [
+                    ...squares,
+                    <HtmlTooltip key={i} title={i + 1 + '번'} placement="top">
+                        <div key={i} className="square" style={{ backgroundColor: '#f7f9f8' }}></div>
+                    </HtmlTooltip>,
+                ]);
             } else if (selections[i].correct) {
-                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#13E2A1' }}></div>]);
+                setSquars((squares) => [
+                    ...squares,
+                    <HtmlTooltip key={i} title={i + 1 + '번'} placement="top">
+                        <div key={i} className="square" style={{ backgroundColor: '#13E2A1' }}></div>
+                    </HtmlTooltip>,
+                ]);
             } else if (!selections[i].correct) {
-                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#FFA552' }}></div>]);
+                setSquars((squares) => [
+                    ...squares,
+                    <HtmlTooltip key={i} title={i + 1 + '번'} placement="bottom-end">
+                        <div key={i} className="square" style={{ backgroundColor: '#FFA552' }}></div>
+                    </HtmlTooltip>,
+                ]);
             }
         }
     }, []);
@@ -53,6 +80,7 @@ function Progress({ mode, selections, problemNumbers }) {
     return (
         <StyleTestSquareList>
             {squares}
+
             {/* {testArr.map((i, idx) =>
                 i === 1 ? (
                     <div key={idx} className="square" style={{ backgroundColor: '#13E2A1' }}></div>
