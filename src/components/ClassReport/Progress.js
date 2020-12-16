@@ -24,7 +24,6 @@ const StyleTestSquareList = styled.div`
 `;
 
 function Progress({ mode, selections, problemNumbers }) {
-    // console.log(selections);
     const [squares, setSquars] = useState([]);
     window.squares = squares;
     let testArr = new Array();
@@ -38,9 +37,9 @@ function Progress({ mode, selections, problemNumbers }) {
         const limiter = mode ? selections.length : problemNumbers;
 
         for (let i = 0; i < limiter; i++) {
-            if (!selections || !selections[i]) {
+            if (!selections || !selections[i] || selections[i] === -1) {
                 setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#E5E5E5' }}></div>]);
-            } else if (selections[i] == -2) {
+            } else if (selections[i] === -2) {
                 setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#f7f9f8' }}></div>]);
             } else if (selections[i].correct) {
                 setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#13E2A1' }}></div>]);

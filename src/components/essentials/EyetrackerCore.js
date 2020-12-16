@@ -270,7 +270,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         const dist = Math.sqrt(distX * distX + distY * distY);
         const toSecondDivide = diffTime / 1000;
 
-        return dist / toSecondDivide;
+        return dist / toSecondDivide || 0;
     };
 
     let clusterCounts = 0;
@@ -333,8 +333,9 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                         { x: calcX, y: calcY },
                         Math.abs(elapsedTime - lastElapsedTime),
                     );
-                    // 속도가 400px/s 이상이므로 saccade 로 간주
-                    if (fixationVelocity >= 800) {
+                    // 속도가 1280px/s 이상이므로 saccade 로 간주
+                    console.log(fixationVelocity);
+                    if (fixationVelocity >= 1280) {
                         window.saccadeVelocities.push(fixationVelocity);
                         // saccade 로 카운팅
                         window.numOfSaccades++;

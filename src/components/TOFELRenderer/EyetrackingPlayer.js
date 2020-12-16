@@ -573,6 +573,7 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
                         timer={elapsedTime}
                         timeLimit={99999}
                         title={testContent.map((m) => m.title)}
+                        pUUIDs={testContent.map((m) => m.uuid)}
                         passageForRender={testContent.map((m) => m.passageForRender)}
                         problemDatas={testContent.flatMap((m) => m.problemDatas)}
                         userDatas={renderUserData}

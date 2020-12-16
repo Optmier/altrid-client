@@ -31,9 +31,7 @@ const InfoItems = ({ title, contents }) => {
             <div className="card-content-title-p" title={title}>
                 {title}
             </div>
-            <div className="card-content-p" title={contents}>
-                {contents}
-            </div>
+            <div className="card-content-p">{contents}</div>
         </div>
     );
 };

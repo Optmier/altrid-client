@@ -125,6 +125,7 @@ const HeaderMasterSWs = styled.div`
 function SmartTOFELRender({
     preview,
     title,
+    pUUIDs,
     passageForRender,
     problemDatas,
     userDatas,
@@ -217,6 +218,10 @@ function SmartTOFELRender({
                     ? {
                           ...data,
                           setNum: problemDatas[currentProblemIdx].setNum,
+                          qUUID: problemDatas[currentProblemIdx].uuid,
+                          pUUID: pUUIDs[problemDatas[currentProblemIdx].setNum]
+                              ? pUUIDs[problemDatas[currentProblemIdx].setNum]
+                              : undefined,
                           type: problemDatas[currentProblemIdx].type,
                           category: problemDatas[currentProblemIdx].category,
                           answerUser: userAnswer,
@@ -268,6 +273,8 @@ function SmartTOFELRender({
                     ...userSelectionDatas,
                     {
                         setNum: problemDatas[currentProblemIdx].setNum,
+                        qUUID: problemDatas[currentProblemIdx].uuid,
+                        pUUID: pUUIDs[problemDatas[currentProblemIdx].setNum] ? pUUIDs[problemDatas[currentProblemIdx].setNum] : undefined,
                         type: problemDatas[currentProblemIdx].type,
                         category: problemDatas[currentProblemIdx].category,
                         answerUser: problemDatas[currentProblemIdx].answer,
@@ -281,6 +288,8 @@ function SmartTOFELRender({
                     ...userSelectionDatas,
                     {
                         setNum: problemDatas[currentProblemIdx].setNum,
+                        qUUID: problemDatas[currentProblemIdx].uuid,
+                        pUUID: pUUIDs[problemDatas[currentProblemIdx].setNum] ? pUUIDs[problemDatas[currentProblemIdx].setNum] : undefined,
                         type: problemDatas[currentProblemIdx].type,
                         category: problemDatas[currentProblemIdx].category,
                         answerUser: problemDatas[currentProblemIdx].type === 'short-answer' ? '' : 0,
@@ -426,6 +435,7 @@ function SmartTOFELRender({
                 <ProblemsContainer className="problems">
                     {problemDatas.length > 0 ? (
                         <ProblemComponent
+                            problemNumber={currentProblemIdx + 1}
                             category={problemDatas[currentProblemIdx].category}
                             type={problemDatas[currentProblemIdx].type}
                             textForRender={problemDatas[currentProblemIdx].textForRender}
@@ -452,6 +462,7 @@ function SmartTOFELRender({
 SmartTOFELRender.defaultProps = {
     preview: false,
     title: ['타이틀'],
+    pUUIDs: [''],
     passageForRender: [''],
     problemDatas: [],
     userDatas: {

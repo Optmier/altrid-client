@@ -17,6 +17,7 @@ function CardProblemPreview({ openPreview, metadata, timeLimit, handlePreviewClo
                 <SmartTOFELRender
                     preview
                     title={metadata.map((m) => m.title)}
+                    pUUIDs={metadata.map((m) => m.uuid)}
                     passageForRender={metadata.map((m) => m.passageForRender)}
                     problemDatas={metadata.flatMap((m) => m.problemDatas)}
                     timer={timeLimit}

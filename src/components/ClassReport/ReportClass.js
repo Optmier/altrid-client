@@ -370,7 +370,6 @@ function ReportClass({ match }) {
         }
     }, [studentsData]);
 
-    console.log(achievesForTypes);
     return (
         <div style={{ paddingBottom: '200px' }}>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />

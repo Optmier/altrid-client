@@ -54,7 +54,7 @@ function TimeTrackBox({ data, total }) {
                 sums[cur] += data.time;
             });
         });
-        setTotalAvgs(Object.keys(sums).map((k) => (sums[k] / filtered.length) * 1.0));
+        setTotalAvgs(Object.keys(sums).map((k) => (sums[k] / filtered.length).toFixed(1)));
     }, [data]);
 
     return (
@@ -62,7 +62,7 @@ function TimeTrackBox({ data, total }) {
             <div className="time-header">
                 <div>최장 소요시간 문제</div> {arranged[0].pid + 1}번 ({timeValueToTimer(arranged[0].time)})
             </div>
-            {data ? <LineChartTime currents={data.map((d) => d.time)} averages={totalAvgs} /> : null}
+            {data ? <LineChartTime currents={data.map((d) => d.time.toFixed(1))} averages={totalAvgs} /> : null}
         </StyleTimeTrackBox>
     );
 }

@@ -198,22 +198,25 @@ function AssignmentDoItNow({ history, match }) {
             if (originalDatas.time_limit === -3) alert('과제 기한이 종료되었습니다.\n지금까지 진행 사항은 저장됩니다.');
             else alert('종료되었습니다.');
 
-            // 여기에 분석용 데이터 보내기
-            Axios.post(
-                `${apiUrl}/data-analytics`,
-                {
-                    activedNumber: match.params.assignmentid,
-                    userData: metadata,
-                    eyetrackData: window.etRes,
-                },
-                { withCredentials: true },
-            )
-                .then((res) => {
-                    console.log('분석용 데이터 저장됨.', res);
-                })
-                .catch((e) => {
-                    console.error(e);
-                });
+            // 시선추적 과제인 경우만 분석용 데이터 수집
+            if (originalDatas.eyetrack) {
+                // 여기에 분석용 데이터 보내기
+                Axios.post(
+                    `${apiUrl}/data-analytics`,
+                    {
+                        activedNumber: match.params.assignmentid,
+                        userData: metadata,
+                        eyetrackData: window.etRes,
+                    },
+                    { withCredentials: true },
+                )
+                    .then((res) => {
+                        console.log('분석용 데이터 저장됨.', res);
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                    });
+            }
             window.close();
         });
     };
@@ -423,6 +426,7 @@ function AssignmentDoItNow({ history, match }) {
                         timer={remainTime}
                         timeLimit={originalDatas.time_limit}
                         title={originalDatas.contents_data.map((m) => m.title)}
+                        pUUIDs={originalDatas.contents_data.map((m) => m.uuid)}
                         passageForRender={originalDatas.contents_data.map((m) => m.passageForRender)}
                         problemDatas={originalDatas.contents_data.flatMap((m) => m.problemDatas)}
                         userDatas={savedData && savedData.user_data ? savedData.user_data : undefined}
