@@ -172,22 +172,17 @@ const division = (arr, original, n) => {
     // console.log(original);
     const _arr = arr.slice();
     const _original = original.slice();
-    const arrLen = _arr.length;
     const origLen = _original.length;
     const splitCnt = Math.floor(origLen / n) + (Math.floor(origLen % n) > 0 ? 1 : 0);
     const results = [];
 
-    console.log(_arr, _original, arrLen, origLen, splitCnt);
-
     for (let i = 0; i < splitCnt; i++) {
         const _spliced = _original.splice(0, n);
-        console.log(_spliced);
-
-        if (_spliced.length >= n) results.push(_spliced.map((d, idx) => (_arr[idx + i * 15] ? _arr[idx + i * 15] : -1)));
+        if (_spliced.length >= n) results.push(_spliced.map((d, idx) => (_arr[idx + i * n] ? _arr[idx + i * n] : -1)));
         else {
             const _rests = [];
             for (let idx = 0; idx < n; idx++) {
-                _rests.push(_spliced[idx] ? (_arr[idx + i * 15] ? _arr[idx + i * 15] : -1) : -2);
+                _rests.push(_spliced[idx] ? (_arr[idx + i * n] ? _arr[idx + i * n] : -1) : -2);
             }
             results.push(_rests);
         }
