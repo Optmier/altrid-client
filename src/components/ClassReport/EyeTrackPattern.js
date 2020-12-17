@@ -12,6 +12,7 @@ const StylePatternBox = styled.div`
         align-items: center;
         font-size: 0.8rem;
         font-weight: 500;
+        text-decoration: underline;
 
         & svg {
             margin-left: 0.5rem;

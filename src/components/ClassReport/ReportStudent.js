@@ -714,7 +714,7 @@ function ReportStudent({ history, match }) {
                 <section className="student-report-observe">
                     <div className="ment-ai observe-ment">
                         <b>{stdName}</b> 학생은 풀이 중 <br />
-                        <b className="underline">총 {answerChangedProblems}문제</b>에서 답 변경을 한 후, <br />그 중
+                        <b className="underline">총 {answerChangedProblems}문제</b>에서 답 변경 시도 하였으며, <br />그 중{' '}
                         <b className="underline">{aftChangedFaileds}문제</b>가 오답 처리되었습니다.
                     </div>
                     <div className="observe-box">
