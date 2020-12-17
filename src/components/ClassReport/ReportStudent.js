@@ -7,7 +7,17 @@ import styled from 'styled-components';
 import StudentTypeScore from './StudentTypeScore';
 import MoreBox from '../essentials/MoreBox';
 import EyeTrackBox from './EyeTrackBox';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Tooltip } from '@material-ui/core';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    TextField,
+    Tooltip,
+    withStyles,
+} from '@material-ui/core';
 import TimeTrackBox from './TimeTrackBox';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
@@ -190,6 +200,15 @@ const division = (arr, original, n) => {
 
     return results;
 };
+const HTMLTooltip = withStyles((theme) => ({
+    tooltip: {
+        padding: '0.85rem 1rem',
+        fontSize: '0.85rem',
+        fontWeight: '500',
+        borderRadius: '5px',
+    },
+}))(Tooltip);
+
 function ReportStudent({ history, match }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const urlSearchParams = new URLSearchParams(history.location.search);
@@ -695,7 +714,7 @@ function ReportStudent({ history, match }) {
                 <section className="student-report-observe">
                     <div className="ment-ai observe-ment">
                         <b>{stdName}</b> 학생은 풀이 중 <br />
-                        <b className="underline">총 {answerChangedProblems}문제</b>에서 답 변경을 한 후, <br />그 중{' '}
+                        <b className="underline">총 {answerChangedProblems}문제</b>에서 답 변경을 한 후, <br />그 중
                         <b className="underline">{aftChangedFaileds}문제</b>가 오답 처리되었습니다.
                     </div>
                     <div className="observe-box">
@@ -705,14 +724,14 @@ function ReportStudent({ history, match }) {
 
                 <div className="class-report-title">
                     <div>시선 흐름 및 패턴 분석</div>
-                    <Tooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
+                    <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
                                 fill="#A9ACAF"
                             />
                         </svg>
-                    </Tooltip>
+                    </HTMLTooltip>
                 </div>
                 <section className="student-report-eyetrack">
                     {currentStudentData && patternDatas.length ? (
@@ -729,14 +748,14 @@ function ReportStudent({ history, match }) {
 
                 <div className="class-report-title">
                     <div>문제별 시간 분석</div>
-                    <Tooltip title="각 문제별 풀이 소요 시간과 최장 소요시간의 문제와 시간을 나타냅니다.">
+                    <HTMLTooltip title="각 문제별 풀이 소요 시간과 최장 소요시간의 문제를 나타냅니다.">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
                                 fill="#A9ACAF"
                             />
                         </svg>
-                    </Tooltip>
+                    </HTMLTooltip>
                 </div>
                 <section className="student-report-timetrack">
                     {currentStudentData && patternDatas.length ? (

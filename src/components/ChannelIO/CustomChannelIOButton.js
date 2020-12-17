@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
 import { IconButton, Tooltip, withStyles } from '@material-ui/core';
-import ContactSupportIcon from '@material-ui/icons/ContactSupport';
 import ChannelService from './ChannelService';
 import { useState } from 'react';
 import { withRouter } from 'react-router-dom';
+import { BiQuestionMark } from 'react-icons/bi';
 
 const TalkIOButton = withStyles(() => ({
     root: {
         color: '#3b178a',
         position: 'fixed',
         zIndex: 99998,
-        right: '4px',
-        bottom: '4px',
+        right: '8px',
+        bottom: '8px',
     },
 }))(IconButton);
 
@@ -67,7 +67,7 @@ function CustomChannelIOButton({ history, match }) {
             {showCustomChannelButton ? (
                 <HtmlTooltip title={'도움이 필요하신가요?'} placement="bottom-end">
                     <TalkIOButton onClick={onClick}>
-                        <ContactSupportIcon />
+                        <BiQuestionMark size="2rem" />
                     </TalkIOButton>
                 </HtmlTooltip>
             ) : null}
