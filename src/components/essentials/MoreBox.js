@@ -41,7 +41,7 @@ function MoreBox() {
     return (
         <StyleMoreBox>
             <div className="more-eyetrack-ment">
-                에듀이티는 문제 풀이 중 <br />
+                알트리드는 문제 풀이 중 <br />
                 모든 것을 관찰하고 기록합니다.
             </div>
             <div className="more-eyetrack-button">

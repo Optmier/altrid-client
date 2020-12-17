@@ -6,6 +6,7 @@ import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment-timezone';
 import { useEffect } from 'react';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
+import TooltipCard from '../essentials/TooltipCard';
 
 const StyleState = styled.div`
     width: 52px;
@@ -36,7 +37,9 @@ const InfoItems = ({ title, contents, children }) => {
         <div className="card-item-student">
             {children}
             <div className="card-content-title-p">{title}</div>
-            <div className="card-content-p">{contents}</div>
+            <TooltipCard title={contents}>
+                <div className="card-content-p">{contents}</div>
+            </TooltipCard>
         </div>
     );
 };
@@ -49,14 +52,16 @@ const ScoreItems = ({ title, score, total, percent, children }) => {
             {score === '-' ? (
                 <div className="card-content-p">{score}</div>
             ) : (
-                <>
-                    <div className="card-content-p">
-                        {score}문제 / {total}문제
+                <TooltipCard title={score + '문제 / ' + total + '문제 / ' + percent.toFixed(1) + '%'}>
+                    <div className="card-content-score">
+                        <div className="card-content-p">
+                            {score}문제 / {total}문제
+                        </div>
+                        <div className="card-content-p" style={{ color: '#13e2a1', paddingLeft: '5px' }}>
+                            ({percent.toFixed(1)}%)
+                        </div>
                     </div>
-                    <div className="card-content-p" style={{ color: '#13e2a1', paddingLeft: '5px' }}>
-                        ({percent.toFixed(1)}%)
-                    </div>
-                </>
+                </TooltipCard>
             )}
         </div>
     );
@@ -69,17 +74,19 @@ const CompareItems = ({ title, contents, enabled, children }) => {
         <div className="card-item-student">
             {children}
             <div className="card-content-title-p">{title}</div>
-            {enabled ? (
-                contents < 0 ? (
-                    <div style={{ fontSize: '30px', color: '#F57C7C', fontWeight: '400' }}>{contents.toFixed(1)}%</div>
-                ) : contents === 0 ? (
-                    <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>-</div>
+            <TooltipCard title={contents.toFixed(1)}>
+                {enabled ? (
+                    contents < 0 ? (
+                        <div style={{ fontSize: '30px', color: '#F57C7C', fontWeight: '400' }}>{contents.toFixed(1)}%</div>
+                    ) : contents === 0 ? (
+                        <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>-</div>
+                    ) : (
+                        <div style={{ fontSize: '30px', color: '#7C88F5', fontWeight: '400' }}>+ {contents.toFixed(1)}%</div>
+                    )
                 ) : (
-                    <div style={{ fontSize: '30px', color: '#7C88F5', fontWeight: '400' }}>+ {contents.toFixed(1)}%</div>
-                )
-            ) : (
-                <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>-</div>
-            )}
+                    <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>-</div>
+                )}
+            </TooltipCard>
         </div>
     );
 };
@@ -126,7 +133,10 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, existsCa
                     )}
                 >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div className="card-title-p card-title-name">{data.name}</div>
+                        <TooltipCard title={data.name}>
+                            <div className="card-title-p card-title-name">{data.name}</div>
+                        </TooltipCard>
+
                         <StyleState complete={data.submitted && data.tries}>
                             {data.submitted && data.tries ? '제출완료' : '미제출'}
                         </StyleState>

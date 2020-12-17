@@ -1,5 +1,6 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import { SecondtoMinute } from '../essentials/TimeChange';
 
 function LineChartTime({ currents, averages }) {
     let state = {};
@@ -34,6 +35,15 @@ function LineChartTime({ currents, averages }) {
             colors: ['#13e2a1', '#706d6d'],
             dataLabels: {
                 enabled: true,
+                formatter: function (val) {
+                    let arr;
+                    arr = SecondtoMinute(Math.floor(val));
+
+                    if (!arr[0]) {
+                        return arr[1] + '초';
+                    }
+                    return arr[0] + '분 ' + arr[1] + '초';
+                },
             },
             stroke: {
                 curve: 'smooth',

@@ -163,6 +163,9 @@
             & > .card-content-title-p {
                 width: 85px;
             }
+            & .card-content-time {
+                display: flex;
+            }
 
             & > svg {
                 padding-right: 12px;
@@ -176,9 +179,13 @@
 
     & .card-item-student {
         display: flex;
+        & .card-content-score {
+            display: flex;
+        }
 
-        & > .card-content-title-p {
+        & .card-content-title-p {
             width: 83px;
+            display: flex;
         }
 
         & > svg {

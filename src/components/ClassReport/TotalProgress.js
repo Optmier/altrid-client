@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Progress from './Progress.js';
+import TooltipCard from '../essentials/TooltipCard';
 
 const StyleTotalProgress = styled.div`
     background-color: white;
@@ -42,9 +43,9 @@ function TotalProgress({ studentList, problemNumbers }) {
         <StyleTotalProgress>
             {Object.keys(studentList).map((num) => (
                 <div key={num} className="progress-list">
-                    <div className="name" title={studentList[num]['name']}>
-                        {studentList[num]['name']}
-                    </div>
+                    <TooltipCard title={studentList[num]['name']}>
+                        <div className="name">{studentList[num]['name']}</div>
+                    </TooltipCard>
 
                     <Progress
                         selections={studentList[num].user_data ? studentList[num].user_data.selections : null}

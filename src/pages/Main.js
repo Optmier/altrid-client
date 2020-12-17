@@ -149,7 +149,9 @@ function Main({ history }) {
                             <div
                                 className="bottom-right"
                                 onClick={() =>
-                                    alert('데모버전 확인을 위해서는 인증절차가 필요합니다. \n 1대1 문의를 통해 연락주시면 감사하겠습니다.')
+                                    alert(
+                                        '데모버전 확인을 위해서는 인증절차가 필요합니다. \n 우하단 문의 버튼을 통해 연락주시면 감사하겠습니다.',
+                                    )
                                 }
                             >
                                 <h4>

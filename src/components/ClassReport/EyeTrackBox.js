@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EyeTrackPattern from './EyeTrackPattern';
 import EyetrackingPlayer from '../TOFELRenderer/EyetrackingPlayer';
+import { Tooltip } from '@material-ui/core';
+import TooltipCard from '../essentials/TooltipCard';
 
 const StyleEyeTrackBox = styled.div`
     height: 500px;
@@ -43,6 +45,16 @@ const StyleEyeTrackBox = styled.div`
                 margin-right: 0.3rem;
             }
         }
+    }
+
+    & .eyetrack-header-more {
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+    }
+    & .eyetrack-header-more:hover {
+        margin-right: -5px;
     }
 `;
 
@@ -95,19 +107,45 @@ function EyeTrackBox({ hasEyetrack, eyetrackData, contentsData, patternData, cur
         <StyleEyeTrackBox>
             <div className="eyetrack-left" style={{ width: hasEyetrack ? '72%' : '72%' }}>
                 {hasEyetrack ? (
-                    <div className="eyetrack-header">
-                        <div className="eyetrack-text">
-                            <span className="eyetrack-title">총 응시점 개수</span>
-                            {fixations}개 (평균 {fixationsTotalAvg}개)
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div className="eyetrack-header">
+                            <div className="eyetrack-text">
+                                <span className="eyetrack-title">총 응시점 개수</span>
+                                {fixations}개 (평균 {fixationsTotalAvg}개)
+                            </div>
+                            <div className="eyetrack-text">
+                                <span className="eyetrack-title">평균 응시 속도</span>
+                                {avgFixVels}ms (평균 {avgFixDurTotalAvg}ms)
+                            </div>
+                            <div className="eyetrack-text">
+                                <span className="eyetrack-title">재응시 횟수</span>
+                                {regressions}회 (평균 {regressionsTotalAvg}회)
+                            </div>
                         </div>
-                        <div className="eyetrack-text">
-                            <span className="eyetrack-title">평균 응시 속도</span>
-                            {avgFixVels}ms (평균 {avgFixDurTotalAvg}ms)
-                        </div>
-                        <div className="eyetrack-text">
-                            <span className="eyetrack-title">재응시 횟수</span>
-                            {regressions}회 (평균 {regressionsTotalAvg}회)
-                        </div>
+                        <a
+                            href="https://www.notion.so/optmier/07bd3c8f53ac4e449242cda7eccdcb4e"
+                            target="_blank"
+                            className="eyetrack-header-more"
+                        >
+                            <TooltipCard
+                                title={
+                                    <div>
+                                        응시에 대해서 알고싶으신가요? <br /> 이곳을 클릭해주세요 :)
+                                    </div>
+                                }
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="11" viewBox="0 0 30.414 11">
+                                    <path
+                                        id="icon"
+                                        d="M0 0h28l-8.27 8.27"
+                                        fill="none"
+                                        stroke="#706d6d"
+                                        stroke-width="3px"
+                                        transform="translate(0 1)"
+                                    ></path>
+                                </svg>
+                            </TooltipCard>
+                        </a>
                     </div>
                 ) : (
                     <div className="eyetrack-header" style={{ height: '100%' }}>
