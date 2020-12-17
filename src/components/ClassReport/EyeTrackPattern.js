@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import classNames from 'classnames';
 import DigitZeroPads from '../essentials/DigitsZeroPad';
+import * as $ from 'jquery';
 
 const StylePatternBox = styled.div`
     width: 100%;
@@ -33,11 +34,18 @@ const StylePatternList = styled.div`
 
         & .pattern-num {
             font-weight: 600;
+            pointer-events: none;
+        }
+
+        & svg {
+            pointer-events: none;
         }
     }
 `;
 
 const StylePatternContent = styled.div`
+    display: flex;
+    flex-direction: column;
     font-size: 0.75rem;
     font-weight: 400;
     color: #706d6d;
@@ -48,7 +56,7 @@ const StylePatternContent = styled.div`
     -moz-transition: height 0.5s ease;
     -webkit-transition: height 0.5s ease;
     -o-transition: height 0.5s ease;
-    transition: height 0.5s ease;
+    transition: all 0.5s ease;
 
     & .pattern-item {
         display: flex;
@@ -63,6 +71,7 @@ const StylePatternContent = styled.div`
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        margin-top: auto !important;
         & > button {
             font-weight: 500;
             font-size: 0.75rem;
@@ -89,7 +98,7 @@ const AnswerRoute = ({ route }) => {
     let routeArr = route.filter((d) => d);
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
             {routeArr.length < 1 ? (
                 <div style={{ marginRight: '3px' }}>
                     <span style={{ marginRight: '3px' }}>없음</span>
@@ -130,11 +139,11 @@ const PatternList = ({
     const [height, setHeight] = useState(0);
     const [padding, setPadding] = useState(0);
 
-    const handlePattern = () => {
+    const handlePattern = (e) => {
         // console.log(heightToggle);
-
+        const h = $(e.target).siblings()[0].scrollHeight;
         if (!heightToggle) {
-            setHeight('92px');
+            setHeight(h + 20 + 'px');
             setPadding('20px');
             setHeightToggle(true);
         } else {

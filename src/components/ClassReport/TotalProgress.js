@@ -22,7 +22,8 @@ const StyleTotalProgress = styled.div`
             font-size: 1rem;
             font-weight: 500;
             margin-right: 15px;
-            width: 67px;
+            min-width: 4rem;
+            max-width: 4rem;
 
             text-overflow: ellipsis;
             white-space: nowrap;
