@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import EyeTrackPattern from './EyeTrackPattern';
 import EyetrackingPlayer from '../TOFELRenderer/EyetrackingPlayer';
 import { Tooltip } from '@material-ui/core';
+import TooltipCard from '../essentials/TooltipCard';
 
 const StyleEyeTrackBox = styled.div`
     height: 500px;
@@ -126,7 +127,7 @@ function EyeTrackBox({ hasEyetrack, eyetrackData, contentsData, patternData, cur
                             target="_blank"
                             className="eyetrack-header-more"
                         >
-                            <Tooltip
+                            <TooltipCard
                                 title={
                                     <div>
                                         응시에 대해서 알고싶으신가요? <br /> 이곳을 클릭해주세요 :)
@@ -143,7 +144,7 @@ function EyeTrackBox({ hasEyetrack, eyetrackData, contentsData, patternData, cur
                                         transform="translate(0 1)"
                                     ></path>
                                 </svg>
-                            </Tooltip>
+                            </TooltipCard>
                         </a>
                     </div>
                 ) : (

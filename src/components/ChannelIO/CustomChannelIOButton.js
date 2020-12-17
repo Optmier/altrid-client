@@ -3,7 +3,7 @@ import { IconButton, Tooltip, withStyles } from '@material-ui/core';
 import ChannelService from './ChannelService';
 import { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { BiQuestionMark } from 'react-icons/bi';
+import { BsFillQuestionCircleFill } from 'react-icons/bs';
 
 const TalkIOButton = withStyles(() => ({
     root: {
@@ -67,7 +67,7 @@ function CustomChannelIOButton({ history, match }) {
             {showCustomChannelButton ? (
                 <HtmlTooltip title={'도움이 필요하신가요?'} placement="bottom-end">
                     <TalkIOButton onClick={onClick}>
-                        <BiQuestionMark size="2rem" />
+                        <BsFillQuestionCircleFill size="2rem" />
                     </TalkIOButton>
                 </HtmlTooltip>
             ) : null}

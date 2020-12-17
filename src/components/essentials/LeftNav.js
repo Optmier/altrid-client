@@ -7,7 +7,7 @@ import Avatar from '../../images/avatar.png';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { useSelector } from 'react-redux';
-import { Tooltip } from '@material-ui/core';
+import TooltipCard from './TooltipCard';
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -50,13 +50,13 @@ function LeftNav({ match }) {
 
     return (
         <div className="left-nav-root">
-            <Tooltip title="클래스 나가기">
+            <TooltipCard title="클래스 나가기">
                 <div className="left-nav-box">
                     <LeftNavItem linkTo={`/`}>
                         <img src={LogoWhite} alt="logo_white"></img>
                     </LeftNavItem>
                 </div>
-            </Tooltip>
+            </TooltipCard>
 
             <div className="left-nav-box">
                 <div className="box-wrapper" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>

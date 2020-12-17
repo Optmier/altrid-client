@@ -19,6 +19,7 @@ import * as $ from 'jquery';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import ClassDialogCopy from '../essentials/ClassDialogCopy';
+import TooltipCard from '../essentials/TooltipCard';
 
 const StyleDraftIng = styled.div`
     width: 100%;
@@ -32,10 +33,10 @@ const StyleDraftIng = styled.div`
 const InfoItems = ({ title, contents }) => {
     return (
         <div className="card-item">
-            <div className="card-content-title-p" title={title}>
-                {title}
-            </div>
-            <div className="card-content-p">{contents}</div>
+            <div className="card-content-title-p">{title}</div>
+            <TooltipCard title={contents}>
+                <div className="card-content-p">{contents}</div>
+            </TooltipCard>
         </div>
     );
 };
@@ -46,19 +47,19 @@ const TimeItems = ({ title, time_limit }) => {
 
     return (
         <div className="card-item">
-            <div className="card-content-title-p" title={title}>
-                {title}
-            </div>
+            <div className="card-content-title-p">{title}</div>
 
             {time_limit === -2 ? (
                 <div className="card-content-p">없음</div>
             ) : (
-                <>
-                    <div className="card-content-p" style={{ marginRight: '0.4rem' }}>
-                        {mm}분
+                <TooltipCard title={mm + '분 ' + ss + '초'}>
+                    <div className="card-content-time">
+                        <div className="card-content-p" style={{ marginRight: '0.4rem' }}>
+                            {mm}분
+                        </div>
+                        <div className="card-content-p">{ss}초</div>
                     </div>
-                    <div className="card-content-p">{ss}초</div>
-                </>
+                </TooltipCard>
             )}
         </div>
     );
@@ -269,9 +270,10 @@ function CardDraft({ cardData, match, history }) {
             {!cardData['contents_data'] ? (
                 <div className="class-card-root">
                     <div className="class-card-header class-card-wrapper">
-                        <div className="card-title-p" title={cardData['title']}>
-                            {cardData['title']}
-                        </div>
+                        <TooltipCard title={cardData['title']}>
+                            <div className="card-title-p">{cardData['title']}</div>
+                        </TooltipCard>
+
                         <span className="card-option" onClick={handleOptionClick} style={{ paddingLeft: '1rem' }}>
                             <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="2.5" cy="2.5" r="2.5" fill="#C4C4C4" />
@@ -288,9 +290,12 @@ function CardDraft({ cardData, match, history }) {
             ) : (
                 <div className="class-card-root" onClick={handlePreTest}>
                     <div className="class-card-header-on class-card-wrapper">
-                        <div className="card-title-p" title={cardData['title']} style={{ width: 'calc(100% - 36px)' }}>
-                            {cardData['title']}
-                        </div>
+                        <TooltipCard title={cardData['title']}>
+                            <div className="card-title-p" style={{ width: 'calc(100% - 36px)' }}>
+                                {cardData['title']}
+                            </div>
+                        </TooltipCard>
+
                         <span className="card-option" onClick={handleOptionClick} style={{ paddingLeft: '1rem' }}>
                             <svg width="19" height="5" viewBox="0 0 19 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
@@ -304,9 +309,9 @@ function CardDraft({ cardData, match, history }) {
                     <div className="class-card-contents class-card-wrapper">
                         <div className="contents-block">
                             <div className="card-item">
-                                <div className="card-subTitle-p" title={cardData['description']}>
-                                    {cardData['description']}
-                                </div>
+                                <TooltipCard title={cardData['description']}>
+                                    <div className="card-subTitle-p">{cardData['description']}</div>
+                                </TooltipCard>
                             </div>
                         </div>
 

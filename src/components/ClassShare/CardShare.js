@@ -21,6 +21,7 @@ import { withStyles } from '@material-ui/core/styles';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import Error from '../../pages/Error';
+import TooltipCard from '../essentials/TooltipCard';
 
 const pad = (n, width) => {
     n = n + '';
@@ -30,10 +31,10 @@ const pad = (n, width) => {
 const InfoItems = ({ title, contents }) => {
     return (
         <div className="card-item">
-            <div className="card-content-title-p" title={title}>
-                {title}
-            </div>
-            <div className="card-content-p">{contents}</div>
+            <div className="card-content-title-p">{title}</div>
+            <TooltipCard title={contents}>
+                <div className="card-content-p">{contents}</div>
+            </TooltipCard>
         </div>
     );
 };
@@ -51,12 +52,14 @@ const TimeItems = ({ title, time_limit }) => {
             {time_limit === -2 ? (
                 <div className="card-content-p">없음</div>
             ) : (
-                <>
-                    <div className="card-content-p" style={{ marginRight: '0.4rem' }}>
-                        {mm}분
+                <TooltipCard title={mm + '분 ' + ss + '초'}>
+                    <div className="card-content-time">
+                        <div className="card-content-p" style={{ marginRight: '0.4rem' }}>
+                            {mm}분
+                        </div>
+                        <div className="card-content-p">{ss}초</div>
                     </div>
-                    <div className="card-content-p">{ss}초</div>
-                </>
+                </TooltipCard>
             )}
         </div>
     );
@@ -65,9 +68,11 @@ const DateItems = ({ title, start, end, userType, handleDateChange }) => {
     return (
         <div className="card-item">
             <div className="card-content-title-p">{title}</div>
-            <div className="card-content-p">
-                {start} - {end}
-            </div>
+            <TooltipCard title={start + ' - ' + end}>
+                <div className="card-content-p">
+                    {start} - {end}
+                </div>
+            </TooltipCard>
             <span style={{ marginRight: '6px' }}></span>
             <div className="date-item">{userType === 'students' ? null : <ModifyButton handleDateChange={handleDateChange} />}</div>
         </div>
@@ -360,9 +365,11 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                         'class-card-wrapper',
                     )}
                 >
-                    <div className="card-title-p" title={cardData['title']} style={{ width: 'calc(100% - 128px)' }}>
-                        {cardData['title']}
-                    </div>
+                    <TooltipCard title={cardData['title']}>
+                        <div className="card-title-p" style={{ width: 'calc(100% - 128px)' }}>
+                            {cardData['title']}
+                        </div>
+                    </TooltipCard>
                     <span className="card-option">
                         {sessions.userType === 'students' ? (
                             <>
@@ -398,9 +405,9 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                         <div className="class-card-contents class-card-wrapper">
                             <div className="contents-block">
                                 <div className="card-item">
-                                    <div className="card-subTitle-p" title={cardData['description']}>
-                                        {cardData['description']}
-                                    </div>
+                                    <TooltipCard title={cardData['description']}>
+                                        <div className="card-subTitle-p">{cardData['description']}</div>
+                                    </TooltipCard>
                                 </div>
                             </div>
 
