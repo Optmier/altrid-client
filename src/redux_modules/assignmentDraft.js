@@ -2,6 +2,7 @@ import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
 import { MinutetoSecond } from '../components/essentials/TimeChange';
 import { postActived } from './assignmentActived';
+import getAchieveValueForTypes from '../components/essentials/GetAchieveValueForTypes';
 
 /* 액션 타입 선언 */
 // draft 여러개 조회하기
@@ -48,21 +49,43 @@ export const getDrafts = () => async (dispatch) => {
                     .replace(/\\b/g, '\\b')
                     .replace(/\\f/g, '\\f')
                     .replace(/[\u0000-\u0019]+/g, '');
+
+                let _o = {};
+                let typepercent = 0;
+                JSON.parse(unparsed)
+                    .flatMap((m) => m.problemDatas)
+                    .forEach((d) => {
+                        const cat = d.category;
+                        !_o[cat] && (_o[cat] = {});
+                        !_o[cat].category && (_o[cat].category = 0);
+                        !_o[cat].count && (_o[cat].count = 0);
+                        _o[cat].category = cat;
+                        _o[cat].count += 1;
+                    });
+
+                typepercent = getAchieveValueForTypes(
+                    Object.keys(_o).map((k) => _o[k]),
+                    3,
+                ).value;
+
                 try {
                     return {
                         ...d,
                         contents_data: JSON.parse(unparsed),
+                        typepercent: typepercent,
                     };
                 } catch (e) {
                     return {
                         ...d,
                         contents_data: null,
+                        typepercent: 0,
                     };
                 }
             } else {
                 return {
                     ...d,
                     contents_data: null,
+                    typepercent: 0,
                 };
             }
         });

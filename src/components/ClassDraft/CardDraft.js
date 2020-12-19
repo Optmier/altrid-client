@@ -34,9 +34,13 @@ const InfoItems = ({ title, contents }) => {
     return (
         <div className="card-item">
             <div className="card-content-title-p">{title}</div>
-            <TooltipCard title={contents}>
+            {title === '유형별 분석' ? (
                 <div className="card-content-p">{contents}</div>
-            </TooltipCard>
+            ) : (
+                <TooltipCard title={contents}>
+                    <div className="card-content-p">{contents}</div>
+                </TooltipCard>
+            )}
         </div>
     );
 };
@@ -64,7 +68,6 @@ const TimeItems = ({ title, time_limit }) => {
         </div>
     );
 };
-
 const HtmlTooltip = withStyles((theme) => ({
     tooltip: {
         padding: '1rem 1.5rem',
@@ -197,30 +200,31 @@ function CardDraft({ cardData, match, history }) {
     };
 
     /** 유형별 분석 메소드 */
-    const [assignmentTypeState, setAssignmentTypeState] = useState(0);
-    const _o = {};
-    useEffect(() => {
-        if (cardData['contents_data']) {
-            cardData['contents_data']
-                .flatMap((m) => m.problemDatas)
-                .forEach((d) => {
-                    const cat = d.category;
-                    !_o[cat] && (_o[cat] = {});
-                    !_o[cat].category && (_o[cat].category = 0);
-                    !_o[cat].count && (_o[cat].count = 0);
-                    _o[cat].category = cat;
-                    _o[cat].count += 1;
-                });
+    // const [assignmentTypeState, setAssignmentTypeState] = useState(0);
+    // const _o = {};
+    // useEffect(() => {
+    //     if (cardData['contents_data']) {
+    //         cardData['contents_data']
+    //             .flatMap((m) => m.problemDatas)
+    //             .forEach((d) => {
+    //                 const cat = d.category;
+    //                 !_o[cat] && (_o[cat] = {});
+    //                 !_o[cat].category && (_o[cat].category = 0);
+    //                 !_o[cat].count && (_o[cat].count = 0);
+    //                 _o[cat].category = cat;
+    //                 _o[cat].count += 1;
+    //             });
 
-            setAssignmentTypeState(
-                getAchieveValueForTypes(
-                    Object.keys(_o).map((k) => _o[k]),
-                    3,
-                ).value,
-            );
-        }
-        return () => {};
-    }, []);
+    //         setAssignmentTypeState(
+    //             getAchieveValueForTypes(
+    //                 Object.keys(_o).map((k) => _o[k]),
+    //                 3,
+    //             ).value,
+    //         );
+    //     }
+    //     return () => {};
+    // }, []);
+
     const handleCopyDialogOpen = (e) => {
         setCopyDialogopen(true);
         handleOptionClose();
@@ -325,7 +329,7 @@ function CardDraft({ cardData, match, history }) {
                             <InfoItems
                                 title={'유형별 분석'}
                                 contents={
-                                    assignmentTypeState < 100 ? (
+                                    cardData['typepercent'] < 100 ? (
                                         <HtmlTooltip2
                                             title={
                                                 <>
