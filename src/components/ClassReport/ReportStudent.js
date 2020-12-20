@@ -622,7 +622,7 @@ function ReportStudent({ history, match }) {
                                   currentStudentData.user_data.selections,
                                   currentStudentData.contents_data.flatMap((m) => m.problemDatas),
                                   15,
-                              ).map((arr, idx) => <Progress mode key={idx} selections={arr} problemNumbers={999} />)
+                              ).map((arr, idx) => <Progress mode key={idx} idx={idx} selections={arr} problemNumbers={999} />)
                             : null}
 
                         <div className="right-bottom">

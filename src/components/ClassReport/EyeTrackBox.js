@@ -140,7 +140,7 @@ function EyeTrackBox({ hasEyetrack, eyetrackData, contentsData, patternData, cur
                                         d="M0 0h28l-8.27 8.27"
                                         fill="none"
                                         stroke="#706d6d"
-                                        stroke-width="3px"
+                                        strokeWidth="3px"
                                         transform="translate(0 1)"
                                     ></path>
                                 </svg>

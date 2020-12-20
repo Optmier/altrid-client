@@ -133,9 +133,12 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
             { withCredentials: true },
         ); // API 호출
 
-        const idx = result['data']['result2'][0]['LAST_INSERT_ID()'];
+        const idx = result['data']['results']['insertId'];
+        //const idx = result['data']['result2'][0]['LAST_INSERT_ID()'];
         const academy_code = result['data']['academy_code'];
         const teacher_id = result['data']['teacher_id'];
+
+        console.log(idx, academy_code, teacher_id);
 
         //파일 업로드 선택시,
         let file_url = null;
@@ -219,9 +222,7 @@ export const copyDraft = (idx, title, originalCardData) => async (dispatch) => {
     dispatch({ type: COPY_DRAFT });
     try {
         const result = await Axios.post(`${apiUrl}/assignment-draft/copy/${idx}`, { title: title }, { withCredentials: true });
-        const new_idx = result['data']['result2'][0]['LAST_INSERT_ID()'];
-
-        //console.log(result['data']['result2'][0]['LAST_INSERT_ID()']);
+        const new_idx = result['data']['insertId'];
 
         dispatch({ type: COPY_DRAFT_SUCCESS, originalCardData, title: title, new_idx: new_idx });
     } catch (e) {
