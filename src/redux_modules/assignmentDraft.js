@@ -23,7 +23,7 @@ const PATCH_DRAFT_SUCCESS = 'assignmentDraft/PATCH_DRAFT_SUCCESS';
 
 // draft 복사하기
 const COPY_DRAFT = 'assignmentDraft/COPY_DRAFT';
-const COPY_DRAFT_SUCCESS = 'assingmentDraft/COPY_DRAFT';
+const COPY_DRAFT_SUCCESS = 'assingmentDraft/COPY_DRAFT_SUCCESS';
 
 // draft 삭제하기
 const DELETE_DRAFT = 'assignmentDraft/DELETE_DRAFT';
@@ -50,42 +50,42 @@ export const getDrafts = () => async (dispatch) => {
                     .replace(/\\f/g, '\\f')
                     .replace(/[\u0000-\u0019]+/g, '');
 
-                let _o = {};
-                let typepercent = 0;
-                JSON.parse(unparsed)
-                    .flatMap((m) => m.problemDatas)
-                    .forEach((d) => {
-                        const cat = d.category;
-                        !_o[cat] && (_o[cat] = {});
-                        !_o[cat].category && (_o[cat].category = 0);
-                        !_o[cat].count && (_o[cat].count = 0);
-                        _o[cat].category = cat;
-                        _o[cat].count += 1;
-                    });
+                // let _o = {};
+                // let typepercent = 0;
+                // JSON.parse(unparsed)
+                //     .flatMap((m) => m.problemDatas)
+                //     .forEach((d) => {
+                //         const cat = d.category;
+                //         !_o[cat] && (_o[cat] = {});
+                //         !_o[cat].category && (_o[cat].category = 0);
+                //         !_o[cat].count && (_o[cat].count = 0);
+                //         _o[cat].category = cat;
+                //         _o[cat].count += 1;
+                //     });
 
-                typepercent = getAchieveValueForTypes(
-                    Object.keys(_o).map((k) => _o[k]),
-                    3,
-                ).value;
+                // typepercent = getAchieveValueForTypes(
+                //     Object.keys(_o).map((k) => _o[k]),
+                //     3,
+                // ).value;
 
                 try {
                     return {
                         ...d,
                         contents_data: JSON.parse(unparsed),
-                        typepercent: typepercent,
+                        // typepercent: typepercent,
                     };
                 } catch (e) {
                     return {
                         ...d,
                         contents_data: null,
-                        typepercent: 0,
+                        // typepercent: 0,
                     };
                 }
             } else {
                 return {
                     ...d,
                     contents_data: null,
-                    typepercent: 0,
+                    // typepercent: 0,
                 };
             }
         });
@@ -218,8 +218,12 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsDa
 export const copyDraft = (idx, title, originalCardData) => async (dispatch) => {
     dispatch({ type: COPY_DRAFT });
     try {
-        await Axios.post(`${apiUrl}/assignment-draft/copy/${idx}`, { title: title }, { withCredentials: true });
-        dispatch({ type: COPY_DRAFT_SUCCESS, originalCardData, title: title });
+        const result = await Axios.post(`${apiUrl}/assignment-draft/copy/${idx}`, { title: title }, { withCredentials: true });
+        const new_idx = result['data']['result2'][0]['LAST_INSERT_ID()'];
+
+        //console.log(result['data']['result2'][0]['LAST_INSERT_ID()']);
+
+        dispatch({ type: COPY_DRAFT_SUCCESS, originalCardData, title: title, new_idx: new_idx });
     } catch (e) {
         dispatch({ type: DRAFT_ERROR, error: e });
     }
@@ -325,9 +329,9 @@ export default function eyetrackingSelect(state = initialState, action) {
                 ...state,
                 draftDatas: {
                     loading: false,
-                    data: [{ ...action.originalCardData, title: action.title, created: new Date(), updated: new Date() }].concat(
-                        state.draftDatas.data,
-                    ),
+                    data: [
+                        { ...action.originalCardData, idx: action.new_idx, title: action.title, created: new Date(), updated: new Date() },
+                    ].concat(state.draftDatas.data),
                     error: null,
                 },
             };

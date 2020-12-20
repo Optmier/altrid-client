@@ -339,7 +339,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
             ).value,
         );
         return () => {};
-    }, []);
+    }, [cardData['contents_data']]);
 
     if (loading === true && datetime === null)
         return <div style={{ backgroundColor: '#eeeeee', width: '100%', height: '100%', borderRadius: '10px' }}></div>;
