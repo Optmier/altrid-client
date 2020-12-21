@@ -354,18 +354,43 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
         );
     }
 
+    const moderator = (x, y) => {
+        let _x,
+            _y = 0;
+        let _moderated = false;
+
+        if (x < 0) {
+            _x = 0;
+            _moderated = true;
+        } else if (x > 1280) {
+            _x = 1280;
+            _moderated = true;
+        } else _x = x;
+
+        if (y < 0) {
+            _y = 0;
+            _moderated = true;
+        } else if (y > 750) {
+            _y = 750;
+            _moderated = true;
+        } else _y = y;
+
+        return { mX: _x, mY: _y, isModerated: _moderated };
+    };
+
     const drawFixation = (data) => {
         const { x, y, value } = data;
+        const { mX, mY, isModerated } = moderator(x, y);
         const saccade = new PIXI.Graphics();
-        saccade.lineStyle(1, 0x00b179, 1);
-        saccade.beginFill(0x00cf8c, 0.666);
-        saccade.drawCircle(x, y, value ? 2 : 0);
+        saccade.lineStyle(1, isModerated ? 0xff0000 : 0x00b179, 1);
+        saccade.beginFill(isModerated ? 0xff0000 : 0x00cf8c, 0.666);
+        saccade.drawCircle(mX, mY, value ? 2 : 0);
         saccade.endFill();
 
-        saccade.lineStyle(2, 0x00140e, 0.8);
-        saccade.beginFill(0x00140e, 0.17);
+        saccade.lineStyle(2, isModerated ? 0xff0000 : 0x00140e, 0.8);
+        saccade.beginFill(isModerated ? 0xff0000 : 0x00140e, 0.17);
         // saccade.drawCircle(x, y, 2 * logbase(duration + 1, 1.1) + 10);
-        saccade.drawCircle(x, y, value * 2.25 + 8);
+        saccade.drawCircle(mX, mY, value * 2.25 + 8);
         saccade.endFill();
 
         return saccade;
@@ -373,9 +398,12 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
 
     const drawLine = (from, to) => {
         const line = new PIXI.Graphics();
-        line.lineStyle(2, 0x00140e, 0.9);
-        line.moveTo(from.x, from.y);
-        line.lineTo(to.x, to.y);
+        const mFrom = moderator(from.x, from.y);
+        const mTo = moderator(to.x, to.y);
+
+        line.lineStyle(2, mTo.isModerated ? 0xff0000 : 0x00140e, 0.9);
+        line.moveTo(mFrom.mX, mFrom.mY);
+        line.lineTo(mTo.mX, mTo.mY);
         line.endFill();
 
         return line;
