@@ -124,7 +124,7 @@ function Share({ match, history }) {
 
             <ClassWrapper>
                 {/* <ClassHeaderBox /> */}
-                <TypeBanner situation="info" />
+                {sessions.userType === 'students' ? '' : <TypeBanner situation="info" />}
             </ClassWrapper>
 
             {shareDatas.length === 0 ? (
