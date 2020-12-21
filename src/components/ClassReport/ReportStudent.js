@@ -588,13 +588,17 @@ function ReportStudent({ history, match }) {
                                 </>
                             ) : (
                                 <>
-                                    <b>{stdName}</b> 학생의 취약 영역은 <br />
-                                    <b className="underline">
-                                        {top3Weaks.length && top3Weaks[0]
-                                            ? problemCategories.filter((p) => p.id == top3Weaks[0].category)[0].name
-                                            : 'null'}
-                                    </b>{' '}
-                                    영역입니다.
+                                    <div className="ment-ai-row">
+                                        <b>{stdName}</b> 학생의 취약 영역은 <br />
+                                    </div>
+                                    <div className="ment-ai-row">
+                                        <b className="underline" style={{ paddingRight: '0.5rem' }}>
+                                            {top3Weaks.length && top3Weaks[0]
+                                                ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name
+                                                : 'null'}
+                                        </b>
+                                        영역입니다.
+                                    </div>
                                 </>
                             )}
                         </div>
@@ -603,13 +607,13 @@ function ReportStudent({ history, match }) {
                                 <div className="left-bottom">
                                     <b>2번째 취약 영역</b>
                                     {top3Weaks.length && top3Weaks[1]
-                                        ? problemCategories.filter((p) => p.id == top3Weaks[1].category)[0].name
+                                        ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0].name
                                         : 'null'}
                                 </div>
                                 <div className="left-bottom">
                                     <b>3번째 취약 영역</b>
                                     {top3Weaks.length && top3Weaks[2]
-                                        ? problemCategories.filter((p) => p.id == top3Weaks[2].category)[0].name
+                                        ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0].name
                                         : 'null'}
                                 </div>
                             </>

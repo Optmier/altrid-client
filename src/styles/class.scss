@@ -207,8 +207,16 @@ $textGray: #706d6d;
             font-weight: 400;
             color: $textBlack;
 
-            & > b {
+            & .ment-ai-row {
+                display: flex;
+                align-items: center;
+            }
+            & b {
                 font-weight: 600;
+                max-width: 140px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
             }
 
             & > .underline {
@@ -228,6 +236,8 @@ $textGray: #706d6d;
                 flex-direction: column;
                 & .left-top {
                     margin-bottom: 1.2rem;
+                    display: flex;
+                    flex-direction: column;
                 }
                 & .left-bottom {
                     font-size: 1rem;
