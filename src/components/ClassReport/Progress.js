@@ -32,9 +32,6 @@ const HtmlTooltip = withStyles((theme) => ({
 }))(Tooltip);
 function Progress({ mode, idx, selections, problemNumbers }) {
     const [squares, setSquars] = useState([]);
-
-    console.log(idx);
-
     useEffect(() => {
         const limiter = mode ? selections.length : problemNumbers;
 

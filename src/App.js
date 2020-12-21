@@ -26,6 +26,7 @@ import generateHash from './components/ChannelIO/generateHash';
 import CustomChannelIOButton from './components/ChannelIO/CustomChannelIOButton';
 import LoginCandidated from './pages/LoginCandidated';
 
+window.axios = Axios;
 window.lastUrl = '/';
 window.tokenRefresher = null;
 const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin, '/login-candidated'];
