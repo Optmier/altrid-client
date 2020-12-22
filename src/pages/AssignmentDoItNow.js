@@ -198,8 +198,9 @@ function AssignmentDoItNow({ history, match }) {
             if (originalDatas.time_limit === -3) alert('과제 기한이 종료되었습니다.\n지금까지 진행 사항은 저장됩니다.');
             else alert('종료되었습니다.');
 
+            const { classnum, assignmentid } = match.params;
             // 시선추적 과제인 경우만 분석용 데이터 수집
-            if (originalDatas.eyetrack) {
+            if (originalDatas.eyetrack && classnum == '14') {
                 // 여기에 분석용 데이터 보내기
                 Axios.post(
                     `${apiUrl}/data-analytics`,
