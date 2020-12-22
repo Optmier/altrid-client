@@ -370,7 +370,7 @@ function LoginCandidated({ history }) {
                             로그인
                         </LoginDemoButton>
                         <div className="usertype-change-link">
-                            <Link color="#efefef" onClick={handleChangeUsertype}>
+                            <Link color="inherit" onClick={handleChangeUsertype}>
                                 {usertype === 'students' ? '선생님' : '학생'} 데모 버전 보기
                             </Link>
                         </div>

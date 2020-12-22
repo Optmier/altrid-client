@@ -101,7 +101,7 @@ function ReportClass({ match }) {
     const [averageScoresOfType, setAverageScoresOfType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
     /** 학생 별 이전 로우 데이터 */
     const [prevStudentsDataRaw, setPrevStudentsDataRaw] = useState([]);
-
+    /**전체 로딩 */
     const [mainLoading, setMainLoading] = useState(true);
 
     const handleDialogOpen = (type) => {
@@ -268,7 +268,6 @@ function ReportClass({ match }) {
 
     useEffect(() => {
         // 메인 정보 불러오기
-
         Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, { withCredentials: true })
             .then((res) => {
                 // console.log(res);
@@ -442,8 +441,7 @@ function ReportClass({ match }) {
         }
     }, [studentsData]);
 
-    if (data === null && loading) return <BackdropComponent open={true} />;
-    if (mainLoading) return <BackdropComponent open={true} />;
+    if ((data === null && loading) || mainLoading) return <BackdropComponent open={true} />;
 
     return (
         <div style={{ paddingBottom: '200px' }}>

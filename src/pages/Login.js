@@ -347,7 +347,7 @@ function Login({ history }) {
                             style={{ marginTop: '1.2rem' }}
                         />
                         <div className="usertype-change-link">
-                            <Link color="#efefef" onClick={handleChangeUsertype}>
+                            <Link color="inherit" onClick={handleChangeUsertype}>
                                 {usertype === 'students' ? '선생님' : '학생'}이신가요?
                             </Link>
                         </div>

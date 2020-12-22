@@ -51,7 +51,7 @@ function App({ history }) {
         Axios.delete(`${apiUrl}/auth`, { withCredentials: true })
             .then((res) => {
                 deleteSessions();
-                document.body.innerHTML = '로그아웃 되었습니다.';
+                // document.body.innerHTML = '로그아웃 되었습니다.';
                 // alert('성공적으로 로그아웃 되었습니다!');
                 document.location.replace($_loginDefault);
             })

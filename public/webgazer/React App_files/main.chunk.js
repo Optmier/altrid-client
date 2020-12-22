@@ -378,7 +378,7 @@
                             })
                             .then((res) => {
                                 deleteSessions();
-                                document.body.innerHTML = '로그아웃 되었습니다.'; // alert('성공적으로 로그아웃 되었습니다!');
+                                // document.body.innerHTML = '로그아웃 되었습니다.'; 
 
                                 document.location.replace(_configs_front_urls__WEBPACK_IMPORTED_MODULE_18__['$_loginDefault']);
                             })

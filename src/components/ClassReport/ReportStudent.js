@@ -27,6 +27,7 @@ import problemCategories from '../TOFELEditor/ProblemCategories';
 import { Element, Link as AnimScrollTo } from 'react-scroll';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
+import BackdropComponent from '../essentials/BackdropComponent';
 
 const pad = (n, width) => {
     n = n + '';
@@ -263,6 +264,8 @@ function ReportStudent({ history, match }) {
         student_name: false,
         teacher_email: false,
     });
+    /**전체 로딩 */
+    const [mainLoading, setMainLoading] = useState(true);
 
     const handleEraseResult = () => {
         setEraseConfirmOpen(true);
@@ -415,6 +418,7 @@ function ReportStudent({ history, match }) {
         setScorePoints(currentStudent.score_points);
         setDurTimes(currentStudent.time);
         setTries(currentStudent.tries);
+        setMainLoading(false);
         if (currentStudent.contents_data) {
             setTotalProblems(currentStudent.contents_data.flatMap((m) => m.problemDatas).length);
             const _o = {};
@@ -573,7 +577,10 @@ function ReportStudent({ history, match }) {
                 ? curentStudentsPatterns.patternsGroupedByPid.filter((g) => g.answerChanges > 1 && !g.correct).length
                 : '-',
         );
+        setMainLoading(false);
     }, [patternDatas]);
+
+    if (mainLoading) return <BackdropComponent open={true} />;
 
     return (
         <ClassWrapper col={true}>

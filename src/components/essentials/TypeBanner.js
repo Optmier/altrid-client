@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
-import CountUp from 'react-countup';
+import { useCountUp } from 'react-countup';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -62,6 +62,12 @@ function TypeBanner({ situation, value }) {
     // situation : info, warning, success
 
     const classes = useStyles({ situation });
+    const { countUp } = useCountUp({
+        start: 0,
+        end: value,
+        delay: 1,
+        duration: 3,
+    });
 
     return (
         <>
@@ -88,13 +94,7 @@ function TypeBanner({ situation, value }) {
                                     </svg>
                                 </>
                             ) : situation === 'warning' ? (
-                                <p className="percent">
-                                    취약영역 분석까지
-                                    <CountUp start={0} end={value} delay={5}>
-                                        {({ countUpRef }) => <span ref={countUpRef} />}
-                                    </CountUp>
-                                    %
-                                </p>
+                                <p className="percent">취약영역 분석까지 {' ' + countUp}%</p>
                             ) : (
                                 <p className="percent">취약영역 분석이 가능합니다.</p>
                             )}

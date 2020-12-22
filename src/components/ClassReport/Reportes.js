@@ -8,10 +8,6 @@ import ReportStudent from './ReportStudent';
 function Reportes({ match }) {
     const sessions = useSelector((state) => state.RdxSessions);
 
-    useEffect(() => {
-        // console.log('reports?');
-    }, []);
-
     return (
         <>
             <RestrictRoute
