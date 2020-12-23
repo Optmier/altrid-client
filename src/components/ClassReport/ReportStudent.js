@@ -28,6 +28,7 @@ import { Element, Link as AnimScrollTo } from 'react-scroll';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
 import BackdropComponent from '../essentials/BackdropComponent';
+import TooltipCard from '../essentials/TooltipCard';
 
 const pad = (n, width) => {
     n = n + '';
@@ -596,13 +597,24 @@ function ReportStudent({ history, match }) {
                             ) : (
                                 <>
                                     <div className="ment-ai-row">
-                                        <b>{stdName}</b> 학생의 취약 영역은 <br />
+                                        <TooltipCard title={stdName}>
+                                            <b className="ment-ai-name">{stdName}</b>
+                                        </TooltipCard>
+                                        학생의 취약 영역은 <br />
                                     </div>
                                     <div className="ment-ai-row">
                                         <b className="underline" style={{ paddingRight: '0.5rem' }}>
-                                            {top3Weaks.length && top3Weaks[0]
-                                                ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name
-                                                : 'null'}
+                                            {top3Weaks.length && top3Weaks[0] ? (
+                                                <TooltipCard
+                                                    title={
+                                                        problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name
+                                                    }
+                                                >
+                                                    <div className="ment-ai-type">{problemCategories[0].name}</div>
+                                                </TooltipCard>
+                                            ) : (
+                                                'null'
+                                            )}
                                         </b>
                                         영역입니다.
                                     </div>
