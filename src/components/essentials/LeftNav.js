@@ -60,7 +60,6 @@ function LeftNav({ match }) {
                 </TooltipCard>
 
                 <div className="left-nav-box">
-                </div>
                     <div className="box-wrapper" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
                         <img alt="avatar" src={Avatar} />
                         <h4>
