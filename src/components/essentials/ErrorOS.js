@@ -7,12 +7,11 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         zIndex: '9999',
         width: '100%',
-        boxShadow: 'rgb(128 123 123 / 40%) 2px 7px 16px 0px, rgb(109 107 107 / 5%) 0px 1px 5px 0px',
+        //boxShadow: 'rgb(128 123 123 / 40%) 2px 7px 16px 0px, rgb(109 107 107 / 5%) 0px 1px 5px 0px',
 
         '& .MuiAlert-root': {
             borderRadius: '0',
-
-            padding: '16px 32px',
+            padding: '12px 80px',
             fontSize: '1rem',
 
             '& .MuiAlert-message': {
