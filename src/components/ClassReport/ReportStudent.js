@@ -29,6 +29,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
 import BackdropComponent from '../essentials/BackdropComponent';
 import TooltipCard from '../essentials/TooltipCard';
+import TypeBanner from '../essentials/TypeBanner';
 
 const pad = (n, width) => {
     n = n + '';
@@ -585,6 +586,8 @@ function ReportStudent({ history, match }) {
 
     return (
         <ClassWrapper col={true}>
+            <TypeBanner situation={achievesForTypes.value < 100 ? 'warning' : 'success'} value={achievesForTypes.value} />
+
             <BranchNav deps="3" />
             <div className="student-report-root">
                 <section className="student-report-header">
