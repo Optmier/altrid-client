@@ -72,10 +72,12 @@ function ClassDialoglDate({ subType }) {
         let { value } = e.target;
 
         if (moment(value).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss')) {
-            setDateState(value);
+            setDateState(moment(value).format('YYYY-MM-DDTHH:mm'));
             dispatch(changeDueDate(moment(value)));
         }
     };
+
+    console.log(dateState ? dateState : '');
 
     return (
         <StyleModalShare>

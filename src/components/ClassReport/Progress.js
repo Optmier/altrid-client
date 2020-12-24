@@ -39,7 +39,7 @@ function Progress({ mode, idx, selections, problemNumbers }) {
             if (!selections || !selections[i] || selections[i] === -1) {
                 setSquars((squares) => [
                     ...squares,
-                    <HtmlTooltip key={i} title={i + 1 + limiter * idx + '번'} placement="top">
+                    <HtmlTooltip key={i} title={!idx ? i + 1 + '번' : i + 1 + limiter * idx + '번'} placement="top">
                         <div key={i} className="square" style={{ backgroundColor: '#E5E5E5' }}></div>
                     </HtmlTooltip>,
                 ]);
@@ -48,14 +48,14 @@ function Progress({ mode, idx, selections, problemNumbers }) {
             } else if (selections[i].correct) {
                 setSquars((squares) => [
                     ...squares,
-                    <HtmlTooltip key={i} title={i + 1 + limiter * idx + '번'} placement="top">
+                    <HtmlTooltip key={i} title={!idx ? i + 1 + '번' : i + 1 + limiter * idx + '번'} placement="top">
                         <div key={i} className="square" style={{ backgroundColor: '#13E2A1' }}></div>
                     </HtmlTooltip>,
                 ]);
             } else if (!selections[i].correct) {
                 setSquars((squares) => [
                     ...squares,
-                    <HtmlTooltip key={i} title={i + 1 + limiter * idx + '번'} placement="bottom-end">
+                    <HtmlTooltip key={i} title={!idx ? i + 1 + '번' : i + 1 + limiter * idx + '번'} placement="bottom-end">
                         <div key={i} className="square" style={{ backgroundColor: '#FFA552' }}></div>
                     </HtmlTooltip>,
                 ]);

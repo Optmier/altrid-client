@@ -25,6 +25,7 @@ import ChannelService from './components/ChannelIO/ChannelService';
 import generateHash from './components/ChannelIO/generateHash';
 import CustomChannelIOButton from './components/ChannelIO/CustomChannelIOButton';
 import LoginCandidated from './pages/LoginCandidated';
+import ErrorOS from './components/essentials/ErrorOS';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -154,7 +155,9 @@ function App({ history }) {
         <>
             <CustomChannelIOButton />
             <Element name="main_top_start" />
+
             <ScrollTop>
+                <ErrorOS os={navigator.userAgent.toLowerCase()} />
                 <main>
                     <Switch>
                         <Route path={$_root} component={Main} exact />

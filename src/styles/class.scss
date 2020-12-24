@@ -211,12 +211,20 @@ $textGray: #706d6d;
                 display: flex;
                 align-items: center;
             }
-            & b {
-                font-weight: 600;
+            & .ment-ai-name {
                 max-width: 140px;
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
+            }
+            & .ment-ai-type {
+                max-width: 215px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            & b {
+                font-weight: 600;
             }
 
             & > .underline {
