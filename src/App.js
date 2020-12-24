@@ -26,6 +26,7 @@ import generateHash from './components/ChannelIO/generateHash';
 import CustomChannelIOButton from './components/ChannelIO/CustomChannelIOButton';
 import LoginCandidated from './pages/LoginCandidated';
 import ErrorOS from './components/essentials/ErrorOS';
+import GooroomeeService from './components/Gooroomee/GooroomeeService';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -35,6 +36,7 @@ const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin,
 // const excludesForTeacherUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
 // const excludesForStudentUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
 
+window.axios = Axios;
 function App({ history }) {
     const dispatch = useDispatch();
     const saveSessions = useCallback(
@@ -112,6 +114,7 @@ function App({ history }) {
     }, [history.location]);
 
     useEffect(() => {
+        GooroomeeService.test();
         if (channelIOAccessKey.pluginKey) {
             ChannelService.shutdown();
             ChannelService.boot({

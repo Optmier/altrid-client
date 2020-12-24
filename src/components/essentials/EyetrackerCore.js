@@ -105,7 +105,6 @@ window.clusterCountsOfFixations = 3;
 /** 8. Number of regressions */
 window.numberOfRegressions = 0;
 
-window.$ = $;
 window._etNxtSetNum = 0;
 
 let completedCalib = false;
