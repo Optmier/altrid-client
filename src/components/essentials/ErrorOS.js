@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function ErrorOS({ os }) {
+function ErrorOS({ os, mobile }) {
     const classes = useStyles();
 
     if (os.indexOf('chrome') !== -1) return '';

@@ -9,7 +9,7 @@ import ScrollTop from './components/essentials/ScrollTop';
 import TrashButton from './components/essentials/TrashButton';
 import Login from './pages/Login';
 import Error from './pages/Error';
-
+import isMobile from './controllers/isMobile';
 import LoginAdmin from './pages/LoginAdmin';
 import { apiUrl } from './configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,6 +26,7 @@ import generateHash from './components/ChannelIO/generateHash';
 import CustomChannelIOButton from './components/ChannelIO/CustomChannelIOButton';
 import LoginCandidated from './pages/LoginCandidated';
 import ErrorOS from './components/essentials/ErrorOS';
+import MobileBody from './components/essentials/MobileBody';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -158,6 +159,7 @@ function App({ history }) {
 
             <ScrollTop>
                 <ErrorOS os={navigator.userAgent.toLowerCase()} />
+                <MobileBody />
                 <main>
                     <Switch>
                         <Route path={$_root} component={Main} exact />
