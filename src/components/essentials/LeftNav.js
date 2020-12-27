@@ -8,6 +8,7 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { useSelector } from 'react-redux';
 import TooltipCard from './TooltipCard';
+import Error from '../../pages/Error';
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -17,7 +18,7 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-function LeftNav({ match }) {
+function LeftNav({ match, history }) {
     const { num } = match.params;
 
     /** redux-module 불러내기 */
@@ -29,7 +30,8 @@ function LeftNav({ match }) {
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
-        if (sessions.userType === 'teachers')
+
+        if (sessions.userType === 'teachers') {
             Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
                 .then((res) => {
                     setStudentData(res.data);
@@ -38,6 +40,7 @@ function LeftNav({ match }) {
                 .catch((err) => {
                     console.error(err);
                 });
+        }
 
         Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
             .then((res) => {
@@ -47,6 +50,14 @@ function LeftNav({ match }) {
                 console.error(err);
             });
     }, [sessions.authId, sessions.academyName]);
+
+    // if (sessions.userType === 'teachers') {
+    //     if (teacherData.teacher_id) {
+    //         if (sessions.authId !== teacherData.teacher_id) {
+    //             return <Error />;
+    //         }
+    //     }
+    // }
 
     return (
         <div className="left-nav-root">
@@ -145,4 +156,4 @@ function LeftNav({ match }) {
     );
 }
 
-export default withRouter(React.memo(LeftNav));
+export default React.memo(withRouter(LeftNav));

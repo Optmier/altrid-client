@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
                     alignItems: 'center',
                     justifyContent: 'space-between',
 
+                    '& .msg-left-tablet': {
+                        display: 'none',
+                    },
                     '& .msg-right': {
                         fontWeight: '600',
                         fontSize: '0.875rem',
@@ -30,13 +33,22 @@ const useStyles = makeStyles((theme) => ({
                             marginLeft: '0.5rem',
                         },
                     },
+
+                    '@media all and (max-width: 970px)': {
+                        '& .msg-left': {
+                            display: 'none',
+                        },
+                        '& .msg-left-tablet': {
+                            display: 'block',
+                        },
+                    },
                 },
             },
         },
     },
 }));
 
-function ErrorOS({ os }) {
+function ErrorOS({ os, mobile }) {
     const classes = useStyles();
 
     if (os.indexOf('chrome') !== -1) return '';
@@ -49,6 +61,10 @@ function ErrorOS({ os }) {
                 <div className="message">
                     <div className="msg-left">
                         <strong>Chrome 웹 브라우저를 사용해주세요 !</strong> -- 알트리드는 서비스는 해당 웹 브라우저를 지원하지 않습니다.
+                    </div>
+                    <div className="msg-left-tablet">
+                        <strong>Chrome 웹 브라우저를 사용해주세요 !</strong> <br />
+                        알트리드는 서비스는 해당 웹 브라우저를 지원하지 않습니다.
                     </div>
                     <a className="msg-right" href="https://www.google.com/intl/ko/chrome/">
                         Chrome 설치하기
