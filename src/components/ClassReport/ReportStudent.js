@@ -443,6 +443,7 @@ function ReportStudent({ history, match }) {
         setPatternDatas(
             studentsData.map((e) => {
                 if (e.user_data) {
+                    console.log(e);
                     const currentLogs = e.user_data.logs;
                     const currentSelections = e.user_data.selections;
                     const _currentPattern = {};

@@ -63,7 +63,7 @@ const StudentCardHeader = styled.div`
     }
 `;
 
-function ReportClass({ match }) {
+function ReportClass({ match, history }) {
     const { num, activedNum } = match.params;
     const dispatch = useDispatch();
     const serverdate = useSelector((state) => state.RdxServerDate);
@@ -270,7 +270,6 @@ function ReportClass({ match }) {
         // 메인 정보 불러오기
         Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, { withCredentials: true })
             .then((res) => {
-                // console.log(res);
                 let unparsedContentsData = res.data.contents_data;
                 try {
                     unparsedContentsData
@@ -300,7 +299,6 @@ function ReportClass({ match }) {
             withCredentials: true,
         })
             .then((res) => {
-                // console.log(res);
                 setPrevStudentsDataRaw(res.data['prev']);
                 const convertedData = res.data['curr'].map((data) => {
                     let unparsedUserData = data.user_data;
@@ -441,6 +439,10 @@ function ReportClass({ match }) {
         }
     }, [studentsData]);
 
+    if (studentsData.length >= 1 && !studentsData.filter((s) => s.submitted).length) {
+        alert('아직 제출한 학생이 없습니다 !');
+        history.goBack();
+    }
     if ((data === null && loading) || mainLoading) return <BackdropComponent open={true} />;
 
     return (

@@ -51,13 +51,11 @@ function LeftNav({ match, history }) {
             });
     }, [sessions.authId, sessions.academyName]);
 
-    // if (sessions.userType === 'teachers') {
-    //     if (teacherData.teacher_id) {
-    //         if (sessions.authId !== teacherData.teacher_id) {
-    //             return <Error />;
-    //         }
-    //     }
-    // }
+    if (sessions.userType === 'teachers' && teacherData.teacher_id) {
+        if (sessions.authId !== teacherData.teacher_id) {
+            history.replace('/error');
+        }
+    }
 
     return (
         <div className="left-nav-root">

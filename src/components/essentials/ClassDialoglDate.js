@@ -77,8 +77,6 @@ function ClassDialoglDate({ subType }) {
         }
     };
 
-    console.log(dateState ? dateState : '');
-
     return (
         <StyleModalShare>
             {subType === 'init' ? (
