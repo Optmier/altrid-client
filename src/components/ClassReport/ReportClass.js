@@ -371,7 +371,7 @@ function ReportClass({ match, history }) {
         setDueDate(moment(mainReportData.due_date).format('MM.DD HH:mm'));
 
         dispatch(getActivedOnly(mainReportData.idx, mainReportData.created, mainReportData.due_date));
-        setMainLoading(false);
+
         if (mainReportData.contents_data) {
             const contentsData = mainReportData.contents_data;
             setProblemNumbers(contentsData.flatMap((m) => m.problemDatas).length);
@@ -438,6 +438,8 @@ function ReportClass({ match, history }) {
             });
             setAverageScoresOfType({ ...averageScoresOfType, ..._averages });
         }
+
+        setMainLoading(false);
     }, [studentsData]);
 
     //error check 1.제출한 학생이 아무도 없을때

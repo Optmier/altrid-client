@@ -420,7 +420,7 @@ function ReportStudent({ history, match }) {
         setScorePoints(currentStudent.score_points);
         setDurTimes(currentStudent.time);
         setTries(currentStudent.tries);
-        setMainLoading(false);
+
         if (currentStudent.contents_data) {
             setTotalProblems(currentStudent.contents_data.flatMap((m) => m.problemDatas).length);
             const _o = {};
