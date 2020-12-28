@@ -19,6 +19,7 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
 });
 
 function LeftNav({ match, history }) {
+    console.log('----------------------------');
     const { num } = match.params;
 
     /** redux-module 불러내기 */
@@ -26,7 +27,7 @@ function LeftNav({ match, history }) {
     const sessions = useSelector((state) => state.RdxSessions);
 
     const [studentData, setStudentData] = useState([]);
-    const [teacherData, setTeacherData] = useState([]);
+    const [teacherData, setTeacherData] = useState({});
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
@@ -51,8 +52,11 @@ function LeftNav({ match, history }) {
             });
     }, [sessions.authId, sessions.academyName]);
 
-    if (sessions.userType === 'teachers' && teacherData.teacher_id) {
-        if (sessions.authId !== teacherData.teacher_id) {
+    // error check 1. 아예 없는반에 접근시
+    if (!teacherData) history.replace('/error');
+    // error check 2. 선생님, 우리반이 아닌 다른 반 접근 시
+    else if (sessions.userType === 'teachers') {
+        if (teacherData.teacher_id && sessions.authId !== teacherData.teacher_id) {
             history.replace('/error');
         }
     }
