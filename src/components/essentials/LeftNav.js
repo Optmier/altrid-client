@@ -19,7 +19,6 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
 });
 
 function LeftNav({ match, history }) {
-    console.log('----------------------------');
     const { num } = match.params;
 
     /** redux-module 불러내기 */
