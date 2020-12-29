@@ -353,7 +353,7 @@ function VideoLecturesManage({ match, history }) {
                 const otpCode = res.data.data.roomUserOtp.otp;
                 window.open(
                     `http://biz.gooroomee.com/room/otp/${otpCode}`,
-                    'Gooroomee Biz',
+                    'Gooroomee Biz_' + otpCode,
                     `toolbar=no, scrollbars=no, resizable=no, status=no`,
                     true,
                 );

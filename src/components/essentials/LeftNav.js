@@ -67,6 +67,10 @@ function LeftNav({ match, history }) {
             withCredentials: true,
         })
             .then((res) => {
+                if (window.intervalLiveCounts) {
+                    clearInterval(window.intervalLiveCounts);
+                    delete window.intervalLiveCounts;
+                }
                 if (!res.data || new Date(res.data.end_at).getTime() < new Date().getTime()) {
                     setVideoLecture(null);
                     return;
