@@ -9,6 +9,7 @@ import { apiUrl } from '../../configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
 import TooltipCard from './TooltipCard';
 import { setCurrentVideoLecture, setStudentsNum, updateLiveCounts } from '../../redux_modules/currentClass';
+import Error from '../../pages/Error';
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -18,25 +19,27 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-function LeftNav({ match }) {
+function LeftNav({ match, history }) {
     const { num } = match.params;
 
     /** redux-module 불러내기 */
     const dispatch = useDispatch();
     const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
     const sessions = useSelector((state) => state.RdxSessions);
+    const serverdate = useSelector((state) => state.RdxServerDate);
     const setStudentsNumber = useCallback((studentsNumber) => dispatch(setStudentsNum(studentsNumber)));
     const setVideoLecture = useCallback((videoLecture) => dispatch(setCurrentVideoLecture(videoLecture)));
     const updateVideoLiveCounts = useCallback((liveCounts) => dispatch(updateLiveCounts(liveCounts)));
 
     const [studentData, setStudentData] = useState([]);
-    const [teacherData, setTeacherData] = useState([]);
+    const [teacherData, setTeacherData] = useState({});
 
     const [hasVideoLecture, setHasVideoLecture] = useState(false);
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
-        if (sessions.userType === 'teachers')
+
+        if (sessions.userType === 'teachers') {
             Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
                 .then((res) => {
                     setStudentData(res.data);
@@ -45,6 +48,7 @@ function LeftNav({ match }) {
                 .catch((err) => {
                     console.error(err);
                 });
+        }
 
         Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
             .then((res) => {
@@ -63,8 +67,7 @@ function LeftNav({ match }) {
             withCredentials: true,
         })
             .then((res) => {
-                // 리덕스로 변경 예정
-                if (!res.data) {
+                if (!res.data || new Date(res.data.end_at).getTime() < new Date().getTime()) {
                     setVideoLecture(null);
                     return;
                 }
@@ -107,6 +110,15 @@ function LeftNav({ match }) {
             }
         };
     }, []);
+
+    // error check 1. 아예 없는반에 접근시
+    if (!teacherData) history.replace('/error');
+    // error check 2. 선생님, 우리반이 아닌 다른 반 접근 시
+    else if (sessions.userType === 'teachers') {
+        if (teacherData.teacher_id && sessions.authId !== teacherData.teacher_id) {
+            history.replace('/error');
+        }
+    }
 
     return (
         <div className="left-nav-root">
@@ -232,4 +244,4 @@ function LeftNav({ match }) {
     );
 }
 
-export default withRouter(React.memo(LeftNav));
+export default React.memo(withRouter(LeftNav));

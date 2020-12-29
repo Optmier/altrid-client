@@ -420,7 +420,7 @@ function ReportStudent({ history, match }) {
         setScorePoints(currentStudent.score_points);
         setDurTimes(currentStudent.time);
         setTries(currentStudent.tries);
-        setMainLoading(false);
+
         if (currentStudent.contents_data) {
             setTotalProblems(currentStudent.contents_data.flatMap((m) => m.problemDatas).length);
             const _o = {};
@@ -443,6 +443,7 @@ function ReportStudent({ history, match }) {
         setPatternDatas(
             studentsData.map((e) => {
                 if (e.user_data) {
+                    console.log(e);
                     const currentLogs = e.user_data.logs;
                     const currentSelections = e.user_data.selections;
                     const _currentPattern = {};

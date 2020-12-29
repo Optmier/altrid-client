@@ -331,6 +331,9 @@ body {
         width: 15px !important;
         height: 15px !important;
     }
+    & .mobile-body-root {
+        display: none;
+    }
 
     @media all and (min-width: 769px) and (max-width: 1280) {
         input {
@@ -348,8 +351,6 @@ body {
     }
 
     @media all and (max-width: 768px) {
-        a {
-        }
         input {
             border: none;
             font-size: 1.1rem;
@@ -459,6 +460,55 @@ body {
     }
 
     @media all and (max-width: 662px) {
+        & .mobile-body-root {
+            width: 100%;
+            height: 100vh;
+            background-color: $primaryColor;
+            position: fixed;
+            z-index: 9999;
+            padding: 1rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+
+            & .mobile-logo {
+                & img {
+                    height: 60px;
+                }
+            }
+
+            & .mobile-body {
+                width: 100%;
+                height: 100%;
+                margin-top: -65px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: center;
+
+                & h1 {
+                    color: white;
+                    font-size: 2rem;
+                    font-weight: 600;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.5;
+                    letter-spacing: -2.75px;
+                    text-align: left;
+                    margin-bottom: 1.5rem;
+                }
+
+                & p {
+                    font-size: 1rem;
+                    font-weight: normal;
+                    line-height: 1.5;
+                    color: #eaeaea;
+                }
+            }
+        }
+        & main {
+            display: none;
+        }
         & .main-divider {
             margin: 16px;
         }

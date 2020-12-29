@@ -24,6 +24,7 @@ import ClassDialogDelete from '../essentials/ClassDialogDelete';
 import { patchActivedOnly, changeDueDate, deleteActived, getActivedOnly, patchActived } from '../../redux_modules/assignmentActived';
 import { getServerDate } from '../../redux_modules/serverdate';
 import BackdropComponent from '../essentials/BackdropComponent';
+import Error from '../../pages/Error';
 
 const pad = (n, width) => {
     n = n + '';
@@ -63,7 +64,7 @@ const StudentCardHeader = styled.div`
     }
 `;
 
-function ReportClass({ match }) {
+function ReportClass({ match, history }) {
     const { num, activedNum } = match.params;
     const dispatch = useDispatch();
     const serverdate = useSelector((state) => state.RdxServerDate);
@@ -270,7 +271,6 @@ function ReportClass({ match }) {
         // 메인 정보 불러오기
         Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, { withCredentials: true })
             .then((res) => {
-                // console.log(res);
                 let unparsedContentsData = res.data.contents_data;
                 try {
                     unparsedContentsData
@@ -300,7 +300,6 @@ function ReportClass({ match }) {
             withCredentials: true,
         })
             .then((res) => {
-                // console.log(res);
                 setPrevStudentsDataRaw(res.data['prev']);
                 const convertedData = res.data['curr'].map((data) => {
                     let unparsedUserData = data.user_data;
@@ -372,7 +371,7 @@ function ReportClass({ match }) {
         setDueDate(moment(mainReportData.due_date).format('MM.DD HH:mm'));
 
         dispatch(getActivedOnly(mainReportData.idx, mainReportData.created, mainReportData.due_date));
-        setMainLoading(false);
+
         if (mainReportData.contents_data) {
             const contentsData = mainReportData.contents_data;
             setProblemNumbers(contentsData.flatMap((m) => m.problemDatas).length);
@@ -439,8 +438,18 @@ function ReportClass({ match }) {
             });
             setAverageScoresOfType({ ...averageScoresOfType, ..._averages });
         }
+
+        setMainLoading(false);
     }, [studentsData]);
 
+    //error check 1.제출한 학생이 아무도 없을때
+    if (studentsData.length >= 1 && !studentsData.filter((s) => s.submitted).length) {
+        alert('아직 제출한 학생이 없습니다 !');
+        history.goBack();
+    }
+    //error check 2. 우리반이 아닌 다른 반 리포트에 접근할려고 할때
+    if (data && data.idx === undefined) return <Error />;
+    //error check 3. 데이터 전체가 로딩 완료될때까지는 back drop
     if ((data === null && loading) || mainLoading) return <BackdropComponent open={true} />;
 
     return (
