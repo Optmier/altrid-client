@@ -245,12 +245,12 @@ function AssignmentDoItNow({ history, match }) {
     }, []);
 
     useEffect(() => {
-        if (!window.opener) {
-            alert('잘못된 접근입니다!');
-            document.body.innerHTML = '';
-            window.close();
-            return;
-        }
+        // if (!window.opener) {
+        //     alert('잘못된 접근입니다!');
+        //     document.body.innerHTML = '';
+        //     window.close();
+        //     return;
+        // }
         ChannelService.hideButton();
         if (!serverdate.datetime) return;
         const { classnum, assignmentid } = match.params;
@@ -421,7 +421,7 @@ function AssignmentDoItNow({ history, match }) {
                 />
             ) : null}
 
-            {originalDatas.contents_data && remainTime !== null && savedData !== undefined && timerState.isPlaying ? (
+            {/* {originalDatas.contents_data && remainTime !== null && savedData !== undefined && timerState.isPlaying ? (
                 <ActivityRoot className="activity-root" ref={rootRef}>
                     <SmartTOFELRender
                         timer={remainTime}
@@ -437,7 +437,7 @@ function AssignmentDoItNow({ history, match }) {
                         onUserAnswerChanged={onUserAnswerChanged}
                     />
                 </ActivityRoot>
-            ) : null}
+            ) : null} */}
         </>
     );
 }
