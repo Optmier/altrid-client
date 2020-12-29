@@ -6,8 +6,9 @@ import BackdropComponent from './BackdropComponent';
 import styled from 'styled-components';
 import { buildMode } from '../../configs/configs';
 import '../../styles/eyetracker_core.scss';
-import PreLogo from '../../images/eyetracker_logo/pre_logo.png';
-import NewLogo from '../../images/eyetracker_logo/new_logo.png';
+import StepHome from '../EyetrackerStep/StepHome';
+import StepBox from '../EyetrackerStep/StepBox';
+import StepAgree from '../EyetrackerStep/StepAgree';
 
 const Assistance = styled.div``;
 const CalibDot = styled.div`
@@ -73,6 +74,12 @@ const CalibDot = styled.div`
         background-color: #00ac75;
         pointer-events: none;
     }
+`;
+const SlideUl = styled.ul`
+    margin-left: ${(props) => props.translateNum + '%'};
+    width: calc(100% * 4);
+    display: flex;
+    transition: 0.4s;
 `;
 
 /** Webgazer configuration */
@@ -203,8 +210,13 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     _step = step;
     _userAnswer = userAnswer;
     _timeElapsed = timeElapsed;
+    const [stepNum, setStepNum] = useState(0);
+    const [translateNum, setTranslateNum] = useState(-200);
+    const [agreeCheck, setAgreeCheck] = useState(false);
+
     const [start, setStart] = useState(false);
     const [webgazerLoded, setWebgazerLoaded] = useState(false);
+
     const [calib, setCalib] = useState(false);
     const [calibBtnText, setCalibBtnText] = useState(
         localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true' ? '이전 보정 사용' : '보정 완료',
@@ -487,27 +499,37 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     //     }
     // }, [calibDotCounts]);
 
+    const handleStep = () => {
+        setStepNum(stepNum + 1);
+        setTranslateNum(-100);
+    };
+    const handleCheckChange = (e) => {
+        setAgreeCheck(e.target.checked);
+    };
     return (
         <>
             {/* <BackdropComponent disableShrink open={!webgazerLoded} /> */}
             <div className="eyetrackerCore-root">
                 <div className="eyetrackerCore-wrapper">
-                    <div className="eyetracker-header">
-                        이전에 사용한 보정이 있으시다면 <span>이전 보정 사용하기</span> 버튼을 <br />
-                        아직 체크하지 못하셨다면 <span>새 보정하기</span> 버튼을 눌러주세요.
-                    </div>
-                    <div className="eyetracker-buttons">
-                        <button>
-                            <img alt="pre" src={PreLogo} />
-                            <div className="button-title">이전 보전 사용하기</div>
-                            <div className="button-desc">이전 과제 진행 시의 보정값을 동일하게 사용하여 진행합니다.</div>
-                        </button>
-                        <button>
-                            <img alt="new" src={NewLogo} />
-                            <div className="button-title">이전 보전 사용하기</div>
-                            <div className="button-desc">이전 과제 진행 시의 보정값을 동일하게 사용하여 진행합니다.</div>{' '}
-                        </button>
-                    </div>
+                    <SlideUl translateNum={translateNum}>
+                        <li>
+                            <StepHome />
+                        </li>
+                        <li>
+                            <StepAgree agreeCheck={agreeCheck} handleCheckChange={handleCheckChange} />
+                        </li>
+                        <li>
+                            <StepBox step={1} />
+                        </li>
+                        <li>
+                            <StepBox step={2} />
+                        </li>
+                    </SlideUl>
+                </div>
+                <div className="eyetrack-step-button">
+                    <button onClick={handleStep} className="eyetracker-footer">
+                        확인 완료
+                    </button>
                 </div>
             </div>
         </>

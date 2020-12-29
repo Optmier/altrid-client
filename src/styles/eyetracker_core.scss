@@ -1,23 +1,179 @@
+$firstColor: #3b168a;
+$secondColor: #13e2a1;
+ul,
+li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
 .eyetrackerCore-root {
+    background-image: url('/bg_images/eyetracker_bg.png');
+    background-image: url(/bg_images/eyetracker_bg.png);
+    background-size: cover;
+    background-repeat: no-repeat;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 100vh;
     & .eyetrackerCore-wrapper {
-        border: 1px solid;
         width: 1280px;
-        height: 750px;
+        padding-top: 40px;
+        box-sizing: border-box;
 
+        overflow: hidden;
+        position: relative;
+
+        & li {
+            width: calc(100% / 4);
+        }
+
+        & li:nth-child(3) {
+            background: #afa;
+        }
+        & li:nth-child(4) {
+            background: #aaf;
+        }
+
+        & .eyetrack-step-home {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            & .eyetracker-header {
+                font-size: 1.25rem;
+                font-weight: 500;
+                & > span {
+                    color: #572ab5;
+                }
+            }
+            & .eyetracker-buttons {
+                display: flex;
+                margin-top: 20px;
+
+                & > button {
+                    background-color: transparent;
+                    box-shadow: 5px 5px 15px #00000029;
+                    border-radius: 11px;
+                    font-size: 1rem;
+                    padding: 28px 56px;
+                    box-sizing: border-box;
+
+                    & > img {
+                        width: 130px;
+                    }
+
+                    & .button-title {
+                        margin-top: 10px;
+                        font-weight: 600;
+                    }
+                    & .button-desc {
+                        margin-top: 32px;
+                        font-weight: 400;
+                        color: #404040;
+                    }
+                }
+                & .button-right {
+                    margin-left: 56px;
+                }
+
+                & .button-left:hover {
+                    border: 2px solid #13e2a17a;
+                    background-color: #13e2a10d;
+                    margin: -2px;
+                }
+                & .button-right:hover {
+                    border: 2px solid #13e2a17a;
+                    background-color: #13e2a10d;
+                    margin: -2px -2px -2px 54px;
+                }
+            }
+            & .eyetracker-warn {
+                margin-top: 40px;
+                color: #d11f1f;
+                font-size: 1rem;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+
+                & svg {
+                    margin-right: 0.5rem;
+                }
+            }
+        }
+        & .eyetrack-step-agree {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            & .agree-header {
+                font-size: 1.25rem;
+                font-weight: 500;
+            }
+
+            & .contents-box {
+                margin-top: 28px;
+                width: 690px;
+                padding: 65px 85px;
+                box-shadow: 5px 5px 15px #00000029;
+                border: 1.5px solid #d8d5d5;
+                border-radius: 11px;
+                box-sizing: border-box;
+
+                display: flex;
+                flex-direction: column;
+
+                & .contents-title {
+                    & .outline {
+                        border-top: 3px solid #3b168a;
+                        width: 23px;
+                    }
+                    color: #3b168a;
+                    font-weight: 700;
+                    font-size: 1rem;
+                }
+                & .contents-desc {
+                    margin-top: 19px;
+                    font-size: 1rem;
+                    color: #6a6a6a;
+                    font-weight: 600;
+                }
+                & .contents-checkbox {
+                    margin-top: 28px;
+                    color: #404040;
+                    font-size: 1rem;
+                    font-weight: 500;
+                }
+            }
+        }
+        & .eyetrack-step-box {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+    & .eyetrack-step-button {
+        width: 100%;
         display: flex;
         justify-content: center;
+        margin-top: 40px;
 
-        & .eyetracker-header {
-            font-size: 1.25rem;
-            font-weight: 500;
-            & > span {
-                color: #572ab5;
-            }
+        & .eyetracker-footer {
+            width: 125px;
+            height: 45px;
+            background-color: #13e2a1;
+            box-shadow: 0px 3px 6px #00000029;
+            border-radius: 11px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
         }
     }
 }
