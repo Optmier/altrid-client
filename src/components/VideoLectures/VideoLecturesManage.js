@@ -8,6 +8,7 @@ import {
     DialogTitle,
     FormControlLabel,
     FormGroup,
+    Grid,
     IconButton,
     makeStyles,
     Switch,
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 const HtmlTooltip = withStyles((theme) => ({
     tooltip: {
         padding: '0.5rem 1rem',
-        marginTop: '-0.2rem',
+        marginTop: '-0.1rem',
         fontSize: '0.75rem',
         fontWeight: '500',
         borderRadius: '5px',
@@ -99,8 +100,8 @@ const OpenNewVidLec = styled.div`
 const DateTextField = withStyles((theme) => ({
     root: {
         fontFamily: 'inherit',
-        width: 220,
         outline: 'none',
+        margin: '8px 0 4px 0',
         '& .MuiInputBase-root': {
             fontSize: '0.9rem',
             outline: 'none',
@@ -258,8 +259,9 @@ function VideoLecturesManage({ match, history }) {
         const { id } = target;
         if (id === 'new_video_lecture_confirm') {
             submitNewVideoLectures();
+        } else {
+            setNewVidLecDlgOpen(false);
         }
-        setNewVidLecDlgOpen(false);
     };
 
     const handleFormChange = ({ target }, val2) => {
@@ -272,16 +274,42 @@ function VideoLecturesManage({ match, history }) {
             case 'startDate':
             case 'endDate':
                 if (moment(value).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss')) {
+                    setFormFieldsError({ ...formFieldsError, [name]: false });
                     setFormFields({ ...formFields, [name]: moment(value).format('YYYY-MM-DDTHH:mm') });
                 }
                 break;
             default:
+                setFormFieldsError({ ...formFieldsError, [name]: false });
                 setFormFields({ ...formFields, [name]: value });
                 break;
         }
     };
 
     const submitNewVideoLectures = () => {
+        let formFieldsPassed = true;
+        let titleCheck = false;
+        let descCheck = false;
+        let endDateCheck = false;
+        if (!formFields.title || !formFields.title.trim()) {
+            titleCheck = true;
+            formFieldsPassed = false;
+        }
+        if (!formFields.description || !formFields.description.trim()) {
+            descCheck = true;
+            formFieldsPassed = false;
+        }
+        if (!formFields.endDate || !formFields.endDate.trim()) {
+            endDateCheck = true;
+            formFieldsPassed = false;
+        }
+        setFormFieldsError({
+            ...formFieldsError,
+            title: titleCheck,
+            description: descCheck,
+            endDate: endDateCheck,
+        });
+        if (!formFieldsPassed) return;
+
         Axios.post(
             `${apiUrl}/meeting-room`,
             {
@@ -296,6 +324,7 @@ function VideoLecturesManage({ match, history }) {
             { withCredentials: true },
         )
             .then((res) => {
+                setNewVidLecDlgOpen(false);
                 console.log(res);
                 history.replace();
             })
@@ -321,7 +350,6 @@ function VideoLecturesManage({ match, history }) {
             { withCredentials: true },
         )
             .then((res) => {
-                console.log(res);
                 const otpCode = res.data.data.roomUserOtp.otp;
                 window.open(
                     `http://biz.gooroomee.com/room/otp/${otpCode}`,
@@ -368,42 +396,49 @@ function VideoLecturesManage({ match, history }) {
             >
                 <DialogTitle id="form-dialog-title">새 화상 강의</DialogTitle>
                 <DialogContent>
-                    <FormGroup>
-                        <TextField
-                            autoFocus
-                            error={formFieldsError.title}
-                            margin="dense"
-                            id="title"
-                            name="title"
-                            label="강의 제목"
-                            type="text"
-                            helperText={formFieldsError.title ? '강의 제목 입력은 필수입니다.' : ''}
-                            onChange={handleFormChange}
-                            fullWidth
-                        />
-                        <TextField
-                            error={formFieldsError.description}
-                            margin="dense"
-                            id="description"
-                            name="description"
-                            label="강의 설명"
-                            type="text"
-                            helperText={formFieldsError.description ? '강의 설명은 필수입니다.' : ''}
-                            onChange={handleFormChange}
-                            fullWidth
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <FormControlLabel
-                            control={
-                                <Switch checked={formFields.hasStartDate} onChange={handleFormChange} name="hasStartDate" color="primary" />
-                            }
-                            label="시작 예약 설정"
-                        />
-                        <Collapse in={formFields.hasStartDate}>
-                            <FormControlLabel
-                                labelPlacement="start"
-                                control={
+                    <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                            <FormGroup>
+                                <TextField
+                                    autoFocus
+                                    error={formFieldsError.title}
+                                    margin="dense"
+                                    id="title"
+                                    name="title"
+                                    label="강의 제목"
+                                    type="text"
+                                    helperText={formFieldsError.title ? '강의 제목 입력은 필수입니다.' : ''}
+                                    onChange={handleFormChange}
+                                    fullWidth
+                                />
+                                <TextField
+                                    error={formFieldsError.description}
+                                    margin="dense"
+                                    id="description"
+                                    name="description"
+                                    label="강의 설명"
+                                    type="text"
+                                    helperText={formFieldsError.description ? '강의 설명은 필수입니다.' : ''}
+                                    onChange={handleFormChange}
+                                    fullWidth
+                                />
+                            </FormGroup>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormGroup>
+                                <FormControlLabel
+                                    labelPlacement="start"
+                                    control={
+                                        <Switch
+                                            checked={formFields.hasStartDate}
+                                            onChange={handleFormChange}
+                                            name="hasStartDate"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="시작 예약 설정"
+                                />
+                                <Collapse in={formFields.hasStartDate}>
                                     <DateTextField
                                         onChange={handleFormChange}
                                         value={formFields.startDate}
@@ -411,18 +446,13 @@ function VideoLecturesManage({ match, history }) {
                                         name="startDate"
                                         type="datetime-local"
                                         className={classes.textField}
+                                        label="세션 시작 날짜"
+                                        fullWidth
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
-                                        style={{ marginLeft: '1rem' }}
                                     />
-                                }
-                                label="시작 날짜"
-                            />
-                        </Collapse>
-                        <FormControlLabel
-                            labelPlacement="start"
-                            control={
+                                </Collapse>
                                 <DateTextField
                                     onChange={handleFormChange}
                                     value={formFields.endDate}
@@ -430,29 +460,36 @@ function VideoLecturesManage({ match, history }) {
                                     name="endDate"
                                     type="datetime-local"
                                     className={classes.textField}
+                                    label="세션 종료 날짜"
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
-                                    style={{ marginLeft: '1rem' }}
                                 />
-                            }
-                            label="세션 종료 날짜"
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <FormControlLabel
-                            control={
-                                <Switch checked={formFields.hasEyetrack} onChange={handleFormChange} name="hasEyetrack" color="primary" />
-                            }
-                            label="시선 흐름 집중도 측정"
-                        />
-                    </FormGroup>
+                            </FormGroup>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormGroup>
+                                {/* <FormControlLabel
+                                    labelPlacement="start"
+                                    control={
+                                        <Switch
+                                            checked={formFields.hasEyetrack}
+                                            onChange={handleFormChange}
+                                            name="hasEyetrack"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="시선 흐름 집중도 측정"
+                                /> */}
+                            </FormGroup>
+                        </Grid>
+                    </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <DialogActionButton onClick={handleNewVideoLectureDialogClose} id="new_video_lecture_cancel" color="secondary">
+                    <DialogActionButton onClick={handleNewVideoLectureDialogClose} id="new_video_lecture_cancel" color="default">
                         취소
                     </DialogActionButton>
-                    <DialogActionButton onClick={handleNewVideoLectureDialogClose} id="new_video_lecture_confirm" color="default">
+                    <DialogActionButton onClick={handleNewVideoLectureDialogClose} id="new_video_lecture_confirm" color="primary">
                         만들기
                     </DialogActionButton>
                 </DialogActions>
