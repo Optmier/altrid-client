@@ -84,7 +84,7 @@ function Share({ match, history }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const dispatch = useDispatch();
     const [tries, setTries] = useState(undefined);
-    const [totalStudents, setTotalStudents] = useState(window.studentsInCurrentClass);
+    const currentClass = useSelector((state) => state.RdxCurrentClass);
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
@@ -180,7 +180,7 @@ function Share({ match, history }) {
                                                       ? tries.find((o) => o.idx === shareDatas[key]['idx']).tries
                                                       : 0
                                               }
-                                              totalStudents={totalStudents}
+                                              totalStudents={currentClass.currentStudentsNumber}
                                           />
                                       </CardRoot>
                                   ))
