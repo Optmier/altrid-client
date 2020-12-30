@@ -19,6 +19,9 @@ class GooroomeeService {
         };
         w.GooroomeeMeeting = gm;
         function l() {
+            if (w.GooroomeeMeeting.length) {
+                return;
+            }
             var api = document.createElement('script');
             api.type = 'text/javascript';
             api.async = true;
@@ -35,6 +38,13 @@ class GooroomeeService {
             window.addEventListener('DOMContentLoaded', l, false);
             window.addEventListener('load', l, false);
         }
+    }
+
+    init(options = { serviceServerUrl: window.location.origin }, onSuccess, onError) {
+        window.GM = new window.GooroomeeMeeting(options);
+        // window.GM.init()
+        //     .then((res) => onSuccess(res))
+        //     .catch((err) => onError(err));
     }
 
     test() {

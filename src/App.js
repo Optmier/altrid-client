@@ -28,6 +28,7 @@ import LoginCandidated from './pages/LoginCandidated';
 import ErrorOS from './components/essentials/ErrorOS';
 import GooroomeeService from './components/Gooroomee/GooroomeeService';
 import MobileBody from './components/essentials/MobileBody';
+import GooroomeeTest from './pages/GooroomeeTest';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -36,8 +37,6 @@ const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin,
 // const excludesForAdminUrls = [];
 // const excludesForTeacherUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
 // const excludesForStudentUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
-
-window.axios = Axios;
 function App({ history }) {
     const dispatch = useDispatch();
     const saveSessions = useCallback(
@@ -115,7 +114,6 @@ function App({ history }) {
     }, [history.location]);
 
     useEffect(() => {
-        GooroomeeService.test();
         if (channelIOAccessKey.pluginKey) {
             ChannelService.shutdown();
             ChannelService.boot({
@@ -175,6 +173,7 @@ function App({ history }) {
                         {/* <Route path="/user-example" component={UserExample} />
                         <Route path="/player-example" component={PlayerExample} /> */}
                         <Route path="/assignments/do-it-now/:classnum/:assignmentid" component={AssignmentDoItNow} exact></Route>
+                        <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
                         <Route>
                             <Error />
                         </Route>
