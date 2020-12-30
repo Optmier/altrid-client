@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 import PreLogo from '../../images/eyetracker_logo/pre_logo.png';
 import NewLogo from '../../images/eyetracker_logo/new_logo.png';
 
-function StepHome() {
+const StyleBtn = styled.button``;
+
+function StepHome({ handleCalibration }) {
     return (
         <div className="eyetrack-step-home">
             <div className="eyetracker-header">
@@ -10,31 +13,31 @@ function StepHome() {
                 아직 체크하지 못하셨다면 <span>새 보정하기</span> 버튼을 눌러주세요.
             </div>
             <div className="eyetracker-buttons">
-                <button className="button-left">
+                <StyleBtn name="pre" className="button-left" onClick={handleCalibration}>
                     <img alt="pre" src={PreLogo} />
-                    <div className="button-title">이전 보전 사용하기</div>
+                    <div className="button-title">이전 보정 사용하기</div>
                     <div className="button-desc">
                         이전 과제 진행 시의 보정값을
                         <br /> 동일하게 사용하여 진행합니다.
                     </div>
-                </button>
-                <button className="button-right">
+                </StyleBtn>
+                <StyleBtn name="new" className="button-right" onClick={handleCalibration}>
                     <img alt="new" src={NewLogo} />
-                    <div className="button-title">이전 보전 사용하기</div>
+                    <div className="button-title">새 보정하기</div>
                     <div className="button-desc">
-                        이전 과제 진행 시의 보정값을 <br />
-                        동일하게 사용하여 진행합니다.
+                        현재 환경에 맞춰 새로 보정을 <br />
+                        진행한 후 과제 풀이를 시작합니다.
                     </div>
-                </button>
+                </StyleBtn>
             </div>
 
             <div className="eyetracker-warn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18">
                     <g id="그룹_85" data-name="그룹 85" transform="translate(-471 -653)">
-                        <circle id="타원_27" dataName="타원 27" cx="8" cy="8" r="8" transform="translate(471 655)" fill="#cc6565" />
+                        <circle id="타원_27" dataname="타원 27" cx="8" cy="8" r="8" transform="translate(471 655)" fill="#cc6565" />
                         <text
                             id="_"
-                            dataName="!"
+                            dataname="!"
                             transform="translate(477 667)"
                             fill="#fff"
                             fontSize="12"

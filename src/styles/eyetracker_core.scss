@@ -8,7 +8,6 @@ li {
 }
 .eyetrackerCore-root {
     background-image: url('/bg_images/eyetracker_bg.png');
-    background-image: url(/bg_images/eyetracker_bg.png);
     background-size: cover;
     background-repeat: no-repeat;
     display: flex;
@@ -26,14 +25,7 @@ li {
         position: relative;
 
         & li {
-            width: calc(100% / 4);
-        }
-
-        & li:nth-child(3) {
-            background: #afa;
-        }
-        & li:nth-child(4) {
-            background: #aaf;
+            width: calc(100% / 5);
         }
 
         & .eyetrack-step-home {
@@ -64,6 +56,10 @@ li {
 
                     & > img {
                         width: 130px;
+                        pointer-events: none;
+                    }
+                    & > div {
+                        pointer-events: none;
                     }
 
                     & .button-title {
@@ -85,7 +81,17 @@ li {
                     background-color: #13e2a10d;
                     margin: -2px;
                 }
+                & .button-left:focus {
+                    border: 2px solid #13e2a17a;
+                    background-color: #13e2a10d;
+                    margin: -2px;
+                }
                 & .button-right:hover {
+                    border: 2px solid #13e2a17a;
+                    background-color: #13e2a10d;
+                    margin: -2px -2px -2px 54px;
+                }
+                & .button-right:focus {
                     border: 2px solid #13e2a17a;
                     background-color: #13e2a10d;
                     margin: -2px -2px -2px 54px;
@@ -157,6 +163,53 @@ li {
             justify-content: center;
             flex-direction: column;
             align-items: center;
+
+            & .eyetrack-step-header {
+                font-size: 1.25rem;
+                font-weight: 500;
+                color: #404040;
+            }
+
+            & .contents-box {
+                margin-top: 28px;
+                width: 690px;
+                padding: 65px 85px;
+                background-color: white;
+                box-shadow: 5px 5px 15px #00000029;
+                border: 1.5px solid #d8d5d5;
+                border-radius: 11px;
+                box-sizing: border-box;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                & .contents-box-left {
+                    & .contents-title {
+                        color: #3b168a;
+                        font-weight: 700;
+                        font-size: 1rem;
+                        & .contents-title-text {
+                            color: black;
+                            font-weight: 600;
+                        }
+                        & .outline {
+                            border-top: 3px solid #3b168a;
+                            width: 23px;
+                        }
+                    }
+                    & .contents-desc {
+                        margin-top: 65px;
+                        font-weight: 600;
+                        color: #404040;
+                    }
+                }
+                & .contents-box-right {
+                    & img {
+                        width: 260px;
+                    }
+                }
+            }
         }
     }
     & .eyetrack-step-button {
@@ -164,16 +217,5 @@ li {
         display: flex;
         justify-content: center;
         margin-top: 40px;
-
-        & .eyetracker-footer {
-            width: 125px;
-            height: 45px;
-            background-color: #13e2a1;
-            box-shadow: 0px 3px 6px #00000029;
-            border-radius: 11px;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
     }
 }

@@ -9,6 +9,8 @@ import '../../styles/eyetracker_core.scss';
 import StepHome from '../EyetrackerStep/StepHome';
 import StepBox from '../EyetrackerStep/StepBox';
 import StepAgree from '../EyetrackerStep/StepAgree';
+import RightButton from '../../images/eyetracker_logo/right_button.png';
+import LeftButton from '../../images/eyetracker_logo/left_button.png';
 
 const Assistance = styled.div``;
 const CalibDot = styled.div`
@@ -77,9 +79,35 @@ const CalibDot = styled.div`
 `;
 const SlideUl = styled.ul`
     margin-left: ${(props) => props.translateNum + '%'};
-    width: calc(100% * 4);
+    width: calc(100% * 5);
     display: flex;
     transition: 0.4s;
+`;
+const SlideBtn = styled.img`
+    cursor: pointer;
+    width: 60px;
+    position: absolute;
+    top: 55%;
+
+    &.slide-button-left {
+        display: ${(props) => (props.translateNum >= -200 && props.translateNum <= 0 ? 'none' : 'block')};
+        left: 18%;
+    }
+    &.slide-button-right {
+        display: ${(props) => ((props.translateNum >= -100 && props.translateNum <= 0) || props.translateNum === -400 ? 'none' : 'block')};
+        right: 18%;
+    }
+`;
+const StepBtn = styled.button`
+    width: 125px;
+    height: 45px;
+    pointer-events: ${(props) => (props.stepBtnState ? 'auto' : 'none')};
+    background-color: ${(props) => (props.stepBtnState ? '#13e2a1' : '#1eb182')};
+    color: ${(props) => (props.stepBtnState ? 'white' : '#e8e7e7')};
+    box-shadow: 0px 3px 6px #00000029;
+    border-radius: 11px;
+    font-size: 0.9rem;
+    font-weight: 600;
 `;
 
 /** Webgazer configuration */
@@ -210,13 +238,14 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     _step = step;
     _userAnswer = userAnswer;
     _timeElapsed = timeElapsed;
-    const [stepNum, setStepNum] = useState(0);
-    const [translateNum, setTranslateNum] = useState(-200);
+
+    const [stepBtnState, setStepBtnState] = useState(false);
+    const [translateNum, setTranslateNum] = useState(0);
     const [agreeCheck, setAgreeCheck] = useState(false);
+    const [calibrateState, setCalibrateState] = useState(false);
 
     const [start, setStart] = useState(false);
     const [webgazerLoded, setWebgazerLoaded] = useState(false);
-
     const [calib, setCalib] = useState(false);
     const [calibBtnText, setCalibBtnText] = useState(
         localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true' ? '이전 보정 사용' : '보정 완료',
@@ -499,37 +528,86 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     //     }
     // }, [calibDotCounts]);
 
-    const handleStep = () => {
-        setStepNum(stepNum + 1);
-        setTranslateNum(-100);
+    //왼쪽,오른쪽 이동 메소드
+    const handleSlide = (e) => {
+        const { name } = e.target;
+
+        // 보정 사용 단계
+        if (translateNum === 0) {
+            if (calibrateState === 'new') {
+                name === 'right' ? setTranslateNum(translateNum - 100) : setTranslateNum(translateNum + 100);
+            } else if (calibrateState === 'pre') {
+                //바로 문제 로드 !!
+                console.log('문제로드');
+            }
+        } else {
+            name === 'right' ? setTranslateNum(translateNum - 100) : setTranslateNum(translateNum + 100);
+        }
+
+        setStepBtnState(false);
     };
+
+    //보정 사용 유무 메소드
+    const handleCalibration = (e) => {
+        const { name } = e.target;
+        setCalibrateState(name);
+        setStepBtnState(true);
+    };
+
+    //데이터 수집 동의 메소드
     const handleCheckChange = (e) => {
         setAgreeCheck(e.target.checked);
+        setStepBtnState(e.target.checked);
     };
+
     return (
         <>
             {/* <BackdropComponent disableShrink open={!webgazerLoded} /> */}
             <div className="eyetrackerCore-root">
                 <div className="eyetrackerCore-wrapper">
+                    <SlideBtn
+                        translateNum={translateNum}
+                        alt="btn"
+                        name="left"
+                        className="slide-button-left"
+                        src={LeftButton}
+                        onClick={handleSlide}
+                    />
+                    <SlideBtn
+                        translateNum={translateNum}
+                        alt="btn"
+                        name="right"
+                        className="slide-button-right"
+                        src={RightButton}
+                        onClick={handleSlide}
+                    />
+
                     <SlideUl translateNum={translateNum}>
                         <li>
-                            <StepHome />
+                            <StepHome handleCalibration={handleCalibration} />
                         </li>
                         <li>
                             <StepAgree agreeCheck={agreeCheck} handleCheckChange={handleCheckChange} />
                         </li>
                         <li>
-                            <StepBox step={1} />
+                            <StepBox num="01" />
                         </li>
                         <li>
-                            <StepBox step={2} />
+                            <StepBox num="02" />
+                        </li>
+                        <li>
+                            <StepBox num="03" />
                         </li>
                     </SlideUl>
                 </div>
                 <div className="eyetrack-step-button">
-                    <button onClick={handleStep} className="eyetracker-footer">
-                        확인 완료
-                    </button>
+                    {translateNum >= -400 && translateNum <= -200 ? (
+                        ''
+                    ) : (
+                        <StepBtn name="right" onClick={handleSlide} stepBtnState={stepBtnState}>
+                            확인 완료
+                        </StepBtn>
+                    )}
                 </div>
             </div>
         </>
