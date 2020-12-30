@@ -14,7 +14,7 @@ const GreenCheckbox = withStyles({
 function StepAgree({ agreeCheck, handleCheckChange }) {
     return (
         <div className="eyetrack-step-agree">
-            <div className="agree-header">아래 사항에 동의하시는지 확인해주세요.</div>
+            <div className="eyetrack-step-header">아래 사항에 동의하시는지 확인해주세요.</div>
             <div className="contents-box">
                 <div className="contents-title">
                     <div className="outline"></div>데이터 수집

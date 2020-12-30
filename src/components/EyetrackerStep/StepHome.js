@@ -8,7 +8,7 @@ const StyleBtn = styled.button``;
 function StepHome({ handleCalibration }) {
     return (
         <div className="eyetrack-step-home">
-            <div className="eyetracker-header">
+            <div className="eyetrack-step-header">
                 이전에 사용한 보정이 있으시다면 <span>이전 보정 사용하기</span> 버튼을 <br />
                 아직 체크하지 못하셨다면 <span>새 보정하기</span> 버튼을 눌러주세요.
             </div>

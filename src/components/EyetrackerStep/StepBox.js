@@ -25,7 +25,7 @@ const stepDatas = {
 };
 function StepBox({ num }) {
     return (
-        <div className="eyetrack-step-box">
+        <div className="eyetrack-step-info">
             <div className="eyetrack-step-header">정확한 분석을 위해 문제 풀이가 진행되는 동안 아래 사항들을 유의해주세요.</div>
             <div className="contents-box">
                 <div className="contents-box-left">

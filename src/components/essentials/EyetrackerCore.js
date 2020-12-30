@@ -11,6 +11,7 @@ import StepBox from '../EyetrackerStep/StepBox';
 import StepAgree from '../EyetrackerStep/StepAgree';
 import RightButton from '../../images/eyetracker_logo/right_button.png';
 import LeftButton from '../../images/eyetracker_logo/left_button.png';
+import StepCameraCheck from '../EyetrackerStep/StepCameraCheck';
 
 const Assistance = styled.div``;
 const CalibDot = styled.div`
@@ -540,11 +541,15 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                 //바로 문제 로드 !!
                 console.log('문제로드');
             }
-        } else {
+        }
+        // 보정 이외의 단계
+        else {
             name === 'right' ? setTranslateNum(translateNum - 100) : setTranslateNum(translateNum + 100);
         }
 
-        setStepBtnState(false);
+        if (translateNum === 0 || translateNum <= -400) {
+            setStepBtnState(false);
+        }
     };
 
     //보정 사용 유무 메소드
@@ -564,44 +569,48 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         <>
             {/* <BackdropComponent disableShrink open={!webgazerLoded} /> */}
             <div className="eyetrackerCore-root">
-                <div className="eyetrackerCore-wrapper">
-                    <SlideBtn
-                        translateNum={translateNum}
-                        alt="btn"
-                        name="left"
-                        className="slide-button-left"
-                        src={LeftButton}
-                        onClick={handleSlide}
-                    />
-                    <SlideBtn
-                        translateNum={translateNum}
-                        alt="btn"
-                        name="right"
-                        className="slide-button-right"
-                        src={RightButton}
-                        onClick={handleSlide}
-                    />
+                {translateNum >= -400 ? (
+                    <div className="eyetrackerCore-wrapper">
+                        <SlideBtn
+                            translateNum={translateNum}
+                            alt="btn"
+                            name="left"
+                            className="slide-button-left"
+                            src={LeftButton}
+                            onClick={handleSlide}
+                        />
+                        <SlideBtn
+                            translateNum={translateNum}
+                            alt="btn"
+                            name="right"
+                            className="slide-button-right"
+                            src={RightButton}
+                            onClick={handleSlide}
+                        />
 
-                    <SlideUl translateNum={translateNum}>
-                        <li>
-                            <StepHome handleCalibration={handleCalibration} />
-                        </li>
-                        <li>
-                            <StepAgree agreeCheck={agreeCheck} handleCheckChange={handleCheckChange} />
-                        </li>
-                        <li>
-                            <StepBox num="01" />
-                        </li>
-                        <li>
-                            <StepBox num="02" />
-                        </li>
-                        <li>
-                            <StepBox num="03" />
-                        </li>
-                    </SlideUl>
-                </div>
+                        <SlideUl translateNum={translateNum}>
+                            <li>
+                                <StepHome handleCalibration={handleCalibration} />
+                            </li>
+                            <li>
+                                <StepAgree agreeCheck={agreeCheck} handleCheckChange={handleCheckChange} />
+                            </li>
+                            <li>
+                                <StepBox num="01" />
+                            </li>
+                            <li>
+                                <StepBox num="02" />
+                            </li>
+                            <li>
+                                <StepBox num="03" />
+                            </li>
+                        </SlideUl>
+                    </div>
+                ) : (
+                    <StepCameraCheck />
+                )}
                 <div className="eyetrack-step-button">
-                    {translateNum >= -400 && translateNum <= -200 ? (
+                    {translateNum >= -300 && translateNum <= -200 ? (
                         ''
                     ) : (
                         <StepBtn name="right" onClick={handleSlide} stepBtnState={stepBtnState}>

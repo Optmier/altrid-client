@@ -28,6 +28,14 @@ li {
             width: calc(100% / 5);
         }
 
+        & .eyetrack-step-header {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #404040;
+            & > span {
+                color: #572ab5;
+            }
+        }
         & .eyetrack-step-home {
             width: 100%;
             display: flex;
@@ -35,13 +43,6 @@ li {
             justify-content: center;
             align-items: center;
 
-            & .eyetracker-header {
-                font-size: 1.25rem;
-                font-weight: 500;
-                & > span {
-                    color: #572ab5;
-                }
-            }
             & .eyetracker-buttons {
                 display: flex;
                 margin-top: 20px;
@@ -117,11 +118,6 @@ li {
             justify-content: center;
             align-items: center;
 
-            & .agree-header {
-                font-size: 1.25rem;
-                font-weight: 500;
-            }
-
             & .contents-box {
                 margin-top: 28px;
                 width: 690px;
@@ -157,18 +153,12 @@ li {
                 }
             }
         }
-        & .eyetrack-step-box {
+        & .eyetrack-step-info {
             width: 100%;
             display: flex;
             justify-content: center;
             flex-direction: column;
             align-items: center;
-
-            & .eyetrack-step-header {
-                font-size: 1.25rem;
-                font-weight: 500;
-                color: #404040;
-            }
 
             & .contents-box {
                 margin-top: 28px;
@@ -210,6 +200,36 @@ li {
                     }
                 }
             }
+        }
+    }
+    & .eyetrack-step-camera {
+        width: 1280px;
+        padding-top: 40px;
+        box-sizing: border-box;
+
+        border: 1px solid;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        & .eyetrack-step-header {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #404040;
+        }
+        & .contents-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 28px;
+            width: 690px;
+            padding: 65px 85px;
+            background-color: white;
+            box-shadow: 5px 5px 15px #00000029;
+            border: 1.5px solid #d8d5d5;
+            border-radius: 11px;
+            box-sizing: border-box;
         }
     }
     & .eyetrack-step-button {
