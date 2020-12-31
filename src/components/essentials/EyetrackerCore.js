@@ -12,6 +12,9 @@ import StepAgree from '../EyetrackerStep/StepAgree';
 import RightButton from '../../images/eyetracker_logo/right_button.png';
 import LeftButton from '../../images/eyetracker_logo/left_button.png';
 import StepCameraCheck from '../EyetrackerStep/StepCameraCheck';
+import StepCalibrationInfo from '../EyetrackerStep/StepCalibrationInfo';
+import StepCalibration from '../EyetrackerStep/StepCalibration';
+import StepTestStart from '../EyetrackerStep/StepTestStart';
 
 const Assistance = styled.div``;
 const CalibDot = styled.div`
@@ -80,7 +83,7 @@ const CalibDot = styled.div`
 `;
 const SlideUl = styled.ul`
     margin-left: ${(props) => props.translateNum + '%'};
-    width: calc(100% * 5);
+    width: calc(100% * 3);
     display: flex;
     transition: 0.4s;
 `;
@@ -91,20 +94,21 @@ const SlideBtn = styled.img`
     top: 55%;
 
     &.slide-button-left {
-        display: ${(props) => (props.translateNum >= -200 && props.translateNum <= 0 ? 'none' : 'block')};
+        display: ${(props) => (props.translateNum >= -200 && props.translateNum <= -100 ? 'block' : 'none')};
         left: 18%;
     }
     &.slide-button-right {
-        display: ${(props) => ((props.translateNum >= -100 && props.translateNum <= 0) || props.translateNum === -400 ? 'none' : 'block')};
+        display: ${(props) => (props.translateNum >= -200 && props.translateNum <= 0 ? 'block' : 'none')};
         right: 18%;
     }
 `;
 const StepBtn = styled.button`
+    margin-top: 40px;
     width: 125px;
     height: 45px;
     pointer-events: ${(props) => (props.stepBtnState ? 'auto' : 'none')};
-    background-color: ${(props) => (props.stepBtnState ? '#13e2a1' : '#1eb182')};
-    color: ${(props) => (props.stepBtnState ? 'white' : '#e8e7e7')};
+    background-color: ${(props) => (props.stepBtnState ? '#13e2a1' : '#707070')};
+    color: ${(props) => (props.stepBtnState ? 'white' : 'white')};
     box-shadow: 0px 3px 6px #00000029;
     border-radius: 11px;
     font-size: 0.9rem;
@@ -241,7 +245,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     _timeElapsed = timeElapsed;
 
     const [stepBtnState, setStepBtnState] = useState(false);
-    const [translateNum, setTranslateNum] = useState(0);
+    const [translateNum, setTranslateNum] = useState(200);
     const [agreeCheck, setAgreeCheck] = useState(false);
     const [calibrateState, setCalibrateState] = useState(false);
 
@@ -413,67 +417,67 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
             }, 100);
     };
 
-    // useEffect(() => {
-    //     if (!start) {
-    //         setStart(true);
-    //         if (localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true') {
-    //             $(document).ready(() => {
-    //                 $('.calib-dots').addClass('ok');
-    //             });
-    //         }
-    //         //
-    //         setTimeout(() => {
-    //             window.numOfFixations++;
-    //             window.numOfSaccades++;
+    const cameraStart = () => {
+        console.log(start);
+        if (start) return;
 
-    //             Webgazer.setGazeListener(function (data, elapsedTime) {
-    //                 // if (data == null) {
-    //                 //     return;
-    //                 // }
-    //                 updateTicker(data, elapsedTime);
-    //             }).begin();
+        setStart(true);
+        if (localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true') {
+            $(document).ready(() => {
+                $('.calib-dots').addClass('ok');
+            });
+        }
+        //
+        setTimeout(() => {
+            window.numOfFixations++;
+            window.numOfSaccades++;
 
-    //             const check = setInterval(() => {
-    //                 try {
-    //                     if (Webgazer.isReady()) {
-    //                         Webgazer.showPredictionPoints(true);
-    //                         $('#webgazerVideoFeed').css({ 'z-index': 99999, top: 'calc(50% - 304px)', left: 'calc(50% - 160px)' });
-    //                         $('#webgazerVideoCanvas').css({ 'z-index': 99999, top: 'calc(50% - 304px)', left: 'calc(50% - 160px)' });
-    //                         $('#webgazerFaceOverlay').css({ 'z-index': 99999, top: 'calc(50% - 304px)', left: 'calc(50% - 160px)' });
-    //                         $('#webgazerFaceFeedbackBox').css({
-    //                             'z-index': 99999,
-    //                             top: 'calc(50% - 263.2px)',
-    //                             left: 'calc(50% - 79.2px)',
-    //                         });
+            Webgazer.setGazeListener(function (data, elapsedTime) {
+                // if (data == null) {
+                //     return;
+                // }
+                updateTicker(data, elapsedTime);
+            }).begin();
 
-    //                         if (
-    //                             $('#webgazerVideoFeed').length &&
-    //                             $('#webgazerVideoCanvas').length &&
-    //                             $('#webgazerFaceOverlay').length &&
-    //                             $('#webgazerFaceFeedbackBox').length
-    //                         ) {
-    //                             if (!localStorage.getItem('eye_calibrated') || localStorage.getItem('eye_calibrated') === 'false') {
-    //                                 Webgazer.clearData();
-    //                                 Webgazer.removeMouseEventListeners();
-    //                                 console.log("Webgaze cleared data because you didn't calibrate complete.");
-    //                             }
-    //                             console.log('all loaded!');
-    //                             setWebgazerLoaded((webgazerLoaded) => true);
-    //                             const backCvs = backCanvas.current;
-    //                             const ctx = backCvs.getContext('2d');
-    //                             // makeDots(ctx);
-    //                             clearInterval(check);
-    //                         }
-    //                         //
-    //                     }
-    //                 } catch (error) {
-    //                     console.error(error);
-    //                 }
-    //             }, 500);
-    //         }, 1000);
-    //     } else {
-    //     }
-    // }, [start]);
+            const check = setInterval(() => {
+                try {
+                    if (Webgazer.isReady()) {
+                        Webgazer.showPredictionPoints(true);
+                        $('#webgazerVideoFeed').css({ 'z-index': 99999, top: 'calc(50% - 420px)', left: 'calc(50% - 160px)' });
+                        $('#webgazerVideoCanvas').css({ 'z-index': 99999, top: 'calc(50% - 420px)', left: 'calc(50% - 160px)' });
+                        $('#webgazerFaceOverlay').css({ 'z-index': 99999, top: 'calc(50% - 420px)', left: 'calc(50% - 160px)' });
+                        $('#webgazerFaceFeedbackBox').css({
+                            'z-index': 99999,
+                            top: 'calc(50% - 263.2px)',
+                            left: 'calc(50% - 79.2px)',
+                        });
+
+                        if (
+                            $('#webgazerVideoFeed').length &&
+                            $('#webgazerVideoCanvas').length &&
+                            $('#webgazerFaceOverlay').length &&
+                            $('#webgazerFaceFeedbackBox').length
+                        ) {
+                            if (!localStorage.getItem('eye_calibrated') || localStorage.getItem('eye_calibrated') === 'false') {
+                                Webgazer.clearData();
+                                Webgazer.removeMouseEventListeners();
+                                console.log("Webgaze cleared data because you didn't calibrate complete.");
+                            }
+                            console.log('all loaded!');
+                            setWebgazerLoaded((webgazerLoaded) => true);
+                            const backCvs = backCanvas.current;
+                            const ctx = backCvs.getContext('2d');
+                            // makeDots(ctx);
+                            clearInterval(check);
+                        }
+                        //
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }, 500);
+        }, 1000);
+    };
 
     // useEffect(() => {
     //     return () => {
@@ -533,32 +537,55 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     const handleSlide = (e) => {
         const { name } = e.target;
 
-        // 보정 사용 단계
-        if (translateNum === 0) {
+        name === 'right' ? setTranslateNum(translateNum - 100) : setTranslateNum(translateNum + 100);
+        // 케메라 체크안내 마지막 단계
+        if (translateNum === -200) {
+            //카메라 발동 함수
+            cameraStart();
+        }
+    };
+    //확인 완료 버튼 메소드
+    const handleComplete = (e) => {
+        // 보정 사용 유무 단계
+        if (translateNum === 200) {
             if (calibrateState === 'new') {
-                name === 'right' ? setTranslateNum(translateNum - 100) : setTranslateNum(translateNum + 100);
+                setTranslateNum(translateNum - 100);
             } else if (calibrateState === 'pre') {
                 //바로 문제 로드 !!
                 console.log('문제로드');
             }
-        }
-        // 보정 이외의 단계
-        else {
-            name === 'right' ? setTranslateNum(translateNum - 100) : setTranslateNum(translateNum + 100);
-        }
-
-        if (translateNum === 0 || translateNum <= -400) {
             setStepBtnState(false);
         }
-    };
 
+        // 데이터 수집 동의 단계
+        else if (translateNum === 100) {
+            setTranslateNum(translateNum - 100);
+        }
+        // 카메라 체크 단계
+        else if (translateNum === -300) {
+            setTranslateNum(translateNum - 100);
+        }
+        // 시선보정 안내 단계
+        else if (translateNum === -400) {
+            setTranslateNum(translateNum - 100);
+        }
+        // 시선보정  단계
+        else if (translateNum === -500) {
+            setTranslateNum(translateNum - 100);
+        }
+        // 시험 시작 단계
+        else if (translateNum === -600) {
+            setTranslateNum(translateNum - 100);
+        } else {
+            return 0;
+        }
+    };
     //보정 사용 유무 메소드
     const handleCalibration = (e) => {
         const { name } = e.target;
         setCalibrateState(name);
         setStepBtnState(true);
     };
-
     //데이터 수집 동의 메소드
     const handleCheckChange = (e) => {
         setAgreeCheck(e.target.checked);
@@ -569,7 +596,11 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         <>
             {/* <BackdropComponent disableShrink open={!webgazerLoded} /> */}
             <div className="eyetrackerCore-root">
-                {translateNum >= -400 ? (
+                {translateNum === 200 ? (
+                    <StepHome handleCalibration={handleCalibration} />
+                ) : translateNum === 100 ? (
+                    <StepAgree agreeCheck={agreeCheck} handleCheckChange={handleCheckChange} />
+                ) : translateNum >= -200 && translateNum <= 0 ? (
                     <div className="eyetrackerCore-wrapper">
                         <SlideBtn
                             translateNum={translateNum}
@@ -587,14 +618,10 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                             src={RightButton}
                             onClick={handleSlide}
                         />
-
+                        <div style={{ marginLeft: '25%' }} className="eyetrack-step-header">
+                            정확한 분석을 위해 문제 풀이가 진행되는 동안 아래 사항들을 유의해주세요.
+                        </div>
                         <SlideUl translateNum={translateNum}>
-                            <li>
-                                <StepHome handleCalibration={handleCalibration} />
-                            </li>
-                            <li>
-                                <StepAgree agreeCheck={agreeCheck} handleCheckChange={handleCheckChange} />
-                            </li>
                             <li>
                                 <StepBox num="01" />
                             </li>
@@ -606,15 +633,23 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                             </li>
                         </SlideUl>
                     </div>
-                ) : (
+                ) : translateNum === -300 ? (
                     <StepCameraCheck />
+                ) : translateNum === -400 ? (
+                    <StepCalibrationInfo />
+                ) : translateNum === -500 ? (
+                    <StepCalibration />
+                ) : translateNum === -600 ? (
+                    <StepTestStart />
+                ) : (
+                    ''
                 )}
                 <div className="eyetrack-step-button">
-                    {translateNum >= -300 && translateNum <= -200 ? (
+                    {(translateNum >= -200 && translateNum <= 0) || translateNum === -500 ? (
                         ''
                     ) : (
-                        <StepBtn name="right" onClick={handleSlide} stepBtnState={stepBtnState}>
-                            확인 완료
+                        <StepBtn name="right" onClick={handleComplete} stepBtnState={stepBtnState}>
+                            {translateNum >= -600 && translateNum <= -400 ? '시작하기' : '확인 완료'}
                         </StepBtn>
                     )}
                 </div>

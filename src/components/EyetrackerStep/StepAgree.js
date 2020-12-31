@@ -24,7 +24,7 @@ function StepAgree({ agreeCheck, handleCheckChange }) {
                     사항에 동의하시지 확인해주세요. 사항에 동의하시지 확인해주세요.
                 </div>
                 <div className="contents-checkbox">
-                    <GreenCheckbox checked={agreeCheck} onChange={handleCheckChange} name="checkedG" /> 데이터 수집에 동의하십니까?
+                    <GreenCheckbox checked={agreeCheck} onChange={handleCheckChange} name="checkedG" /> 데이터 수집에 동의합니다.
                 </div>
             </div>
         </div>

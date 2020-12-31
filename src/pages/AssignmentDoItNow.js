@@ -421,7 +421,8 @@ function AssignmentDoItNow({ history, match }) {
                 />
             ) : null}
 
-            {/* {originalDatas.contents_data && remainTime !== null && savedData !== undefined && timerState.isPlaying ? (
+            {console.log(originalDatas.contents_data, remainTime, savedData, timerState)}
+            {originalDatas.contents_data && remainTime !== null && savedData !== undefined && timerState.isPlaying ? (
                 <ActivityRoot className="activity-root" ref={rootRef}>
                     <SmartTOFELRender
                         timer={remainTime}
@@ -437,7 +438,7 @@ function AssignmentDoItNow({ history, match }) {
                         onUserAnswerChanged={onUserAnswerChanged}
                     />
                 </ActivityRoot>
-            ) : null} */}
+            ) : null}
         </>
     );
 }
