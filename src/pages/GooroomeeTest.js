@@ -2,7 +2,15 @@ import React from 'react';
 import GooroomeeService from '../components/Gooroomee/GooroomeeService';
 
 function initGooroomeeMeetings() {
-    GooroomeeService.init();
+    GooroomeeService.init(
+        undefined,
+        (res) => {
+            console.log(res);
+        },
+        (err) => {
+            console.error(err);
+        },
+    );
 }
 
 function GooroomeeTest() {

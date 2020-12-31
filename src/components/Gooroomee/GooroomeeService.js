@@ -40,11 +40,11 @@ class GooroomeeService {
         }
     }
 
-    init(options = { serviceServerUrl: window.location.origin }, onSuccess, onError) {
+    init(options = { serviceServerUrl: 'biz.gooroomee.com' }, onSuccess, onError) {
         window.GM = new window.GooroomeeMeeting(options);
-        // window.GM.init()
-        //     .then((res) => onSuccess(res))
-        //     .catch((err) => onError(err));
+        window.GM.init()
+            .then((res) => onSuccess(res))
+            .catch((err) => onError(err));
     }
 
     test() {

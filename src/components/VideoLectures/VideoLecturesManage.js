@@ -351,12 +351,13 @@ function VideoLecturesManage({ match, history }) {
         )
             .then((res) => {
                 const otpCode = res.data.data.roomUserOtp.otp;
-                window.open(
-                    `http://biz.gooroomee.com/room/otp/${otpCode}`,
-                    'Gooroomee Biz_' + otpCode,
-                    `toolbar=no, scrollbars=no, resizable=no, status=no`,
-                    true,
-                );
+                console.log(otpCode);
+                // window.open(
+                //     `http://biz.gooroomee.com/room/otp/${otpCode}`,
+                //     'Gooroomee Biz_' + otpCode,
+                //     `toolbar=no, scrollbars=no, resizable=no, status=no`,
+                //     true,
+                // );
             })
             .catch((err) => {
                 console.error(err);
