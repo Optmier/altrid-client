@@ -89,48 +89,79 @@
             }
         }
 
-        & .additional-auth {
-            color: #ffffff;
-            min-width: 320px;
-            max-width: 360px;
+        & .additional-auth-root {
+            display: flex;
+            flex-direction: column;
+            width: 790px;
 
-            & h4 {
-                & + h4 {
-                    margin-top: 1rem;
+            & .additional-auth-box {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 65px;
+                color: white;
+                box-shadow: 5px 5px 15px #c3bcbc24;
+                border-radius: 11px;
+
+                & h3 {
+                    line-height: 1.7;
+                    font-weight: 600;
+                    font-size: 1.5rem;
+                    width: 180px;
+                }
+
+                & .auth-right {
+                    display: flex;
+                    flex-direction: column;
+                    margin-left: 150px;
+                    & h5 {
+                        font-size: 1rem;
+                        font-weight: 400;
+                    }
+
+                    & .form {
+                        margin-top: 1rem;
+
+                        & input {
+                            & + input {
+                                margin-top: 0.5rem;
+                            }
+                        }
+
+                        & .academy-search-results {
+                            background-color: #dfd7ea;
+
+                            color: #474747;
+                            margin-top: 0.75rem;
+                            margin-bottom: 0.5rem;
+                            border: 1px solid #d6d6d6;
+                            border-radius: 4px;
+                            box-sizing: border-box;
+                            padding: 0px 24px;
+                            height: 52px;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+
+                            & p.name {
+                                font-size: 0.8rem;
+                                font-weight: 600;
+                                line-height: 1.1rem;
+                            }
+
+                            & p.address {
+                                color: #8f8f8f;
+                                font-size: 0.8rem;
+                                line-height: 1.1rem;
+                            }
+                        }
+                    }
                 }
             }
-
-            & .form {
-                margin-top: 1rem;
-
-                & input {
-                    & + input {
-                        margin-top: 0.5rem;
-                    }
-                }
-
-                & .academy-search-results {
-                    color: #474747;
-                    margin-top: 0.75rem;
-                    margin-bottom: 0.5rem;
-                    padding: 0 2px;
-
-                    & p.name {
-                        font-size: 0.8rem;
-                        font-weight: 600;
-                        line-height: 1.1rem;
-                    }
-
-                    & p.address {
-                        color: #8f8f8f;
-                        font-size: 0.8rem;
-                        line-height: 1.1rem;
-                    }
-                }
-            }
-
             & .request-button {
-                margin-top: 0.9rem;
+                margin-top: 40px;
+                display: flex;
+                justify-content: center;
             }
         }
 
