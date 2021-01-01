@@ -11,6 +11,17 @@ import classNames from 'classnames';
 import * as $ from 'jquery';
 import TeachersList from '../components/Login/TeachersList';
 import { $_loginDefault, $_loginStudent, $_loginTeacher } from '../configs/front_urls';
+import Radio from '@material-ui/core/Radio';
+
+const WhiteRadio = withStyles({
+    root: {
+        color: 'white',
+        '&$checked': {
+            color: 'white',
+        },
+    },
+    checked: {},
+})((props) => <Radio color="default" {...props} />);
 
 const RequestButton = withStyles((theme) => ({
     root: {
@@ -154,8 +165,8 @@ function Login({ history }) {
         alert('로그인에 실패했습니다. 에러코드 :: ' + err);
     };
 
-    const handleChangeUsertype = () => {
-        if (usertype === 'students') {
+    const handleChangeUsertype = (e) => {
+        if (e.target.value === 'teachers') {
             history.push($_loginTeacher);
         } else {
             history.push($_loginStudent);
@@ -332,24 +343,40 @@ function Login({ history }) {
         switch (step) {
             case 0:
                 return (
-                    <div className="login-form">
+                    <div className={classNames(usertype === 'students' ? 'bg-s' : 'bg-t', 'login-form')}>
                         {/* <h4>{usertype === 'students' ? '학생' : '선생님'} 로그인</h4> */}
                         <h3>
                             알트리드만의 <br />
                             시선흐름 추적을 통해 <br />
                             <b className={classNames(usertype === 'students' ? 'bold-s' : 'bold-t')}>학습 관리</b>를 경험해보세요.
                         </h3>
-                        <LoginButtons
-                            onSuccessGoogleAuth={onSuccessGoogleAuth}
-                            onFailedGoogleAuth={onFailedGoogleAuth}
-                            onSuccessKakaoAuth={onSuccessKakaoAuth}
-                            onFailedKakaoAuth={onFailedKakaoAuth}
-                            style={{ marginTop: '1.2rem' }}
-                        />
-                        <div className="usertype-change-link">
-                            <Link color="inherit" onClick={handleChangeUsertype}>
-                                {usertype === 'students' ? '선생님' : '학생'}이신가요?
-                            </Link>
+                        <div className="login-right">
+                            <span>
+                                <WhiteRadio
+                                    onChange={handleChangeUsertype}
+                                    checked={usertype === 'students'}
+                                    value="students"
+                                    name="students"
+                                />
+                                학생
+                            </span>
+                            <span>
+                                <WhiteRadio
+                                    onChange={handleChangeUsertype}
+                                    checked={usertype === 'teachers'}
+                                    value="teachers"
+                                    name="teachers"
+                                />
+                                선생님
+                            </span>
+
+                            <LoginButtons
+                                onSuccessGoogleAuth={onSuccessGoogleAuth}
+                                onFailedGoogleAuth={onFailedGoogleAuth}
+                                onSuccessKakaoAuth={onSuccessKakaoAuth}
+                                onFailedKakaoAuth={onFailedKakaoAuth}
+                                style={{ marginTop: '1.2rem' }}
+                            />
                         </div>
                     </div>
                 );

@@ -45,13 +45,28 @@
         min-height: 680px;
         max-height: 800px;
 
+        & .bg-s {
+            background-color: #28ecb6;
+        }
+        & .bg-t {
+            background-color: #6c46a1;
+        }
         & .login-form {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 65px;
+
             color: white;
-            min-width: 320px;
+
+            box-shadow: 5px 5px 15px #c3bcbc24;
+            border-radius: 11px;
 
             & h3 {
-                line-height: 1.4;
+                line-height: 1.7;
                 font-weight: 600;
+                margin-right: 70px;
+
                 & .bold-s {
                     padding: 0.1rem;
                     font-weight: 600;
