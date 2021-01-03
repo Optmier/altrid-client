@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import { Button, withStyles } from '@material-ui/core';
 import classNames from 'classnames';
@@ -8,6 +8,7 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { $_classDefault } from '../../configs/front_urls';
 import styled from 'styled-components';
+import ShortUniqueId from 'short-unique-id';
 
 const CreateButton = withStyles((theme) => ({
     root: {
@@ -32,6 +33,8 @@ const FormButton = styled.button`
 `;
 
 function CreateNewEntry({ history, handleClose }) {
+    const generateUid = useRef();
+
     const [createButtonEnabled, setCreateButtonEnabled] = useState(false);
     const [loading, setLoading] = useState(false);
     const [selectOpen, setSelectOpen] = useState(false);
@@ -84,6 +87,7 @@ function CreateNewEntry({ history, handleClose }) {
             {
                 name: inputState.entry_new_name,
                 description: inputState.entry_new_description,
+                class_code: generateUid.current(8),
                 days: daysArr.toString(),
             },
             { withCredentials: true },
@@ -157,6 +161,10 @@ function CreateNewEntry({ history, handleClose }) {
             fetchStudents();
         }
     }, [selectOpen]);
+
+    useEffect(() => {
+        generateUid.current = new ShortUniqueId();
+    }, []);
 
     return (
         <div className="create-new-entry-root">

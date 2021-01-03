@@ -58,6 +58,8 @@ function Main({ history }) {
         fetchCardData();
     }, []);
 
+    console.log(cardDatas);
+
     return (
         <>
             <BackdropComponent open={backdropOpen} blind="#f7f9f8" />
@@ -101,27 +103,30 @@ function Main({ history }) {
                                 <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
                             </CardRoot>
                         ) : null}
-                        {cardDatas.map(({ idx, name, class_count, max_due_date, description, teacher_name, num_of_students }) => (
-                            <CardRoot key={idx}>
-                                <CardEntry
-                                    title={name}
-                                    description={description}
-                                    assignmentOnProgress={
-                                        moment(max_due_date).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss')
-                                            ? max_due_date !== null
-                                                ? true
+                        {cardDatas.map(
+                            ({ idx, name, class_count, max_due_date, description, class_day, teacher_name, num_of_students }) => (
+                                <CardRoot key={idx}>
+                                    <CardEntry
+                                        title={name}
+                                        description={description}
+                                        class_day={class_day}
+                                        assignmentOnProgress={
+                                            moment(max_due_date).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss')
+                                                ? max_due_date !== null
+                                                    ? true
+                                                    : false
                                                 : false
-                                            : false
-                                    }
-                                    teacherName={teacher_name}
-                                    totalStudents={num_of_students}
-                                    totalAssignment={class_count}
-                                    onClick={() => {
-                                        history.push(`${$_classDefault}/${idx}/share`);
-                                    }}
-                                />
-                            </CardRoot>
-                        ))}
+                                        }
+                                        teacherName={teacher_name}
+                                        totalStudents={num_of_students}
+                                        totalAssignment={class_count}
+                                        onClick={() => {
+                                            history.push(`${$_classDefault}/${idx}/share`);
+                                        }}
+                                    />
+                                </CardRoot>
+                            ),
+                        )}
                     </CardLists>
                     {sessions.userType === 'students' && (!cardDatas || !cardDatas.length) ? null : <Divider className="main-divider" />}
                     {sessions.userType === 'students' ? (

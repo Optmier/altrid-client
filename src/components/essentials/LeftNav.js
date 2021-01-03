@@ -137,7 +137,7 @@ function LeftNav({ match, history }) {
                                         fill="white"
                                     />
                                 </svg>
-                                <p>클래스 관리</p>
+                                <p>클래스 초대/관리</p>
                             </LeftNavItem>
                         </div>
                     )}
