@@ -58,8 +58,6 @@ function Main({ history }) {
         fetchCardData();
     }, []);
 
-    console.log(cardDatas);
-
     return (
         <>
             <BackdropComponent open={backdropOpen} blind="#f7f9f8" />

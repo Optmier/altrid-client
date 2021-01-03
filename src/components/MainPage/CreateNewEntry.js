@@ -136,7 +136,6 @@ function CreateNewEntry({ history, handleClose }) {
 
     const handleButtons = (e) => {
         const { name } = e.target;
-        console.log(name, buttonAble[name]);
 
         setButtonAble({
             ...buttonAble,
