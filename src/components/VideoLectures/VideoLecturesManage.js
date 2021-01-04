@@ -337,32 +337,56 @@ function VideoLecturesManage({ match, history }) {
     const enterVideoLecture = () => {
         dispatch(getServerDate());
         if (new Date(currentVideoLecture.start_at).getTime() > serverdate.datetime) return alert('아작 세션이 시작되지 않은 강의 입니다.');
-        // otp 생성
-        Axios.post(
-            `${apiUrl}/meeting-room/otp`,
-            {
-                roomId: currentVideoLecture.room_id,
-                username: sessions.userName,
-                roleId: sessions.userType === 'students' ? 'participant' : 'emcee',
-                ignorePasswd: true,
-                apiUserId: sessions.authId,
-            },
-            { withCredentials: true },
-        )
-            .then((res) => {
-                const otpCode = res.data.data.roomUserOtp.otp;
-                console.log(otpCode);
-                // window.open(
-                //     `http://biz.gooroomee.com/room/otp/${otpCode}`,
-                //     'Gooroomee Biz_' + otpCode,
-                //     `toolbar=no, scrollbars=no, resizable=no, status=no`,
-                //     true,
-                // );
-            })
-            .catch((err) => {
-                console.error(err);
-                alert('화상 강의에 입장하지 못했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.');
-            });
+        // 시선흐름 감시 기능이 있고, 학생인 경우, 시선추적 보정 창 띄움
+        if (currentVideoLecture.eyetrack && sessions.userType === 'students') {
+            window.open(
+                `/video-lecture-eyetracker/${classNum}?roomId=${currentVideoLecture.room_id}`,
+                'Gooroomee Biz_withEyetracker',
+                `toolbar=no, scrollbars=no, resizable=no, status=no`,
+                true,
+            );
+        }
+        // 시선흐름 감시 기능이 있고, 선생님인 경우, 왼쪽에 화상 강의 창, 오른쪽엔 시선흐름 이상 감지 학생 목록 창을 분할하여 띄움
+        else if (currentVideoLecture.eyetrack && sessions.userType !== 'students') {
+            let screenWidth = window.screen.availWidth;
+            let screenHeight = window.screen.availHeight;
+            // 시선흐름 감시 창
+            window.open(
+                `/video-lecture-detect-lists/${classNum}?roomId=${currentVideoLecture.room_id}`,
+                'Gooroomee Biz_withEyetracker',
+                `width=${360}, height=${screenHeight}, left=${screenWidth - 360}, toolbar=no, scrollbars=no, resizable=no, status=no`,
+                true,
+            );
+        }
+        // 시선흐름 감시 가능의 없는 경우 그냥 풀스크린으로 화상 강의 창 띄움
+        else {
+            // otp 생성
+            Axios.post(
+                `${apiUrl}/meeting-room/otp`,
+                {
+                    roomId: currentVideoLecture.room_id,
+                    username: sessions.userName,
+                    roleId: sessions.userType === 'students' ? 'participant' : 'emcee',
+                    ignorePasswd: true,
+                    apiUserId: sessions.authId,
+                },
+                { withCredentials: true },
+            )
+                .then((res) => {
+                    const otpCode = res.data.data.roomUserOtp.otp;
+                    console.log(otpCode);
+                    window.open(
+                        `https://biz.gooroomee.com/room/otp/${otpCode}`,
+                        'Gooroomee Biz',
+                        `toolbar=no, scrollbars=no, resizable=no, status=no`,
+                        true,
+                    );
+                })
+                .catch((err) => {
+                    console.error(err);
+                    alert('화상 강의에 입장하지 못했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.');
+                });
+        }
     };
 
     const closeVideoLecture = () => {

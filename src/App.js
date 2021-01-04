@@ -29,6 +29,8 @@ import ErrorOS from './components/essentials/ErrorOS';
 import GooroomeeService from './components/Gooroomee/GooroomeeService';
 import MobileBody from './components/essentials/MobileBody';
 import GooroomeeTest from './pages/GooroomeeTest';
+import VideoLectureEyetracker from './components/VideoLectures/VideoLectureEyetracker';
+import VideoLectureEyetrackDetectionList from './components/VideoLectures/VideoLectureEyetrackDetectionList';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -173,6 +175,8 @@ function App({ history }) {
                         {/* <Route path="/user-example" component={UserExample} />
                         <Route path="/player-example" component={PlayerExample} /> */}
                         <Route path="/assignments/do-it-now/:classnum/:assignmentid" component={AssignmentDoItNow} exact></Route>
+                        <Route path="/video-lecture-eyetracker/:classnum" component={VideoLectureEyetracker} exact />
+                        <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
                         <Route>
                             <Error />
