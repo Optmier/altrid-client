@@ -64,8 +64,6 @@
                 font-size: 1.2rem;
                 font-weight: 500;
                 color: black;
-                border: none;
-                background-color: none;
             }
 
             & > button {
@@ -128,6 +126,7 @@
             color: #707070;
             font-family: inherit;
             font-size: 1rem;
+            resize: vertical;
 
             font-weight: 400;
             line-height: 1.25;

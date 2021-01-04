@@ -56,6 +56,7 @@ function Manage({ match, history }) {
     const [inputError, setInputError] = useState(false);
     const [studentsData, setStudentsData] = useState([]);
     const [createButtonEnabled, setCreateButtonEnabled] = useState(false);
+    const [codeState, setCodeState] = useState('');
     const [buttonAble, setButtonAble] = useState({
         월: false,
         화: false,
@@ -126,6 +127,7 @@ function Manage({ match, history }) {
                     entry_new_name: res1.data[0]['class_name'],
                     entry_new_description: res1.data[0]['description'],
                 });
+                setCodeState(res1.data[0]['class_code']);
 
                 if (res1.data[0]['class_day']) {
                     let daysObj = {};
@@ -159,6 +161,17 @@ function Manage({ match, history }) {
     const handleDeleteDialogOpen = () => {
         setDeleteDialogopen(true);
     };
+    const handleDeleteDateDialogClose = (e) => {
+        const { name } = e.target;
+
+        if (name === 'yes') {
+            handleClassDelete(name);
+            setDeleteDialogopen(false);
+        } else {
+            setDeleteDialogopen(false);
+        }
+    };
+
     /** 수강생 데이터 처리 */
     const handleStudentInClass = (name) => {
         //수정의 경우 : 학생 데이터 없는 경우-> delete만 진행 // 있는 경우 -> delete 후 post작업 진행
@@ -166,34 +179,34 @@ function Manage({ match, history }) {
 
         Axios.delete(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
             .then((res1) => {
-                // 수정버튼 클릭시
-                if (name === 'modify') {
-                    //수강생이 있는 경우에만, post 작업
-                    if (inputState.entry_new_students.length === 0) {
-                        alert('클래스 정보 수정이 완료되었습니다!');
-                    } else {
-                        Axios.post(
-                            `${apiUrl}/students-in-class`,
-                            {
-                                classNumber: num,
-                                students: inputState.entry_new_students,
-                            },
-                            { withCredentials: true },
-                        )
-                            .then((res2) => {
-                                alert('클래스 정보 수정이 완료되었습니다!');
-                            })
-                            .catch((err) => {
-                                console.error(err);
-                            });
-                    }
-                    history.replace(`/class/${num}/manage`);
-                }
-                // 삭제버튼 클릭시, 삭제만 진행
-                else {
-                    alert('삭제 완료되었습니다!');
-                    history.replace('/');
-                }
+                // // 수정버튼 클릭시
+                // if (name === 'modify') {
+                //     //수강생이 있는 경우에만, post 작업
+                //     if (inputState.entry_new_students.length === 0) {
+                //         alert('클래스 정보 수정이 완료되었습니다!');
+                //     } else {
+                //         Axios.post(
+                //             `${apiUrl}/students-in-class`,
+                //             {
+                //                 classNumber: num,
+                //                 students: inputState.entry_new_students,
+                //             },
+                //             { withCredentials: true },
+                //         )
+                //             .then((res2) => {
+                //                 alert('클래스 정보 수정이 완료되었습니다!');
+                //             })
+                //             .catch((err) => {
+                //                 console.error(err);
+                //             });
+                //     }
+                //     history.replace(`/class/${num}/manage`);
+                // }
+                // // 삭제버튼 클릭시, 삭제만 진행
+                // else {
+                alert('삭제 완료되었습니다!');
+                history.replace('/');
+                //}
             })
             .catch((err) => {
                 console.error(err);
@@ -229,17 +242,23 @@ function Manage({ match, history }) {
             name = 'delete';
         }
         if (name === 'modify') {
+            let daysArr = [];
+            Object.keys(buttonAble)
+                .filter((i) => buttonAble[i] === true)
+                .map((i) => daysArr.push(i));
+
             Axios.patch(
                 `${apiUrl}/classes/${num}`,
                 {
                     name: inputState.entry_new_name,
                     description: inputState.entry_new_description,
+                    class_day: daysArr.toString(),
                 },
                 { withCredentials: true },
             )
                 .then((res) => {
                     //name, description 수정 완료!
-                    handleStudentInClass(name); //수강생 데이터 처리...
+                    alert('클래스 정보 수정이 완료되었습니다!');
                 })
                 .catch((err) => {
                     console.error(err);
@@ -248,19 +267,8 @@ function Manage({ match, history }) {
             handleDeleteDialogOpen();
         }
     };
-
-    const handleDeleteDateDialogClose = (e) => {
-        const { name } = e.target;
-
-        if (name === 'yes') {
-            handleClassDelete(name);
-            setDeleteDialogopen(false);
-        } else {
-            setDeleteDialogopen(false);
-        }
-    };
-
-    const handleButtons = (e) => {
+    /**  수업 요일 버튼 */
+    const handleDaysButtons = (e) => {
         const { name } = e.target;
 
         setButtonAble({
@@ -268,7 +276,7 @@ function Manage({ match, history }) {
             [name]: !buttonAble[name],
         });
     };
-
+    /**  복사하기 버튼 */
     const handleCopy = () => {
         textCopy.current.select();
         textCopy.current.setSelectionRange(0, 9999);
@@ -288,7 +296,7 @@ function Manage({ match, history }) {
                         <div className="manage-inputs">
                             <div className="manage-inputs-header">클래스 초대 코드</div>
                             <div className="manage-invite">
-                                <input type="text" defaultValue="aaa" ref={textCopy} />
+                                <input type="text" defaultValue={codeState} ref={textCopy} />
                                 <button onClick={handleCopy}>복사하기</button>
                             </div>
                         </div>
@@ -323,25 +331,25 @@ function Manage({ match, history }) {
                                 <span className="form-info">*수업 요일을 모두 선택해주세요.</span>
                             </div>
                             <div className="form-buttons">
-                                <FormButton name="월" able={buttonAble['월']} onClick={handleButtons}>
+                                <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
                                     월
                                 </FormButton>
-                                <FormButton name="화" able={buttonAble['화']} onClick={handleButtons}>
+                                <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
                                     화
                                 </FormButton>
-                                <FormButton name="수" able={buttonAble['수']} onClick={handleButtons}>
+                                <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
                                     수
                                 </FormButton>
-                                <FormButton name="목" able={buttonAble['목']} onClick={handleButtons}>
+                                <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
                                     목
                                 </FormButton>
-                                <FormButton name="금" able={buttonAble['금']} onClick={handleButtons}>
+                                <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
                                     금
                                 </FormButton>
-                                <FormButton name="토" able={buttonAble['토']} onClick={handleButtons}>
+                                <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
                                     토
                                 </FormButton>
-                                <FormButton name="일" able={buttonAble['일']} onClick={handleButtons}>
+                                <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
                                     일
                                 </FormButton>
                             </div>

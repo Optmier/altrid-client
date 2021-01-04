@@ -31,7 +31,7 @@ function CardEntry({ title, description, class_day, assignmentOnProgress, teache
                 </div>
                 <div className="footer-toggle">
                     <TooltipCard title={teacherName}>
-                        <span>{teacherName}asdfasdfasdfasdf 선생님</span>
+                        <span>{teacherName} 선생님</span>
                     </TooltipCard>
                     {class_day ? (
                         <TooltipCard title={class_day}>
