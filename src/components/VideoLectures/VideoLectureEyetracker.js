@@ -8,10 +8,12 @@ import io from 'socket.io-client';
 
 let eyetrackModerator = null;
 let eyetrackDetectedTime = 0;
-let eyetrackDetectChanged = false;
+let eyetrackDetectChanged = true;
+let sAuthId = null;
 
 function VideoLectureEyetracker({ match, history }) {
     const sessions = useSelector((state) => state.RdxSessions);
+    sAuthId = sessions.authId;
     const serverdate = useSelector((state) => state.RdxServerDate).datetime;
     const classNum = match.params.classnum;
     const urlSearchParams = new URLSearchParams(history.location.search);
@@ -55,6 +57,12 @@ function VideoLectureEyetracker({ match, history }) {
     const onUpdate = (data, elapsedTime, precisionTime) => {
         if (!window.vidLecEyetrackCablib) return;
         if (window.vidLectureOpener && window.vidLectureOpener.closed) {
+            socket.current.emit('leave', {
+                groupId: groupId,
+                data: {
+                    authId: sAuthId,
+                },
+            });
             window.close();
             return;
         }
@@ -64,12 +72,15 @@ function VideoLectureEyetracker({ match, history }) {
                 if (!data) {
                     if (precisionTime - eyetrackDetectedTime > 3000 && !eyetrackDetectChanged) {
                         console.log('detected!!');
-                        socket.current.emit('detectEyetrack', { groupId: groupId, data: { code: 'out-of-range' } });
+                        socket.current.emit('detectEyetrack', {
+                            groupId: groupId,
+                            data: { authId: sAuthId, code: 'out-of-range' },
+                        });
                         eyetrackDetectChanged = true;
                     }
                 } else {
                     if (eyetrackDetectChanged) {
-                        socket.current.emit('detectEyetrack', { groupId: groupId, data: {} });
+                        socket.current.emit('detectEyetrack', { groupId: groupId, data: { authId: sAuthId } });
                         eyetrackDetectChanged = false;
                     }
                     eyetrackDetectedTime = precisionTime;
@@ -96,21 +107,37 @@ function VideoLectureEyetracker({ match, history }) {
         if (!window.opener) {
             alert('잘못된 접근입니다!');
             document.body.innerHTML = '';
+            socket.current.emit('leave', {
+                groupId: groupId,
+                data: {
+                    authId: sAuthId,
+                },
+            });
             window.close();
             return;
         }
         socket.current = io.connect(`${apiUrl}/vid_lecture`);
         socket.current.on('connected', (id) => {
-            socket.current.emit('join', groupId);
+            socket.current.emit('join', {
+                groupId: groupId,
+                data: {
+                    authId: sAuthId,
+                },
+            });
         });
         socket.current.on('joined', (msg) => {
-            console.log(msg);
+            console.log('joined >> ', msg);
         });
         // socket.current.on('eyetrackFeedback', (msg) => {
-        //     console.log('Eyetrack Feedback >> ' + msg);
+        //     console.log('Eyetrack Feedback >> ', msg);
         // });
         return () => {
-            socket.current.emit('leave', groupId);
+            socket.current.emit('leave', {
+                groupId: groupId,
+                data: {
+                    authId: sAuthId,
+                },
+            });
         };
     }, []);
     return (

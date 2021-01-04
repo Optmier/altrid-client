@@ -354,9 +354,15 @@ function VideoLecturesManage({ match, history }) {
             window.open(
                 `/video-lecture-detect-lists/${classNum}?roomId=${currentVideoLecture.room_id}`,
                 'Gooroomee Biz_withEyetracker',
-                `width=${360}, height=${screenHeight}, left=${screenWidth - 360}, toolbar=no, scrollbars=no, resizable=no, status=no`,
+                `width=${300}, height=${screenHeight}, left=${screenWidth - 300}, toolbar=no, scrollbars=no, resizable=no, status=no`,
                 true,
             );
+            // window.open(
+            //     `/video-lecture-eyetracker/${classNum}?roomId=${currentVideoLecture.room_id}`,
+            //     'Gooroomee Biz_withEyetracker',
+            //     `toolbar=no, scrollbars=no, resizable=no, status=no`,
+            //     true,
+            // );
         }
         // 시선흐름 감시 가능의 없는 경우 그냥 풀스크린으로 화상 강의 창 띄움
         else {
