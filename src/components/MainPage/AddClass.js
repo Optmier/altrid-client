@@ -5,6 +5,9 @@ import classNames from 'classnames';
 import * as $ from 'jquery';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
+import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { $_classDefault } from '../../configs/front_urls';
 
 const AddButton = withStyles((theme) => ({
     root: {
@@ -18,11 +21,13 @@ const AddButton = withStyles((theme) => ({
     },
 }))(Button);
 
-function AddClass({ handleClose }) {
+function AddClass({ handleClose, history }) {
+    const sessions = useSelector((state) => state.RdxSessions);
+
     const [addButtonEnabled, setAddButtonEnabled] = useState(false);
     const [inputState, setInputState] = useState('');
     const [inputError, setInputError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('존재하지 않는 이메일 또는 아이디 값입니다.');
+    const [errorMessage, setErrorMessage] = useState('존재하지 않는 코드이거나 아직 생성되지 않은 클래스입니다.');
 
     const handleInputChange = (e) => {
         if ($(e.target).hasClass('default')) {
@@ -37,29 +42,32 @@ function AddClass({ handleClose }) {
         } else {
             setInputError(false);
         }
-        Axios.get(`${apiUrl}/teachers/in-class/current/${inputState}`, { withCredentials: true })
+        Axios.get(`${apiUrl}/classes/class-code/${inputState}`, { withCredentials: true })
             .then((res) => {
-                // console.log(res);
-                if (!res.data.is_exists) {
-                    setErrorMessage('존재하지 않는 이메일 또는 아이디 값입니다.');
+                if (!res.data[0]['is_exists']) {
+                    setErrorMessage('존재하지 않는 코드이거나 아직 생성되지 않은 클래스입니다.');
                     setInputError(true);
                 } else {
                     // console.log(res);
                     setInputError(false);
                     Axios.post(
-                        `${apiUrl}/students-in-teacher`,
+                        `${apiUrl}/students-in-class`,
                         {
-                            teacherId: res.data.auth_id,
+                            class_number: res.data[0]['idx'],
+                            student_id: sessions.authId,
+                            class_code: inputState,
+                            academy_code: res.data[0]['academy_code'],
                         },
                         { withCredentials: true },
                     )
-                        .then((res) => {
-                            alert('성공적으로 추가되었습니다!\n선생님이 클래스를 생성하실 경우 목록에서 확인하실 수 있습니다.');
+                        .then((res2) => {
+                            alert('클래스에 성공적으로 입장하였습니다 :)');
+                            history.push(`${$_classDefault}/${res.data[0]['idx']}/share`);
                         })
                         .catch((err) => {
                             console.error(err);
                             if (err.response.data.code === 'ER_DUP_ENTRY') {
-                                setErrorMessage('이미 추가된 선생님 입니다.');
+                                setErrorMessage('이미 추가된 클래스 입니다.');
                                 setInputError(true);
                             }
                         });
@@ -83,19 +91,22 @@ function AddClass({ handleClose }) {
 
     return (
         <div className="create-new-entry-root">
-            <div className="close-icon" onClick={handleClose}>
-                <CloseIcon />
-            </div>
-            <div className="title">
-                <h2>선생님의 이메일 주소를 입력해 주세요.</h2>
+            <div className="drawer-header">
+                <div className="title">
+                    <h2>클래스에 코드를 통해 입장해보세요 :)</h2>
+                </div>
+                <div className="close-icon" onClick={handleClose}>
+                    <CloseIcon />
+                </div>
             </div>
             <div className="form-container">
+                <div className="form-title">수업 코드</div>
                 <input
                     className={classNames('default', inputError ? 'error' : '')}
                     type="text"
                     name="teacher_id"
                     id="teacher_id"
-                    placeholder="선생님 이메일"
+                    placeholder="발급 받은 수업 코드를 입력해주세요."
                     onChange={handleInputChange}
                     value={inputState}
                 />
@@ -103,11 +114,11 @@ function AddClass({ handleClose }) {
             </div>
             <div className="create-button">
                 <AddButton size="large" variant="contained" disabled={!addButtonEnabled} onClick={handleClickAdd}>
-                    전송
+                    입장하기
                 </AddButton>
             </div>
         </div>
     );
 }
 
-export default AddClass;
+export default withRouter(AddClass);
