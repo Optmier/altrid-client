@@ -6,20 +6,34 @@ import LoginButtons from '../components/Login/LoginButtons';
 import '../styles/logins.scss';
 import { apiUrl } from '../configs/configs';
 import { withRouter } from 'react-router-dom';
-import { Button, Link, withStyles } from '@material-ui/core';
+import { Link, withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import * as $ from 'jquery';
 import TeachersList from '../components/Login/TeachersList';
 import { $_loginDefault, $_loginStudent, $_loginTeacher } from '../configs/front_urls';
+import Radio from '@material-ui/core/Radio';
+import styled from 'styled-components';
 
-const RequestButton = withStyles((theme) => ({
+const WhiteRadio = withStyles({
     root: {
-        color: '#474747',
-        fontFamily: 'inherit',
-        minWidth: 128,
-        minHeight: 52,
+        color: 'white',
+        '&$checked': {
+            color: 'white',
+        },
     },
-}))(Button);
+    checked: {},
+})((props) => <Radio color="default" {...props} />);
+
+const RequestButton = styled.button`
+    background-color: ${(props) => (props.disable ? (props.usertype === 'students' ? '#43138B' : '#13E2A1') : '#707070')};
+    pointer-events: ${(props) => (props.disable ? 'auto' : 'none')};
+    box-shadow: 0px 3px 6px #00000029;
+    color: white;
+    font-family: inherit;
+    width: 126px;
+    height: 45px;
+    border-radius: 11px;
+`;
 
 function Login({ history }) {
     const [usertype, setUsertype] = useState('students');
@@ -154,8 +168,8 @@ function Login({ history }) {
         alert('로그인에 실패했습니다. 에러코드 :: ' + err);
     };
 
-    const handleChangeUsertype = () => {
-        if (usertype === 'students') {
+    const handleChangeUsertype = (e) => {
+        if (e.target.value === 'teachers') {
             history.push($_loginTeacher);
         } else {
             history.push($_loginStudent);
@@ -197,11 +211,10 @@ function Login({ history }) {
         const academyCode = inputState.academy_code;
         // 전화번호
         const phone = '';
-        // 승인 여부(학생은 우선 승인)
-        const approved = usertype === 'students' ? 1 : 0;
+        // 승인 여부( 선생님, 학생 모두 즉시 승인)
+        const approved = 1;
         // 현재 등록하는 대상이 학생인 경우 선생님 선택 목록 구성
         const teachers = inputState.teacher_selected.map((data) => [data.auth_id, authId, academyCode]);
-        // console.log(email, name, authId, authWith, academyCode, phone, approved, teachers);
 
         if (usertype === 'students') {
             Axios.post(
@@ -211,26 +224,28 @@ function Login({ history }) {
                     name: name || '',
                     authId: authId,
                     authWith: authWith,
-                    academyCode: academyCode,
+                    academyCode: '',
                     approved: approved,
                 },
                 { withCredentials: true },
             )
                 .then((res1) => {
                     // console.log(res1);
-                    if (teachers.length > 0)
-                        Axios.post(`${apiUrl}/students-in-teacher/first`, { teachers: teachers }, { withCredentials: true })
-                            .then((res2) => {
-                                alert('계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요 :)');
-                                loginMethod(email, authId);
-                            })
-                            .catch((err) => {
-                                console.error(err);
-                            });
-                    else {
-                        alert('계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요 :)');
-                        loginMethod(email, authId);
-                    }
+                    // if (teachers.length > 0)
+                    //     Axios.post(`${apiUrl}/students-in-teacher/first`, { teachers: teachers }, { withCredentials: true })
+                    //         .then((res2) => {
+                    //             alert('계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요 :)');
+                    //             loginMethod(email, authId);
+                    //         })
+                    //         .catch((err) => {
+                    //             console.error(err);
+                    //         });
+                    // else {
+                    //     alert('계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요 :)');
+                    //     loginMethod(email, authId);
+                    // }
+                    alert('계정 등록이 완료 되었습니다 :)');
+                    loginMethod(email, authId);
                 })
                 .catch((err) => {
                     console.error(err);
@@ -249,8 +264,8 @@ function Login({ history }) {
                 { withCredentials: true },
             )
                 .then((res) => {
-                    alert('계정 등록이 완료 되었습니다.\n승인이 될때까지 기다려 주세요 :)');
-                    document.location.replace('/login');
+                    alert('계정 등록이 완료 되었습니다:)');
+                    loginMethod(email, authId);
                 })
                 .catch((err) => {
                     console.error(err);
@@ -295,11 +310,20 @@ function Login({ history }) {
     }, [inputState.academy_code]);
 
     useEffect(() => {
-        if (!inputState['real_name'].trim() || !academyInfo.is_exists || (!inputState.teacher_selected && usertype === 'students')) {
-            setRequestButtonEnable(false);
+        if (usertype === 'students') {
+            if (!inputState['real_name'].trim()) {
+                setRequestButtonEnable(false);
+            } else {
+                setRequestButtonEnable(true);
+            }
         } else {
-            setRequestButtonEnable(true);
+            if (!inputState['real_name'].trim() || !academyInfo.is_exists) {
+                setRequestButtonEnable(false);
+            } else {
+                setRequestButtonEnable(true);
+            }
         }
+
         // console.log(inputState, usertype, academyInfo, profileData);
     }, [usertype, academyInfo, inputState, profileData]);
 
@@ -332,70 +356,102 @@ function Login({ history }) {
         switch (step) {
             case 0:
                 return (
-                    <div className="login-form">
+                    <div className={classNames(usertype === 'students' ? 'bg-s' : 'bg-t', 'login-form')}>
                         {/* <h4>{usertype === 'students' ? '학생' : '선생님'} 로그인</h4> */}
                         <h3>
                             알트리드만의 <br />
                             시선흐름 추적을 통해 <br />
                             <b className={classNames(usertype === 'students' ? 'bold-s' : 'bold-t')}>학습 관리</b>를 경험해보세요.
                         </h3>
-                        <LoginButtons
-                            onSuccessGoogleAuth={onSuccessGoogleAuth}
-                            onFailedGoogleAuth={onFailedGoogleAuth}
-                            onSuccessKakaoAuth={onSuccessKakaoAuth}
-                            onFailedKakaoAuth={onFailedKakaoAuth}
-                            style={{ marginTop: '1.2rem' }}
-                        />
-                        <div className="usertype-change-link">
-                            <Link color="inherit" onClick={handleChangeUsertype}>
-                                {usertype === 'students' ? '선생님' : '학생'}이신가요?
-                            </Link>
+                        <div className="login-right">
+                            <span>
+                                <WhiteRadio
+                                    onChange={handleChangeUsertype}
+                                    checked={usertype === 'students'}
+                                    value="students"
+                                    name="students"
+                                />
+                                학생
+                            </span>
+                            <span>
+                                <WhiteRadio
+                                    onChange={handleChangeUsertype}
+                                    checked={usertype === 'teachers'}
+                                    value="teachers"
+                                    name="teachers"
+                                />
+                                선생님
+                            </span>
+
+                            <LoginButtons
+                                onSuccessGoogleAuth={onSuccessGoogleAuth}
+                                onFailedGoogleAuth={onFailedGoogleAuth}
+                                onSuccessKakaoAuth={onSuccessKakaoAuth}
+                                onFailedKakaoAuth={onFailedKakaoAuth}
+                                style={{ marginTop: '1.2rem' }}
+                            />
                         </div>
                     </div>
                 );
             case 1:
                 return (
-                    <div className="additional-auth">
-                        <h4>본인의 실명과 학원 코드를 입력해 주세요.</h4>
-                        <h4>
-                            해당 정보는 본인 확인을 위한 용도로 이용되니, <span style={{ backgroundColor: '#ff0000a0' }}>정확히</span> 기입
-                            해주시기 바랍니다.
-                        </h4>
-                        <div className="form">
-                            <input
-                                className={classNames('default', inputError.real_name ? 'error' : '')}
-                                type="text"
-                                name="real_name"
-                                id="real_name"
-                                placeholder="실명"
-                                onChange={handleInputChange}
-                                value={inputState['real_name']}
-                            />
-                            <input
-                                className={classNames('default', inputError.academy_code ? 'error' : '')}
-                                type="text"
-                                name="academy_code"
-                                id="academy_code"
-                                placeholder="학원 코드"
-                                onChange={handleInputChange}
-                                value={inputState['academy_code']}
-                            />
-                            <div className="academy-search-results">
-                                <p className="name">{academyInfo.name}</p>
-                                <p className="address">{academyInfo.address}</p>
+                    <div className="additional-auth-root">
+                        <div className={classNames('additional-auth-box', usertype === 'students' ? 'bg-s' : 'bg-t')}>
+                            {usertype === 'students' ? (
+                                <h3>
+                                    학생의 이름을 <br />
+                                    정확히 <br />
+                                    입력해 주세요.
+                                </h3>
+                            ) : (
+                                <h3>
+                                    본인의 이름과 <br /> 학원 코드를 <br />
+                                    입력해 주세요.
+                                </h3>
+                            )}
+
+                            <div className="auth-right">
+                                <h5>
+                                    해당 정보는 본인 확인을 위한 용도로 이용되니, <br />
+                                    정확히 기입 해주시기 바랍니다.
+                                </h5>
+                                <div className="form">
+                                    <input
+                                        className={classNames('default', inputError.real_name ? 'error' : '')}
+                                        type="text"
+                                        name="real_name"
+                                        id="real_name"
+                                        placeholder="이름"
+                                        onChange={handleInputChange}
+                                        value={inputState['real_name']}
+                                    />
+                                    {usertype === 'students' ? (
+                                        ''
+                                    ) : (
+                                        <input
+                                            className={classNames('default', inputError.academy_code ? 'error' : '')}
+                                            type="text"
+                                            name="academy_code"
+                                            id="academy_code"
+                                            placeholder="학원 코드"
+                                            onChange={handleInputChange}
+                                            value={inputState['academy_code']}
+                                        />
+                                    )}
+
+                                    {academyInfo.name ? (
+                                        <div className="academy-search-results">
+                                            <p className="name">{academyInfo.name}</p>
+                                            <p className="address">{academyInfo.address}</p>
+                                        </div>
+                                    ) : (
+                                        ''
+                                    )}
+                                </div>
                             </div>
-                            {academyInfo.is_exists && usertype === 'students' ? (
-                                <TeachersList
-                                    id="autocomplete-teachers"
-                                    placeholder="선생님 선택"
-                                    onChange={handleTeachersListChange}
-                                    getOptionLabel={(option) => option.name + ' 선생님'}
-                                    options={academyInfo.teachers}
-                                />
-                            ) : null}
                         </div>
                         <div className="request-button">
-                            <RequestButton disabled={!requestButtonEnable} fullWidth variant="contained" onClick={handleRequestButtonClick}>
+                            <RequestButton disable={requestButtonEnable} usertype={usertype} onClick={handleRequestButtonClick}>
                                 계정 등록
                             </RequestButton>
                         </div>

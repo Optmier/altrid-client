@@ -6,7 +6,7 @@ import SimbolLoginWithKakao from '../../images/logos/simbol_login_with_kakao.svg
 import styled from 'styled-components';
 
 const AuthButtonsRoot = styled.div`
-    max-width: 320px;
+    width: 280px;
 
     & .button-auth {
         border: 1px solid #e0e0e0;

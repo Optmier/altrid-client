@@ -1,0 +1,237 @@
+$firstColor: #3b168a;
+$secondColor: #13e2a1;
+ul,
+li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.eyetrackerCore-root {
+    background-image: url('/bg_images/eyetracker_bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+
+    & .eyetrack-step-header {
+        font-size: 1.25rem;
+        font-weight: 400;
+        color: #404040;
+        & > span {
+            color: #572ab5;
+        }
+    }
+
+    & .eyetrackerCore-wrapper {
+        width: 1280px;
+        padding-top: 40px;
+        box-sizing: border-box;
+
+        overflow: hidden;
+        position: relative;
+
+        & li {
+            width: calc(100% / 3);
+        }
+        & .eyetrack-step-info {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+
+            & .contents-box {
+                margin-top: 28px;
+                width: 690px;
+                padding: 65px 85px;
+                background-color: white;
+                box-shadow: 5px 5px 15px #c3bcbc24;
+                border: 3px solid #c3bcbc24;
+                border-radius: 11px;
+                box-sizing: border-box;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                & .contents-box-left {
+                    & .contents-title {
+                        color: #3b168a;
+                        font-weight: 700;
+                        font-size: 1rem;
+                        & .contents-title-text {
+                            color: black;
+                            font-weight: 500;
+                        }
+                        & .outline {
+                            border-top: 3px solid #3b168a;
+                            width: 23px;
+                        }
+                    }
+                    & .contents-desc {
+                        margin-top: 65px;
+                        font-weight: 500;
+                        color: #404040;
+                    }
+                }
+                & .contents-box-right {
+                    & img {
+                        width: 260px;
+                    }
+                }
+            }
+        }
+    }
+
+    & .eyetrack-step-home {
+        width: 1280px;
+        padding-top: 40px;
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        & .eyetracker-buttons {
+            display: flex;
+            margin-top: 20px;
+
+            & > button {
+                background-color: white;
+                box-shadow: 5px 5px 15px #c3bcbc24;
+                border: 2px solid #c3bcbc24;
+                border-radius: 11px;
+                font-size: 1rem;
+                padding: 28px 56px;
+                box-sizing: border-box;
+
+                & > img {
+                    width: 130px;
+                    pointer-events: none;
+                }
+                & > div {
+                    pointer-events: none;
+                }
+
+                & .button-title {
+                    margin-top: 10px;
+                    font-weight: 500;
+                }
+                & .button-desc {
+                    margin-top: 32px;
+                    font-weight: 400;
+                    color: #404040;
+                }
+            }
+            & .button-right {
+                margin-left: 56px;
+            }
+
+            & > button:hover {
+                border: 2px solid #13e2a17a;
+                background-color: #f3fbf8;
+            }
+            & > button:focus {
+                border: 2px solid #13e2a17a;
+                background-color: #f3fbf8;
+            }
+        }
+        & .eyetracker-warn {
+            margin-top: 40px;
+            color: #d11f1f;
+            font-size: 1rem;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+
+            & svg {
+                margin-right: 0.5rem;
+            }
+        }
+    }
+    & .eyetrack-step-agree {
+        width: 1280px;
+        padding-top: 40px;
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        & .contents-box {
+            background-color: white;
+            margin-top: 28px;
+            width: 690px;
+            padding: 65px 85px;
+            box-shadow: 5px 5px 15px #c3bcbc24;
+            border: 3px solid #c3bcbc24;
+            border-radius: 11px;
+            box-sizing: border-box;
+
+            display: flex;
+            flex-direction: column;
+
+            & .contents-title {
+                & .outline {
+                    border-top: 3px solid #3b168a;
+                    width: 23px;
+                }
+                color: #3b168a;
+                font-weight: 700;
+                font-size: 1rem;
+            }
+            & .contents-desc {
+                margin-top: 19px;
+                font-size: 1rem;
+                color: #6a6a6a;
+                font-weight: 500;
+            }
+            & .contents-checkbox {
+                margin-top: 28px;
+                color: #404040;
+                font-size: 1rem;
+                font-weight: 400;
+            }
+        }
+    }
+    & .eyetrack-step-camera {
+        width: 1280px;
+        padding-top: 40px;
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        & .contents-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 28px;
+            width: 690px;
+            padding: 65px 85px;
+            background-color: white;
+            box-shadow: 5px 5px 15px #c3bcbc24;
+            border: 3px solid #c3bcbc24;
+            border-radius: 11px;
+            box-sizing: border-box;
+        }
+    }
+    & .eyetrack-step-calibration {
+        width: 1278px;
+        height: 748px;
+        border: 1px solid red;
+    }
+    & .eyetrack-step-button {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}

@@ -5,6 +5,16 @@ import { useRef } from 'react';
 import BackdropComponent from './BackdropComponent';
 import styled from 'styled-components';
 import { buildMode } from '../../configs/configs';
+import '../../styles/eyetracker_core.scss';
+import StepHome from '../EyetrackerStep/StepHome';
+import StepBox from '../EyetrackerStep/StepBox';
+import StepAgree from '../EyetrackerStep/StepAgree';
+import RightButton from '../../images/eyetracker_logo/right_button.png';
+import LeftButton from '../../images/eyetracker_logo/left_button.png';
+import StepCameraCheck from '../EyetrackerStep/StepCameraCheck';
+import StepCalibrationInfo from '../EyetrackerStep/StepCalibrationInfo';
+import StepCalibration from '../EyetrackerStep/StepCalibration';
+import StepTestStart from '../EyetrackerStep/StepTestStart';
 
 const Assistance = styled.div``;
 const CalibDot = styled.div`
@@ -70,6 +80,39 @@ const CalibDot = styled.div`
         background-color: #00ac75;
         pointer-events: none;
     }
+`;
+const SlideUl = styled.ul`
+    margin-left: ${(props) => props.translateNum + '%'};
+    width: calc(100% * 3);
+    display: flex;
+    transition: 0.4s;
+`;
+const SlideBtn = styled.img`
+    cursor: pointer;
+    width: 60px;
+    position: absolute;
+    top: 55%;
+
+    &.slide-button-left {
+        display: ${(props) => (props.translateNum >= -200 && props.translateNum <= -100 ? 'block' : 'none')};
+        left: 18%;
+    }
+    &.slide-button-right {
+        display: ${(props) => (props.translateNum >= -200 && props.translateNum <= 0 ? 'block' : 'none')};
+        right: 18%;
+    }
+`;
+const StepBtn = styled.button`
+    margin-top: 40px;
+    width: 125px;
+    height: 45px;
+    pointer-events: ${(props) => (props.stepBtnState ? 'auto' : 'none')};
+    background-color: ${(props) => (props.stepBtnState ? '#13e2a1' : '#707070')};
+    color: ${(props) => (props.stepBtnState ? 'white' : 'white')};
+    box-shadow: 0px 3px 6px #00000029;
+    border-radius: 11px;
+    font-size: 0.9rem;
+    font-weight: 600;
 `;
 
 /** Webgazer configuration */
@@ -199,6 +242,12 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     _step = step;
     _userAnswer = userAnswer;
     _timeElapsed = timeElapsed;
+
+    const [stepBtnState, setStepBtnState] = useState(false);
+    const [translateNum, setTranslateNum] = useState(200);
+    const [agreeCheck, setAgreeCheck] = useState(false);
+    const [calibrateState, setCalibrateState] = useState(false);
+
     const [start, setStart] = useState(false);
     const [webgazerLoded, setWebgazerLoaded] = useState(false);
     const [calib, setCalib] = useState(false);
@@ -367,77 +416,77 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
             }, 100);
     };
 
-    useEffect(() => {
-        if (!start) {
-            setStart(true);
-            if (localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true') {
-                $(document).ready(() => {
-                    $('.calib-dots').addClass('ok');
-                });
-            }
-            //
-            setTimeout(() => {
-                window.numOfFixations++;
-                window.numOfSaccades++;
+    const cameraStart = () => {
+        console.log(start);
+        if (start) return;
 
-                Webgazer.setGazeListener(function (data, elapsedTime) {
-                    // if (data == null) {
-                    //     return;
-                    // }
-                    updateTicker(data, elapsedTime);
-                }).begin();
-
-                const check = setInterval(() => {
-                    try {
-                        if (Webgazer.isReady()) {
-                            Webgazer.showPredictionPoints(true);
-                            $('#webgazerVideoFeed').css({ 'z-index': 99999, top: 'calc(50% - 304px)', left: 'calc(50% - 160px)' });
-                            $('#webgazerVideoCanvas').css({ 'z-index': 99999, top: 'calc(50% - 304px)', left: 'calc(50% - 160px)' });
-                            $('#webgazerFaceOverlay').css({ 'z-index': 99999, top: 'calc(50% - 304px)', left: 'calc(50% - 160px)' });
-                            $('#webgazerFaceFeedbackBox').css({
-                                'z-index': 99999,
-                                top: 'calc(50% - 263.2px)',
-                                left: 'calc(50% - 79.2px)',
-                            });
-
-                            if (
-                                $('#webgazerVideoFeed').length &&
-                                $('#webgazerVideoCanvas').length &&
-                                $('#webgazerFaceOverlay').length &&
-                                $('#webgazerFaceFeedbackBox').length
-                            ) {
-                                if (!localStorage.getItem('eye_calibrated') || localStorage.getItem('eye_calibrated') === 'false') {
-                                    Webgazer.clearData();
-                                    Webgazer.removeMouseEventListeners();
-                                    console.log("Webgaze cleared data because you didn't calibrate complete.");
-                                }
-                                console.log('all loaded!');
-                                setWebgazerLoaded((webgazerLoaded) => true);
-                                const backCvs = backCanvas.current;
-                                const ctx = backCvs.getContext('2d');
-                                // makeDots(ctx);
-                                clearInterval(check);
-                            }
-                            //
-                        }
-                    } catch (error) {
-                        console.error(error);
-                    }
-                }, 500);
-            }, 1000);
-        } else {
+        setStart(true);
+        if (localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true') {
+            $(document).ready(() => {
+                $('.calib-dots').addClass('ok');
+            });
         }
-    }, [start]);
+        //
+        setTimeout(() => {
+            window.numOfFixations++;
+            window.numOfSaccades++;
 
-    useEffect(() => {
-        return () => {
-            try {
-                Webgazer.end();
-            } catch (e) {
-                console.warn(e);
-            }
-        };
-    }, []);
+            Webgazer.setGazeListener(function (data, elapsedTime) {
+                // if (data == null) {
+                //     return;
+                // }
+                updateTicker(data, elapsedTime);
+            }).begin();
+
+            const check = setInterval(() => {
+                try {
+                    if (Webgazer.isReady()) {
+                        Webgazer.showPredictionPoints(true);
+                        $('#webgazerVideoFeed').css({ 'z-index': 99999, top: 'calc(50% - 420px)', left: 'calc(50% - 160px)' });
+                        $('#webgazerVideoCanvas').css({ 'z-index': 99999, top: 'calc(50% - 420px)', left: 'calc(50% - 160px)' });
+                        $('#webgazerFaceOverlay').css({ 'z-index': 99999, top: 'calc(50% - 420px)', left: 'calc(50% - 160px)' });
+                        $('#webgazerFaceFeedbackBox').css({
+                            'z-index': 99999,
+                            top: 'calc(50% - 263.2px)',
+                            left: 'calc(50% - 79.2px)',
+                        });
+
+                        if (
+                            $('#webgazerVideoFeed').length &&
+                            $('#webgazerVideoCanvas').length &&
+                            $('#webgazerFaceOverlay').length &&
+                            $('#webgazerFaceFeedbackBox').length
+                        ) {
+                            if (!localStorage.getItem('eye_calibrated') || localStorage.getItem('eye_calibrated') === 'false') {
+                                Webgazer.clearData();
+                                Webgazer.removeMouseEventListeners();
+                                console.log("Webgaze cleared data because you didn't calibrate complete.");
+                            }
+                            console.log('all loaded!');
+                            setWebgazerLoaded((webgazerLoaded) => true);
+                            const backCvs = backCanvas.current;
+                            const ctx = backCvs.getContext('2d');
+                            // makeDots(ctx);
+                            clearInterval(check);
+                        }
+                        //
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }, 500);
+        }, 1000);
+    };
+
+    // useEffect(() => {
+    //     return () => {
+    //         try {
+    //             Webgazer.end();
+    //         } catch (e) {
+    //             console.warn(e);
+    //         }
+    //     };
+    // }, []);
 
     const onCalibDotClick = ({ target }) => {
         const type = target['dataset'].type;
@@ -466,152 +515,144 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
 
     window.dots = calibDotCounts;
 
-    useEffect(() => {
-        if (!start) return;
-        let allCalibrated = true;
-        Object.keys(calibDotCounts).forEach((key) => {
-            if (calibDotCounts[key] < 20) {
-                allCalibrated = false;
-                return;
-            }
-        });
-        if (allCalibrated) {
-            localStorage.setItem('eye_calibrated', true);
-            setCalibBtnDisabled(false);
-        } else {
-            localStorage.setItem('eye_calibrated', false);
+    // useEffect(() => {
+    //     if (!start) return;
+    //     let allCalibrated = true;
+    //     Object.keys(calibDotCounts).forEach((key) => {
+    //         if (calibDotCounts[key] < 20) {
+    //             allCalibrated = false;
+    //             return;
+    //         }
+    //     });
+    //     if (allCalibrated) {
+    //         localStorage.setItem('eye_calibrated', true);
+    //         setCalibBtnDisabled(false);
+    //     } else {
+    //         localStorage.setItem('eye_calibrated', false);
+    //     }
+    // }, [calibDotCounts]);
+
+    //왼쪽,오른쪽 이동 메소드
+    const handleSlide = (e) => {
+        const { name } = e.target;
+
+        name === 'right' ? setTranslateNum(translateNum - 100) : setTranslateNum(translateNum + 100);
+        // 케메라 체크안내 마지막 단계
+        if (translateNum === -200) {
+            //카메라 발동 함수
+            cameraStart();
         }
-    }, [calibDotCounts]);
+    };
+    //확인 완료 버튼 메소드
+    const handleComplete = (e) => {
+        // 보정 사용 유무 단계
+        if (translateNum === 200) {
+            if (calibrateState === 'new') {
+                setTranslateNum(translateNum - 100);
+            } else if (calibrateState === 'pre') {
+                //바로 문제 로드 !!
+                console.log('문제로드');
+            }
+            setStepBtnState(false);
+        }
+
+        // 데이터 수집 동의 단계
+        else if (translateNum === 100) {
+            setTranslateNum(translateNum - 100);
+        }
+        // 카메라 체크 단계
+        else if (translateNum === -300) {
+            setTranslateNum(translateNum - 100);
+        }
+        // 시선보정 안내 단계
+        else if (translateNum === -400) {
+            setTranslateNum(translateNum - 100);
+        }
+        // 시선보정  단계
+        else if (translateNum === -500) {
+            setTranslateNum(translateNum - 100);
+        }
+        // 시험 시작 단계
+        else if (translateNum === -600) {
+            setTranslateNum(translateNum - 100);
+        } else {
+            return 0;
+        }
+    };
+    //보정 사용 유무 메소드
+    const handleCalibration = (e) => {
+        const { name } = e.target;
+        setCalibrateState(name);
+        setStepBtnState(true);
+    };
+    //데이터 수집 동의 메소드
+    const handleCheckChange = (e) => {
+        setAgreeCheck(e.target.checked);
+        setStepBtnState(e.target.checked);
+    };
 
     return (
         <>
-            <BackdropComponent disableShrink open={!webgazerLoded} />
-            <Dialog fullScreen open={!calib} style={{ backgroundColor: '#fffff2f' }}>
-                <div
-                    className="controllers-root"
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        marginTop: 320,
-                        marginLeft: 'auto',
-                        marginRight: 'auto',
-                        width: 648,
-                        height: '98%',
-                        userSelect: 'none',
-                    }}
-                >
-                    <h3 style={{ textAlign: 'center', margin: '1rem 0' }}>아무 점을 클릭해서 보정을 시작해 주세요.</h3>
-                    <p style={{ marginTop: '0.5rem' }}>1. 웹캠 화면 정사각 테두리 안에 얼굴이 들어오도록 합니다.</p>
-                    <p style={{ marginTop: '0.5rem' }}>2. 고개 움직임은 자연스럽게 하면서 눈동자를 움직입니다.</p>
-                    <p style={{ marginTop: '0.5rem' }}>
-                        3. 노란 원들에 눈동자를 위치시키고 녹색 점이 될 수 있게 20회 정도 클릭해 주세요. 빨간 점이 원 위에 최대한 안정화
-                        되도록 해주세요.
-                    </p>
-                    <p style={{ marginTop: '0.5rem' }}>
-                        4. 모든 점에서 보정이 완료되었다면 하단의 보정 완료 버튼을 클릭하여 시험을 시작합니다.
-                    </p>
-                    <p style={{ marginTop: '0.5rem' }}>
-                        5. 보정 데이터는 저장되며, 이전에 보정하셨다면 다음에 하지 않으셔도 됩니다.<br></br>만일 원하시는 경우 하단의 다시
-                        보정 버튼을 눌러 기존 데이터를 삭제하고 다시 진행합니다.
-                    </p>
-                    <div style={{ display: 'flex', flexDirection: 'row', marginTop: 12 }}>
-                        <Button
-                            type="button"
-                            variant="outlined"
-                            fullWidth
-                            disabled={calibBtnDisabled}
-                            onClick={executeCalibration}
-                            style={{ marginRight: 4 }}
-                        >
-                            {calibBtnText}
-                        </Button>
-                        <Button type="button" variant="outlined" fullWidth onClick={restartCalibration} style={{ marginLeft: 4 }}>
-                            다시 보정
-                        </Button>
+            {/* <BackdropComponent disableShrink open={!webgazerLoded} /> */}
+            <div className="eyetrackerCore-root">
+                {translateNum === 200 ? (
+                    <StepHome handleCalibration={handleCalibration} />
+                ) : translateNum === 100 ? (
+                    <StepAgree agreeCheck={agreeCheck} handleCheckChange={handleCheckChange} />
+                ) : translateNum >= -200 && translateNum <= 0 ? (
+                    <div className="eyetrackerCore-wrapper">
+                        <SlideBtn
+                            translateNum={translateNum}
+                            alt="btn"
+                            name="left"
+                            className="slide-button-left"
+                            src={LeftButton}
+                            onClick={handleSlide}
+                        />
+                        <SlideBtn
+                            translateNum={translateNum}
+                            alt="btn"
+                            name="right"
+                            className="slide-button-right"
+                            src={RightButton}
+                            onClick={handleSlide}
+                        />
+                        <div style={{ marginLeft: '25%' }} className="eyetrack-step-header">
+                            정확한 분석을 위해 문제 풀이가 진행되는 동안 아래 사항들을 유의해주세요.
+                        </div>
+                        <SlideUl translateNum={translateNum}>
+                            <li>
+                                <StepBox num="01" />
+                            </li>
+                            <li>
+                                <StepBox num="02" />
+                            </li>
+                            <li>
+                                <StepBox num="03" />
+                            </li>
+                        </SlideUl>
                     </div>
+                ) : translateNum === -300 ? (
+                    <StepCameraCheck />
+                ) : translateNum === -400 ? (
+                    <StepCalibrationInfo />
+                ) : translateNum === -500 ? (
+                    <StepCalibration />
+                ) : translateNum === -600 ? (
+                    <StepTestStart />
+                ) : (
+                    ''
+                )}
+                <div className="eyetrack-step-button">
+                    {(translateNum >= -200 && translateNum <= 0) || translateNum === -500 ? (
+                        ''
+                    ) : (
+                        <StepBtn name="right" onClick={handleComplete} stepBtnState={stepBtnState}>
+                            {translateNum >= -600 && translateNum <= -400 ? '시작하기' : '확인 완료'}
+                        </StepBtn>
+                    )}
                 </div>
-
-                <Assistance className="eyetracker-calib-assistance">
-                    <CalibDot
-                        className="calib-dots top-left"
-                        data-type="top_left"
-                        onClick={onCalibDotClick}
-                        onMouseOver={onCalibDotHover}
-                        onMouseLeave={onCalibDotLeave}
-                    ></CalibDot>
-                    <CalibDot
-                        className="calib-dots top-center"
-                        data-type="top_center"
-                        onClick={onCalibDotClick}
-                        onMouseOver={onCalibDotHover}
-                        onMouseLeave={onCalibDotLeave}
-                    ></CalibDot>
-                    <CalibDot
-                        className="calib-dots top-right"
-                        data-type="top_right"
-                        onClick={onCalibDotClick}
-                        onMouseOver={onCalibDotHover}
-                        onMouseLeave={onCalibDotLeave}
-                    ></CalibDot>
-                    <CalibDot
-                        className="calib-dots middle-left"
-                        data-type="middle_left"
-                        onClick={onCalibDotClick}
-                        onMouseOver={onCalibDotHover}
-                        onMouseLeave={onCalibDotLeave}
-                    ></CalibDot>
-                    <CalibDot
-                        className="calib-dots middle-center"
-                        data-type="middle_center"
-                        onClick={onCalibDotClick}
-                        onMouseOver={onCalibDotHover}
-                        onMouseLeave={onCalibDotLeave}
-                    ></CalibDot>
-                    <CalibDot
-                        className="calib-dots middle-right"
-                        data-type="middle_right"
-                        onClick={onCalibDotClick}
-                        onMouseOver={onCalibDotHover}
-                        onMouseLeave={onCalibDotLeave}
-                    ></CalibDot>
-                    <CalibDot
-                        className="calib-dots bottom-left"
-                        data-type="bottom_left"
-                        onClick={onCalibDotClick}
-                        onMouseOver={onCalibDotHover}
-                        onMouseLeave={onCalibDotLeave}
-                    ></CalibDot>
-                    <CalibDot
-                        className="calib-dots bottom-center"
-                        data-type="bottom_center"
-                        onClick={onCalibDotClick}
-                        onMouseOver={onCalibDotHover}
-                        onMouseLeave={onCalibDotLeave}
-                    ></CalibDot>
-                    <CalibDot
-                        className="calib-dots bottom-right"
-                        data-type="bottom_right"
-                        onClick={onCalibDotClick}
-                        onMouseOver={onCalibDotHover}
-                        onMouseLeave={onCalibDotLeave}
-                    ></CalibDot>
-                </Assistance>
-
-                <canvas
-                    ref={backCanvas}
-                    id="back_canvas"
-                    width="1280"
-                    height="750"
-                    style={{
-                        cursor: 'crosshair',
-                        position: 'absolute',
-                        pointerEvents: 'none',
-                        left: 'calc(50% - 640px)',
-                        top: 'calc(50% - 375px)',
-                    }}
-                ></canvas>
-            </Dialog>
+            </div>
         </>
     );
 }
