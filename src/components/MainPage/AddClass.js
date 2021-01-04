@@ -18,7 +18,7 @@ const AddButton = withStyles((theme) => ({
     },
 }))(Button);
 
-function AddTeacher({ handleClose }) {
+function AddClass({ handleClose }) {
     const [addButtonEnabled, setAddButtonEnabled] = useState(false);
     const [inputState, setInputState] = useState('');
     const [inputError, setInputError] = useState(false);
@@ -110,4 +110,4 @@ function AddTeacher({ handleClose }) {
     );
 }
 
-export default AddTeacher;
+export default AddClass;
