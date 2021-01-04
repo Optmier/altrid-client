@@ -58,12 +58,14 @@
             border-radius: 10px;
             background-color: white;
 
-            & > span {
+            & > input {
                 width: calc(100% - 96px);
                 text-align: center;
                 font-size: 1.2rem;
                 font-weight: 500;
                 color: black;
+                border: none;
+                background-color: none;
             }
 
             & > button {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ClassWrapper from '../essentials/ClassWrapper';
 import '../../styles/manage_page.scss';
 import classNames from 'classnames';
@@ -44,6 +44,8 @@ const CreateButton = withStyles((theme) => ({
 }))(Button);
 
 function Manage({ match, history }) {
+    const textCopy = useRef();
+
     const { num } = match.params;
     const [inputState, setInputState] = useState({
         entry_new_name: '',
@@ -267,7 +269,12 @@ function Manage({ match, history }) {
         });
     };
 
-    console.log(buttonAble);
+    const handleCopy = () => {
+        textCopy.current.select();
+        textCopy.current.setSelectionRange(0, 9999);
+
+        document.execCommand('copy');
+    };
 
     return (
         <>
@@ -281,8 +288,8 @@ function Manage({ match, history }) {
                         <div className="manage-inputs">
                             <div className="manage-inputs-header">클래스 초대 코드</div>
                             <div className="manage-invite">
-                                <span>asdfasdf</span>
-                                <button>복사하기</button>
+                                <input type="text" defaultValue="aaa" ref={textCopy} />
+                                <button onClick={handleCopy}>복사하기</button>
                             </div>
                         </div>
 
