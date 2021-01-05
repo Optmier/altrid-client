@@ -45,10 +45,8 @@ function LeftNav({ match, history }) {
         Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
             .then((res) => {
                 setTeacherData(res.data[0]);
-                console.log(res.data[0]);
             })
             .catch((err) => {
-                console.log('err');
                 console.error(err);
             });
     }, [sessions.authId, sessions.academyName]);
