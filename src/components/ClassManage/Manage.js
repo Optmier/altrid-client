@@ -291,7 +291,7 @@ function Manage({ match, history }) {
                 <div className="class-manage-root">
                     <div>
                         <div className="manage-header">
-                            <h2 className="manage-title">클래스 초대 및 관리가 가능합니다.</h2>
+                            <h2 className="manage-title">클래스 초대 및 관리</h2>
                         </div>
                         <div className="manage-inputs">
                             <div className="manage-inputs-header">클래스 초대 코드</div>

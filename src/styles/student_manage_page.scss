@@ -1,0 +1,113 @@
+.class-student-manage-root {
+    width: 80%;
+    margin: 0 auto;
+    padding: 50px 0;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    & .manage-header {
+        margin-bottom: 3.2rem;
+
+        & .manage-title {
+            margin-bottom: 1rem;
+        }
+    }
+
+    & .manage-inputs {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+
+        & .manage-inputs-header {
+            width: 100%;
+            font-size: 1rem;
+            color: black;
+            font-weight: 500;
+            border-bottom: 1px solid #707070;
+            padding-bottom: 0.6rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+
+            & .header-left {
+                & > span {
+                    font-size: 0.85rem;
+                    font-weight: 300;
+                    color: #707070;
+                }
+            }
+            & .header-right {
+                display: flex;
+                align-items: center;
+                padding: 0.4rem 0.6rem;
+                border-radius: 6px;
+                font-size: 0.85rem;
+                font-weight: 400;
+                color: #707070;
+                & svg {
+                    margin-right: 0.5rem;
+                }
+            }
+            & .header-right:hover {
+                cursor: pointer;
+                background-color: #80808029;
+            }
+        }
+
+        & .manage-students-list {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0;
+            width: 100%;
+
+            & .list {
+                display: flex;
+                align-items: center;
+
+                & .list-box {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    background-color: white;
+                    border-radius: 11px;
+                    box-sizing: border-box;
+                    padding: 15px 25px;
+
+                    & .list-box-left {
+                        color: #707070;
+                        font-size: 1.25rem;
+                        font-weight: 500;
+                    }
+
+                    & .list-box-right {
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+
+                        & > button {
+                            margin-left: 1rem;
+                            background-color: #3f1990;
+                            border-radius: 11px;
+                            color: white;
+                            padding: 11px 22px;
+
+                            font-size: 0.9rem;
+                            font-weight: 500;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    @media (min-width: 0px) and (max-width: 1231px) {
+        & {
+            width: 100%;
+        }
+    }
+}

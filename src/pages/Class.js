@@ -12,6 +12,7 @@ import BackdropComponent from '../components/essentials/BackdropComponent';
 import { getDrafts } from '../redux_modules/assignmentDraft';
 import ErrorRestricted from './ErrorRestricted';
 import { useState } from 'react';
+import StudentManage from '../components/ClassStudentManage/StudentManage';
 
 const ClassPageSwitcher = (match, sessions) => {
     if (!match.id || !match.path) return <></>;
@@ -23,6 +24,9 @@ const ClassPageSwitcher = (match, sessions) => {
         case 'manage':
             if (sessions.userType === 'students') return <ErrorRestricted />;
             return <Manage />;
+        case 'student-manage':
+            if (sessions.userType === 'students') return <ErrorRestricted />;
+            return <StudentManage />;
         case 'share':
             return (
                 <>
