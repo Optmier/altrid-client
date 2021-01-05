@@ -5,6 +5,7 @@ import { apiUrl } from '../../configs/configs';
 import ChannelService from '../ChannelIO/ChannelService';
 import EyetrackerCore from '../essentials/EyetrackerCore';
 import io from 'socket.io-client';
+import { useBeforeunload } from 'react-beforeunload';
 
 let eyetrackModerator = null;
 let eyetrackDetectedTime = 0;
@@ -41,6 +42,12 @@ function VideoLectureEyetracker({ match, history }) {
             .then((res) => {
                 const otpCode = res.data.data.roomUserOtp.otp;
                 console.log(otpCode);
+                socket.current.emit('join', {
+                    groupId: groupId,
+                    data: {
+                        authId: sAuthId,
+                    },
+                });
                 window.vidLectureOpener = window.open(
                     `https://biz.gooroomee.com/room/otp/${otpCode}`,
                     'Gooroomee Biz',
@@ -70,7 +77,7 @@ function VideoLectureEyetracker({ match, history }) {
             eyetrackModerator = setInterval(() => {
                 /////////////////////////////////////////////////
                 if (!data) {
-                    if (precisionTime - eyetrackDetectedTime > 3000 && !eyetrackDetectChanged) {
+                    if (precisionTime - eyetrackDetectedTime > detectionTimeLimit && !eyetrackDetectChanged) {
                         console.log('detected!!');
                         socket.current.emit('detectEyetrack', {
                             groupId: groupId,
@@ -117,14 +124,7 @@ function VideoLectureEyetracker({ match, history }) {
             return;
         }
         socket.current = io.connect(`${apiUrl}/vid_lecture`);
-        socket.current.on('connected', (id) => {
-            socket.current.emit('join', {
-                groupId: groupId,
-                data: {
-                    authId: sAuthId,
-                },
-            });
-        });
+        socket.current.on('connected', (id) => {});
         socket.current.on('joined', (msg) => {
             console.log('joined >> ', msg);
         });
@@ -140,6 +140,17 @@ function VideoLectureEyetracker({ match, history }) {
             });
         };
     }, []);
+
+    useBeforeunload((e) => {
+        socket.current.emit('leave', {
+            groupId: groupId,
+            data: {
+                authId: sAuthId,
+            },
+        });
+        return null;
+    });
+
     return (
         <>
             <EyetrackerCore onAfterCalib={onAfterCalib} onUpdate={onUpdate} />이 창을 화상 강의가 진행 되는 동안 절대로 닫지 마시오!

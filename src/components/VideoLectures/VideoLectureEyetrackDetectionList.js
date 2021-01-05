@@ -124,7 +124,7 @@ function VideoLectureEyetrackDetectionList({ match, history }) {
         // 학생 목록 가져오기
         Axios.get(`${apiUrl}/students-in-class/${classNum}`, { withCredentials: true })
             .then((res) => {
-                console.log(res.data.map((d) => ({ stdId: d.student_id, stdName: d.name, statusCode: -1 })));
+                // console.log(res.data.map((d) => ({ stdId: d.student_id, stdName: d.name, statusCode: -1 })));
                 setStdList(res.data.map((d, i) => ({ stdId: d.student_id, stdName: d.name, statusCode: -1 })));
             })
             .catch((err) => {
@@ -233,7 +233,6 @@ function VideoLectureEyetrackDetectionList({ match, history }) {
         });
         socket.current.on('leaved', (msg) => {
             console.log('leaved >> ', msg);
-            msg.authId = '1511108048';
             setStdList((stdList) =>
                 stdList.map((d, i) => {
                     if (d.stdId === msg.authId) {
