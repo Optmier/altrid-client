@@ -77,10 +77,10 @@ function LeftNav({ match, history }) {
                 }
                 setVideoLecture({ ...res.data, liveCounts: 0 });
                 setHasVideoLecture(true);
-                Axios.get(`${apiUrl}/meeting-room/live-counts`, { withCredentials: true })
+                Axios.get(`${apiUrl}/meeting-room/live-counts/${res.data.room_id}`, { withCredentials: true })
                     .then((res) => {
-                        if (res.data) {
-                            updateVideoLiveCounts(res.data.data.currentRoomUserCnt);
+                        if (res.data !== null || res.data !== undefined) {
+                            updateVideoLiveCounts(res.data);
                         }
                     })
                     .catch((err) => {
@@ -88,10 +88,10 @@ function LeftNav({ match, history }) {
                     });
                 if (!window.intervalLiveCounts) {
                     window.intervalLiveCounts = setInterval(() => {
-                        Axios.get(`${apiUrl}/meeting-room/live-counts`, { withCredentials: true })
+                        Axios.get(`${apiUrl}/meeting-room/live-counts/${res.data.room_id}`, { withCredentials: true })
                             .then((res) => {
-                                if (res.data) {
-                                    updateVideoLiveCounts(res.data.data.currentRoomUserCnt);
+                                if (res.data !== null || res.data !== undefined) {
+                                    updateVideoLiveCounts(res.data);
                                 }
                             })
                             .catch((err) => {

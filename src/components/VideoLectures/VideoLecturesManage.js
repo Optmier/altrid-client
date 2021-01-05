@@ -500,7 +500,7 @@ function VideoLecturesManage({ match, history }) {
                         </Grid>
                         <Grid item xs={12}>
                             <FormGroup>
-                                {/* <FormControlLabel
+                                <FormControlLabel
                                     labelPlacement="start"
                                     control={
                                         <Switch
@@ -511,7 +511,7 @@ function VideoLecturesManage({ match, history }) {
                                         />
                                     }
                                     label="시선 흐름 집중도 측정"
-                                /> */}
+                                />
                             </FormGroup>
                         </Grid>
                     </Grid>
@@ -599,12 +599,12 @@ function VideoLecturesManage({ match, history }) {
                                                     {currentVideoLecture.max_joins}명
                                                 </div>
                                             </HtmlTooltip>
-                                            {/* <HtmlTooltip title="시선추적 여부">
+                                            <HtmlTooltip title="시선추적 여부">
                                                 <div className="icon-item eyetrack">
                                                     <FaceIcon fontSize="inherit" />
                                                     {currentVideoLecture.eyetrack ? '시선추적 있음' : '시선추적 없음'}
                                                 </div>
-                                            </HtmlTooltip> */}
+                                            </HtmlTooltip>
                                         </div>
                                     </div>
                                 </div>
