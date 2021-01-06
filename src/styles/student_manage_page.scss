@@ -65,6 +65,9 @@
             padding: 1rem 0;
             width: 100%;
 
+            & .list + .list {
+                margin-top: 1rem;
+            }
             & .list {
                 display: flex;
                 align-items: center;
@@ -81,7 +84,7 @@
 
                     & .list-box-left {
                         color: #707070;
-                        font-size: 1.25rem;
+                        font-size: 1rem;
                         font-weight: 500;
                     }
 
@@ -97,7 +100,7 @@
                             color: white;
                             padding: 11px 22px;
 
-                            font-size: 0.9rem;
+                            font-size: 0.95rem;
                             font-weight: 500;
                         }
                     }

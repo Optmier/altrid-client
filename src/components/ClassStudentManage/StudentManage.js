@@ -10,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
 import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
+import { withRouter } from 'react-router-dom';
 
 const StyleCheckbox = withStyles({
     root: {
@@ -32,11 +33,17 @@ const useStyles = makeStyles((theme) => ({
             position: 'absolute',
         },
         '& .MuiInputLabel-shrink': {
-            transform: 'translate(-6px, 4px) scale(0.5)',
+            transform: 'translate(-6px, 4px) scale(0)',
             transformOrigin: 'top left',
         },
         '& label + .MuiInput-formControl': {
             marginTop: 0,
+        },
+        '& .MuiInput-underline:after': {
+            borderBottom: '2px solid #3f198fb3',
+        },
+        '& .Mui-focused': {
+            color: '#3f198f',
         },
 
         '@media (min-width: 0px) and (max-width: 1231px)': {
@@ -50,28 +57,84 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function StudentManage() {
+function StudentManage({ match, history }) {
+    const { num } = match.params;
     const classes = useStyles();
 
-    const [state, setState] = useState({
-        checkedG: true,
-    });
-    const [age, setAge] = useState('');
+    const [studentDatas, setStudentDatas] = useState({});
+    const [selectState, setSelectState] = useState({});
+    const [checkstate, setCheckState] = useState({});
 
-    const handleSelectChange = (event) => {
-        setAge(event.target.value);
+    const handleSelectChange = (e) => {
+        const { name, value } = e.target;
+
+        setSelectState({
+            ...selectState,
+            [name]: value,
+        });
     };
     const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
+        setCheckState({ ...checkstate, [event.target.name]: event.target.checked });
+    };
+    const handleMoveReport = (e) => {
+        const { name } = e.target;
+        history.push(`/class/${num}/share/${selectState[name]}/details?user=${name}`);
+    };
+    const handleDelete = () => {
+        let arr = [];
+        Object.keys(checkstate)
+            .filter((i) => checkstate[i] === true)
+            .map((i) => arr.push(i));
+
+        Axios.delete(`${apiUrl}/students-in-class/students/${num}`, {
+            data: {
+                students: arr.join(','),
+            },
+            withCredentials: true,
+        })
+            .then((res) => {
+                alert('학생 삭제가 완료되었습니다!');
+                history.replace(`/class/${num}/student-manage`);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     };
 
     useEffect(() => {
-        Axios.get(`${apiUrl}/classes`, { withCredentials: true })
-            .then((res) => {})
+        Axios.get(`${apiUrl}/assignment-result/report-students/${match.params.num}`, { withCredentials: true })
+            .then((res) => {
+                window.data = res.data;
+
+                let obj = {};
+                let selectObj = {};
+                let checkObj = {};
+                for (let i = 0; i < res.data.length; i++) {
+                    if (!Object.keys(obj).includes(res.data[i]['student_id'])) {
+                        obj[res.data[i]['student_id']] = [];
+                        selectObj[res.data[i]['student_id']] = '';
+                        checkObj[res.data[i]['student_id']] = false;
+                    }
+                    obj[res.data[i]['student_id']].push({
+                        name: res.data[i]['name'],
+                        actived_number: res.data[i]['actived_number'],
+                        title: res.data[i]['title'],
+                        idx: res.data[i]['idx'],
+                    });
+                }
+
+                setStudentDatas(obj);
+                setSelectState(selectObj);
+                setCheckState(checkObj);
+            })
             .catch((err) => {
                 console.error(err);
             });
     }, []);
+
+    window.selectState = selectState;
+    window.studentDatas = studentDatas;
+    window.checkstate = checkstate;
 
     return (
         <ClassWrapper col="col">
@@ -82,9 +145,9 @@ function StudentManage() {
                 <div className="manage-inputs">
                     <div className="manage-inputs-header">
                         <div className="header-left">
-                            수강 학생 <span>(30명)</span>
+                            수강 학생 <span>({Object.keys(studentDatas).length}명)</span>
                         </div>
-                        <div className="header-right">
+                        <div className="header-right" onClick={handleDelete}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16">
                                 <path
                                     id="_22"
@@ -97,28 +160,47 @@ function StudentManage() {
                         </div>
                     </div>
                     <div className="manage-students-list">
-                        <div className="list">
-                            <StyleCheckbox checked={state.checkedG} onChange={handleChange} name="checkedG" />
-                            <div className="list-box">
-                                <div className="list-box-left">개인 학습자 1</div>
-                                <div className="list-box-right">
-                                    <FormControl className={classes.formControl}>
-                                        <InputLabel id="demo-simple-select-helper-label">과제 리포트 선택</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-helper-label"
-                                            id="demo-simple-select-helper"
-                                            value={age}
-                                            onChange={handleSelectChange}
-                                        >
-                                            <MenuItem value={10}>Ten</MenuItem>
-                                            <MenuItem value={20}>Twenty</MenuItem>
-                                            <MenuItem value={30}>Thirty</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                    <button>확인하기</button>
+                        {Object.keys(studentDatas).map((i) => (
+                            <div key={i} className="list">
+                                <StyleCheckbox checked={checkstate.i} onChange={handleChange} name={i} />
+                                <div className="list-box">
+                                    <div className="list-box-left">{studentDatas[i][0]['name']}</div>
+                                    <div className="list-box-right">
+                                        {/* <FormControl className={classes.formControl}>
+                                            <InputLabel id="demo-simple-select-helper-label">과제 리포트 선택</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-helper-label"
+                                                id="demo-simple-select-helper"
+                                                value={selectState[i]}
+                                                onChange={handleSelectChange}
+                                                name={i}
+                                            >
+                                                {studentDatas[i]
+                                                    .filter((item) => item['idx'] !== null)
+                                                    .map((j) => (
+                                                        <div key={j['actived_number']} value={j['title']}>
+                                                            <MenuItem value={j['title']}>{j['title']}</MenuItem>
+                                                        </div>
+                                                    ))}
+                                            </Select>
+                                        </FormControl> */}
+                                        <select name={i} onChange={handleSelectChange}>
+                                            <option value="">리포트 선택</option>
+                                            {studentDatas[i]
+                                                .filter((item) => item['idx'] !== null)
+                                                .map((j) => (
+                                                    <option key={j['actived_number']} value={j['actived_number']}>
+                                                        {j['title']}
+                                                    </option>
+                                                ))}
+                                        </select>
+                                        <button name={i} onClick={handleMoveReport}>
+                                            확인하기
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -126,4 +208,4 @@ function StudentManage() {
     );
 }
 
-export default StudentManage;
+export default withRouter(StudentManage);
