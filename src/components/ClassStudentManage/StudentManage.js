@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
 import { withRouter } from 'react-router-dom';
+import { IoMdArrowDropdown } from 'react-icons/io';
 
 const StyleCheckbox = withStyles({
     root: {
@@ -185,7 +186,7 @@ function StudentManage({ match, history }) {
                                             </Select>
                                         </FormControl> */}
                                         <select name={i} onChange={handleSelectChange}>
-                                            <option value="">리포트 선택</option>
+                                            <option value="">과제 리포트 선택</option>
                                             {studentDatas[i]
                                                 .filter((item) => item['idx'] !== null)
                                                 .map((j) => (
