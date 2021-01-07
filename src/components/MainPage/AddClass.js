@@ -153,7 +153,7 @@ function AddClass({ handleClose, history }) {
                     onChange={handleInputChange}
                     value={inputState}
                 />
-                {inputError ? <p style={{ color: '#ff4646', fontSize: '0.875rem', margin: '2px 2px' }}>{errorMessage}</p> : null}
+                {inputError ? <p style={{ color: '#ff4646', fontSize: '0.875rem', margin: '10px' }}>{errorMessage}</p> : null}
             </div>
             <div className="create-button">
                 <AddButton size="large" variant="contained" disabled={!addButtonEnabled} onClick={handleClickAdd}>
