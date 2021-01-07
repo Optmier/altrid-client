@@ -1,5 +1,5 @@
 import { AppBar, Button, Dialog, Drawer, Snackbar, TextField, Toolbar, withStyles } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 import ReactQuill from 'react-quill';
 import React, { useEffect, useRef, useState } from 'react';
@@ -15,7 +15,7 @@ import { apiUrl } from '../../configs/configs';
 import { withRouter } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 import { useBeforeunload } from 'react-beforeunload';
-import { ArrowBack, ArrowForward, DeleteForever, PostAdd } from '@material-ui/icons';
+import { ArrowBack, ArrowForward, Delete, DeleteForever, PostAdd } from '@material-ui/icons';
 import { useCallback } from 'react';
 import { updateSession } from '../../redux_modules/sessions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +25,8 @@ import RefreshToken from '../essentials/Authentication';
  * Licensed under the Apache License 2.0.
  */
 import ShortUniqueId from 'short-unique-id';
-import { data } from 'jquery';
+import CompanyLogo from '../../images/logos/nav_logo_white.png';
+import { Helmet } from 'react-helmet';
 
 $.fn.changeSize = function (handleFunction) {
     let element = this;
@@ -62,21 +63,63 @@ const fitEditorSize = (height) => {
 
 const EdAppBar = withStyles((theme) => ({
     root: {
-        backgroundColor: '#777777',
+        backgroundColor: '#3B168A',
+        boxShadow: 'none',
     },
 }))(AppBar);
 
 const EdToolbar = withStyles((theme) => ({
     root: {
-        paddingLeft: 0,
+        paddingLeft: 32,
+        minHeight: 80,
     },
 }))(Toolbar);
+
+const EdToolbarButton = withStyles((theme) => ({
+    root: {
+        borderRadius: 10,
+        color: '#fff',
+        fontFamily: 'Noto Sans CJK KR',
+        minWidth: 96,
+        minHeight: 44,
+        '&.normal': {
+            backgroundColor: '#572AB5',
+        },
+        '&.accent': {
+            backgroundColor: '#6D2AFA',
+        },
+        '&.critical': {
+            backgroundColor: 'rgba(255, 92, 92, 0.85)',
+        },
+        '& + &': {
+            marginLeft: 24,
+        },
+    },
+}))(Button);
+
+const EdProblemAddButton = withStyles((theme) => ({
+    root: {
+        borderColor: 'rgba(59, 22, 138, 0.53)',
+        borderRadius: 10,
+        borderWidth: 2,
+        color: '#5A5A5A',
+        fontFamily: 'Noto Sans CJK KR',
+        fontWeight: 500,
+        minHeight: 52,
+
+        '& + &': {
+            marginLeft: 16,
+        },
+    },
+}))(Button);
 
 const EdTextField = withStyles((theme) => ({
     root: {
         '& .MuiInputBase-root': {
-            color: '#ffffff',
-            fontSize: '1.125rem',
+            color: '#707070',
+            fontFamily: 'Noto Sans CJK KR',
+            fontSize: '1.25rem',
+            fontWeight: 600,
             '& .MuiOutlinedInput-notchedOutline': {
                 border: 'none',
             },
@@ -105,18 +148,37 @@ const Container = styled.div`
     width: 100%;
 `;
 const LeftContainer = styled.div`
-    padding: 8px;
-    width: 60%;
+    /* padding: 8px; */
+    overflow: hidden;
+    width: 55%;
+`;
+const TitleBox = styled.div`
+    background-color: #f6f7f9;
+    /* border-bottom: 1px solid #e5e5e5; */
+    box-shadow: 1px 1px 5px #00000029;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0 34px;
+    min-height: 72px;
 `;
 const RightContainer = styled.div`
-    border-left: 1px solid #adadad;
-    padding: 8px;
-    width: 40%;
+    border-left: 1px solid #e5e5e5;
+    /* padding: 8px; */
+    width: 45%;
 `;
-const AddButtonContainer = styled.div``;
+const AddButtonContainer = styled.div`
+    border-bottom: 1px solid rgba(112, 112, 112, 0.2);
+    box-sizing: content-box;
+    display: flex;
+    align-items: center;
+    min-height: 72px;
+    padding: 0 24px;
+`;
 const ProblemsContainer = styled.div`
     overflow: auto;
-    padding-top: 4px;
+    padding: 24px;
+    padding-left: 12px;
 `;
 const NoContentsProblemWarning = styled.div`
     display: flex;
@@ -267,6 +329,10 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     const onProblemDelete = (delIdx) => (event) => {
         const confirmDialog = window.confirm('정말로 삭제하시겠어요?');
         if (confirmDialog) setContentsProblemDatas(contentsProblemDatas.filter((origData, idx) => idx !== delIdx));
+    };
+
+    const onProblemCardCheckChanged = (number, checked) => {
+        console.log('You checked number ', number, checked);
     };
 
     const handleSaveContents = () => {
@@ -498,145 +564,190 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     useBeforeunload((e) => e.preventDefault());
 
     return (
-        <Root className="tofel-editor-root">
-            <Snackbar open={alertBarOpen} autoHideDuration={5000} onClose={handleAlertBarClose}>
-                <Alert onClose={handleAlertBarClose} severity={alertBarOption.severity}>
-                    {alertBarOption.message}
-                </Alert>
-            </Snackbar>
-            <PreviewDialog open={openPreview} onClose={handlePreviewClose}>
-                <PreviewContainer>
-                    <SmartTOFELRender
-                        preview
-                        title={metadata.map((m) => m.title)}
-                        pUUIDs={metadata.map((m) => m.uuid)}
-                        passageForRender={metadata.map((m) => m.passageForRender)}
-                        problemDatas={metadata.flatMap((m) => m.problemDatas)}
-                        timer={contentsTimeLimit}
-                        onEnd={handlePreviewClose}
-                    />
-                </PreviewContainer>
-            </PreviewDialog>
-            <Drawer anchor="right" open={openCreateNewDrawer}>
-                <CreateNewProblem
-                    problemDatas={currentProblemData}
-                    editmode={problemEditmode}
-                    handleClose={toggleDrawer(false)}
-                    onCreate={onProblemCreate}
-                />
-            </Drawer>
-            <Header className="header">
-                <EdAppBar position="static">
-                    <EdToolbar>
-                        <EdTextField
-                            variant="outlined"
-                            fullWidth
-                            placeholder="컨텐츠 제목을 입력하세요."
-                            name="contents_title"
-                            value={contentsTitle}
-                            onChange={onTextFieldChange}
+        <>
+            <Helmet>
+                <style>{`
+                    .quill.passage-editor > .ql-toolbar.ql-snow {
+                        border: none;
+                        border-bottom: 1px solid rgba(112, 112, 112, 0.2);
+                        padding: 12px 48px;
+                    }
+                    .quill.passage-editor > .ql-container.ql-snow {
+                        border: none;
+                        font-family: Noto Sans CJK KR;
+                    }
+                    .quill.passage-editor > .ql-container.ql-snow > .ql-editor {
+                        color: #707070;
+                        font-family: Noto Sans CJK KR;
+                        font-weight: 400;
+                        padding: 16px 48px;
+                    }
+                    .quill.passage-editor > .ql-container.ql-snow > .ql-editor > p > strong, b {
+                        // filter: brightness(0.667);
+                    }
+                    .quill.passage-editor > .ql-container.ql-snow > .ql-editor.ql-blank::before {
+                        left: initial;
+                        right: initial;
+                        top: 18px;
+                        color: #707070;
+                        font-family: Noto Sans CJK KR;
+                        font-size: 1.2rem;
+                        font-style: normal;
+                        opacity: 0.7;
+                    }
+            `}</style>
+            </Helmet>
+            <Root className="tofel-editor-root">
+                <Snackbar open={alertBarOpen} autoHideDuration={5000} onClose={handleAlertBarClose}>
+                    <Alert onClose={handleAlertBarClose} severity={alertBarOption.severity}>
+                        {alertBarOption.message}
+                    </Alert>
+                </Snackbar>
+                <PreviewDialog open={openPreview} onClose={handlePreviewClose}>
+                    <PreviewContainer>
+                        <SmartTOFELRender
+                            preview
+                            title={metadata.map((m) => m.title)}
+                            pUUIDs={metadata.map((m) => m.uuid)}
+                            passageForRender={metadata.map((m) => m.passageForRender)}
+                            problemDatas={metadata.flatMap((m) => m.problemDatas)}
+                            timer={contentsTimeLimit}
+                            onEnd={handlePreviewClose}
                         />
-                        {requestFile ? (
-                            <Button
-                                href={`${apiUrl}/files/${requestFile}`}
-                                download={requestFile.substring(requestFile.indexOf('_') + 1).substring(requestFile.lastIndexOf('/') + 1)}
-                                color="inherit"
-                                style={{ minWidth: 128 }}
-                            >
-                                첨부파일(F)
-                            </Button>
-                        ) : null}
-                        <Button color="inherit" onClick={handlePreviewOpen} style={{ minWidth: 128 }}>
-                            미리보기(B)
-                        </Button>
-                        {mode ? (
-                            <Button
-                                color="inherit"
-                                onClick={() => {
-                                    onEditFinish(metadata);
-                                    onClose();
-                                }}
-                            >
-                                확인
-                            </Button>
-                        ) : (
-                            <>
-                                <Button color="inherit" style={{ minWidth: 72 }} onClick={handleSaveContents}>
-                                    저장(S)
-                                </Button>
-                                <Button color="inherit" style={{ minWidth: 72 }} onClick={handleDeleteContents}>
-                                    삭제(D)
-                                </Button>
-                            </>
-                        )}
-                    </EdToolbar>
-                </EdAppBar>
-            </Header>
-            <Container>
-                <LeftContainer>
-                    <ReactQuill
-                        id="new_tofel_passage"
-                        ref={quillRef}
-                        modules={{ toolbar: QuillEditorToolbarOption }}
-                        placeholder="지문을 입력하세요."
-                        // value={contentsPassage.editor}
-                        onChange={onQuillEditorChange}
+                    </PreviewContainer>
+                </PreviewDialog>
+                <Drawer anchor="right" open={openCreateNewDrawer}>
+                    <CreateNewProblem
+                        problemDatas={currentProblemData}
+                        editmode={problemEditmode}
+                        handleClose={toggleDrawer(false)}
+                        onCreate={onProblemCreate}
                     />
-                </LeftContainer>
-                <RightContainer>
-                    <AddButtonContainer>
-                        <Button variant="outlined" fullWidth startIcon={<AddIcon />} onClick={handleProblemCreate}>
-                            새 문제 추가(P)
+                </Drawer>
+                <Header className="header">
+                    <EdAppBar position="static">
+                        <EdToolbar>
+                            <img src={CompanyLogo} alt="로고" height={60} style={{ marginRight: 'auto' }} />
+                            {requestFile ? (
+                                <EdToolbarButton
+                                    className="normal"
+                                    href={`${apiUrl}/files/${requestFile}`}
+                                    download={requestFile
+                                        .substring(requestFile.indexOf('_') + 1)
+                                        .substring(requestFile.lastIndexOf('/') + 1)}
+                                    style={{ minWidth: 128 }}
+                                >
+                                    첨부파일(F)
+                                </EdToolbarButton>
+                            ) : null}
+                            <EdToolbarButton className="normal" onClick={handlePreviewOpen} style={{ minWidth: 128 }}>
+                                미리보기(B)
+                            </EdToolbarButton>
+                            {mode ? (
+                                <EdToolbarButton
+                                    className="accent"
+                                    onClick={() => {
+                                        onEditFinish(metadata);
+                                        onClose();
+                                    }}
+                                >
+                                    확인
+                                </EdToolbarButton>
+                            ) : (
+                                <>
+                                    <EdToolbarButton className="accent" onClick={handleSaveContents}>
+                                        저장(S)
+                                    </EdToolbarButton>
+                                    <EdToolbarButton className="critical" onClick={handleDeleteContents}>
+                                        삭제(D)
+                                    </EdToolbarButton>
+                                </>
+                            )}
+                        </EdToolbar>
+                    </EdAppBar>
+                </Header>
+                <Container>
+                    <LeftContainer>
+                        <TitleBox>
+                            <EdTextField
+                                variant="outlined"
+                                fullWidth
+                                placeholder="지문 제목을 입력하세요."
+                                name="contents_title"
+                                value={contentsTitle}
+                                onChange={onTextFieldChange}
+                            />
+                        </TitleBox>
+                        <ReactQuill
+                            id="new_tofel_passage"
+                            className="passage-editor"
+                            ref={quillRef}
+                            modules={{ toolbar: QuillEditorToolbarOption }}
+                            placeholder="지문을 입력하세요."
+                            // value={contentsPassage.editor}
+                            onChange={onQuillEditorChange}
+                        />
+                    </LeftContainer>
+                    <RightContainer>
+                        <AddButtonContainer>
+                            <EdProblemAddButton variant="outlined" fullWidth startIcon={<PlaylistAddIcon />} onClick={handleProblemCreate}>
+                                새 문제 추가하기
+                            </EdProblemAddButton>
+                            <EdProblemAddButton variant="outlined" fullWidth startIcon={<Delete />}>
+                                문제 삭제하기
+                            </EdProblemAddButton>
+                        </AddButtonContainer>
+                        <ProblemsContainer className="problem-container">
+                            {contentsProblemDatas.length > 0 ? (
+                                <>
+                                    {contentsProblemDatas.map((data, idx) => (
+                                        <ProblemCard
+                                            key={idx}
+                                            orderNumber={idx}
+                                            category={data.category}
+                                            type={data.type}
+                                            textForRender={data.textForRender}
+                                            selections={data.selections}
+                                            answer={data.answer}
+                                            score={data.score}
+                                            handleEdit={onProblemEdit(idx)}
+                                            handleDelete={onProblemDelete(idx)}
+                                            handleProblemCardCheckChanged={onProblemCardCheckChanged}
+                                        />
+                                    ))}
+                                </>
+                            ) : (
+                                <NoContentsProblemWarning>
+                                    <SentimentDissatisfiedIcon />
+                                    아직 추가하신 문제가 없습니다!
+                                </NoContentsProblemWarning>
+                            )}
+                        </ProblemsContainer>
+                    </RightContainer>
+                </Container>
+                <BottomContainer>
+                    <div className="group">
+                        <Button startIcon={<ArrowBack />} onClick={handlePrevSet}>
+                            이전 세트
                         </Button>
-                    </AddButtonContainer>
-                    <ProblemsContainer className="problem-container">
-                        {contentsProblemDatas.length > 0 ? (
-                            <>
-                                {contentsProblemDatas.map((data, idx) => (
-                                    <ProblemCard
-                                        key={idx}
-                                        category={data.category}
-                                        type={data.type}
-                                        textForRender={data.textForRender}
-                                        selections={data.selections}
-                                        answer={data.answer}
-                                        score={data.score}
-                                        handleEdit={onProblemEdit(idx)}
-                                        handleDelete={onProblemDelete(idx)}
-                                    />
-                                ))}
-                            </>
-                        ) : (
-                            <NoContentsProblemWarning>
-                                <SentimentDissatisfiedIcon />
-                                아직 추가하신 문제가 없습니다!
-                            </NoContentsProblemWarning>
-                        )}
-                    </ProblemsContainer>
-                </RightContainer>
-            </Container>
-            <BottomContainer>
-                <div className="group">
-                    <Button startIcon={<ArrowBack />} onClick={handlePrevSet}>
-                        이전 세트
-                    </Button>
-                    <span style={{ margin: '0 8px' }}>
-                        {setNum + 1} / {metadata.length}
-                    </span>
-                    <Button endIcon={<ArrowForward />} onClick={handleNextSet}>
-                        다음 세트
-                    </Button>
-                </div>
-                <div className="group">
-                    <Button startIcon={<PostAdd />} onClick={addSet}>
-                        세트 추가
-                    </Button>
-                    <Button color="secondary" startIcon={<DeleteForever />} onClick={removeCurrentSet}>
-                        세트 삭제
-                    </Button>
-                </div>
-            </BottomContainer>
-        </Root>
+                        <span style={{ margin: '0 8px' }}>
+                            {setNum + 1} / {metadata.length}
+                        </span>
+                        <Button endIcon={<ArrowForward />} onClick={handleNextSet}>
+                            다음 세트
+                        </Button>
+                    </div>
+                    <div className="group">
+                        <Button startIcon={<PostAdd />} onClick={addSet}>
+                            세트 추가
+                        </Button>
+                        <Button color="secondary" startIcon={<DeleteForever />} onClick={removeCurrentSet}>
+                            세트 삭제
+                        </Button>
+                    </div>
+                </BottomContainer>
+            </Root>
+        </>
     );
 }
 

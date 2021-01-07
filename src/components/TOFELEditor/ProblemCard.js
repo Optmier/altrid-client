@@ -1,15 +1,44 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import styled from 'styled-components';
 import * as $ from 'jquery';
 import ProblemCategories from './ProblemCategories';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { IconButton } from '@material-ui/core';
+import { Checkbox, IconButton, withStyles } from '@material-ui/core';
+import { RadioButtonChecked, RadioButtonCheckedOutlined, RadioButtonUnchecked } from '@material-ui/icons';
+import EditorProblemRadioChecked from './assets/EditorProblemRadioChecked';
+import EditorProblemRadioUnchecked from './assets/EditorProblemRadioUnchecked';
+import EditorProblemCheckboxUnchecked from './assets/EditorProblemCheckboxUnchecked';
+import EditorProblemCheckboxChecked from './assets/EditorProblemCheckboxChecked';
 
+const EdCheckbox = withStyles((theme) => ({
+    root: {
+        '&:hover': {
+            backgroundColor: '#ffffff00',
+        },
+    },
+}))(Checkbox);
+const EdIconButton = withStyles((theme) => ({
+    root: {
+        '&:hover': {
+            backgroundColor: '#ffffff00',
+        },
+    },
+}))(IconButton);
 const Root = styled.div`
     /* padding-top: 24px; */
+    display: flex;
     position: relative;
+
+    & + & {
+        margin-top: 32px;
+    }
+`;
+const PCardActions = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-right: 2px;
 `;
 const HiddenBorder = styled.div`
     cursor: move;
@@ -38,37 +67,61 @@ const HiddenBorder = styled.div`
         opacity: 1;
     }
 `;
-const Contents = styled.div`
+const ContentsContainer = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     min-width: 100px;
     min-height: 64px;
-    border: 2px solid transparent;
-    border-radius: 4px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-top: none;
-    font-size: 0.75rem;
+    border: 2px solid #e2e2e2;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: Noto Sans CJK KR;
     overflow: auto;
-    padding: 6px;
+    padding: 18px 28px;
+    width: 100%;
 
-    & p {
-        font-size: 0.75rem;
-        line-height: 0.98rem;
+    &.checked {
+        border-color: #484848;
+    }
+
+    & div.order-number {
+        display: flex;
+        color: #707070;
+        line-height: 1.5rem;
+        margin-right: 18px;
+    }
+`;
+const Contents = styled.div`
+    display: inherit;
+    flex-direction: column;
+
+    & div {
+        color: #707070;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 400;
+        /* line-height: 1rem; */
 
         &.selection {
-            font-family: initial;
-            font-weight: 700;
-            margin-left: 0.75rem;
+            color: rgba(112, 112, 112, 0.79);
+            display: flex;
+            font-family: inherit;
+            font-weight: 400;
+
+            & .answer-selected-icon {
+                margin-right: 20px;
+            }
 
             & + .selection {
-                margin-top: 0.375rem;
+                margin-top: 12px;
             }
         }
     }
 
     & .ql-container.ql-snow {
         border: none;
+        font-family: inherit;
+        font-size: 1rem;
     }
 
     &.hover {
@@ -77,10 +130,39 @@ const Contents = styled.div`
     }
 `;
 
-function ProblemCard({ category, type, textForRender, selections, answer, score, handleEdit, handleDelete }) {
+function ProblemCard({
+    orderNumber,
+    category,
+    type,
+    textForRender,
+    selections,
+    answer,
+    score,
+    handleEdit,
+    handleDelete,
+    handleProblemCardCheckChanged,
+}) {
     const rootRef = useRef();
     const hiddenMenuRef = useRef();
     const contentsRef = useRef();
+    const [cardChecked, setCardChecked] = useState(false);
+
+    const SelectionRender = (selection, num, answer) => {
+        return selection ? (
+            <div className="selection">
+                <div className="answer-selected-icon">
+                    {num === answer ? <EditorProblemRadioChecked /> : <EditorProblemRadioUnchecked />}
+                </div>
+                <div className="selection-text">{selection}</div>
+            </div>
+        ) : null;
+    };
+
+    const handleCardCheckChange = ({ target }) => {
+        const { checked } = target;
+        setCardChecked(checked);
+        handleProblemCardCheckChanged(orderNumber, checked);
+    };
 
     useEffect(() => {
         $(hiddenMenuRef.current).on('mouseover', () => {
@@ -97,31 +179,47 @@ function ProblemCard({ category, type, textForRender, selections, answer, score,
 
     return (
         <Root ref={rootRef}>
-            <HiddenBorder ref={hiddenMenuRef}>
+            <PCardActions>
+                <EdCheckbox
+                    icon={<EditorProblemCheckboxUnchecked />}
+                    checkedIcon={<EditorProblemCheckboxChecked />}
+                    disableRipple
+                    size="medium"
+                    color="default"
+                    onChange={handleCardCheckChange}
+                />
+                <EdIconButton disableRipple size="medium" aria-label="edit" onClick={handleEdit}>
+                    <EditIcon fontSize="inherit" />
+                </EdIconButton>
+            </PCardActions>
+            {/* <HiddenBorder ref={hiddenMenuRef}>
                 <IconButton aria-label="edit" size="small" onClick={handleEdit}>
                     <EditIcon fontSize="inherit" />
                 </IconButton>
                 <IconButton aria-label="delete" size="small" onClick={handleDelete}>
                     <DeleteIcon fontSize="inherit" />
                 </IconButton>
-            </HiddenBorder>
-            <Contents ref={contentsRef}>
-                <div className="ql-container ql-snow" style={{ marginBottom: '0.5rem' }}>
-                    {ReactHtmlParser(textForRender)}
-                </div>
-                {type === 'short-answer' ? null : (
-                    <>
-                        <p className="selection">{selections[1]}</p>
-                        <p className="selection">{selections[2]}</p>
-                        <p className="selection">{selections[3]}</p>
-                        <p className="selection">{selections[4]}</p>
-                        <p className="selection">{selections[5]}</p>
-                    </>
-                )}
-                <p style={{ marginTop: '0.5rem' }}>유형: {category ? ProblemCategories[category - 1].name : '기타'}</p>
+            </HiddenBorder> */}
+            <ContentsContainer className={`${cardChecked ? 'checked' : ''}`}>
+                <div className="order-number">{orderNumber + 1}.</div>
+                <Contents ref={contentsRef}>
+                    <div className="ql-container ql-snow" style={{ marginBottom: '1rem' }}>
+                        {ReactHtmlParser(textForRender)}
+                    </div>
+                    {type === 'short-answer' ? null : (
+                        <>
+                            {SelectionRender(selections[1], 1, answer)}
+                            {SelectionRender(selections[2], 2, answer)}
+                            {SelectionRender(selections[3], 3, answer)}
+                            {SelectionRender(selections[4], 4, answer)}
+                            {SelectionRender(selections[5], 5, answer)}
+                        </>
+                    )}
+                    {/* <p style={{ marginTop: '0.5rem' }}>유형: {category ? ProblemCategories[category - 1].name : '기타'}</p>
                 <p style={{ marginTop: '0.375rem' }}>정답: {answer}</p>
-                <p style={{ marginTop: '0.375rem' }}>배점: {score}</p>
-            </Contents>
+                <p style={{ marginTop: '0.375rem' }}>배점: {score}</p> */}
+                </Contents>
+            </ContentsContainer>
         </Root>
     );
 }
@@ -139,6 +237,9 @@ ProblemCard.defaultProps = {
     },
     answer: '',
     score: 0,
+    handleProblemCardCheckChanged(no) {
+        console.log(no);
+    },
 };
 
 export default ProblemCard;
