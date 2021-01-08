@@ -79,7 +79,10 @@ function StudentManage({ match, history }) {
     };
     const handleMoveReport = (e) => {
         const { name } = e.target;
-        history.push(`/class/${num}/share/${selectState[name]}/details?user=${name}`);
+
+        if (selectState[name]) {
+            history.push(`/class/${num}/share/${selectState[name]}/details?user=${name}`);
+        }
     };
     const handleDelete = () => {
         let arr = [];
