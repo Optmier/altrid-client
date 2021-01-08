@@ -12,6 +12,8 @@ import BackdropComponent from '../components/essentials/BackdropComponent';
 import { getDrafts } from '../redux_modules/assignmentDraft';
 import ErrorRestricted from './ErrorRestricted';
 import { useState } from 'react';
+import StudentManage from '../components/ClassStudentManage/StudentManage';
+import VideoLecturesManage from '../components/VideoLectures/VideoLecturesManage';
 
 const ClassPageSwitcher = (match, sessions) => {
     if (!match.id || !match.path) return <></>;
@@ -23,6 +25,9 @@ const ClassPageSwitcher = (match, sessions) => {
         case 'manage':
             if (sessions.userType === 'students') return <ErrorRestricted />;
             return <Manage />;
+        case 'student-manage':
+            if (sessions.userType === 'students') return <ErrorRestricted />;
+            return <StudentManage />;
         case 'share':
             return (
                 <>
@@ -30,6 +35,8 @@ const ClassPageSwitcher = (match, sessions) => {
                     <Route path={`${path}/:activedNum`} component={Reportes} />
                 </>
             );
+        case 'vid-lecture':
+            return <VideoLecturesManage />;
         default:
             return <Error />;
     }

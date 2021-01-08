@@ -47,6 +47,7 @@ li {
             & .contents-box {
                 margin-top: 28px;
                 width: 690px;
+
                 padding: 65px 85px;
                 background-color: white;
                 box-shadow: 5px 5px 15px #c3bcbc24;
@@ -88,7 +89,6 @@ li {
     }
 
     & .eyetrack-step-home {
-        width: 1280px;
         padding-top: 40px;
         box-sizing: border-box;
 
@@ -216,6 +216,7 @@ li {
             justify-content: center;
             margin-top: 28px;
             width: 690px;
+            height: 300px;
             padding: 65px 85px;
             background-color: white;
             box-shadow: 5px 5px 15px #c3bcbc24;

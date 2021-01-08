@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as $ from 'jquery';
 import { Button, Dialog } from '@material-ui/core';
 import { useRef } from 'react';
-import BackdropComponent from './BackdropComponent';
+import BackdropComponent2 from './BackdropComponent2';
 import styled from 'styled-components';
 import { buildMode } from '../../configs/configs';
 import '../../styles/eyetracker_core.scss';
@@ -171,7 +171,7 @@ const checkRange = (pos1, pos2, allowedOffset) => {
 };
 
 const captureChanged = (position, elapsedTime, precisionElapsedTime) => {
-    console.log(position, elapsedTime, precisionElapsedTime);
+    // console.log(position, elapsedTime, precisionElapsedTime);
     // 지문 스크롤 위치
     const passageScrollPosition = $('.passages').length ? $('.passages')[0].scrollTop : 0;
     // 문제 스크롤 위치
@@ -250,7 +250,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     const [calibrateState, setCalibrateState] = useState(false);
 
     const [start, setStart] = useState(false);
-    const [webgazerLoded, setWebgazerLoaded] = useState(false);
+    const [webgazerLoded, setWebgazerLoaded] = useState(true);
     const [calib, setCalib] = useState(false);
     const [calibBtnText, setCalibBtnText] = useState(
         localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true' ? '이전 보정 사용' : '보정 완료',
@@ -341,13 +341,13 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     let startedTime = null;
 
     const updateTicker = (data, elapsedTime) => {
-        console.log(data, elapsedTime);
+        //console.log(data, elapsedTime);
         if (!completedCalib) return;
         if (!afterCalibAndStarted) {
             afterCalibAndStarted = true;
             // startedTime = elapsedTime;
         }
-        onUpdate(data, _timeElapsed);
+        onUpdate(data, _timeElapsed, elapsedTime);
 
         if (!tickerTimeout)
             tickerTimeout = setTimeout(() => {
@@ -418,7 +418,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     };
 
     const cameraStart = () => {
-        console.log(start);
+        console.log('camera start!!!');
         if (start) return;
 
         setStart(true);
@@ -443,12 +443,12 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                 try {
                     if (Webgazer.isReady()) {
                         Webgazer.showPredictionPoints(true);
-                        $('#webgazerVideoFeed').css({ 'z-index': 99999, top: 'calc(50% - 420px)', left: 'calc(50% - 160px)' });
-                        $('#webgazerVideoCanvas').css({ 'z-index': 99999, top: 'calc(50% - 420px)', left: 'calc(50% - 160px)' });
-                        $('#webgazerFaceOverlay').css({ 'z-index': 99999, top: 'calc(50% - 420px)', left: 'calc(50% - 160px)' });
+                        $('#webgazerVideoFeed').css({ 'z-index': 99999, top: 'calc(50% - 110px)', left: 'calc(50% - 160px)' });
+                        $('#webgazerVideoCanvas').css({ 'z-index': 99999, top: 'calc(50% - 110px)', left: 'calc(50% - 160px)' });
+                        $('#webgazerFaceOverlay').css({ 'z-index': 99999, top: 'calc(50% - 110px)', left: 'calc(50% - 160px)' });
                         $('#webgazerFaceFeedbackBox').css({
                             'z-index': 99999,
-                            top: 'calc(50% - 263.2px)',
+                            top: 'calc(50% - 71px)',
                             left: 'calc(50% - 79.2px)',
                         });
 
@@ -463,10 +463,11 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                                 Webgazer.removeMouseEventListeners();
                                 console.log("Webgaze cleared data because you didn't calibrate complete.");
                             }
-                            console.log('all loaded!');
+                            //console.log('all loaded!');
+
                             setWebgazerLoaded((webgazerLoaded) => true);
-                            const backCvs = backCanvas.current;
-                            const ctx = backCvs.getContext('2d');
+                            // const backCvs = backCanvas.current;
+                            //const ctx = backCvs.getContext('2d');
                             // makeDots(ctx);
                             clearInterval(check);
                         }
@@ -478,16 +479,6 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
             }, 500);
         }, 1000);
     };
-
-    // useEffect(() => {
-    //     return () => {
-    //         try {
-    //             Webgazer.end();
-    //         } catch (e) {
-    //             console.warn(e);
-    //         }
-    //     };
-    // }, []);
 
     const onCalibDotClick = ({ target }) => {
         const type = target['dataset'].type;
@@ -517,21 +508,34 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     window.dots = calibDotCounts;
 
     // useEffect(() => {
-    //     if (!start) return;
-    //     let allCalibrated = true;
-    //     Object.keys(calibDotCounts).forEach((key) => {
-    //         if (calibDotCounts[key] < 20) {
-    //             allCalibrated = false;
-    //             return;
+    //     return () => {
+    //         try {
+    //             Webgazer.end();
+    //         } catch (e) {
+    //             console.warn(e);
     //         }
-    //     });
-    //     if (allCalibrated) {
-    //         localStorage.setItem('eye_calibrated', true);
-    //         setCalibBtnDisabled(false);
-    //     } else {
-    //         localStorage.setItem('eye_calibrated', false);
-    //     }
-    // }, [calibDotCounts]);
+    //     };
+    // }, []);
+
+    useEffect(() => {
+        if (!start) return;
+        let allCalibrated = true;
+        Object.keys(calibDotCounts).forEach((key) => {
+            if (calibDotCounts[key] < 20) {
+                allCalibrated = false;
+                return;
+            }
+        });
+        if (allCalibrated) {
+            localStorage.setItem('eye_calibrated', true);
+            alert('보정완료되었습니다 !');
+
+            setCalibBtnDisabled(false);
+            setTranslateNum(translateNum - 100);
+        } else {
+            localStorage.setItem('eye_calibrated', false);
+        }
+    }, [calibDotCounts]);
 
     //왼쪽,오른쪽 이동 메소드
     const handleSlide = (e) => {
@@ -550,11 +554,11 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         if (translateNum === 200) {
             if (calibrateState === 'new') {
                 setTranslateNum(translateNum - 100);
+                setStepBtnState(false);
             } else if (calibrateState === 'pre') {
                 //바로 문제 로드 !!
-                console.log('문제로드');
+                setTranslateNum(-600);
             }
-            setStepBtnState(false);
         }
 
         // 데이터 수집 동의 단계
@@ -564,6 +568,11 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         // 카메라 체크 단계
         else if (translateNum === -300) {
             setTranslateNum(translateNum - 100);
+
+            $('#webgazerVideoFeed').css({ opacity: '0', 'z-index': '-1' });
+            $('#webgazerVideoCanvas').css({ opacity: '0', 'z-index': '-1' });
+            $('#webgazerFaceOverlay').css({ opacity: '0', 'z-index': '-1' });
+            $('#webgazerFaceFeedbackBox').css({ opacity: '0', 'z-index': '-1' });
         }
         // 시선보정 안내 단계
         else if (translateNum === -400) {
@@ -576,6 +585,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         // 시험 시작 단계
         else if (translateNum === -600) {
             setTranslateNum(translateNum - 100);
+            executeCalibration();
         } else {
             return 0;
         }
@@ -583,7 +593,9 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     //보정 사용 유무 메소드
     const handleCalibration = (e) => {
         const { name } = e.target;
+
         setCalibrateState(name);
+
         setStepBtnState(true);
     };
     //데이터 수집 동의 메소드
@@ -594,66 +606,74 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
 
     return (
         <>
-            {/* <BackdropComponent disableShrink open={!webgazerLoded} /> */}
-            <div className="eyetrackerCore-root">
-                {translateNum === 200 ? (
-                    <StepHome handleCalibration={handleCalibration} />
-                ) : translateNum === 100 ? (
-                    <StepAgree agreeCheck={agreeCheck} handleCheckChange={handleCheckChange} />
-                ) : translateNum >= -200 && translateNum <= 0 ? (
-                    <div className="eyetrackerCore-wrapper">
-                        <SlideBtn
-                            translateNum={translateNum}
-                            alt="btn"
-                            name="left"
-                            className="slide-button-left"
-                            src={LeftButton}
-                            onClick={handleSlide}
-                        />
-                        <SlideBtn
-                            translateNum={translateNum}
-                            alt="btn"
-                            name="right"
-                            className="slide-button-right"
-                            src={RightButton}
-                            onClick={handleSlide}
-                        />
-                        <div style={{ marginLeft: '25%' }} className="eyetrack-step-header">
-                            정확한 분석을 위해 문제 풀이가 진행되는 동안 아래 사항들을 유의해주세요.
+            {translateNum === -700 ? null : (
+                <>
+                    <BackdropComponent2 disableShrink open={!webgazerLoded} />
+                    <div className="eyetrackerCore-root">
+                        {translateNum === 200 ? (
+                            <StepHome handleCalibration={handleCalibration} />
+                        ) : translateNum === 100 ? (
+                            <StepAgree agreeCheck={agreeCheck} handleCheckChange={handleCheckChange} />
+                        ) : translateNum >= -200 && translateNum <= 0 ? (
+                            <div className="eyetrackerCore-wrapper">
+                                <SlideBtn
+                                    translateNum={translateNum}
+                                    alt="btn"
+                                    name="left"
+                                    className="slide-button-left"
+                                    src={LeftButton}
+                                    onClick={handleSlide}
+                                />
+                                <SlideBtn
+                                    translateNum={translateNum}
+                                    alt="btn"
+                                    name="right"
+                                    className="slide-button-right"
+                                    src={RightButton}
+                                    onClick={handleSlide}
+                                />
+                                <div style={{ marginLeft: '25%' }} className="eyetrack-step-header">
+                                    정확한 분석을 위해 문제 풀이가 진행되는 동안 아래 사항들을 유의해주세요.
+                                </div>
+                                <SlideUl translateNum={translateNum}>
+                                    <li>
+                                        <StepBox num="01" />
+                                    </li>
+                                    <li>
+                                        <StepBox num="02" />
+                                    </li>
+                                    <li>
+                                        <StepBox num="03" />
+                                    </li>
+                                </SlideUl>
+                            </div>
+                        ) : translateNum === -300 ? (
+                            <StepCameraCheck setWebgazerLoaded={setWebgazerLoaded} />
+                        ) : translateNum === -400 ? (
+                            <StepCalibrationInfo />
+                        ) : translateNum === -500 ? (
+                            <StepCalibration
+                                onCalibDotClick={onCalibDotClick}
+                                onCalibDotHover={onCalibDotHover}
+                                onCalibDotLeave={onCalibDotLeave}
+                            />
+                        ) : translateNum === -600 ? (
+                            <StepTestStart />
+                        ) : (
+                            ''
+                        )}
+                        <div className="eyetrack-step-button">
+                            {(translateNum >= -200 && translateNum <= 0) || translateNum === -500 ? (
+                                ''
+                            ) : (
+                                <StepBtn className="zIndexBtn" name="right" onClick={handleComplete} stepBtnState={stepBtnState}>
+                                    {translateNum >= -600 && translateNum <= -400 ? '시작하기' : '확인 완료'}
+                                </StepBtn>
+                            )}
                         </div>
-                        <SlideUl translateNum={translateNum}>
-                            <li>
-                                <StepBox num="01" />
-                            </li>
-                            <li>
-                                <StepBox num="02" />
-                            </li>
-                            <li>
-                                <StepBox num="03" />
-                            </li>
-                        </SlideUl>
                     </div>
-                ) : translateNum === -300 ? (
-                    <StepCameraCheck />
-                ) : translateNum === -400 ? (
-                    <StepCalibrationInfo />
-                ) : translateNum === -500 ? (
-                    <StepCalibration />
-                ) : translateNum === -600 ? (
-                    <StepTestStart />
-                ) : (
-                    ''
-                )}
-                <div className="eyetrack-step-button">
-                    {(translateNum >= -200 && translateNum <= 0) || translateNum === -500 ? (
-                        ''
-                    ) : (
-                        <StepBtn name="right" onClick={handleComplete} stepBtnState={stepBtnState}>
-                            {translateNum >= -600 && translateNum <= -400 ? '시작하기' : '확인 완료'}
-                        </StepBtn>
-                    )}
-                </div>
-            </div>
+                </>
+            )}
         </>
     );
 }

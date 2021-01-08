@@ -57,7 +57,10 @@ function CustomChannelIOButton({ history, match }) {
 
     useEffect(() => {
         // if (window.ChannelIO) ChannelService.hideButton();
-        if (history.location.pathname.includes('/assignments/do-it-now')) {
+        if (
+            history.location.pathname.includes('/assignments/do-it-now') ||
+            history.location.pathname.includes('/video-lecture-eyetracker')
+        ) {
             setShowCustomChannelButton(false);
         }
     }, []);

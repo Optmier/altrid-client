@@ -266,6 +266,7 @@ function Login({ history }) {
                 .then((res) => {
                     alert('계정 등록이 완료 되었습니다:)');
                     loginMethod(email, authId);
+                    document.location.replace('/login');
                 })
                 .catch((err) => {
                     console.error(err);

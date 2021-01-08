@@ -13,7 +13,7 @@ import Footer from '../components/essentials/Footer';
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
 import { useSelector } from 'react-redux';
-import AddTeacher from '../components/MainPage/AddTeacher';
+import AddClass from '../components/MainPage/AddClass';
 import classNames from 'classnames';
 import { $_classDefault } from '../configs/front_urls';
 import moment from 'moment';
@@ -67,7 +67,7 @@ function Main({ history }) {
                 <CreateNewEntry history={history} handleClose={toggleDrawer(false)} />
             </Drawer>
             <Drawer anchor="right" open={openAddTeacher} onClose={toggleAddTeacherDrawer(false)}>
-                <AddTeacher handleClose={toggleAddTeacherDrawer(false)} />
+                <AddClass handleClose={toggleAddTeacherDrawer(false)} />
             </Drawer>
             <main className="main-page">
                 <section className={classNames('decorator-root', sessions.userType)}></section>
@@ -83,15 +83,6 @@ function Main({ history }) {
                                 <div className="academy-name">
                                     <h4>{sessions.userName}님의 클래스</h4>
                                 </div>
-                                {sessions.userType === 'students' && (!cardDatas || !cardDatas.length) ? (
-                                    <div className="no-classes">
-                                        <h5>만들어진 클래스가 없습니다.</h5>
-                                        <h5>
-                                            아직 선생님을 추가하지 않으셨다면, 선생님들께서 클래스를 생성할 수 있도록 아래 버튼을 눌러 나의
-                                            선생님을 추가해 보세요!
-                                        </h5>
-                                    </div>
-                                ) : null}
                             </>
                         }
                         maxColumn={3}
@@ -100,42 +91,57 @@ function Main({ history }) {
                             <CardRoot>
                                 <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
                             </CardRoot>
-                        ) : null}
-                        {cardDatas.map(({ idx, name, class_count, max_due_date, description, teacher_name, num_of_students }) => (
-                            <CardRoot key={idx}>
-                                <CardEntry
-                                    title={name}
-                                    description={description}
-                                    assignmentOnProgress={
-                                        moment(max_due_date).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss')
-                                            ? max_due_date !== null
-                                                ? true
-                                                : false
-                                            : false
-                                    }
-                                    teacherName={teacher_name}
-                                    totalStudents={num_of_students}
-                                    totalAssignment={class_count}
-                                    onClick={() => {
-                                        history.push(`${$_classDefault}/${idx}/share`);
-                                    }}
-                                />
+                        ) : (
+                            <CardRoot>
+                                <CardAddNew onClick={toggleAddTeacherDrawer(true)}>클래스 입장</CardAddNew>
                             </CardRoot>
-                        ))}
+                        )}
+                        {cardDatas.map(
+                            ({ idx, name, class_count, max_due_date, description, class_day, teacher_name, num_of_students }) => (
+                                <CardRoot key={idx}>
+                                    <CardEntry
+                                        title={name}
+                                        description={description}
+                                        class_day={class_day}
+                                        assignmentOnProgress={
+                                            moment(max_due_date).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss')
+                                                ? max_due_date !== null
+                                                    ? true
+                                                    : false
+                                                : false
+                                        }
+                                        teacherName={teacher_name}
+                                        totalStudents={num_of_students}
+                                        totalAssignment={class_count}
+                                        onClick={() => {
+                                            history.push(`${$_classDefault}/${idx}/share`);
+                                        }}
+                                    />
+                                </CardRoot>
+                            ),
+                        )}
                     </CardLists>
                     {sessions.userType === 'students' && (!cardDatas || !cardDatas.length) ? null : <Divider className="main-divider" />}
-                    {sessions.userType === 'students' ? (
-                        <CardLists>
-                            <div className="below-card-container">
-                                <Button size="large" variant="outlined" startIcon={<GroupAddIcon />} onClick={toggleAddTeacherDrawer(true)}>
-                                    선생님 추가하기
-                                </Button>
-                            </div>
-                        </CardLists>
-                    ) : null}
                 </section>
                 {sessions.userType === 'students' ? (
-                    ''
+                    <section>
+                        <ClassWrapper col="none" type="main_page">
+                            <div className="contents-bottom-fullWidth">
+                                <div className="bottom-fullWidth-top">서비스 관련 궁금하신 점이 있으신가요?</div>
+                                <div className="bottom-fullWidth-central">
+                                    1대 1 바로 상담을 원하는 경우에는 우하단 물음표 버튼을 클릭해주세요.
+                                </div>
+                                <a
+                                    className="bottom-fullWidth-footer"
+                                    href="https://www.notion.so/ALTRID-8e6f5fe90beb42f0a10cb9b11a84f22a"
+                                    alt="more_service"
+                                    target="_blank"
+                                >
+                                    서비스 사용 가이드 <IoIosArrowForward style={{ marginRight: '5px' }} />
+                                </a>
+                            </div>
+                        </ClassWrapper>
+                    </section>
                 ) : (
                     <section>
                         <ClassWrapper col="none" type="main_page">
@@ -151,7 +157,7 @@ function Main({ history }) {
                                         alt="more_eyetrack"
                                         target="_blank"
                                     >
-                                        > 자세히 알아보기 <IoIosArrowForward style={{ marginRight: '5px' }} />
+                                        자세히 알아보기 <IoIosArrowForward style={{ marginRight: '5px' }} />
                                     </a>
                                 </div>
                                 <div className="bottom-right" onClick={() => alert('준비중입니다 !')}>
