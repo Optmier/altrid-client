@@ -171,7 +171,7 @@ const checkRange = (pos1, pos2, allowedOffset) => {
 };
 
 const captureChanged = (position, elapsedTime, precisionElapsedTime) => {
-    console.log(position, elapsedTime, precisionElapsedTime);
+    // console.log(position, elapsedTime, precisionElapsedTime);
     // 지문 스크롤 위치
     const passageScrollPosition = $('.passages').length ? $('.passages')[0].scrollTop : 0;
     // 문제 스크롤 위치
@@ -347,7 +347,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
             afterCalibAndStarted = true;
             // startedTime = elapsedTime;
         }
-        onUpdate(data, _timeElapsed);
+        onUpdate(data, _timeElapsed, elapsedTime);
 
         if (!tickerTimeout)
             tickerTimeout = setTimeout(() => {
