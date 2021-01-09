@@ -49,7 +49,10 @@ function HeaderBar() {
                         <img src={LogoWhite} alt="logo" />
                     </Link>
                 </div>
-                <div className="container center"></div>
+                <div className="container center">
+                    <Link to="/">클래스</Link>
+                    <Link to="/">과제</Link>
+                </div>
                 <div className="container right">
                     <div className="accounts-welcome" ref={testRef}>
                         <p>

@@ -251,7 +251,7 @@ body {
             display: flex;
 
             &.left {
-                margin: 0 auto 0 5%;
+                margin: 0 50px 0 5%;
 
                 & img {
                     height: 48px;
@@ -259,6 +259,13 @@ body {
             }
 
             &.center {
+                & > a {
+                    font-weight: 600;
+                    font-size: 1.125rem;
+                }
+                & > a + a {
+                    margin-left: 1rem;
+                }
             }
 
             &.right {
