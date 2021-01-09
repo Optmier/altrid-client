@@ -6,7 +6,9 @@ function StepCameraCheck({ setWebgazerLoaded }) {
     }, []);
     return (
         <div className="eyetrack-step-camera">
-            <div className="eyetrack-step-header">가이드 박스 안에 얼굴을 위치시켜주세요.</div>
+            <div className="eyetrack-step-header">
+                가이드 박스가 초록색이 되로록 얼굴을 위치시켜주세요. <br /> 보정 단계동안 이 위치를 유지해주세요.
+            </div>
             <div className="contents-box"> </div>
         </div>
     );
