@@ -239,7 +239,7 @@ const captureChanged = (position, elapsedTime, precisionElapsedTime) => {
     _lastStep = _step;
 };
 
-function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUpdate, rootRef, timeElapsed }) {
+function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUpdate, rootRef, timeElapsed, relative }) {
     _step = step;
     _userAnswer = userAnswer;
     _timeElapsed = timeElapsed;
@@ -657,6 +657,8 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                                 onCalibDotClick={onCalibDotClick}
                                 onCalibDotHover={onCalibDotHover}
                                 onCalibDotLeave={onCalibDotLeave}
+                                calibDotCounts={calibDotCounts}
+                                relative={relative}
                             />
                         ) : translateNum === -600 ? (
                             <StepTestStart />

@@ -20,7 +20,11 @@ function StepAgree({ agreeCheck, handleCheckChange }) {
                     <div className="outline"></div>데이터 수집
                 </div>
                 <div className="contents-desc">
-                    시선 추적 흐름 데이터 수집에 동의합니다. 시선흐름의 해당 좌표만 수집될 뿐, 고객님의 얼굴, 이미지 등은 녹화되지 않습니다.
+                    시선흐름 관련해서 웹캠이 구동되며 과제 중에 실시간으로 기록됩니다. <br />
+                    다만 시선의 위치 관련 데이터만 기록이 되며, 이 외의 데이터(얼굴, 소리, 이미지 등)는
+                    <span style={{ fontWeight: 600 }}> 일절 수집하지 않음</span>을 알려드립니다. <br />
+                    <br />
+                    시선흐름 데이터 수집에 동의하십니까?
                 </div>
                 <div className="contents-checkbox">
                     <GreenCheckbox checked={agreeCheck} onChange={handleCheckChange} name="checkedG" /> 데이터 수집에 동의합니다.
