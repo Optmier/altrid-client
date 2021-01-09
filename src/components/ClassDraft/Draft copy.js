@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import TypeBanner from '../essentials/TypeBanner';
 import ClassWrapper from '../essentials/ClassWrapper';
-import HeaderBar from '../essentials/HeaderBar';
 
 function Draft() {
     const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
@@ -34,22 +33,19 @@ function Draft() {
 
     return (
         <>
-            <HeaderBar />
-
             <Drawer anchor="right" open={openCreateNewDrawer}>
                 <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>
 
-            {/* <ClassWrapper>
-                 <ClassHeaderBox /> 
+            <ClassWrapper>
+                {/* <ClassHeaderBox /> */}
                 <TypeBanner situation="info" />
-            </ClassWrapper> */}
-            <div className="draft-header"></div>
-            <div style={{ paddingTop: '95px' }} className="class-section-root">
+            </ClassWrapper>
+            <div className="class-section-root">
                 <div className="class-draft-card">
                     <CardLists
                         upperDeck={
-                            <div style={{ color: 'white', fontSize: '20px' }} className="class-title">
+                            <div className="class-title">
                                 <b>{sessions.userName}</b> 선생님께서 만드신 과제는 총 <b>{cardDatas.length}개</b> 입니다.
                             </div>
                         }

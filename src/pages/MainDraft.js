@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import CardDraft from './CardDraft';
-import CardAddNew from '../essentials/CardAddNew';
-import CardLists from '../essentials/CardLists';
-import CardRoot from '../essentials/CardRoot';
+import CardDraft from '../components/ClassDraft/CardDraft';
+import CardAddNew from '../components/essentials/CardAddNew';
+import CardLists from '../components/essentials/CardLists';
+import CardRoot from '../components/essentials/CardRoot';
 import { Drawer } from '@material-ui/core';
-import ClassDrawer from '../essentials/ClassDrawer';
+import ClassDrawer from '../components/essentials/ClassDrawer';
 // import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import TypeBanner from '../essentials/TypeBanner';
-import ClassWrapper from '../essentials/ClassWrapper';
-import HeaderBar from '../essentials/HeaderBar';
+import TypeBanner from '../components/essentials/TypeBanner';
+import ClassWrapper from '../components/essentials/ClassWrapper';
 
-function Draft() {
+function MainDraft() {
     const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
 
     const sessions = useSelector((state) => state.RdxSessions);
@@ -34,22 +33,19 @@ function Draft() {
 
     return (
         <>
-            <HeaderBar />
-
             <Drawer anchor="right" open={openCreateNewDrawer}>
                 <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>
 
-            {/* <ClassWrapper>
-                 <ClassHeaderBox /> 
+            <ClassWrapper>
+                {/* <ClassHeaderBox /> */}
                 <TypeBanner situation="info" />
-            </ClassWrapper> */}
-            <div className="draft-header"></div>
-            <div style={{ paddingTop: '95px' }} className="class-section-root">
+            </ClassWrapper>
+            <div className="class-section-root">
                 <div className="class-draft-card">
                     <CardLists
                         upperDeck={
-                            <div style={{ color: 'white', fontSize: '20px' }} className="class-title">
+                            <div className="class-title">
                                 <b>{sessions.userName}</b> 선생님께서 만드신 과제는 총 <b>{cardDatas.length}개</b> 입니다.
                             </div>
                         }
@@ -70,4 +66,4 @@ function Draft() {
     );
 }
 
-export default React.memo(withRouter(Draft));
+export default React.memo(withRouter(MainDraft));

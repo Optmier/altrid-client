@@ -31,6 +31,7 @@ import MobileBody from './components/essentials/MobileBody';
 import GooroomeeTest from './pages/GooroomeeTest';
 import VideoLectureEyetracker from './components/VideoLectures/VideoLectureEyetracker';
 import VideoLectureEyetrackDetectionList from './components/VideoLectures/VideoLectureEyetrackDetectionList';
+import MainDraft from './pages/MainDraft';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -166,6 +167,8 @@ function App({ history }) {
                 <main>
                     <Switch>
                         <Route path={$_root} component={Main} exact />
+                        <Route path={'/main-draft'} component={MainDraft} exact />
+
                         <Route path={$_loginDefault} component={Login} exact />
                         <Route path={'/login-candidated'} component={LoginCandidated} exact />
                         <Route path={$_loginAdmin} component={LoginAdmin} exact />

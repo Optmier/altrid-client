@@ -21,6 +21,7 @@ function HeaderBar() {
     }, [window.scrollY]);
 
     window.onscroll = () => {
+        console.log(window.scrollY);
         if (window.scrollY > 16) {
             setScrolled(true);
         } else {

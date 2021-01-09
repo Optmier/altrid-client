@@ -14,6 +14,11 @@ import ErrorRestricted from './ErrorRestricted';
 import { useState } from 'react';
 import StudentManage from '../components/ClassStudentManage/StudentManage';
 import VideoLecturesManage from '../components/VideoLectures/VideoLecturesManage';
+import styled from 'styled-components';
+
+const StyleWrapper = styled.div`
+    padding: ${(props) => (props.id === 'draft' ? '0' : '30px 0 0 240px')};
+`;
 
 const ClassPageSwitcher = (match, sessions) => {
     if (!match.id || !match.path) return <></>;
@@ -64,10 +69,12 @@ function Class({ match }) {
         setRenderSubPage(ClassPageSwitcher(stMatch, sessions));
     }, [stMatch]);
 
+    console.log(stMatch);
+
     return (
         <>
-            <LeftNav />
-            <div className="class-page-root">
+            {match.params.id === 'draft' ? null : <LeftNav />}
+            <StyleWrapper id={match.params.id} className="class-page-root">
                 <BackdropComponent open={loading && !data && !error} />
                 {error ? (
                     <Error />
@@ -75,7 +82,7 @@ function Class({ match }) {
                     // <ClassPageSwitcher sessions={sessions} match={stMatch} />
                     RenderSubPage
                 )}
-            </div>
+            </StyleWrapper>
         </>
     );
 }
