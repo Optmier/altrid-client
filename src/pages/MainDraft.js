@@ -20,9 +20,11 @@ import { apiUrl } from '../configs/configs';
 import styled from 'styled-components';
 import { IoIosArrowForward } from 'react-icons/io';
 import { BsExclamationTriangleFill } from 'react-icons/bs';
+import Footer from '../components/essentials/Footer';
 
 const InfoBanner = styled.div`
     width: 100%;
+    margin: 95px 0;
 
     & .banner-root {
         box-sizing: border-box;
@@ -73,7 +75,6 @@ const InfoBanner = styled.div`
 `;
 
 const StyleHr = styled.div`
-    margin-bottom: 95px;
     width: 100%;
     height: 1px;
     flex-shrink: 0;
@@ -133,7 +134,7 @@ function MainDraft({ match }) {
 
                 <div className="draft-header"></div>
 
-                <div style={{ paddingTop: '95px' }} className="class-section-root">
+                <div style={{ paddingTop: '100px' }} className="class-section-root">
                     <div className="class-draft-card">
                         <CardLists
                             upperDeck={
@@ -177,6 +178,7 @@ function MainDraft({ match }) {
                     </div>
                 </InfoBanner>
             </ClassWrapper>
+            <Footer />
         </>
     );
 }

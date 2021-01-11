@@ -238,6 +238,9 @@ body {
             }
 
             &.teachers {
+                background-color: #6d2bf5;
+            }
+            &.teachers-draft {
                 background-color: $secondaryColor;
             }
 
@@ -261,7 +264,8 @@ body {
             &.center {
                 & > a {
                     font-weight: 600;
-                    font-size: 1.125rem;
+                    font-size: 1.25rem;
+                    padding: 22px 5px;
                 }
                 & > a + a {
                     margin-left: 1rem;
