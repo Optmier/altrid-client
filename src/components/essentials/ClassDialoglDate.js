@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, withStyles } from '@material-ui/core';
@@ -63,6 +63,27 @@ const StyleModalShare = styled.div`
                 color: #969393;
                 font-weight: 600;
                 margin-right: 1rem;
+                width: 85px;
+            }
+            & > select {
+                cursor: pointer;
+                background: url('/bg_images/Vector.png') no-repeat 95% 50%;
+                width: 220px; /* 원하는 너비설정 */
+                padding: 0.5rem 2rem 0.5rem 0.15rem; /* 여백으로 높이 설정 */
+                font-family: inherit; /* 폰트 상속 */
+                font-size: 0.9rem;
+                font-weight: 400;
+                border: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.87);
+                border-radius: 0px; /* iOS 둥근모서리 제거 */
+                -webkit-appearance: none; /* 네이티브 외형 감추기 */
+                -moz-appearance: none;
+                appearance: none;
+                outline: none;
+
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
             }
         }
         & > div + div {
@@ -84,15 +105,12 @@ const StyleModalShare = styled.div`
     }
 `;
 
-function ClassDialoglDate({ subType }) {
+function ClassDialoglDate({ subType, setSelectClassState }) {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const selectBoxRef = useRef();
+
     const { classDatas, error } = useSelector((state) => state.classes);
-
-    console.log(classDatas, error);
-
-    window.classDatas = classDatas;
-
     const [dateState, setDateState] = useState(moment().add('minutes', 1).format('YYYY-MM-DDTHH:mm'));
 
     const onChange = (e) => {
@@ -103,6 +121,13 @@ function ClassDialoglDate({ subType }) {
             dispatch(changeDueDate(moment(value)));
         }
     };
+
+    const handleSelectChange = useCallback((e) => {
+        const { value } = e.target;
+
+        selectBoxRef.current.dataset.content = value;
+        setSelectClassState(value);
+    }, []);
 
     if (error) {
         alert('class 데이터 베이스 오류입니다.\n1대1 문의를 남겨주시면 빠른 시일내에 조치해드리겠습니다.');
@@ -143,10 +168,13 @@ function ClassDialoglDate({ subType }) {
                     </div>
                     <div>
                         <p>클래스 선택</p>
-                        <select>
+                        <select ref={selectBoxRef} onChange={handleSelectChange} data-content="">
                             <option value="">클래스 선택</option>
-                            <option value={0}>{'class01'}</option>
-                            <option value={1}>{'class02'}</option>
+                            {Object.keys(classDatas).map((i) => (
+                                <option key={classDatas[i]['idx']} value={classDatas[i]['idx']}>
+                                    {classDatas[i]['name']}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>

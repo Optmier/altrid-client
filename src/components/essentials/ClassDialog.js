@@ -28,7 +28,7 @@ const ModalCloseButton = styled.div`
     right: 8px;
 `;
 
-function ClassDialog({ type, subType, open, handleDialogClose }) {
+function ClassDialog({ type, subType, open, handleDialogClose, setSelectClassState }) {
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
 
@@ -40,11 +40,11 @@ function ClassDialog({ type, subType, open, handleDialogClose }) {
             <div style={{ padding: '2rem' }}>
                 <DialogContent>
                     {type === 'date' ? (
-                        <ClassDialoglDate subType={subType} />
+                        <ClassDialoglDate subType={subType} setSelectClassState={setSelectClassState} />
                     ) : subType === 'init' ? (
                         <ClassDialogTest subType={subType} />
                     ) : (
-                        <ClassDialoglDate subType={subType} />
+                        <ClassDialoglDate subType={subType} setSelectClassState={setSelectClassState} />
                     )}
                 </DialogContent>
 
