@@ -17,6 +17,68 @@ import { getClasses, getClassesError } from '../redux_modules/classes';
 import BackdropComponent2 from '../components/essentials/BackdropComponent2';
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
+import styled from 'styled-components';
+import { IoIosArrowForward } from 'react-icons/io';
+import { BsExclamationTriangleFill } from 'react-icons/bs';
+
+const InfoBanner = styled.div`
+    width: 100%;
+
+    & .banner-root {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 2rem 1.5rem;
+        border-radius: 11px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+
+        & .banner-top {
+            display: flex;
+            align-items: center;
+            width: 85%;
+            color: black;
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.4;
+
+            & svg {
+                margin-right: 1rem;
+            }
+        }
+        & .banner-central {
+            width: 85%;
+            margin-top: 0.5rem;
+            margin-left: 36px;
+            color: #969393;
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+        & .banner-footer {
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            cursor: pointer;
+            text-align: right;
+            color: black;
+            font-size: 0.8rem;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+        & .banner-footer:hover {
+            margin-right: -5px;
+            transition: all 0.4s;
+        }
+    }
+`;
+
+const StyleHr = styled.div`
+    margin-bottom: 95px;
+    width: 100%;
+    height: 1px;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0.12);
+`;
 
 function MainDraft({ match }) {
     const dispatch = useDispatch();
@@ -61,7 +123,7 @@ function MainDraft({ match }) {
             <HeaderBar />
             <BackdropComponent2 open={loading && !data.length} />
 
-            <div className="class-page-root">
+            <div className="class-page-root" style={{ minHeight: '0' }}>
                 <Drawer anchor="right" open={openCreateNewDrawer}>
                     <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
                 </Drawer>
@@ -93,6 +155,28 @@ function MainDraft({ match }) {
                     </div>
                 </div>
             </div>
+            <ClassWrapper col="none" type="main_page">
+                <StyleHr className="draft-footer"></StyleHr>
+                <InfoBanner>
+                    <div className="banner-root">
+                        <div className="banner-top">
+                            <BsExclamationTriangleFill />
+                            과제 최소 조건을 맞추면 유형별 분석이 가능합니다!
+                        </div>
+                        <div className="banner-central">
+                            유형별 분석이 가능한 과제를 생성시, 더 많은 리포트 정보를 받아보실 수 있습니다.
+                        </div>
+                        <a
+                            className="banner-footer"
+                            href="https://www.notion.so/optmier/a4daf8676b2b4460b75613f25249abf3"
+                            alt="more_eyetrack"
+                            target="_blank"
+                        >
+                            자세히 알아보기 <IoIosArrowForward style={{ marginRight: '5px' }} />
+                        </a>
+                    </div>
+                </InfoBanner>
+            </ClassWrapper>
         </>
     );
 }

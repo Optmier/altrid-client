@@ -301,8 +301,8 @@ function CardDraft({ cardData, match, history }) {
                     </StyleDraftIng>
                 </div>
             ) : (
-                <div className="class-card-root" onClick={handlePreTest}>
-                    <div className="class-card-header-on class-card-wrapper">
+                <div className="class-card-root">
+                    <div className="class-card-header-on class-card-wrapper" style={{ backgroundColor: '#43138B' }}>
                         <TooltipCard title={cardData['title']}>
                             <div className="card-title-p" style={{ width: 'calc(100% - 36px)' }}>
                                 {cardData['title']}
@@ -319,7 +319,7 @@ function CardDraft({ cardData, match, history }) {
                     </div>
 
                     <div></div>
-                    <div className="class-card-contents class-card-wrapper">
+                    <div className="class-card-contents class-card-wrapper" onClick={handlePreTest}>
                         <div className="contents-block">
                             <div className="card-item">
                                 <TooltipCard title={cardData['description']}>
