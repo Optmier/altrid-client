@@ -138,8 +138,6 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
         const academy_code = result['data']['academy_code'];
         const teacher_id = result['data']['teacher_id'];
 
-        console.log(idx, academy_code, teacher_id);
-
         //파일 업로드 선택시,
         let file_url = null;
         if (selectState === 'left') {

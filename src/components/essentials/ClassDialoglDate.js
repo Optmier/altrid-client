@@ -121,13 +121,12 @@ function ClassDialoglDate({ subType, setSelectClassState }) {
             dispatch(changeDueDate(moment(value)));
         }
     };
-
-    const handleSelectChange = useCallback((e) => {
+    const handleSelectChange = (e) => {
         const { value } = e.target;
 
         selectBoxRef.current.dataset.content = value;
         setSelectClassState(value);
-    }, []);
+    };
 
     if (error) {
         alert('class 데이터 베이스 오류입니다.\n1대1 문의를 남겨주시면 빠른 시일내에 조치해드리겠습니다.');
