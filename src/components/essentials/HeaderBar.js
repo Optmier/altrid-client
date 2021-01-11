@@ -56,14 +56,18 @@ function HeaderBar({ match }) {
                         <img src={LogoWhite} alt="logo" />
                     </Link>
                 </div>
-                <div className="container center">
-                    <NavLink exact activeStyle={{ borderBottom: '2px solid white' }} to="/">
-                        클래스
-                    </NavLink>
-                    <NavLink activeStyle={{ borderBottom: '2px solid white' }} to="/main-draft">
-                        과제
-                    </NavLink>
-                </div>
+                {sessions.userType === 'teacher' ? (
+                    <div className="container center">
+                        <NavLink exact activeStyle={{ borderBottom: '2px solid white' }} to="/">
+                            클래스
+                        </NavLink>
+
+                        <NavLink activeStyle={{ borderBottom: '2px solid white' }} to="/main-draft">
+                            과제
+                        </NavLink>
+                    </div>
+                ) : null}
+
                 <div className="container right">
                     <div className="accounts-welcome" ref={testRef}>
                         <p>
