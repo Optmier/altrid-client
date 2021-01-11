@@ -7,7 +7,6 @@ import AccountPopOver from './AccountPopOver';
 import { useSelector } from 'react-redux';
 
 function HeaderBar({ match }) {
-    console.log(match);
     const sessions = useSelector((state) => state.RdxSessions);
     const [isScrolled, setScrolled] = useState(false);
     const [popoverName, setPopoverName] = useState('');
@@ -34,6 +33,7 @@ function HeaderBar({ match }) {
         setPopoverName(sessions.userName);
     }, [sessions.userName]);
 
+    console.log(sessions.userType, match.path);
     return (
         <>
             <AccountPopOver userName={popoverName} targetEl={testRef ? testRef : null} />
@@ -41,7 +41,7 @@ function HeaderBar({ match }) {
                 className={classNames(
                     'header-bar',
                     isScrolled ? 'scrolled' : '',
-                    sessions.userType === 'teacher' ? (match.path === '/' ? sessions.userType : 'teachers-draft') : sessions.userType,
+                    sessions.userType === 'teachers' ? (match.path === '/' ? sessions.userType : 'teachers-draft') : sessions.userType,
                 )}
             >
                 <div className="container left">
@@ -56,7 +56,7 @@ function HeaderBar({ match }) {
                         <img src={LogoWhite} alt="logo" />
                     </Link>
                 </div>
-                {sessions.userType === 'teacher' ? (
+                {sessions.userType === 'teachers' ? (
                     <div className="container center">
                         <NavLink exact activeStyle={{ borderBottom: '2px solid white' }} to="/">
                             클래스
