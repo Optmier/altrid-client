@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, withStyles } from '@material-ui/core';
 import moment from 'moment';
 import { changeDueDate } from '../../redux_modules/assignmentActived';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import Error from '../../pages/Error';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -47,7 +48,28 @@ const StyleModalShare = styled.div`
         padding-bottom: 1.5rem;
     }
 
-    & .modal-share-date {
+    & .modal-init-date {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 2rem;
+
+        & > div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            & > p {
+                font-size: 0.9rem;
+                color: #969393;
+                font-weight: 600;
+                margin-right: 1rem;
+            }
+        }
+        & > div + div {
+            margin-top: 1rem;
+        }
+    }
+    & .modal-modify-date {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -65,6 +87,11 @@ const StyleModalShare = styled.div`
 function ClassDialoglDate({ subType }) {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const { classDatas, error } = useSelector((state) => state.classes);
+
+    console.log(classDatas, error);
+
+    window.classDatas = classDatas;
 
     const [dateState, setDateState] = useState(moment().add('minutes', 1).format('YYYY-MM-DDTHH:mm'));
 
@@ -77,6 +104,12 @@ function ClassDialoglDate({ subType }) {
         }
     };
 
+    if (error) {
+        alert('class 데이터 베이스 오류입니다.\n1대1 문의를 남겨주시면 빠른 시일내에 조치해드리겠습니다.');
+        console.error(error);
+
+        return <Error />;
+    }
     return (
         <StyleModalShare>
             {subType === 'init' ? (
@@ -91,21 +124,49 @@ function ClassDialoglDate({ subType }) {
                 </>
             )}
 
-            <div className="modal-share-date">
-                <p>기한 설정</p>
-                <form className={classes.container} noValidate>
-                    <DateTextField
-                        onChange={onChange}
-                        value={dateState}
-                        id="datetime-local"
-                        type="datetime-local"
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                </form>
-            </div>
+            {subType === 'init' ? (
+                <div className="modal-init-date">
+                    <div>
+                        <p>기한 설정</p>
+                        <form className={classes.container} noValidate>
+                            <DateTextField
+                                onChange={onChange}
+                                value={dateState}
+                                id="datetime-local"
+                                type="datetime-local"
+                                className={classes.textField}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                        </form>
+                    </div>
+                    <div>
+                        <p>클래스 선택</p>
+                        <select>
+                            <option value="">클래스 선택</option>
+                            <option value={0}>{'class01'}</option>
+                            <option value={1}>{'class02'}</option>
+                        </select>
+                    </div>
+                </div>
+            ) : (
+                <div className="modal-modify-date">
+                    <p>기한 설정</p>
+                    <form className={classes.container} noValidate>
+                        <DateTextField
+                            onChange={onChange}
+                            value={dateState}
+                            id="datetime-local"
+                            type="datetime-local"
+                            className={classes.textField}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                    </form>
+                </div>
+            )}
         </StyleModalShare>
     );
 }

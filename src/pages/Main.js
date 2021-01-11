@@ -41,6 +41,7 @@ function Main({ history }) {
     const [cardDatas, setCardDatas] = useState([]);
 
     const fetchCardData = () => {
+        console.log('fecth');
         Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
             .then((res) => {
                 setCardDatas(res.data);

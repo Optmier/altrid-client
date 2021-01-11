@@ -210,7 +210,7 @@ const initialState = {
 // window.state = initialState;
 
 /* reducer 함수 */
-export default function eyetrackingSelect(state = initialState, action) {
+export default function assignmentActived(state = initialState, action) {
     switch (action.type) {
         case GET_ACTIVED:
             return {

@@ -69,8 +69,6 @@ function Class({ match }) {
         setRenderSubPage(ClassPageSwitcher(stMatch, sessions));
     }, [stMatch]);
 
-    console.log(stMatch);
-
     return (
         <>
             {match.params.id === 'draft' ? null : <LeftNav />}

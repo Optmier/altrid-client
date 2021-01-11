@@ -256,7 +256,7 @@ const initialState = {
 };
 
 /* reducer 함수 */
-export default function eyetrackingSelect(state = initialState, action) {
+export default function assignmentDraft(state = initialState, action) {
     switch (action.type) {
         case GET_DRAFTS:
             return {

@@ -138,8 +138,8 @@ function CardDraft({ cardData, match, history }) {
                 //과제 게시하기 버튼 클릭
                 const { num } = match.params; //클래스 번호
 
-                setDateDialogopen(false);
-                dispatch(postActived(cardData, num, due_date, history));
+                //setDateDialogopen(false);
+                //dispatch(postActived(cardData, num, due_date, history));
             } else {
                 alert('과제 기한 변경은 필수사항 입니다.');
             }
@@ -263,6 +263,7 @@ function CardDraft({ cardData, match, history }) {
                 anchorEl={anchorEl}
             />
             <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
+
             <ClassDialogCopy
                 ver="assignment"
                 open={copyDialogopen}

@@ -270,6 +270,8 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true' ? false : true,
     );
 
+    //console.log(calibBtnDisabled);
+
     const backCanvas = useRef();
 
     const executeCalibration = () => {

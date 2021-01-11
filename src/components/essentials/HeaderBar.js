@@ -51,7 +51,7 @@ function HeaderBar() {
                 </div>
                 <div className="container center">
                     <Link to="/">클래스</Link>
-                    <Link to="/">과제</Link>
+                    <Link to="/main-draft">과제</Link>
                 </div>
                 <div className="container right">
                     <div className="accounts-welcome" ref={testRef}>

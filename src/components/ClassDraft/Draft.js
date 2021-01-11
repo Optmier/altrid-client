@@ -13,14 +13,12 @@ import ClassWrapper from '../essentials/ClassWrapper';
 import HeaderBar from '../essentials/HeaderBar';
 
 function Draft() {
-    const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
-
+    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
+        loading: false,
+        data: null,
+        error: null,
+    };
     const sessions = useSelector((state) => state.RdxSessions);
-
-    let cardDatas = {};
-
-    // cardDatas 변수에 불러온 값 저장하기
-    data ? (cardDatas = data) : (cardDatas = {});
 
     /** draft.js 자체 메소드 */
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
@@ -32,6 +30,7 @@ function Draft() {
         setOpenCreateNewDrawer(open);
     };
 
+    console.log(data);
     return (
         <>
             <HeaderBar />
@@ -50,7 +49,7 @@ function Draft() {
                     <CardLists
                         upperDeck={
                             <div style={{ color: 'white', fontSize: '20px' }} className="class-title">
-                                <b>{sessions.userName}</b> 선생님께서 만드신 과제는 총 <b>{cardDatas.length}개</b> 입니다.
+                                <b>{sessions.userName}</b> 선생님께서 만드신 과제는 총 <b>{data.length}개</b> 입니다.
                             </div>
                         }
                     >
@@ -58,7 +57,7 @@ function Draft() {
                             <CardAddNew onClick={toggleDrawer(true)}>과제 생성</CardAddNew>
                         </CardRoot>
 
-                        {Object.keys(cardDatas).map((i, idx) => (
+                        {Object.keys(data).map((i, idx) => (
                             <CardRoot key={idx} cardHeight="281px">
                                 <CardDraft testNum={data[i]['idx']} cardData={data[i]} />
                             </CardRoot>
