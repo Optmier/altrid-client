@@ -93,7 +93,6 @@ function MainDraft({ match }) {
     const [errorState, setErrorState] = useState(false);
 
     useEffect(() => {
-        console.log('sessions.userType', sessions.userType);
         if (!sessions || !sessions.userType || !sessions.academyName) return;
 
         if (sessions.userType === 'students') {
@@ -125,7 +124,6 @@ function MainDraft({ match }) {
         setOpenCreateNewDrawer(open);
     };
 
-    console.log(sessions.userType, errorState);
     if (errorState) return <Error />;
     return (
         <>
