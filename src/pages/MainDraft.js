@@ -21,6 +21,7 @@ import styled from 'styled-components';
 import { IoIosArrowForward } from 'react-icons/io';
 import { BsExclamationTriangleFill } from 'react-icons/bs';
 import Footer from '../components/essentials/Footer';
+import Error from './Error';
 
 const InfoBanner = styled.div`
     width: 100%;
@@ -89,9 +90,13 @@ function MainDraft({ match }) {
     const sessions = useSelector((state) => state.RdxSessions);
 
     const [stMatch, setStMatch] = useState({ id: null, path: null });
+    const [errorState, setErrorState] = useState(false);
 
     useEffect(() => {
-        if (!sessions || !sessions.userType || !sessions.academyName) return;
+        if (!sessions || sessions.userType === 'students' || !sessions.academyName) {
+            setErrorState(true);
+            return;
+        }
 
         setStMatch({ ...stMatch, id: match.params.id, path: match.path });
 
@@ -119,6 +124,7 @@ function MainDraft({ match }) {
         setOpenCreateNewDrawer(open);
     };
 
+    if (errorState) return <Error />;
     return (
         <>
             <HeaderBar />
