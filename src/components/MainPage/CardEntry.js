@@ -14,9 +14,11 @@ function CardEntry({ title, description, class_day, assignmentOnProgress, teache
                             <h4>{title}</h4>
                         </TooltipCard>
                     </div>
-                    <div className={classNames('on-progress', assignmentOnProgress ? 'on' : '')}>
-                        {assignmentOnProgress ? '게시과제 진행 중' : '게시과제 미진행'}
-                        <div className="indicator"></div>
+
+                    <div className="teacher">
+                        <TooltipCard title={teacherName}>
+                            <span>{teacherName} 선생님</span>
+                        </TooltipCard>
                     </div>
                 </div>
                 <div className="descriptor">
@@ -24,15 +26,20 @@ function CardEntry({ title, description, class_day, assignmentOnProgress, teache
                         <h5>{description}</h5>
                     </TooltipCard>
                 </div>
-            </div>
-            <div className="footer-info">
-                <div className="footer-text">
-                    수강 인원 {totalStudents}명 / 게시된 과제 {totalAssignment}개
+                <div className="contents">
+                    <div>
+                        <div className="contents-title">수강 인원</div>
+                        <div className="contents-desc">{totalStudents}명 </div>
+                    </div>
+                    <div>
+                        <div className="contents-title">게시 과제</div>
+                        <div className="contents-desc"> {totalAssignment}개 </div>
+                    </div>
                 </div>
+            </div>
+
+            <div className="footer-info">
                 <div className="footer-toggle">
-                    <TooltipCard title={teacherName}>
-                        <span>{teacherName} 선생님</span>
-                    </TooltipCard>
                     {class_day ? (
                         <TooltipCard title={class_day}>
                             <span>{class_day.replace(/,/g, ' ')}</span>
@@ -40,6 +47,10 @@ function CardEntry({ title, description, class_day, assignmentOnProgress, teache
                     ) : (
                         ''
                     )}
+                </div>
+                <div className={classNames('on-progress', assignmentOnProgress ? 'on' : '')}>
+                    {assignmentOnProgress ? '게시과제 진행 중' : '게시과제 미진행'}
+                    <div className="indicator"></div>
                 </div>
             </div>
         </div>
