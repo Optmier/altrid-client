@@ -134,7 +134,7 @@ function Share({ match, history }) {
                         {sessions.userType !== 'students' ? (
                             <button
                                 onClick={() => {
-                                    history.replace(`/class/${num}/draft`);
+                                    history.replace(`/main-draft`);
                                 }}
                             >
                                 <p>과제 생성하러 가기</p>

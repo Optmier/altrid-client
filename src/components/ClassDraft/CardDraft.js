@@ -123,6 +123,7 @@ function CardDraft({ cardData, match, history }) {
     const [dateDialogopen, setDateDialogopen] = useState(false);
     const [copyDialogopen, setCopyDialogopen] = useState(false);
     const [deleteDialogopen, setDeleteDialogopen] = useState(false);
+    const [selectClassState, setSelectClassState] = useState(null);
 
     const handleDialogOpen = (type) => {
         setDateDialogopen(true);
@@ -134,14 +135,15 @@ function CardDraft({ cardData, match, history }) {
         const due_date = data ? data : null;
 
         if (name === 'button') {
-            if (due_date) {
+            if (due_date && selectClassState) {
                 //과제 게시하기 버튼 클릭
-                const { num } = match.params; //클래스 번호
 
                 setDateDialogopen(false);
-                dispatch(postActived(cardData, num, due_date, history));
-            } else {
+                dispatch(postActived(cardData, selectClassState, due_date, history));
+            } else if (!due_date) {
                 alert('과제 기한 변경은 필수사항 입니다.');
+            } else if (!selectClassState) {
+                alert('클래스 선택은 필수사항 입니다.');
             }
         } else {
             setDateDialogopen(false);
@@ -262,7 +264,14 @@ function CardDraft({ cardData, match, history }) {
                 handleThisCopy={handleCopyDialogOpen}
                 anchorEl={anchorEl}
             />
-            <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
+            <ClassDialog
+                type="date"
+                subType="init"
+                open={dateDialogopen}
+                handleDialogClose={handleDateDialogClose}
+                setSelectClassState={setSelectClassState}
+            />
+
             <ClassDialogCopy
                 ver="assignment"
                 open={copyDialogopen}
@@ -292,8 +301,8 @@ function CardDraft({ cardData, match, history }) {
                     </StyleDraftIng>
                 </div>
             ) : (
-                <div className="class-card-root" onClick={handlePreTest}>
-                    <div className="class-card-header-on class-card-wrapper">
+                <div className="class-card-root">
+                    <div className="class-card-header-on class-card-wrapper" style={{ backgroundColor: '#43138B' }}>
                         <TooltipCard title={cardData['title']}>
                             <div className="card-title-p" style={{ width: 'calc(100% - 36px)' }}>
                                 {cardData['title']}
@@ -310,7 +319,7 @@ function CardDraft({ cardData, match, history }) {
                     </div>
 
                     <div></div>
-                    <div className="class-card-contents class-card-wrapper">
+                    <div className="class-card-contents class-card-wrapper" onClick={handlePreTest}>
                         <div className="contents-block">
                             <div className="card-item">
                                 <TooltipCard title={cardData['description']}>

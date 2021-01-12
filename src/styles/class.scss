@@ -3,9 +3,15 @@ $textBlack: #2e2c2c;
 $textGray: #706d6d;
 
 .class-page-root {
-    padding: 30px 0 0 240px;
     min-height: 80vh;
 
+    & .draft-header {
+        background-image: url('/bg_images/draft_header_bg.png');
+        background-size: cover;
+        height: 380px;
+        width: 100%;
+        position: absolute;
+    }
     & .class-input-header {
         padding: 18.5px 0;
         width: 100%;

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, withStyles } from '@material-ui/core';
 import moment from 'moment';
 import { changeDueDate } from '../../redux_modules/assignmentActived';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import Error from '../../pages/Error';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -47,7 +48,49 @@ const StyleModalShare = styled.div`
         padding-bottom: 1.5rem;
     }
 
-    & .modal-share-date {
+    & .modal-init-date {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 2rem;
+
+        & > div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            & > p {
+                font-size: 0.9rem;
+                color: #969393;
+                font-weight: 600;
+                margin-right: 1rem;
+                width: 85px;
+            }
+            & > select {
+                cursor: pointer;
+                background: url('/bg_images/Vector.png') no-repeat 95% 50%;
+                width: 220px; /* 원하는 너비설정 */
+                padding: 0.5rem 2rem 0.5rem 0.15rem; /* 여백으로 높이 설정 */
+                font-family: inherit; /* 폰트 상속 */
+                font-size: 0.9rem;
+                font-weight: 400;
+                border: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.87);
+                border-radius: 0px; /* iOS 둥근모서리 제거 */
+                -webkit-appearance: none; /* 네이티브 외형 감추기 */
+                -moz-appearance: none;
+                appearance: none;
+                outline: none;
+
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+        }
+        & > div + div {
+            margin-top: 1rem;
+        }
+    }
+    & .modal-modify-date {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -62,10 +105,12 @@ const StyleModalShare = styled.div`
     }
 `;
 
-function ClassDialoglDate({ subType }) {
+function ClassDialoglDate({ subType, setSelectClassState }) {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const selectBoxRef = useRef();
 
+    const { classDatas, error } = useSelector((state) => state.classes);
     const [dateState, setDateState] = useState(moment().add('minutes', 1).format('YYYY-MM-DDTHH:mm'));
 
     const onChange = (e) => {
@@ -76,7 +121,19 @@ function ClassDialoglDate({ subType }) {
             dispatch(changeDueDate(moment(value)));
         }
     };
+    const handleSelectChange = (e) => {
+        const { value } = e.target;
 
+        selectBoxRef.current.dataset.content = value;
+        setSelectClassState(value);
+    };
+
+    if (error) {
+        alert('class 데이터 베이스 오류입니다.\n1대1 문의를 남겨주시면 빠른 시일내에 조치해드리겠습니다.');
+        console.error(error);
+
+        return <Error />;
+    }
     return (
         <StyleModalShare>
             {subType === 'init' ? (
@@ -91,21 +148,52 @@ function ClassDialoglDate({ subType }) {
                 </>
             )}
 
-            <div className="modal-share-date">
-                <p>기한 설정</p>
-                <form className={classes.container} noValidate>
-                    <DateTextField
-                        onChange={onChange}
-                        value={dateState}
-                        id="datetime-local"
-                        type="datetime-local"
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                </form>
-            </div>
+            {subType === 'init' ? (
+                <div className="modal-init-date">
+                    <div>
+                        <p>기한 설정</p>
+                        <form className={classes.container} noValidate>
+                            <DateTextField
+                                onChange={onChange}
+                                value={dateState}
+                                id="datetime-local"
+                                type="datetime-local"
+                                className={classes.textField}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                        </form>
+                    </div>
+                    <div>
+                        <p>클래스 선택</p>
+                        <select ref={selectBoxRef} onChange={handleSelectChange} data-content="">
+                            <option value="">클래스 선택</option>
+                            {Object.keys(classDatas).map((i) => (
+                                <option key={classDatas[i]['idx']} value={classDatas[i]['idx']}>
+                                    {classDatas[i]['name']}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            ) : (
+                <div className="modal-modify-date">
+                    <p>기한 설정</p>
+                    <form className={classes.container} noValidate>
+                        <DateTextField
+                            onChange={onChange}
+                            value={dateState}
+                            id="datetime-local"
+                            type="datetime-local"
+                            className={classes.textField}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                    </form>
+                </div>
+            )}
         </StyleModalShare>
     );
 }

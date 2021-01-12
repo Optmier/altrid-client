@@ -77,6 +77,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     data.filter((i) => i['idx'] !== cardData['idx']).map((i) => titleArr.push(i['title'].replace(/(\s*)/g, '')));
 
     /** 과제 생성 state */
+    const [selectClassState, setSelectClassState] = useState(null);
     const [attachFiles, setAttachFiles] = useState(new FormData());
     const [contentsData, setContentsData] = useState(
         ver === 'draft'
@@ -283,17 +284,18 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         if (name === 'button') {
             if (due_date) {
                 //과제 게시하기 버튼 클릭
-                const { num } = match.params; //클래스 번호
                 const activedDirect = {
-                    num: num,
+                    num: selectClassState,
                     due_date: due_date,
                     history: history,
                 };
 
                 setDateDialogopen(false);
                 dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, activedDirect));
-            } else {
+            } else if (!due_date) {
                 alert('과제 기한 변경은 필수사항 입니다.');
+            } else if (!selectClassState) {
+                alert('클래스 선택은 필수사항 입니다.');
             }
         } else {
             setDateDialogopen(false);
@@ -373,7 +375,13 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                     />
                 </div>
             </Dialog>
-            <ClassDialog type="date" subType="init" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
+            <ClassDialog
+                type="date"
+                subType="init"
+                open={dateDialogopen}
+                handleDialogClose={handleDateDialogClose}
+                setSelectClassState={setSelectClassState}
+            />
 
             <div className="class-drawer-root">
                 <div className="close-icon" onClick={handleClose}>

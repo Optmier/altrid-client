@@ -10,15 +10,16 @@ import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import TypeBanner from '../essentials/TypeBanner';
 import ClassWrapper from '../essentials/ClassWrapper';
-import HeaderBar from '../essentials/HeaderBar';
 
 function Draft() {
-    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
-        loading: false,
-        data: null,
-        error: null,
-    };
+    const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
+
     const sessions = useSelector((state) => state.RdxSessions);
+
+    let cardDatas = {};
+
+    // cardDatas 변수에 불러온 값 저장하기
+    data ? (cardDatas = data) : (cardDatas = {});
 
     /** draft.js 자체 메소드 */
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
@@ -32,23 +33,20 @@ function Draft() {
 
     return (
         <>
-            <HeaderBar />
-
             <Drawer anchor="right" open={openCreateNewDrawer}>
                 <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>
 
-            {/* <ClassWrapper>
-                 <ClassHeaderBox /> 
+            <ClassWrapper>
+                {/* <ClassHeaderBox /> */}
                 <TypeBanner situation="info" />
-            </ClassWrapper> */}
-            <div className="draft-header"></div>
-            <div style={{ paddingTop: '95px' }} className="class-section-root">
+            </ClassWrapper>
+            <div className="class-section-root">
                 <div className="class-draft-card">
                     <CardLists
                         upperDeck={
-                            <div style={{ color: 'white', fontSize: '20px' }} className="class-title">
-                                <b>{sessions.userName}</b> 선생님께서 만드신 과제는 총 <b>{data.length}개</b> 입니다.
+                            <div className="class-title">
+                                <b>{sessions.userName}</b> 선생님께서 만드신 과제는 총 <b>{cardDatas.length}개</b> 입니다.
                             </div>
                         }
                     >
@@ -56,7 +54,7 @@ function Draft() {
                             <CardAddNew onClick={toggleDrawer(true)}>과제 생성</CardAddNew>
                         </CardRoot>
 
-                        {Object.keys(data).map((i, idx) => (
+                        {Object.keys(cardDatas).map((i, idx) => (
                             <CardRoot key={idx} cardHeight="281px">
                                 <CardDraft testNum={data[i]['idx']} cardData={data[i]} />
                             </CardRoot>

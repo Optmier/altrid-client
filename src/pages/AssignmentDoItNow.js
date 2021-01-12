@@ -418,6 +418,7 @@ function AssignmentDoItNow({ history, match }) {
                     onAfterCalib={onAfterCalib}
                     onUpdate={onEyetrackerUpdate}
                     rootRef={rootRef}
+                    relative={true}
                 />
             ) : null}
 

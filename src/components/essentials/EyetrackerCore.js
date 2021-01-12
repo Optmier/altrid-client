@@ -239,13 +239,16 @@ const captureChanged = (position, elapsedTime, precisionElapsedTime) => {
     _lastStep = _step;
 };
 
-function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUpdate, rootRef, timeElapsed }) {
+function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUpdate, rootRef, timeElapsed, relative }) {
     _step = step;
     _userAnswer = userAnswer;
     _timeElapsed = timeElapsed;
 
+    const [calibBtnDisabled, setCalibBtnDisabled] = useState(
+        localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true' ? false : true,
+    );
     const [stepBtnState, setStepBtnState] = useState(false);
-    const [translateNum, setTranslateNum] = useState(200);
+    const [translateNum, setTranslateNum] = useState(calibBtnDisabled ? 100 : 200);
     const [agreeCheck, setAgreeCheck] = useState(false);
     const [calibrateState, setCalibrateState] = useState(false);
 
@@ -266,9 +269,6 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         bottom_center: 0,
         bottom_right: 0,
     });
-    const [calibBtnDisabled, setCalibBtnDisabled] = useState(
-        localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true' ? false : true,
-    );
 
     const backCanvas = useRef();
 
@@ -543,7 +543,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         const { name } = e.target;
 
         name === 'right' ? setTranslateNum(translateNum - 100) : setTranslateNum(translateNum + 100);
-        // 케메라 체크안내 마지막 단계
+        // 카메라 체크안내 마지막 단계
         if (translateNum === -200) {
             //카메라 발동 함수
             cameraStart();
@@ -557,8 +557,9 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                 setTranslateNum(translateNum - 100);
                 setStepBtnState(false);
             } else if (calibrateState === 'pre') {
-                //바로 문제 로드 !!
-                setTranslateNum(-600);
+                //바로 카메라 로드 !!
+                setTranslateNum(-300);
+                cameraStart();
             }
         }
 
@@ -568,7 +569,11 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         }
         // 카메라 체크 단계
         else if (translateNum === -300) {
-            setTranslateNum(translateNum - 100);
+            if (calibBtnDisabled) {
+                setTranslateNum(translateNum - 100);
+            } else {
+                setTranslateNum(-600);
+            }
 
             $('#webgazerVideoFeed').css({ opacity: '0', 'z-index': '-1' });
             $('#webgazerVideoCanvas').css({ opacity: '0', 'z-index': '-1' });
@@ -657,6 +662,8 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                                 onCalibDotClick={onCalibDotClick}
                                 onCalibDotHover={onCalibDotHover}
                                 onCalibDotLeave={onCalibDotLeave}
+                                calibDotCounts={calibDotCounts}
+                                relative={relative}
                             />
                         ) : translateNum === -600 ? (
                             <StepTestStart />

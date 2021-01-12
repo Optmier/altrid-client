@@ -138,8 +138,6 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
         const academy_code = result['data']['academy_code'];
         const teacher_id = result['data']['teacher_id'];
 
-        console.log(idx, academy_code, teacher_id);
-
         //파일 업로드 선택시,
         let file_url = null;
         if (selectState === 'left') {
@@ -223,8 +221,15 @@ export const copyDraft = (idx, title, originalCardData) => async (dispatch) => {
     try {
         const result = await Axios.post(`${apiUrl}/assignment-draft/copy/${idx}`, { title: title }, { withCredentials: true });
         const new_idx = result['data']['insertId'];
+        const actived_count = 0;
+        const class_name = null;
 
-        dispatch({ type: COPY_DRAFT_SUCCESS, originalCardData, title: title, new_idx: new_idx });
+        dispatch({
+            type: COPY_DRAFT_SUCCESS,
+            originalCardData,
+            title: title,
+            new_idx: new_idx,
+        });
     } catch (e) {
         dispatch({ type: DRAFT_ERROR, error: e });
     }
@@ -256,7 +261,7 @@ const initialState = {
 };
 
 /* reducer 함수 */
-export default function eyetrackingSelect(state = initialState, action) {
+export default function assignmentDraft(state = initialState, action) {
     switch (action.type) {
         case GET_DRAFTS:
             return {
@@ -331,7 +336,15 @@ export default function eyetrackingSelect(state = initialState, action) {
                 draftDatas: {
                     loading: false,
                     data: [
-                        { ...action.originalCardData, idx: action.new_idx, title: action.title, created: new Date(), updated: new Date() },
+                        {
+                            ...action.originalCardData,
+                            idx: action.new_idx,
+                            title: action.title,
+                            actived_count: 0,
+                            class_name: null,
+                            created: new Date(),
+                            updated: new Date(),
+                        },
                     ].concat(state.draftDatas.data),
                     error: null,
                 },

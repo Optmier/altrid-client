@@ -6,7 +6,7 @@ import { useCountUp } from 'react-countup';
 const useStyles = makeStyles((theme) => ({
     root: {
         cursor: 'pointer',
-        width: '600px',
+        width: '100%',
         boxShadow: 'rgb(128 123 123 / 13%) 2px 7px 16px 0px, rgb(109 107 107 / 5%) 0px 1px 5px 0px',
         transition: 'all 0.3',
         borderRadius: '11px',
