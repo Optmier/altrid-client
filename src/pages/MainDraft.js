@@ -93,11 +93,12 @@ function MainDraft({ match }) {
     const [errorState, setErrorState] = useState(false);
 
     useEffect(() => {
-        if (!sessions || sessions.userType === 'students' || !sessions.academyName) {
-            setErrorState(true);
-            return;
-        }
+        console.log('sessions.userType', sessions.userType);
+        if (!sessions || !sessions.userType || !sessions.academyName) return;
 
+        if (sessions.userType === 'students') {
+            setErrorState(true);
+        }
         setStMatch({ ...stMatch, id: match.params.id, path: match.path });
 
         if (sessions.userType === 'teachers') {
@@ -124,6 +125,7 @@ function MainDraft({ match }) {
         setOpenCreateNewDrawer(open);
     };
 
+    console.log(sessions.userType, errorState);
     if (errorState) return <Error />;
     return (
         <>
