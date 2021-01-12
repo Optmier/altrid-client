@@ -13,6 +13,7 @@ import TeachersList from '../components/Login/TeachersList';
 import { $_loginDefault, $_loginStudent, $_loginTeacher } from '../configs/front_urls';
 import Radio from '@material-ui/core/Radio';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 const WhiteRadio = withStyles({
     root: {
@@ -170,9 +171,9 @@ function Login({ history }) {
 
     const handleChangeUsertype = (e) => {
         if (e.target.value === 'teachers') {
-            history.push($_loginTeacher);
+            history.replace($_loginTeacher);
         } else {
-            history.push($_loginStudent);
+            history.replace($_loginStudent);
         }
     };
 
@@ -329,6 +330,18 @@ function Login({ history }) {
     }, [usertype, academyInfo, inputState, profileData]);
 
     useEffect(() => {
+        const urlSearchParams = new URLSearchParams(history.location.search);
+        const queryUserType = urlSearchParams.get('user') || localStorage.getItem('loginFor');
+        if (!['students', 'teachers'].includes(queryUserType)) {
+            setUsertype(localStorage.getItem('loginFor'));
+        } else {
+            localStorage.setItem('loginFor', queryUserType);
+            setUsertype(queryUserType);
+        }
+        setLoginStep(0);
+    }, [history.location]);
+
+    useEffect(() => {
         // console.log(history);
         if (!localStorage.getItem('loginFor')) localStorage.setItem('loginFor', 'students');
         const urlSearchParams = new URLSearchParams(history.location.search);
@@ -340,18 +353,6 @@ function Login({ history }) {
             history.replace(`${$_loginDefault}?user=${queryUserType}`);
         }
     }, []);
-
-    useEffect(() => {
-        const urlSearchParams = new URLSearchParams(history.location.search);
-        const queryUserType = urlSearchParams.get('user') || localStorage.getItem('loginFor');
-        if (!['students', 'teachers'].includes(queryUserType)) {
-            setUsertype(localStorage.getItem('loginFor'));
-        } else {
-            localStorage.setItem('loginFor', queryUserType);
-            setUsertype(queryUserType);
-        }
-        setLoginStep(0);
-    }, [history.location]);
 
     const getContentsForStep = (step) => {
         switch (step) {
