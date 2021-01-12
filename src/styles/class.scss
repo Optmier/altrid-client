@@ -12,6 +12,7 @@ $textGray: #706d6d;
         width: 100%;
         position: absolute;
     }
+
     & .class-input-header {
         padding: 18.5px 0;
         width: 100%;
@@ -35,6 +36,16 @@ $textGray: #706d6d;
     }
 
     & .class-section-root {
+        & .draft-header-text {
+            padding-top: 80px;
+
+            & h2 {
+                color: white;
+                margin: 46px 0;
+                width: 100%;
+                text-align: center;
+            }
+        }
         & section {
             padding-bottom: 100px;
         }
