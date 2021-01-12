@@ -30,7 +30,6 @@ function Draft() {
         setOpenCreateNewDrawer(open);
     };
 
-    console.log(data);
     return (
         <>
             <HeaderBar />

@@ -21,7 +21,6 @@ function HeaderBar({ match }) {
     }, [window.scrollY]);
 
     window.onscroll = () => {
-        console.log(window.scrollY);
         if (window.scrollY > 16) {
             setScrolled(true);
         } else {
@@ -33,7 +32,6 @@ function HeaderBar({ match }) {
         setPopoverName(sessions.userName);
     }, [sessions.userName]);
 
-    console.log(sessions.userType, match.path);
     return (
         <>
             <AccountPopOver userName={popoverName} targetEl={testRef ? testRef : null} />
