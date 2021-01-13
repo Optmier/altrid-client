@@ -341,6 +341,22 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         return () => {};
     }, [cardData['contents_data']]);
 
+    const handleGoToReport = () => {
+        if (sessions.userType === 'students') {
+            history.push(`${path}/${testNum}/details?user=${sessions.authId}`);
+        } else {
+            if (!totalStudents) {
+                alert('아직 클래스에 초대된 학생이 없습니다.\n학생들을 클래스에 초대 후, 이용 부탁드립니다.');
+                return;
+            } else if (!cardData['submitted_number']) {
+                alert('아직 제출한 학생이 없습니다.');
+                return;
+            } else {
+                history.push(`${path}/${testNum}`);
+            }
+        }
+    };
+
     if (loading === true && datetime === null)
         return <div style={{ backgroundColor: '#eeeeee', width: '100%', height: '100%', borderRadius: '10px' }}></div>;
     if (error) return <Error />;
@@ -465,18 +481,11 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                         <div className="class-card-bottom-right card-bottom-p">
                             {(sessions.userType === 'students' && tries && new Date(cardData['due_date']).getTime() < datetime) ||
                             sessions.userType !== 'students' ? (
-                                <Link
-                                    className="goto-reports"
-                                    to={
-                                        sessions.userType === 'students'
-                                            ? `${path}/${testNum}/details?user=${sessions.authId}`
-                                            : `${path}/${testNum}`
-                                    }
-                                >
+                                <div className="goto-reports" onClick={handleGoToReport}>
                                     <div className="share-report">
                                         {sessions.userType === 'students' ? '나의 리포트' : '과제별 리포트 보기'} <IoIosArrowForward />
                                     </div>
-                                </Link>
+                                </div>
                             ) : sessions.userType === 'students' && tries ? (
                                 <span style={{ color: 'rgb(152, 150, 150)', fontSize: '0.75rem', minWidth: '9.1rem', textAlign: 'end' }}>
                                     기한 종료 후 리포트 활성화

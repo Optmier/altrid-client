@@ -64,7 +64,7 @@ function Class({ match }) {
     return (
         <>
             <LeftNav />
-            <div className="class-page-root">
+            <div style={{ padding: '30px 0 0 240px' }} className="class-page-root">
                 <BackdropComponent open={loading && !data && !error} />
                 {error ? (
                     <Error />
