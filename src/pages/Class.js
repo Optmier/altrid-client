@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import LeftNav from '../components/essentials/LeftNav';
 import '../styles/class.scss';
-import Draft from '../components/ClassDraft/Draft';
 import Manage from '../components/ClassManage/Manage';
 import Share from '../components/ClassShare/Share';
 import { Route } from 'react-router-dom';
@@ -16,17 +15,10 @@ import StudentManage from '../components/ClassStudentManage/StudentManage';
 import VideoLecturesManage from '../components/VideoLectures/VideoLecturesManage';
 import styled from 'styled-components';
 
-const StyleWrapper = styled.div`
-    padding: ${(props) => (props.id === 'draft' ? '0' : '30px 0 0 240px')};
-`;
-
 const ClassPageSwitcher = (match, sessions) => {
     if (!match.id || !match.path) return <></>;
     const { id, path } = match;
     switch (id) {
-        case `draft`:
-            if (sessions.userType === 'students') return <ErrorRestricted />;
-            return <Draft />;
         case 'manage':
             if (sessions.userType === 'students') return <ErrorRestricted />;
             return <Manage />;
@@ -71,8 +63,8 @@ function Class({ match }) {
 
     return (
         <>
-            {match.params.id === 'draft' ? null : <LeftNav />}
-            <StyleWrapper id={match.params.id} className="class-page-root">
+            <LeftNav />
+            <div className="class-page-root">
                 <BackdropComponent open={loading && !data && !error} />
                 {error ? (
                     <Error />
@@ -80,7 +72,7 @@ function Class({ match }) {
                     // <ClassPageSwitcher sessions={sessions} match={stMatch} />
                     RenderSubPage
                 )}
-            </StyleWrapper>
+            </div>
         </>
     );
 }
