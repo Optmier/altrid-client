@@ -17,9 +17,10 @@ import ClassDialogDelete from '../essentials/ClassDialogDelete';
 import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
 import * as $ from 'jquery';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import ClassDialogCopy from '../essentials/ClassDialogCopy';
 import TooltipCard from '../essentials/TooltipCard';
+import LaunchIcon from '@material-ui/icons/Launch';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 const StyleDraftIng = styled.div`
     width: 100%;
@@ -70,12 +71,12 @@ const TimeItems = ({ title, time_limit }) => {
 };
 const HtmlTooltip = withStyles((theme) => ({
     tooltip: {
-        padding: '1rem 1.5rem',
-        fontSize: '1rem',
+        padding: '0.75rem 1rem',
+        fontSize: '0.85rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontWeight: '600',
+        fontWeight: '500',
         borderRadius: '10px',
 
         '&p': {
@@ -317,7 +318,6 @@ function CardDraft({ cardData, match, history }) {
                             </svg>
                         </span>
                     </div>
-
                     <div></div>
                     <div className="class-card-contents class-card-wrapper" onClick={handlePreTest}>
                         <div className="contents-block">
@@ -335,48 +335,63 @@ function CardDraft({ cardData, match, history }) {
                             />
                             <TimeItems title={'제한시간'} time_limit={cardData['time_limit']} />
                             <InfoItems title={'최종수정'} contents={moment(cardData['updated']).format('MM월 DD일 HH시 mm분')} />
-                            <InfoItems
-                                title={'유형별 분석'}
-                                contents={
-                                    assignmentTypeState < 100 ? (
-                                        <HtmlTooltip2
-                                            title={
-                                                <>
-                                                    <ErrorOutlineIcon />
-                                                    <p>유형별 분석의 최소 조건은 상단 뱃지를 클릭하여 확인해주세요!</p>
-                                                </>
-                                            }
-                                        >
-                                            <p style={{ color: '#ff8383' }}>불가능</p>
-                                        </HtmlTooltip2>
-                                    ) : (
-                                        '가능'
-                                    )
-                                }
-                            />
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    paddingTop: '8px',
+                                    fontSize: '0.82rem',
+                                    color: '#706d6d',
+                                }}
+                            >
+                                <InfoItems
+                                    title={'게시 수'}
+                                    contents={cardData['actived_count'] ? cardData['actived_count'] + '회' : '미게시'}
+                                />
+                                <HtmlTooltip
+                                    placement="bottom-center"
+                                    title={
+                                        <>
+                                            {cardData['class_name']
+                                                ? Array.from(new Set(cardData['class_name'].split(','))).map((name, key) => (
+                                                      <div key={key} className="class-button">
+                                                          {name}반{key !== 0 ? ' /' : ' '}
+                                                      </div>
+                                                  ))
+                                                : '게시중인 반 없음'}
+                                        </>
+                                    }
+                                >
+                                    <LaunchIcon color="inherit" fontSize="inherit" style={{ marginLeft: '6px' }} />
+                                </HtmlTooltip>
+                            </div>
                         </div>
                     </div>
-                    <HtmlTooltip
-                        placement="bottom-end"
-                        title={
-                            <>
-                                {cardData['class_name']
-                                    ? Array.from(new Set(cardData['class_name'].split(','))).map((name, key) => (
-                                          <div key={key} className="class-button">
-                                              {key !== 0 ? ' / ' : ''} {name} 반
-                                          </div>
-                                      ))
-                                    : '게시중인 반 없음'}
-                            </>
-                        }
-                    >
+                    {!(assignmentTypeState < 100) ? (
                         <div className="class-card-bottom-right">
                             {/* 시선흐름 유무 */}
-                            <IsPresence type={'eye'} able={cardData['eyetrack']} />
+                            <IsPresence type={'eye'} able={cardData['eyetrack']} align="left" />
                             {/* 게시 유무 */}
-                            <IsPresence type={'share'} able={cardData['actived_count']} />
+                            <IsPresence type={'analysis'} able={assignmentTypeState} align="left" />
                         </div>
-                    </HtmlTooltip>
+                    ) : (
+                        <HtmlTooltip2
+                            title={
+                                <>
+                                    <ErrorOutlineIcon />
+                                    <p>유형별 분석의 최소 조건은 하단 배너를 클릭하여 확인해주세요!</p>
+                                </>
+                            }
+                        >
+                            <div className="class-card-bottom-right">
+                                {/* 시선흐름 유무 */}
+                                <IsPresence type={'eye'} able={cardData['eyetrack']} align="left" />
+                                {/* 게시 유무 */}
+                                <IsPresence type={'analysis'} able={assignmentTypeState} align="left" />
+                            </div>
+                        </HtmlTooltip2>
+                    )}
                 </div>
             )}
         </>

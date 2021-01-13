@@ -129,18 +129,19 @@ function MainDraft({ match }) {
         <>
             <HeaderBar />
             <BackdropComponent2 open={loading && !data.length} />
+            <Drawer anchor="right" open={openCreateNewDrawer}>
+                <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
+            </Drawer>
+
+            <div className="draft-header"></div>
 
             <div className="class-page-root" style={{ minHeight: '0' }}>
-                <Drawer anchor="right" open={openCreateNewDrawer}>
-                    <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
-                </Drawer>
-
-                <ClassWrapper>{/* <ClassHeaderBox />
-                <TypeBanner situation="info" /> */}</ClassWrapper>
-
-                <div className="draft-header"></div>
-
-                <div style={{ paddingTop: '100px' }} className="class-section-root">
+                <div style={{ paddingTop: '80px' }} className="class-section-root">
+                    <div className="class-draft-header">
+                        <h2>
+                            빠른 과제 생성을 통해<br></br>학습 성장을 경험해보세요.
+                        </h2>
+                    </div>
                     <div className="class-draft-card">
                         <CardLists
                             upperDeck={

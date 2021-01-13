@@ -6,7 +6,7 @@
     flex-direction: column;
 
     & .class-card-wrapper {
-        padding: 12px;
+        padding: 12px 24px;
     }
     & .class-card-wrapper-student {
         padding: 16px;
@@ -80,7 +80,7 @@
     }
     & .class-card-bottom-right {
         height: 100%;
-        padding: 0 12px 12px 12px;
+        padding: 0 24px 12px 24px;
         display: flex;
         align-items: flex-end;
         justify-content: flex-end;
@@ -150,7 +150,7 @@
         padding-top: 20px;
     }
     & .card-item + .card-item {
-        padding-top: 6px;
+        padding-top: 8px;
     }
 
     & .contents-block {

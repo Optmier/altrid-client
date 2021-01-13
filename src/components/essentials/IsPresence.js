@@ -1,7 +1,7 @@
 import React from 'react';
 
 const OnOffCircle = ({ fill }) => {
-    return <div style={{ width: '8px', height: '8px', borderRadius: '5px', backgroundColor: fill }}> </div>;
+    return <div style={{ width: '10px', height: '10px', borderRadius: '5px', backgroundColor: fill }}> </div>;
 };
 const BottomSpan = ({ color, fill, children, align, shareRef }) => {
     return (
@@ -27,8 +27,8 @@ const BottomSpan = ({ color, fill, children, align, shareRef }) => {
     );
 };
 function IsPresence({ type, able, align }) {
-    //type : 'eye' 'share'
-    //able : true, false
+    //type : 'eye' 'analysis'
+    //able : text...
     //align : 'left', 'right'
 
     return (
@@ -41,12 +41,12 @@ function IsPresence({ type, able, align }) {
                 ) : (
                     <BottomSpan align={align}>시선흐름 분석 미포함</BottomSpan>
                 )
-            ) : able ? (
-                <BottomSpan color="black" fill="#3b168a" align={align}>
-                    {able}회 게시
+            ) : !(able < 100) ? (
+                <BottomSpan color="black" fill="#39A0FE" align={align}>
+                    유형별 분석 가능
                 </BottomSpan>
             ) : (
-                <BottomSpan align={align}>미게시</BottomSpan>
+                <BottomSpan align={align}>유형별 분석 불가능</BottomSpan>
             )}
         </>
     );
