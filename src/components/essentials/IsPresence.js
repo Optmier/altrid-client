@@ -1,7 +1,7 @@
 import React from 'react';
 
 const OnOffCircle = ({ fill }) => {
-    return <div style={{ width: '8px', height: '8px', borderRadius: '5px', backgroundColor: fill }}> </div>;
+    return <div style={{ width: '10px', height: '10px', borderRadius: '5px', backgroundColor: fill }}> </div>;
 };
 const BottomSpan = ({ color, fill, children, align, shareRef }) => {
     return (
