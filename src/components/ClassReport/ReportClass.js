@@ -403,6 +403,7 @@ function ReportClass({ match, history }) {
 
     useEffect(() => {
         if (!studentsData || studentsData.length < 1) return;
+
         /** 여기에 계산함수 구현하면 됩니다. */
         const _sumOfScoresPerNumbers = {};
         const len = studentsData
@@ -442,15 +443,13 @@ function ReportClass({ match, history }) {
         setMainLoading(false);
     }, [studentsData]);
 
-    //error check 1.제출한 학생이 아무도 없을때
-    if (studentsData.length >= 1 && !studentsData.filter((s) => s.submitted).length) {
-        alert('아직 제출한 학생이 없습니다 !');
-        history.goBack();
-    }
-    //error check 2. 우리반이 아닌 다른 반 리포트에 접근할려고 할때
+    //error check 1. 우리반이 아닌 다른 반 리포트에 접근할려고 할때
     if (data && data.idx === undefined) return <Error />;
-    //error check 3. 데이터 전체가 로딩 완료될때까지는 back drop
-    if ((data === null && loading) || mainLoading) return <BackdropComponent open={true} />;
+    //error check 2. 데이터 전체가 로딩 완료될때까지는 back drop
+    if ((data === null && loading) || mainLoading) {
+        console.log(data, loading, mainLoading);
+        return <BackdropComponent open={true} />;
+    }
 
     return (
         <div style={{ paddingBottom: '200px' }}>

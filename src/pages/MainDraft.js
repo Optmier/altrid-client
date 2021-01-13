@@ -23,7 +23,7 @@ import { BsExclamationTriangleFill } from 'react-icons/bs';
 import Footer from '../components/essentials/Footer';
 import Error from './Error';
 
-const InfoBanner = styled.div`
+const InfoBanner = styled.a`
     width: 100%;
     margin: 95px 0;
 
@@ -165,7 +165,7 @@ function MainDraft({ match }) {
             </div>
             <ClassWrapper col="none" type="main_page">
                 <StyleHr className="draft-footer"></StyleHr>
-                <InfoBanner>
+                <InfoBanner href="https://www.notion.so/07bd3c8f53ac4e449242cda7eccdcb4e" alt="more_analysis" target="_blank">
                     <div className="banner-root">
                         <div className="banner-top">
                             <BsExclamationTriangleFill />
@@ -174,14 +174,9 @@ function MainDraft({ match }) {
                         <div className="banner-central">
                             유형별 분석이 가능한 과제를 생성시, 더 많은 리포트 정보를 받아보실 수 있습니다.
                         </div>
-                        <a
-                            className="banner-footer"
-                            href="https://www.notion.so/optmier/a4daf8676b2b4460b75613f25249abf3"
-                            alt="more_eyetrack"
-                            target="_blank"
-                        >
+                        <div className="banner-footer">
                             자세히 알아보기 <IoIosArrowForward style={{ marginRight: '5px' }} />
-                        </a>
+                        </div>
                     </div>
                 </InfoBanner>
             </ClassWrapper>

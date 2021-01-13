@@ -138,7 +138,7 @@ function LeftNav({ match, history }) {
                 <div className="left-nav-box">
                     <div className="box-wrapper" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
                         <img alt="avatar" src={Avatar} />
-                        <TooltipCard title={sessions.userName}>
+                        <TooltipCard title={sessions.userName ? sessions.userName : '-'}>
                             <h4>
                                 {sessions.userName}
                                 {sessions.userType === 'teachers' ? '선생님' : '님'}
@@ -148,11 +148,11 @@ function LeftNav({ match, history }) {
                 </div>
                 <div className="left-nav-box">
                     <div className="box-wrapper">
-                        <TooltipCard title={teacherData ? teacherData['class_name'] : '-'}>
+                        <TooltipCard title={teacherData['class_name'] ? teacherData['class_name'] : '-'}>
                             <h5>{teacherData ? teacherData['class_name'] : ''}</h5>
                         </TooltipCard>
                         <>
-                            <TooltipCard title={teacherData ? teacherData['description'] : '-'}>
+                            <TooltipCard title={teacherData['description'] ? teacherData['description'] : '-'}>
                                 <p className="p-desc">{teacherData ? teacherData['description'] : ''}</p>
                             </TooltipCard>
                             {sessions.userType === 'students' ? null : (
