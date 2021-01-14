@@ -459,131 +459,166 @@ function ReportClass({ match, history }) {
 
             <ClassWrapper col={true}>
                 {/* <ClassHeaderBox /> */}
-                <TypeBanner situation={achievesForTypes.value < 100 ? 'warning' : 'success'} value={achievesForTypes.value} />
+                {/* <TypeBanner situation={achievesForTypes.value < 100 ? 'warning' : 'success'} value={achievesForTypes.value} /> */}
                 <BranchNav deps="2" />
                 <div className="class-report-root">
+                    <div className="class-report-header">
+                        <div className="class-report-header-left">
+                            <h3>{title}가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바</h3>
+                            <p>{description}가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바</p>
+                        </div>
+                        <div className="class-report-header-right">
+                            <IsPresence type="eye" able={eyetrack} align="left" />
+                            <ToggleSwitch
+                                isStarted={new Date(mainReportData ? mainReportData.created : null).getTime() <= serverdate.datetime}
+                                toggle={toggleState['checked']}
+                                handleToggleChange={handleToggleChange}
+                                type="share2"
+                                name="checked"
+                            />
+                        </div>
+                    </div>
                     <section className="class-report-info">
                         <div className="report-box">
-                            <div className="report-col">
-                                <h3>{title}</h3>
-                            </div>
-                            <div className="report-col">
-                                <p>{description}</p>
-                            </div>
-                            <div className="report-col">
-                                <div className="left-bottom">
-                                    <IsPresence type="eye" able={eyetrack} align="right" />
-                                    <ToggleSwitch
-                                        isStarted={
-                                            new Date(mainReportData ? mainReportData.created : null).getTime() <= serverdate.datetime
-                                        }
-                                        toggle={toggleState['checked']}
-                                        handleToggleChange={handleToggleChange}
-                                        type="share2"
-                                        name="checked"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="report-box">
-                            <div className="report-col">
-                                <div className="mid-mid">
-                                    <span className="mid-desc">문항수</span>
-                                    <span className="mid-content">{problemNumbers} 문제</span>
-                                </div>
+                            <div className="report-row">
+                                <span className="left-desc">
+                                    <svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M0 13H2V13.5H1V14.5H2V15H0V16H3V12H0V13ZM1 4H2V0H0V1H1V4ZM0 7H1.8L0 9.1V10H3V9H1.2L3 6.9V6H0V7ZM5 1V3H19V1H5ZM5 15H19V13H5V15ZM5 9H19V7H5V9Z"
+                                            fill="#706D6D"
+                                        />
+                                    </svg>
+                                    문항수
+                                </span>
+                                <span className="left-content">
+                                    {problemNumbers}
+                                    문제
+                                </span>
                             </div>
 
-                            <div className="report-col">
-                                <div className="mid-mid">
-                                    <span className="mid-desc">제한 시간</span>
-                                    <span className="mid-content">{timeLimit === -2 ? '없음' : timeValueToTimer(timeLimit)}</span>
-                                </div>
+                            <div className="report-row">
+                                <span className="left-desc">
+                                    <svg width="18" height="21" viewBox="0 0 18 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 0H6V2H12V0ZM8 13H10V7H8V13ZM16.03 6.39L17.45 4.97C17.02 4.46 16.55 3.98 16.04 3.56L14.62 4.98C13.07 3.74 11.12 3 9 3C4.03 3 0 7.03 0 12C0 16.97 4.02 21 9 21C13.98 21 18 16.97 18 12C18 9.88 17.26 7.93 16.03 6.39ZM9 19C5.13 19 2 15.87 2 12C2 8.13 5.13 5 9 5C12.87 5 16 8.13 16 12C16 15.87 12.87 19 9 19Z"
+                                            fill="#706D6D"
+                                        />
+                                    </svg>
+                                    제한 시간
+                                </span>
+                                <span className="left-content">{timeLimit === -2 ? '없음' : timeValueToTimer(timeLimit)}</span>
                             </div>
-                            <div className="report-col">
-                                <div className="mid-mid">
-                                    <span className="mid-desc">과제 기한</span>
-                                    <span className="mid-content">
-                                        {startDate} ~ {dueDate}
-                                    </span>
-                                    <ModifyButton handleDateChange={handleDateChange} />
-                                </div>
+                            <div className="report-row">
+                                <span className="left-desc">
+                                    <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M6 9H4V11H6V9ZM10 9H8V11H10V9ZM14 9H12V11H14V9ZM16 2H15V0H13V2H5V0H3V2H2C0.89 2 0.00999999 2.9 0.00999999 4L0 18C0 19.1 0.89 20 2 20H16C17.1 20 18 19.1 18 18V4C18 2.9 17.1 2 16 2ZM16 18H2V7H16V18Z"
+                                            fill="#706D6D"
+                                        />
+                                    </svg>
+                                    과제 기한
+                                </span>
+                                <span className="left-content">
+                                    {startDate} ~ {dueDate}
+                                </span>
+                                <ModifyButton handleDateChange={handleDateChange} />
                             </div>
                         </div>
                         <div className="report-box">
-                            <div className="report-col">
-                                <div className="right-top">
-                                    <StudentNum
-                                        completeNum={studentsData.filter((s) => s.submitted).length}
-                                        totalNum={studentsData.length}
-                                        width="75%"
-                                    />
-                                </div>
+                            <div className="report-row">
+                                <div className="right-top">제출한 학생</div>
                             </div>
-                            <div className="report-col">
-                                <div className="right-bottom">제출한 학생</div>
+                            <div className="report-row">
+                                <div className="right-bottom">
+                                    {studentsData.filter((s) => s.submitted).length} / {studentsData.length}
+                                </div>
                             </div>
                         </div>
                     </section>
-                    {/* {console.log(achievesForTypes)} */}
+                    <section className="class-report-progress">
+                        <div className="class-report-title">
+                            <div className="title-progress-left">전체 진행률</div>
+                            <div className="title-progress-right">
+                                <span>
+                                    정답 <div className="circle able"></div>
+                                </span>
+                                <span>
+                                    오답 <div className="circle disable"></div>
+                                </span>
+                                <span>
+                                    미응시 <div className="circle none"></div>
+                                </span>
+                            </div>
+                        </div>
+                        <TotalProgress studentList={studentsData} problemNumbers={problemNumbers}></TotalProgress>
+                    </section>
+
                     <section className="class-report-graph">
-                        <div className="class-report-title">점수 비교 그래프</div>
+                        <div className="class-report-title">
+                            점수 비교 그래프
+                            <div className="title-graph-right">
+                                <TypeBanner
+                                    situation={achievesForTypes.value < 100 ? 'warning' : 'success'}
+                                    value={achievesForTypes.value}
+                                />
+                            </div>
+                        </div>
+                        <div className="graph-box-header">
+                            <div>
+                                <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
+                                {Math.min(...avgScoresOfNumber).toFixed(1)}%)
+                            </div>
+                            <div>
+                                <span>가장 취약한 영역 </span>
+                                {
+                                    ProblemCategories.filter(
+                                        (p) =>
+                                            p.id ===
+                                            achievesForTypes.allExists
+                                                .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                                .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].category,
+                                    )[0].name
+                                }
+                                (
+                                {(
+                                    achievesForTypes.allExists
+                                        .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                        .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
+                                ).toFixed(1) || 0}
+                                %)
+                            </div>
+                            <div>
+                                <select name="chart-option" onChange={handleSelect}>
+                                    <option value="0">문제별 정답률</option>
+                                    {achievesForTypes.value >= 100 ? <option value="1">유형별 정답률</option> : null}
+                                </select>
+                            </div>
+                        </div>
                         <div className="graph-box">
                             <div className="graph-header">
-                                <div className="graph-header-text">
-                                    {selectState === '0' ? (
-                                        <>
-                                            <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번
-                                            ({Math.min(...avgScoresOfNumber).toFixed(1)}%)
-                                        </>
-                                    ) : (
-                                        <>
-                                            <span>가장 취약한 영역 </span>{' '}
-                                            {
-                                                ProblemCategories.filter(
-                                                    (p) =>
-                                                        p.id ===
-                                                        achievesForTypes.allExists
-                                                            .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
-                                                            .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0]
-                                                            .category,
-                                                )[0].name
-                                            }
-                                            (
-                                            {(
-                                                achievesForTypes.allExists
-                                                    .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
-                                                    .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
-                                            ).toFixed(1) || 0}
-                                            %)
-                                        </>
-                                    )}
-                                </div>
                                 {achievesForTypes.value > 100 ? (
                                     <div className="graph-header-text">
                                         <span>가장 취약한 유형 </span>
                                         {
                                             ProblemCategories.filter(
                                                 (p) =>
-                                                    p.id ==
+                                                    p.id ===
                                                     Object.keys(averageScoresOfType)
-                                                        .filter((k) => k != 0)
+                                                        .filter((k) => k !== 0)
                                                         .reduceRight((a, b) => (averageScoresOfType[a] < averageScoresOfType[b] ? a : b)),
                                             )[0].name
                                         }
                                         (
                                         {averageScoresOfType[
                                             Object.keys(averageScoresOfType)
-                                                .filter((k) => k != 0)
+                                                .filter((k) => k !== 0)
                                                 .reduceRight((a, b) => (averageScoresOfType[a] < averageScoresOfType[b] ? a : b))
                                         ] * 100}
                                         %)
                                     </div>
                                 ) : null}
-                                <select name="chart-option" onChange={handleSelect}>
-                                    <option value="0">문제별 정답률</option>
-                                    {achievesForTypes.value >= 100 ? <option value="1">유형별 정답률</option> : null}
-                                </select>
                             </div>
+
                             {selectState === '0' ? (
                                 <ColumnChartProblem datas={avgScoresOfNumber} />
                             ) : (
@@ -593,19 +628,14 @@ function ReportClass({ match, history }) {
                             )}
                         </div>
                     </section>
-
-                    <section className="class-report-progress">
-                        <div className="class-report-title">전체 진행률</div>
-                        <TotalProgress studentList={studentsData} problemNumbers={problemNumbers}></TotalProgress>
-                    </section>
                 </div>
             </ClassWrapper>
 
             <CardLists
                 upperDeck={
-                    <StudentCardHeader className="class-report-student-card">
-                        <div className="left">
-                            <div className="title">학생별 리포트</div>
+                    <div className="class-report-title">
+                        학생별 리포트
+                        <div className="title-student-right">
                             <select name="student-option" onChange={handleSortStudentsCard}>
                                 <option value="0">제출 순</option>
                                 <option value="1">이름 순</option>
@@ -613,8 +643,7 @@ function ReportClass({ match, history }) {
                                 <option value="3">소요시간 순</option>
                             </select>
                         </div>
-                        {/* <FilterButton /> */}
-                    </StudentCardHeader>
+                    </div>
                 }
             >
                 {studentsData.map((data) => (
