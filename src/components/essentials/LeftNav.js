@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/nav_left.scss';
 import { NavLink, withRouter } from 'react-router-dom';
-import LogoWhite from '../../images/logos/nav_logo_white.png';
 import People from '../../images/people.png';
 import Avatar from '../../images/avatar.png';
 import Axios from 'axios';
@@ -25,7 +24,7 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-function LeftNav({ match, history, leftNavState }) {
+function LeftNav({ match, history, leftNavState, handleLeftNav }) {
     const { num } = match.params;
 
     /** redux-module 불러내기 */
@@ -133,7 +132,7 @@ function LeftNav({ match, history, leftNavState }) {
     return (
         <StyleLeftNav leftNavState={leftNavState} className="left-nav-root">
             <div className="left-nav">
-                <TooltipCard title="클래스 나가기">
+                {/* <TooltipCard title="클래스 나가기">
                     <div className="left-nav-box">
                         <LeftNavItem linkTo={`/`}>
                             <img src={LogoWhite} alt="logo_white"></img>
@@ -151,12 +150,29 @@ function LeftNav({ match, history, leftNavState }) {
                             </h4>
                         </TooltipCard>
                     </div>
-                </div>
+                </div> */}
                 <div className="left-nav-box">
                     <div className="box-wrapper">
-                        <TooltipCard title={teacherData['class_name'] ? teacherData['class_name'] : '-'}>
-                            <h5>{teacherData ? teacherData['class_name'] : ''}</h5>
-                        </TooltipCard>
+                        <div className="left-nav-hambuger">
+                            <TooltipCard title={teacherData['class_name'] ? teacherData['class_name'] : '-'}>
+                                <h5>{teacherData ? teacherData['class_name'] : ''}</h5>
+                            </TooltipCard>
+                            <svg
+                                onClick={handleLeftNav}
+                                width="22"
+                                height="20"
+                                viewBox="0 0 22 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path d="M0 17.65L7.63333 10L0 2.35L2.35 4.76837e-07L12.35 10L2.35 20L0 17.65Z" fill="white" />
+                                <path
+                                    d="M8.7998 17.65L16.4331 10L8.7998 2.35L11.1498 4.76837e-07L21.1498 10L11.1498 20L8.7998 17.65Z"
+                                    fill="white"
+                                />
+                            </svg>
+                        </div>
+
                         <>
                             <TooltipCard title={teacherData['description'] ? teacherData['description'] : '-'}>
                                 <p className="p-desc">{teacherData ? teacherData['description'] : ''}</p>

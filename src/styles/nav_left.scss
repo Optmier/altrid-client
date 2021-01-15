@@ -43,7 +43,19 @@ a {
                 align-items: flex-start;
                 justify-content: center;
                 color: white;
-
+                & .left-nav-hambuger {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    & svg {
+                        cursor: pointer;
+                        padding: 4px;
+                    }
+                    & svg:hover {
+                        background-color: #6b549c70;
+                    }
+                }
                 & .p-desc {
                     line-height: 1.5;
                     overflow: hidden;

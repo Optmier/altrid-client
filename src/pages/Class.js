@@ -74,9 +74,9 @@ function Class({ match }) {
 
     return (
         <>
-            <LeftNav leftNavState={leftNavState} />
+            <LeftNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
             <StyleDiv leftNavState={leftNavState} className="class-page-root">
-                <TopNav handleLeftNav={handleLeftNav} />
+                <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
                 <BackdropComponent open={loading && !data && !error} />
                 {error ? (
                     <Error />

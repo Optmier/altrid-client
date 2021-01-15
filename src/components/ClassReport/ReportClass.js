@@ -452,7 +452,7 @@ function ReportClass({ match, history }) {
     }
 
     return (
-        <div style={{ paddingBottom: '200px' }}>
+        <div style={{ width: '100%', paddingBottom: '200px' }}>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
             <ClassDialog type="date" subType="modify" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
             <ClassDialogDelete ver="assignment" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />

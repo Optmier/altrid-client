@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
+import * as $ from 'jquery';
 
 const StyleWrapper = styled.div`
     max-width: 960px;
@@ -21,15 +22,53 @@ const StyleWrapper = styled.div`
                   }
               `
             : css`
-                  @media (min-width: 0px) and (max-width: 1231px) {
+                  /* @media (min-width: 0px) and (max-width: 1231px) {
                       max-width: 632px;
-                  }
+                  } */
               `}
 `;
 
+$.fn.changeSize = function (handleFunction) {
+    let element = this;
+    let lastWidth = element.width();
+
+    setInterval(function () {
+        if (lastWidth === element.width()) return;
+        if (typeof handleFunction == 'function') {
+            handleFunction({ width: element.width() });
+            lastWidth = element.width();
+        }
+    }, 50);
+
+    return element;
+};
+
+const cardSizer = (dt) => {
+    if (!dt.width) return;
+    if (dt.width >= 992) {
+        $('#class-wrapper').css({ width: '960px' });
+    } else if (dt.width >= 663 && dt.width < 992) {
+        $('#class-wrapper').css({ width: '632px' });
+    } else {
+        $('#class-wrapper').css({ width: 'initial' });
+    }
+};
+
 function ClassWrapper({ children, col, type }) {
+    useEffect(() => {
+        let $wrapperParent = $('#class-wrapper').parent();
+        console.log('2: ', $wrapperParent);
+
+        cardSizer({ width: $wrapperParent.width() });
+        setTimeout(() => {
+            $wrapperParent.changeSize((dt) => {
+                cardSizer(dt);
+            });
+        }, 250);
+    }, []);
+
     return (
-        <StyleWrapper col={col} type={type}>
+        <StyleWrapper col={col} type={type} id="class-wrapper">
             {children}
         </StyleWrapper>
     );
