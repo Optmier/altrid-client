@@ -4,6 +4,8 @@ import EyeTrackPattern from './EyeTrackPattern';
 import EyetrackingPlayer from '../TOFELRenderer/EyetrackingPlayer';
 import { Tooltip } from '@material-ui/core';
 import TooltipCard from '../essentials/TooltipCard';
+import { apiUrl } from '../../configs/configs';
+import Axios from 'axios';
 
 const StyleEyeTrackBox = styled.div`
     height: 500px;
@@ -58,7 +60,16 @@ const StyleEyeTrackBox = styled.div`
     }
 `;
 
-function EyeTrackBox({ hasEyetrack, eyetrackData, contentsData, patternData, currentStudentDatas, totalStudentsDatas }) {
+function EyeTrackBox({
+    hasEyetrack,
+    eyetrackData,
+    contentsData,
+    patternData,
+    currentStudentDatas,
+    totalStudentsDatas,
+    activedNum,
+    classNum,
+}) {
     const [trackTimeGoTo, setTrackTimeGoTo] = useState(0);
     const [fixations, setFixations] = useState('-');
     const [avgFixVels, setAvgFixVels] = useState('-');
@@ -66,6 +77,8 @@ function EyeTrackBox({ hasEyetrack, eyetrackData, contentsData, patternData, cur
     const [fixationsTotalAvg, setFixationsTotalAvg] = useState('-');
     const [avgFixDurTotalAvg, setAvgFixDurTotalAvg] = useState('-');
     const [regressionsTotalAvg, setRegressionsTotalAvg] = useState('-');
+    const [mEyetrackData, setEyetrackData] = useState(eyetrackData);
+    window.setEyetrackData = setEyetrackData;
     // window.setTrackTimeGoTo = setTrackTimeGoTo;
     const handleGoTo = (time) => {
         // console.log(time);
@@ -77,6 +90,41 @@ function EyeTrackBox({ hasEyetrack, eyetrackData, contentsData, patternData, cur
             }
         }
     };
+
+    // useEffect(() => {
+    //     Axios.get(`${apiUrl}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
+    //         params: {
+    //             classNumber: classNum,
+    //         },
+    //         withCredentials: true,
+    //     })
+    //         .then((res) => {
+    //             console.log(res.data);
+    //             if (res.data) {
+    //                 let unparsedEyetrackData = res.data;
+    //                 let parsedData = null;
+    //                 try {
+    //                     unparsedEyetrackData
+    //                         .replace(/\\n/g, '\\n')
+    //                         .replace(/\\'/g, "\\'")
+    //                         .replace(/\\"/g, '\\"')
+    //                         .replace(/\\&/g, '\\&')
+    //                         .replace(/\\r/g, '\\r')
+    //                         .replace(/\\t/g, '\\t')
+    //                         .replace(/\\b/g, '\\b')
+    //                         .replace(/\\f/g, '\\f')
+    //                         .replace(/[\u0000-\u0019]+/g, '');
+    //                     parsedData = JSON.parse(unparsedEyetrackData);
+    //                 } catch (error) {
+    //                     unparsedEyetrackData = null;
+    //                 }
+    //                 setEyetrackData(parsedData);
+    //             }
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //         });
+    // }, []);
 
     useEffect(() => {
         if (!totalStudentsDatas || !totalStudentsDatas.length) return;
@@ -164,8 +212,8 @@ function EyeTrackBox({ hasEyetrack, eyetrackData, contentsData, patternData, cur
                         </div>
                     </div>
                 )}
-                {hasEyetrack && eyetrackData ? (
-                    <EyetrackingPlayer data={eyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
+                {hasEyetrack && mEyetrackData ? (
+                    <EyetrackingPlayer data={mEyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
                 ) : null}
             </div>
 

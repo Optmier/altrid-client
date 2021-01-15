@@ -614,7 +614,9 @@ function ReportStudent({ history, match }) {
                                                         problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name
                                                     }
                                                 >
-                                                    <div className="ment-ai-type">{problemCategories[0].name}</div>
+                                                    <div className="ment-ai-type">
+                                                        {problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name}
+                                                    </div>
                                                 </TooltipCard>
                                             ) : (
                                                 'null'
@@ -769,6 +771,8 @@ function ReportStudent({ history, match }) {
                             patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
                             totalStudentsDatas={studentsData.filter((d) => d.submitted)}
                             currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
+                            activedNum={activedNum}
+                            classNum={num}
                         />
                     ) : null}
                 </section>

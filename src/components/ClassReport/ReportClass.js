@@ -415,7 +415,7 @@ function ReportClass({ match, history }) {
                     _sumOfScoresPerNumbers[i] += s.correct ? 1 : 0;
                 });
             }).length;
-        const averagesOfNumber = Object.keys(_sumOfScoresPerNumbers).map((n) => ((_sumOfScoresPerNumbers[n] / len) * 100.0).toFixed(1));
+        const averagesOfNumber = Object.keys(_sumOfScoresPerNumbers).map((n) => (_sumOfScoresPerNumbers[n] / len) * 100.0);
         setAvgScoresOfNumber(averagesOfNumber);
         // console.log(averagesOfNumber);
         const totalForWeaks = studentsData.filter((d) => d.submitted);
@@ -595,30 +595,6 @@ function ReportClass({ match, history }) {
                             </div>
                         </div>
                         <div className="graph-box">
-                            <div className="graph-header">
-                                {achievesForTypes.value > 100 ? (
-                                    <div className="graph-header-text">
-                                        <span>가장 취약한 유형 </span>
-                                        {
-                                            ProblemCategories.filter(
-                                                (p) =>
-                                                    p.id ===
-                                                    Object.keys(averageScoresOfType)
-                                                        .filter((k) => k !== 0)
-                                                        .reduceRight((a, b) => (averageScoresOfType[a] < averageScoresOfType[b] ? a : b)),
-                                            )[0].name
-                                        }
-                                        (
-                                        {averageScoresOfType[
-                                            Object.keys(averageScoresOfType)
-                                                .filter((k) => k !== 0)
-                                                .reduceRight((a, b) => (averageScoresOfType[a] < averageScoresOfType[b] ? a : b))
-                                        ] * 100}
-                                        %)
-                                    </div>
-                                ) : null}
-                            </div>
-
                             {selectState === '0' ? (
                                 <ColumnChartProblem datas={avgScoresOfNumber} />
                             ) : (

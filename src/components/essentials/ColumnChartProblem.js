@@ -8,7 +8,7 @@ function ColumnChartProblem({ datas }) {
         series: [
             {
                 name: '정답률',
-                data: datas,
+                data: datas.map((d) => d.toFixed()),
             },
         ],
         options: {
