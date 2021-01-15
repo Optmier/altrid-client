@@ -14,6 +14,12 @@ import { useState } from 'react';
 import StudentManage from '../components/ClassStudentManage/StudentManage';
 import VideoLecturesManage from '../components/VideoLectures/VideoLecturesManage';
 import styled from 'styled-components';
+import TopNav from '../components/essentials/TopNav';
+
+const StyleDiv = styled.div`
+    transition: all 0.4s;
+    padding: ${(props) => (props.leftNavState ? '80px 0 0 240px' : '80px 0 0 0')};
+`;
 
 const ClassPageSwitcher = (match, sessions) => {
     if (!match.id || !match.path) return <></>;
@@ -49,6 +55,11 @@ function Class({ match }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const [stMatch, setStMatch] = useState({ id: null, path: null });
     const [RenderSubPage, setRenderSubPage] = useState(null);
+    const [leftNavState, setLeftNavState] = useState(true);
+
+    const handleLeftNav = () => {
+        setLeftNavState(!leftNavState);
+    };
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
@@ -63,8 +74,9 @@ function Class({ match }) {
 
     return (
         <>
-            <LeftNav />
-            <div style={{ padding: '30px 0 0 240px' }} className="class-page-root">
+            <LeftNav leftNavState={leftNavState} />
+            <StyleDiv leftNavState={leftNavState} className="class-page-root">
+                <TopNav handleLeftNav={handleLeftNav} />
                 <BackdropComponent open={loading && !data && !error} />
                 {error ? (
                     <Error />
@@ -72,7 +84,7 @@ function Class({ match }) {
                     // <ClassPageSwitcher sessions={sessions} match={stMatch} />
                     RenderSubPage
                 )}
-            </div>
+            </StyleDiv>
         </>
     );
 }

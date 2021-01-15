@@ -10,6 +10,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import TooltipCard from './TooltipCard';
 import { setCurrentVideoLecture, setStudentsNum, updateLiveCounts } from '../../redux_modules/currentClass';
 import Error from '../../pages/Error';
+import styled from 'styled-components';
+
+const StyleLeftNav = styled.div`
+    transition: all 0.4s;
+    left: ${(props) => (props.leftNavState ? '0' : '-240px')};
+`;
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -19,7 +25,7 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-function LeftNav({ match, history }) {
+function LeftNav({ match, history, leftNavState }) {
     const { num } = match.params;
 
     /** redux-module 불러내기 */
@@ -125,7 +131,7 @@ function LeftNav({ match, history }) {
     }
 
     return (
-        <div className="left-nav-root">
+        <StyleLeftNav leftNavState={leftNavState} className="left-nav-root">
             <div className="left-nav">
                 <TooltipCard title="클래스 나가기">
                     <div className="left-nav-box">
@@ -268,7 +274,7 @@ function LeftNav({ match, history }) {
                     )}
                 </div>
             </div>
-        </div>
+        </StyleLeftNav>
     );
 }
 
