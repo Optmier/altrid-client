@@ -68,7 +68,7 @@ function EyeTrackBox({
     currentStudentDatas,
     totalStudentsDatas,
     activedNum,
-    classNum,
+    userId,
 }) {
     const [trackTimeGoTo, setTrackTimeGoTo] = useState(0);
     const [fixations, setFixations] = useState('-');
@@ -91,40 +91,39 @@ function EyeTrackBox({
         }
     };
 
-    // useEffect(() => {
-    //     Axios.get(`${apiUrl}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
-    //         params: {
-    //             classNumber: classNum,
-    //         },
-    //         withCredentials: true,
-    //     })
-    //         .then((res) => {
-    //             console.log(res.data);
-    //             if (res.data) {
-    //                 let unparsedEyetrackData = res.data;
-    //                 let parsedData = null;
-    //                 try {
-    //                     unparsedEyetrackData
-    //                         .replace(/\\n/g, '\\n')
-    //                         .replace(/\\'/g, "\\'")
-    //                         .replace(/\\"/g, '\\"')
-    //                         .replace(/\\&/g, '\\&')
-    //                         .replace(/\\r/g, '\\r')
-    //                         .replace(/\\t/g, '\\t')
-    //                         .replace(/\\b/g, '\\b')
-    //                         .replace(/\\f/g, '\\f')
-    //                         .replace(/[\u0000-\u0019]+/g, '');
-    //                     parsedData = JSON.parse(unparsedEyetrackData);
-    //                 } catch (error) {
-    //                     unparsedEyetrackData = null;
-    //                 }
-    //                 setEyetrackData(parsedData);
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             console.error(err);
-    //         });
-    // }, []);
+    useEffect(() => {
+        Axios.get(`${apiUrl}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
+            params: {
+                userId: userId,
+            },
+            withCredentials: true,
+        })
+            .then((res) => {
+                if (res.data) {
+                    let unparsedEyetrackData = res.data.eyetrack_data;
+                    let parsedData = null;
+                    try {
+                        unparsedEyetrackData
+                            .replace(/\\n/g, '\\n')
+                            .replace(/\\'/g, "\\'")
+                            .replace(/\\"/g, '\\"')
+                            .replace(/\\&/g, '\\&')
+                            .replace(/\\r/g, '\\r')
+                            .replace(/\\t/g, '\\t')
+                            .replace(/\\b/g, '\\b')
+                            .replace(/\\f/g, '\\f')
+                            .replace(/[\u0000-\u0019]+/g, '');
+                        parsedData = JSON.parse(unparsedEyetrackData);
+                        setEyetrackData(parsedData);
+                    } catch (error) {
+                        unparsedEyetrackData = null;
+                    }
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
 
     useEffect(() => {
         if (!totalStudentsDatas || !totalStudentsDatas.length) return;

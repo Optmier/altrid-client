@@ -771,8 +771,8 @@ function ReportStudent({ history, match }) {
                             patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
                             totalStudentsDatas={studentsData.filter((d) => d.submitted)}
                             currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
+                            userId={queryUserId}
                             activedNum={activedNum}
-                            classNum={num}
                         />
                     ) : null}
                 </section>
