@@ -286,7 +286,6 @@ function ReportClass({ match, history }) {
                 } catch (e) {
                     unparsedContentsData = null;
                 }
-                console.log(mainRes.data);
                 setMainReportData({ ...mainRes.data, contents_data: JSON.parse(unparsedContentsData) });
 
                 // 학생별 정보 불러오기
