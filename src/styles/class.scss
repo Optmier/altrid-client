@@ -229,6 +229,9 @@ $textGray: #706d6d;
                         font-size: 1.15rem;
                         color: $textGray;
                         font-weight: 400;
+
+                        display: flex;
+                        align-items: center;
                     }
                     & .right-top {
                         color: $textGray;
@@ -422,5 +425,16 @@ $textGray: #706d6d;
                 width: 50%;
             }
         }
+    }
+}
+
+#responsive-tablet {
+    & .report-box:nth-child(1) {
+        flex: 2;
+    }
+    & .report-box:nth-child(2) {
+        flex: 1;
+    }
+    & .left-content.reponsive {
     }
 }

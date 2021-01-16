@@ -518,10 +518,10 @@ function ReportClass({ match, history }) {
                                     </svg>
                                     과제 기한
                                 </span>
-                                <span className="left-content">
+                                <span className="left-content reponsive">
                                     <span>{startDate} ~ </span> <span>{dueDate}</span>
+                                    <ModifyButton handleDateChange={handleDateChange} />
                                 </span>
-                                <ModifyButton handleDateChange={handleDateChange} />
                             </div>
                         </div>
                         <div className="report-box">
@@ -570,6 +570,7 @@ function ReportClass({ match, history }) {
                             </div>
                             <div>
                                 <span>가장 취약한 영역 </span>
+                                {console.log(averageScoresOfType)}
                                 {
                                     ProblemCategories.filter(
                                         (p) =>
