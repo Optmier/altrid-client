@@ -152,27 +152,43 @@ function LeftNav({ match, history, leftNavState, handleLeftNav }) {
                     </div>
                 </div> */}
                 <div className="left-nav-box">
-                    <div className="box-wrapper">
+                    <div className="box-wrapper nav-hambuger">
                         <div className="left-nav-hambuger">
                             <TooltipCard title={teacherData['class_name'] ? teacherData['class_name'] : '-'}>
                                 <h5>{teacherData ? teacherData['class_name'] : ''}</h5>
                             </TooltipCard>
                             <svg
                                 onClick={handleLeftNav}
-                                width="22"
-                                height="20"
-                                viewBox="0 0 22 20"
-                                fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
+                                width="14.96"
+                                height="20.049"
+                                viewBox="0 0 14.96 20.049"
                             >
-                                <path d="M0 17.65L7.63333 10L0 2.35L2.35 4.76837e-07L12.35 10L2.35 20L0 17.65Z" fill="white" />
-                                <path
-                                    d="M8.7998 17.65L16.4331 10L8.7998 2.35L11.1498 4.76837e-07L21.1498 10L11.1498 20L8.7998 17.65Z"
-                                    fill="white"
-                                />
+                                <g id="그룹_523" data-name="그룹 523" transform="translate(-227.939 -26.244)" opacity="0.558">
+                                    <path
+                                        id="패스_550"
+                                        data-name="패스 550"
+                                        d="M-10394.5,18180.551l-7.92,10.176,7.92,9.24"
+                                        transform="translate(10637 -18154)"
+                                        fill="none"
+                                        stroke="#fff"
+                                        stroke-width="1"
+                                    />
+                                    <path
+                                        id="패스_551"
+                                        data-name="패스 551"
+                                        d="M-10394.5,18180.551l-7.92,10.176,7.92,9.24"
+                                        transform="translate(10631 -18154)"
+                                        fill="none"
+                                        stroke="#fff"
+                                        stroke-width="1"
+                                    />
+                                </g>
                             </svg>
                         </div>
+                    </div>
 
+                    <div className="box-wrapper">
                         <>
                             <TooltipCard title={teacherData['description'] ? teacherData['description'] : '-'}>
                                 <p className="p-desc">{teacherData ? teacherData['description'] : ''}</p>
