@@ -53,8 +53,10 @@ function ColumnChartProblem({ datas }) {
         },
     };
     return (
-        <div id="chart">
-            <Chart options={state.options} series={state.series} type="bar" height={350} />
+        <div id="chart-wrapper">
+            <div id="chart">
+                <Chart options={state.options} series={state.series} type="bar" height={350} />
+            </div>
         </div>
     );
 }

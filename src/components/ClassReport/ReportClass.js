@@ -519,7 +519,7 @@ function ReportClass({ match, history }) {
                                     과제 기한
                                 </span>
                                 <span className="left-content">
-                                    {startDate} ~ {dueDate}
+                                    <span>{startDate} ~ </span> <span>{dueDate}</span>
                                 </span>
                                 <ModifyButton handleDateChange={handleDateChange} />
                             </div>

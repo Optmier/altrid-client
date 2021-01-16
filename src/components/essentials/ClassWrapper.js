@@ -47,10 +47,16 @@ const cardSizer = (dt) => {
     if (!dt.width) return;
     if (dt.width >= 992) {
         $('#class-wrapper').css({ width: '960px' });
+        $('.class-report-root').removeClass('#responsive-tablet');
+        $('.class-report-root').removeClass('#responsive-mobile');
     } else if (dt.width >= 663 && dt.width < 992) {
         $('#class-wrapper').css({ width: '632px' });
+        $('.class-report-root').addClass('#responsive-tablet');
+        $('.class-report-root').removeClass('#responsive-mobile');
     } else {
         $('#class-wrapper').css({ width: 'initial' });
+        $('.class-report-root').addClass('#responsive-mobile');
+        $('.class-report-root').removeClass('#responsive-tablet');
     }
 };
 
