@@ -270,8 +270,8 @@ function ReportClass({ match, history }) {
     useEffect(() => {
         // 메인 정보 불러오기
         Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, { withCredentials: true })
-            .then((res) => {
-                let unparsedContentsData = res.data.contents_data;
+            .then((mainRes) => {
+                let unparsedContentsData = mainRes.data.contents_data;
                 try {
                     unparsedContentsData
                         .replace(/\\n/g, '\\n')
@@ -286,75 +286,75 @@ function ReportClass({ match, history }) {
                 } catch (e) {
                     unparsedContentsData = null;
                 }
-                setMainReportData({ ...res.data, contents_data: JSON.parse(unparsedContentsData) });
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+                setMainReportData({ ...mainRes.data, contents_data: JSON.parse(unparsedContentsData) });
 
-        // 학생별 정보 불러오기
-        Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
-            params: {
-                classNumber: num,
-            },
-            withCredentials: true,
-        })
-            .then((res) => {
-                setPrevStudentsDataRaw(res.data['prev']);
-                const convertedData = res.data['curr'].map((data) => {
-                    let unparsedUserData = data.user_data;
-                    try {
-                        unparsedUserData
-                            .replace(/\\n/g, '\\n')
-                            .replace(/\\'/g, "\\'")
-                            .replace(/\\"/g, '\\"')
-                            .replace(/\\&/g, '\\&')
-                            .replace(/\\r/g, '\\r')
-                            .replace(/\\t/g, '\\t')
-                            .replace(/\\b/g, '\\b')
-                            .replace(/\\f/g, '\\f')
-                            .replace(/[\u0000-\u0019]+/g, '');
-                    } catch (e) {
-                        unparsedUserData = null;
-                    }
-                    let unparsedEyetrackData = data.eyetrack_data;
-                    try {
-                        unparsedEyetrackData
-                            .replace(/\\n/g, '\\n')
-                            .replace(/\\'/g, "\\'")
-                            .replace(/\\"/g, '\\"')
-                            .replace(/\\&/g, '\\&')
-                            .replace(/\\r/g, '\\r')
-                            .replace(/\\t/g, '\\t')
-                            .replace(/\\b/g, '\\b')
-                            .replace(/\\f/g, '\\f')
-                            .replace(/[\u0000-\u0019]+/g, '');
-                    } catch (e) {
-                        unparsedEyetrackData = null;
-                    }
+                // 학생별 정보 불러오기
+                Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
+                    params: {
+                        classNumber: num,
+                    },
+                    withCredentials: true,
+                })
+                    .then((res) => {
+                        setPrevStudentsDataRaw(res.data['prev']);
+                        const convertedData = res.data['curr'].map((data) => {
+                            let unparsedUserData = data.user_data;
+                            try {
+                                unparsedUserData
+                                    .replace(/\\n/g, '\\n')
+                                    .replace(/\\'/g, "\\'")
+                                    .replace(/\\"/g, '\\"')
+                                    .replace(/\\&/g, '\\&')
+                                    .replace(/\\r/g, '\\r')
+                                    .replace(/\\t/g, '\\t')
+                                    .replace(/\\b/g, '\\b')
+                                    .replace(/\\f/g, '\\f')
+                                    .replace(/[\u0000-\u0019]+/g, '');
+                            } catch (e) {
+                                unparsedUserData = null;
+                            }
+                            // let unparsedEyetrackData = data.eyetrack_data;
+                            // try {
+                            //     unparsedEyetrackData
+                            //         .replace(/\\n/g, '\\n')
+                            //         .replace(/\\'/g, "\\'")
+                            //         .replace(/\\"/g, '\\"')
+                            //         .replace(/\\&/g, '\\&')
+                            //         .replace(/\\r/g, '\\r')
+                            //         .replace(/\\t/g, '\\t')
+                            //         .replace(/\\b/g, '\\b')
+                            //         .replace(/\\f/g, '\\f')
+                            //         .replace(/[\u0000-\u0019]+/g, '');
+                            // } catch (e) {
+                            //     unparsedEyetrackData = null;
+                            // }
 
-                    // console.log(data);
+                            // console.log(data);
 
-                    const _categoryScore = {};
-                    if (data.user_data) {
-                        const userSelections = JSON.parse(unparsedUserData).selections;
-                        userSelections.forEach((e) => {
-                            !_categoryScore[e.category] && (_categoryScore[e.category] = {});
-                            !_categoryScore[e.category].sum && (_categoryScore[e.category].sum = 0);
-                            _categoryScore[e.category].sum += e.correct ? 1 : 0;
-                            !_categoryScore[e.category].count && (_categoryScore[e.category].count = 0);
-                            _categoryScore[e.category].count += 1;
+                            const _categoryScore = {};
+                            if (data.user_data) {
+                                const userSelections = JSON.parse(unparsedUserData).selections;
+                                userSelections.forEach((e) => {
+                                    !_categoryScore[e.category] && (_categoryScore[e.category] = {});
+                                    !_categoryScore[e.category].sum && (_categoryScore[e.category].sum = 0);
+                                    _categoryScore[e.category].sum += e.correct ? 1 : 0;
+                                    !_categoryScore[e.category].count && (_categoryScore[e.category].count = 0);
+                                    _categoryScore[e.category].count += 1;
+                                });
+                            }
+
+                            return {
+                                ...data,
+                                user_data: JSON.parse(unparsedUserData),
+                                eyetrack_data: null, // JSON.parse(unparsedEyetrackData),
+                                category_score: _categoryScore,
+                            };
                         });
-                    }
-
-                    return {
-                        ...data,
-                        user_data: JSON.parse(unparsedUserData),
-                        eyetrack_data: JSON.parse(unparsedEyetrackData),
-                        category_score: _categoryScore,
-                    };
-                });
-                setStudentsData(convertedData);
+                        setStudentsData(convertedData);
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
             })
             .catch((err) => {
                 console.error(err);
@@ -369,7 +369,6 @@ function ReportClass({ match, history }) {
         setTimeLimit(mainReportData.time_limit);
         setStartDate(moment(mainReportData.created).format('MM.DD HH:mm'));
         setDueDate(moment(mainReportData.due_date).format('MM.DD HH:mm'));
-
         dispatch(getActivedOnly(mainReportData.idx, mainReportData.created, mainReportData.due_date));
 
         if (mainReportData.contents_data) {
@@ -447,7 +446,7 @@ function ReportClass({ match, history }) {
     if (data && data.idx === undefined) return <Error />;
     //error check 2. 데이터 전체가 로딩 완료될때까지는 back drop
     if ((data === null && loading) || mainLoading) {
-        console.log(data, loading, mainLoading);
+        // console.log(data, loading, mainLoading);
         return <BackdropComponent open={true} />;
     }
 
