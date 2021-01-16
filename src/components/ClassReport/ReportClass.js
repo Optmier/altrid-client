@@ -517,9 +517,11 @@ function ReportClass({ match, history }) {
                                     </svg>
                                     과제 기한
                                 </span>
-                                <span className="left-content reponsive">
-                                    <span>{startDate} ~ </span> <span>{dueDate}</span>
-                                    <ModifyButton handleDateChange={handleDateChange} />
+                                <span className="left-content tablet-responsive">
+                                    <span>{startDate} ~ </span>{' '}
+                                    <span>
+                                        {dueDate} <ModifyButton handleDateChange={handleDateChange} />
+                                    </span>
                                 </span>
                             </div>
                         </div>
@@ -563,11 +565,37 @@ function ReportClass({ match, history }) {
                             </div>
                         </div>
                         <div className="graph-box-header">
-                            <div>
+                            <div className="tablet-responsive">
+                                <div>
+                                    <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
+                                    {Math.min(...avgScoresOfNumber).toFixed(1)}%)
+                                </div>
+                                <div>
+                                    <span>가장 취약한 영역 </span>
+                                    {console.log(averageScoresOfType)}
+                                    {
+                                        ProblemCategories.filter(
+                                            (p) =>
+                                                p.id ===
+                                                achievesForTypes.allExists
+                                                    .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                                    .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].category,
+                                        )[0].name
+                                    }
+                                    (
+                                    {(
+                                        achievesForTypes.allExists
+                                            .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                            .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
+                                    ).toFixed(1) || 0}
+                                    %)
+                                </div>
+                            </div>
+                            <div className="web-responsive">
                                 <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
                                 {Math.min(...avgScoresOfNumber).toFixed(1)}%)
                             </div>
-                            <div>
+                            <div className="web-responsive">
                                 <span>가장 취약한 영역 </span>
                                 {console.log(averageScoresOfType)}
                                 {

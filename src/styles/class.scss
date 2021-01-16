@@ -229,9 +229,12 @@ $textGray: #706d6d;
                         font-size: 1.15rem;
                         color: $textGray;
                         font-weight: 400;
-
                         display: flex;
-                        align-items: center;
+
+                        & > span {
+                            display: flex;
+                            align-items: center;
+                        }
                     }
                     & .right-top {
                         color: $textGray;
@@ -266,20 +269,23 @@ $textGray: #706d6d;
                 display: flex;
                 align-items: center;
 
-                & > div + div {
-                    border-left: 1px solid #7070704e;
+                & .tablet-responsive {
+                    display: none;
                 }
-                & > div:nth-child(1) {
+
+                & > div:nth-child(2) {
                     flex: 1.5;
                     justify-content: flex-start;
                     padding-right: 30px;
+                    border-right: 1px solid #7070704e;
                 }
-                & > div:nth-child(2) {
+                & > div:nth-child(3) {
                     flex: 2;
                     justify-content: flex-start;
                     padding: 0 30px;
+                    border-right: 1px solid #7070704e;
                 }
-                & > div:nth-child(3) {
+                & > div:nth-child(4) {
                     flex: 1.5;
                     justify-content: flex-end;
                     padding-left: 30px;
@@ -290,7 +296,6 @@ $textGray: #706d6d;
                     font-size: 1.1rem;
                     font-weight: 600;
                     color: #707070;
-                    height: 45px;
 
                     & > span {
                         margin-right: 30px;
@@ -435,6 +440,64 @@ $textGray: #706d6d;
     & .report-box:nth-child(2) {
         flex: 1;
     }
-    & .left-content.reponsive {
+    & .left-content.tablet-responsive {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    & .graph-box-header {
+        & > div:nth-child(1) {
+            flex: 2;
+            padding-right: 30px;
+        }
+        & > div:nth-child(2) {
+            flex: 0;
+        }
+        & > div:nth-child(3) {
+            flex: 0;
+        }
+        & > div:nth-child(4) {
+            flex: 1;
+        }
+        & .tablet-responsive {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            align-items: flex-start;
+            border-right: 1px solid #7070704e;
+
+            & > div + div {
+                margin-top: 15px;
+            }
+            & > div {
+                display: flex;
+                align-items: center;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #707070;
+
+                & > span {
+                    margin-right: 30px;
+                    color: black;
+                }
+                & select {
+                    cursor: pointer;
+                    background: url('/bg_images/Vector.png') no-repeat 92% 50%;
+                    width: 100%; /* 원하는 너비설정 */
+                    padding: 0.8rem 1rem; /* 여백으로 높이 설정 */
+                    font-family: inherit; /* 폰트 상속 */
+                    font-size: 1.001rem;
+                    border: none;
+                    border: 1px solid #707070;
+                    border-radius: 0px; /* iOS 둥근모서리 제거 */
+                    -webkit-appearance: none; /* 네이티브 외형 감추기 */
+                    -moz-appearance: none;
+                    appearance: none;
+                    outline: none;
+                }
+            }
+        }
+        & .web-responsive {
+            display: none;
+        }
     }
 }
