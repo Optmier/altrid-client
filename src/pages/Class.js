@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import LeftNav from '../components/essentials/LeftNav';
 import '../styles/class.scss';
-import Draft from '../components/ClassDraft/Draft';
 import Manage from '../components/ClassManage/Manage';
 import Share from '../components/ClassShare/Share';
 import { Route } from 'react-router-dom';
@@ -14,14 +13,18 @@ import ErrorRestricted from './ErrorRestricted';
 import { useState } from 'react';
 import StudentManage from '../components/ClassStudentManage/StudentManage';
 import VideoLecturesManage from '../components/VideoLectures/VideoLecturesManage';
+import styled from 'styled-components';
+import TopNav from '../components/essentials/TopNav';
+
+const StyleDiv = styled.div`
+    transition: all 0.4s;
+    padding: ${(props) => (props.leftNavState ? '80px 0 0 240px' : '80px 0 0 0')};
+`;
 
 const ClassPageSwitcher = (match, sessions) => {
     if (!match.id || !match.path) return <></>;
     const { id, path } = match;
     switch (id) {
-        case `draft`:
-            if (sessions.userType === 'students') return <ErrorRestricted />;
-            return <Draft />;
         case 'manage':
             if (sessions.userType === 'students') return <ErrorRestricted />;
             return <Manage />;
@@ -52,6 +55,11 @@ function Class({ match }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const [stMatch, setStMatch] = useState({ id: null, path: null });
     const [RenderSubPage, setRenderSubPage] = useState(null);
+    const [leftNavState, setLeftNavState] = useState(true);
+
+    const handleLeftNav = () => {
+        setLeftNavState(!leftNavState);
+    };
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
@@ -66,8 +74,9 @@ function Class({ match }) {
 
     return (
         <>
-            <LeftNav />
-            <div className="class-page-root">
+            <LeftNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
+            <StyleDiv leftNavState={leftNavState} className="class-page-root">
+                <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
                 <BackdropComponent open={loading && !data && !error} />
                 {error ? (
                     <Error />
@@ -75,7 +84,7 @@ function Class({ match }) {
                     // <ClassPageSwitcher sessions={sessions} match={stMatch} />
                     RenderSubPage
                 )}
-            </div>
+            </StyleDiv>
         </>
     );
 }

@@ -190,7 +190,8 @@ li {
                 margin-top: 19px;
                 font-size: 1rem;
                 color: #6a6a6a;
-                font-weight: 500;
+                line-height: 1.7;
+                font-weight: 400;
             }
             & .contents-checkbox {
                 margin-top: 28px;
@@ -227,7 +228,9 @@ li {
     }
     & .eyetrack-step-calibration {
         width: 1278px;
+        min-width: 1278px;
         height: 748px;
+        min-height: 748px;
         border: 1px solid red;
     }
     & .eyetrack-step-button {

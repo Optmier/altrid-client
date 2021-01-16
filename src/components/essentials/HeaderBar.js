@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, withRouter } from 'react-router-dom';
 import { Link as AnimScrollTo } from 'react-scroll';
 import LogoWhite from '../../images/logos/nav_logo_white.png';
 import AccountPopOver from './AccountPopOver';
 import { useSelector } from 'react-redux';
 
-function HeaderBar() {
+function HeaderBar({ match }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const [isScrolled, setScrolled] = useState(false);
     const [popoverName, setPopoverName] = useState('');
@@ -35,7 +35,13 @@ function HeaderBar() {
     return (
         <>
             <AccountPopOver userName={popoverName} targetEl={testRef ? testRef : null} />
-            <header className={classNames('header-bar', isScrolled ? 'scrolled' : '', sessions.userType)}>
+            <header
+                className={classNames(
+                    'header-bar',
+                    isScrolled ? 'scrolled' : '',
+                    sessions.userType === 'teachers' ? (match.path === '/' ? sessions.userType : 'teachers-draft') : sessions.userType,
+                )}
+            >
                 <div className="container left">
                     <AnimScrollTo className="scroll-to-top" to="main_top_start" spy={true} smooth={true} duration={700}></AnimScrollTo>
                     <Link
@@ -48,7 +54,18 @@ function HeaderBar() {
                         <img src={LogoWhite} alt="logo" />
                     </Link>
                 </div>
-                <div className="container center"></div>
+                {sessions.userType === 'teachers' ? (
+                    <div className="container center">
+                        <NavLink exact activeStyle={{ borderBottom: '2px solid white' }} to="/">
+                            클래스
+                        </NavLink>
+
+                        <NavLink activeStyle={{ borderBottom: '2px solid white' }} to="/main-draft">
+                            과제
+                        </NavLink>
+                    </div>
+                ) : null}
+
                 <div className="container right">
                     <div className="accounts-welcome" ref={testRef}>
                         <p>
@@ -61,4 +78,4 @@ function HeaderBar() {
     );
 }
 
-export default React.memo(HeaderBar);
+export default React.memo(withRouter(HeaderBar));

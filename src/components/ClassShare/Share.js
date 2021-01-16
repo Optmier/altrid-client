@@ -122,11 +122,6 @@ function Share({ match, history }) {
                 <ClassDrawer />
             </Drawer>
 
-            <ClassWrapper>
-                {/* <ClassHeaderBox /> */}
-                {sessions.userType === 'students' ? '' : <TypeBanner situation="info" />}
-            </ClassWrapper>
-
             {shareDatas.length === 0 ? (
                 <ClassWrapper>
                     <GoDraftDiv>
@@ -134,7 +129,7 @@ function Share({ match, history }) {
                         {sessions.userType !== 'students' ? (
                             <button
                                 onClick={() => {
-                                    history.replace(`/class/${num}/draft`);
+                                    history.replace(`/main-draft`);
                                 }}
                             >
                                 <p>과제 생성하러 가기</p>

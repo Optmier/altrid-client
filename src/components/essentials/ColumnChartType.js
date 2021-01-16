@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
 
 function ColumnChartProblem({ datas }) {
-    // console.log(datas);
+    const [categorySorted] = useState(datas.sort((a, b) => a.category - b.category));
     let state = {};
 
     state = {
         series: [
             {
                 name: '정답률',
-                data: datas.map((v) => (v.score * 100).toFixed(1)),
+                data: categorySorted.map((v) => (v.score * 100).toFixed(1)),
             },
         ],
         options: {
@@ -34,7 +34,7 @@ function ColumnChartProblem({ datas }) {
                 colors: ['transparent'],
             },
             xaxis: {
-                categories: datas.map((v) => ProblemCategories.filter((i) => i.id === v.category)[0].name),
+                categories: categorySorted.map((v) => ProblemCategories.filter((i) => i.id === v.category)[0].name),
             },
             yaxis: {
                 min: 0,
@@ -53,8 +53,10 @@ function ColumnChartProblem({ datas }) {
         },
     };
     return (
-        <div id="chart">
-            <Chart options={state.options} series={state.series} type="bar" height={350} />
+        <div id="chart-wrapper">
+            <div id="chart">
+                <Chart options={state.options} series={state.series} type="bar" height={350} />
+            </div>
         </div>
     );
 }

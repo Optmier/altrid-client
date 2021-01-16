@@ -89,11 +89,15 @@ function Main({ history }) {
                     >
                         {sessions.userType !== 'students' ? (
                             <CardRoot>
-                                <CardAddNew onClick={toggleDrawer(true)}>클래스 생성</CardAddNew>
+                                <CardAddNew type={sessions.userType} onClick={toggleDrawer(true)}>
+                                    클래스 생성
+                                </CardAddNew>
                             </CardRoot>
                         ) : (
                             <CardRoot>
-                                <CardAddNew onClick={toggleAddTeacherDrawer(true)}>클래스 입장</CardAddNew>
+                                <CardAddNew type={sessions.userType} onClick={toggleAddTeacherDrawer(true)}>
+                                    클래스 입장
+                                </CardAddNew>
                             </CardRoot>
                         )}
                         {cardDatas.map(

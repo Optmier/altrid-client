@@ -334,75 +334,86 @@ function ReportStudent({ history, match }) {
             .then((res) => {
                 if (!res.data) return;
                 setPrevStudentData(res.data['prev'].filter((p) => p.student_id === queryUserId)[0] || null);
-                setStudentsData(
-                    res.data['curr'].map((e) => {
-                        let unparsedUserData = e.user_data;
-                        try {
-                            unparsedUserData
-                                .replace(/\\n/g, '\\n')
-                                .replace(/\\'/g, "\\'")
-                                .replace(/\\"/g, '\\"')
-                                .replace(/\\&/g, '\\&')
-                                .replace(/\\r/g, '\\r')
-                                .replace(/\\t/g, '\\t')
-                                .replace(/\\b/g, '\\b')
-                                .replace(/\\f/g, '\\f')
-                                .replace(/[\u0000-\u0019]+/g, '');
-                        } catch (e) {
-                            unparsedUserData = null;
-                        }
-                        let unparsedEyetrackData = e.eyetrack_data;
-                        try {
-                            unparsedEyetrackData
-                                .replace(/\\n/g, '\\n')
-                                .replace(/\\'/g, "\\'")
-                                .replace(/\\"/g, '\\"')
-                                .replace(/\\&/g, '\\&')
-                                .replace(/\\r/g, '\\r')
-                                .replace(/\\t/g, '\\t')
-                                .replace(/\\b/g, '\\b')
-                                .replace(/\\f/g, '\\f')
-                                .replace(/[\u0000-\u0019]+/g, '');
-                        } catch (e) {
-                            unparsedEyetrackData = null;
-                        }
-                        let unparsedContentsData = e.contents_data;
-                        try {
-                            unparsedContentsData
-                                .replace(/\\n/g, '\\n')
-                                .replace(/\\'/g, "\\'")
-                                .replace(/\\"/g, '\\"')
-                                .replace(/\\&/g, '\\&')
-                                .replace(/\\r/g, '\\r')
-                                .replace(/\\t/g, '\\t')
-                                .replace(/\\b/g, '\\b')
-                                .replace(/\\f/g, '\\f')
-                                .replace(/[\u0000-\u0019]+/g, '');
-                        } catch (e) {
-                            unparsedContentsData = null;
-                        }
+                Axios.get(`${apiUrl}/assignment-result/contents-data/${parseInt(activedNum)}`, {
+                    params: {
+                        classNumber: num,
+                    },
+                    withCredentials: true,
+                })
+                    .then((contentsData) => {
+                        setStudentsData(
+                            res.data['curr'].map((e) => {
+                                let unparsedUserData = e.user_data;
+                                try {
+                                    unparsedUserData
+                                        .replace(/\\n/g, '\\n')
+                                        .replace(/\\'/g, "\\'")
+                                        .replace(/\\"/g, '\\"')
+                                        .replace(/\\&/g, '\\&')
+                                        .replace(/\\r/g, '\\r')
+                                        .replace(/\\t/g, '\\t')
+                                        .replace(/\\b/g, '\\b')
+                                        .replace(/\\f/g, '\\f')
+                                        .replace(/[\u0000-\u0019]+/g, '');
+                                } catch (e) {
+                                    unparsedUserData = null;
+                                }
+                                let unparsedEyetrackData = e.eyetrack_data;
+                                try {
+                                    unparsedEyetrackData
+                                        .replace(/\\n/g, '\\n')
+                                        .replace(/\\'/g, "\\'")
+                                        .replace(/\\"/g, '\\"')
+                                        .replace(/\\&/g, '\\&')
+                                        .replace(/\\r/g, '\\r')
+                                        .replace(/\\t/g, '\\t')
+                                        .replace(/\\b/g, '\\b')
+                                        .replace(/\\f/g, '\\f')
+                                        .replace(/[\u0000-\u0019]+/g, '');
+                                } catch (e) {
+                                    unparsedEyetrackData = null;
+                                }
+                                let unparsedContentsData = contentsData.data.contents_data;
+                                try {
+                                    unparsedContentsData
+                                        .replace(/\\n/g, '\\n')
+                                        .replace(/\\'/g, "\\'")
+                                        .replace(/\\"/g, '\\"')
+                                        .replace(/\\&/g, '\\&')
+                                        .replace(/\\r/g, '\\r')
+                                        .replace(/\\t/g, '\\t')
+                                        .replace(/\\b/g, '\\b')
+                                        .replace(/\\f/g, '\\f')
+                                        .replace(/[\u0000-\u0019]+/g, '');
+                                } catch (e) {
+                                    unparsedContentsData = null;
+                                }
 
-                        const _categoryScore = {};
-                        if (e.user_data) {
-                            const userSelections = JSON.parse(unparsedUserData).selections;
-                            userSelections.forEach((e) => {
-                                !_categoryScore[e.category] && (_categoryScore[e.category] = {});
-                                !_categoryScore[e.category].sum && (_categoryScore[e.category].sum = 0);
-                                _categoryScore[e.category].sum += e.correct ? 1 : 0;
-                                !_categoryScore[e.category].count && (_categoryScore[e.category].count = 0);
-                                _categoryScore[e.category].count += 1;
-                            });
-                        }
+                                const _categoryScore = {};
+                                if (e.user_data) {
+                                    const userSelections = JSON.parse(unparsedUserData).selections;
+                                    userSelections.forEach((e) => {
+                                        !_categoryScore[e.category] && (_categoryScore[e.category] = {});
+                                        !_categoryScore[e.category].sum && (_categoryScore[e.category].sum = 0);
+                                        _categoryScore[e.category].sum += e.correct ? 1 : 0;
+                                        !_categoryScore[e.category].count && (_categoryScore[e.category].count = 0);
+                                        _categoryScore[e.category].count += 1;
+                                    });
+                                }
 
-                        return {
-                            ...e,
-                            user_data: JSON.parse(unparsedUserData),
-                            eyetrack_data: JSON.parse(unparsedEyetrackData),
-                            contents_data: JSON.parse(unparsedContentsData),
-                            category_score: _categoryScore,
-                        };
-                    }),
-                );
+                                return {
+                                    ...e,
+                                    user_data: JSON.parse(unparsedUserData),
+                                    eyetrack_data: JSON.parse(unparsedEyetrackData),
+                                    contents_data: JSON.parse(unparsedContentsData),
+                                    category_score: _categoryScore,
+                                };
+                            }),
+                        );
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
             })
             .catch((err) => {
                 console.error(err);
@@ -614,7 +625,9 @@ function ReportStudent({ history, match }) {
                                                         problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name
                                                     }
                                                 >
-                                                    <div className="ment-ai-type">{problemCategories[0].name}</div>
+                                                    <div className="ment-ai-type">
+                                                        {problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name}
+                                                    </div>
                                                 </TooltipCard>
                                             ) : (
                                                 'null'
@@ -769,6 +782,8 @@ function ReportStudent({ history, match }) {
                             patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
                             totalStudentsDatas={studentsData.filter((d) => d.submitted)}
                             currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
+                            userId={queryUserId}
+                            activedNum={activedNum}
                         />
                     ) : null}
                 </section>

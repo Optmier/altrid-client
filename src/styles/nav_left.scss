@@ -22,6 +22,7 @@ a {
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
+        transition: all 0.5s;
 
         & .left-nav-box + .left-nav-box {
             border-top: 2px solid #6c4cb1;
@@ -36,29 +37,60 @@ a {
             }
 
             & .box-wrapper {
-                padding: 18px 24px;
+                padding: 8px 24px;
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
                 justify-content: center;
                 color: white;
-
+                & .left-nav-hambuger {
+                    width: 100%;
+                    height: 42px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    & svg {
+                        cursor: pointer;
+                        padding: 4px;
+                    }
+                    & svg:hover {
+                        background-color: #6b549c70;
+                    }
+                }
+                & .p-desc {
+                    line-height: 1.5;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                }
                 & > img {
                     height: 28px;
                     margin-right: 1rem;
                 }
-                & > h4 {
+                & h4 {
                     padding-bottom: 4px;
+
+                    max-width: 138px;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
-                & > h5 {
+                & h5 {
                     padding-bottom: 4px;
                     font-weight: 600;
+
+                    width: 100%;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
                 & .info-num {
                     display: flex;
                     align-items: center;
                     justify-content: flex-start;
-                    margin-top: 5px;
+                    margin-top: 10px;
                     & h5 {
                         font-weight: 500;
                     }
@@ -67,6 +99,15 @@ a {
                         margin-right: 16px;
                     }
                 }
+            }
+
+            & .nav-hambuger:hover {
+                cursor: pointer;
+                background-color: #8879a740;
+            }
+            & .a-wrapper:hover {
+                cursor: pointer;
+                background-color: #8879a740;
             }
 
             & .a-wrapper {
@@ -89,6 +130,23 @@ a {
                         font-weight: 400;
                         & > b {
                             font-weight: 600;
+                        }
+                    }
+
+                    & .draft-button {
+                        background-color: #6d2afa;
+                        border-radius: 11px;
+                        box-shadow: 0px 3px 6px #84848412;
+                        width: 100%;
+                        height: 45px;
+                        font-size: 14.4px;
+                        font-weight: 500;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        & svg {
+                            margin-right: 1rem;
                         }
                     }
                     & svg + p {

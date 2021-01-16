@@ -9,6 +9,7 @@ const StyleButton = styled.button`
     width: 38px;
     color: white;
     padding: 3px 0;
+    margin-left: 14px;
 
     &:hover {
         transition: 0.3s;

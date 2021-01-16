@@ -153,7 +153,8 @@ function VideoLectureEyetracker({ match, history }) {
 
     return (
         <>
-            <EyetrackerCore onAfterCalib={onAfterCalib} onUpdate={onUpdate} />이 창을 화상 강의가 진행 되는 동안 절대로 닫지 마시오!
+            <EyetrackerCore onAfterCalib={onAfterCalib} onUpdate={onUpdate} relative={false} />이 창을 화상 강의가 진행 되는 동안 절대로
+            닫지 마시오!
         </>
     );
 }

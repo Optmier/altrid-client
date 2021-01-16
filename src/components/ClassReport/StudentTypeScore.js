@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import RadarChart from '../essentials/RadarChart';
 import ColumnChart from '../essentials/ColumnChart';
@@ -26,15 +26,16 @@ const StyleStudentTypeScore = styled.div`
 `;
 
 function StudentTypeScore({ enabled, current, total }) {
+    const [sortedEnableCategories] = useState(enabled.sort((a, b) => a.category - b.category));
     return (
         <StyleStudentTypeScore>
             <div className="chart-left">
-                <RadarChart objDatas={enabled.map((e) => ({ ...e, score: current[e.category] }))} />
+                <RadarChart objDatas={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))} />
             </div>
             <div className="chart-right">
                 <ColumnChart
-                    currentObjs={enabled.map((e) => ({ ...e, score: current[e.category] }))}
-                    averageObjs={enabled.map((e) => ({ ...e, score: total[e.category] }))}
+                    currentObjs={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))}
+                    averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
                 />
             </div>
         </StyleStudentTypeScore>
