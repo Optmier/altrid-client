@@ -11,6 +11,7 @@ const StyleAlert = styled.div`
     border-radius: 11px;
     padding: 9px 15px;
     width: 363px;
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -42,6 +43,10 @@ const StyleAlert = styled.div`
             transition: all 0.4s;
             margin-right: -5px;
         }
+    }
+
+    @media (min-width: 0) and (max-width: 662px) {
+        width: 100%;
     }
 `;
 

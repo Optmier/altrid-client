@@ -1,11 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import LogoColor from '../../images/logos/nav_logo_color_vertical.png';
+import BranchNav from './BranchNav';
 
 const StyleSVG = styled.svg`
     margin-right: 25px;
     display: ${(props) => (props.leftNavState ? 'none' : 'inline')};
+    @media (min-width: 0) and (max-width: 902px) {
+        display: none;
+    }
+`;
+const StyleSVGMobile = styled.svg`
+    margin-right: 25px;
+    display: ${(props) => (props.leftNavState ? 'none' : 'inline')};
+    @media (min-width: 903px) {
+        display: none;
+    }
 `;
 
 const StyleDiv = styled.div`
@@ -16,7 +27,7 @@ const StyleDiv = styled.div`
     display: flex;
     align-items: center;
     top: 0;
-    z-index: 9999;
+    z-index: 9998;
     background-color: #f7f9f8;
     box-shadow: 0 0 4px rgba(200, 200, 200, 0.4);
     border-bottom: 1px solid rgba(0, 0, 0, 0.098);
@@ -31,10 +42,39 @@ const StyleDiv = styled.div`
     }
 `;
 
-function TopNav({ leftNavState, handleLeftNav }) {
+function TopNav({ leftNavState, handleLeftNav, match, deps }) {
     return (
         <StyleDiv>
             <StyleSVG
+                onClick={handleLeftNav}
+                leftNavState={leftNavState}
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="20.68"
+                viewBox="0 0 16 20.68"
+            >
+                <g id="그룹_524" data-name="그룹 524" transform="translate(243.293 46.617) rotate(180)">
+                    <path
+                        id="패스_550"
+                        data-name="패스 550"
+                        d="M-10394.5,18180.551l-7.92,10.176,7.92,9.24"
+                        transform="translate(10637 -18154)"
+                        fill="none"
+                        stroke="#707070"
+                        stroke-width="2"
+                    />
+                    <path
+                        id="패스_551"
+                        data-name="패스 551"
+                        d="M-10394.5,18180.551l-7.92,10.176,7.92,9.24"
+                        transform="translate(10631 -18154)"
+                        fill="none"
+                        stroke="#707070"
+                        stroke-width="2"
+                    />
+                </g>
+            </StyleSVG>
+            <StyleSVGMobile
                 onClick={handleLeftNav}
                 leftNavState={leftNavState}
                 xmlns="http://www.w3.org/2000/svg"
@@ -51,13 +91,15 @@ function TopNav({ leftNavState, handleLeftNav }) {
                         fill="#707070"
                     />
                 </g>
-            </StyleSVG>
+            </StyleSVGMobile>
 
             <Link to={`/`}>
                 <img src={LogoColor} alt="logo_color"></img>
             </Link>
+
+            {match.params.id === 'share' ? <BranchNav deps={3} /> : null}
         </StyleDiv>
     );
 }
 
-export default TopNav;
+export default withRouter(TopNav);

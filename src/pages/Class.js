@@ -15,10 +15,11 @@ import StudentManage from '../components/ClassStudentManage/StudentManage';
 import VideoLecturesManage from '../components/VideoLectures/VideoLecturesManage';
 import styled from 'styled-components';
 import TopNav from '../components/essentials/TopNav';
+import * as $ from 'jquery';
 
 const StyleDiv = styled.div`
     transition: all 0.4s;
-    padding: ${(props) => (props.leftNavState ? '80px 0 0 240px' : '80px 0 0 0')};
+    padding: ${(props) => (props.leftNavState ? '95px 0 0 240px' : '95px 0 0 0')};
 `;
 
 const ClassPageSwitcher = (match, sessions) => {
@@ -71,6 +72,12 @@ function Class({ match }) {
         if (!stMatch.id || !stMatch.path) return;
         setRenderSubPage(ClassPageSwitcher(stMatch, sessions));
     }, [stMatch]);
+
+    useEffect(() => {
+        if (window.innerWidth <= 902) {
+            handleLeftNav();
+        }
+    }, []);
 
     return (
         <>

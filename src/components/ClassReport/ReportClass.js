@@ -65,6 +65,8 @@ const StudentCardHeader = styled.div`
 `;
 
 function ReportClass({ match, history }) {
+    console.log(match.params);
+
     const { num, activedNum } = match.params;
     const dispatch = useDispatch();
     const serverdate = useSelector((state) => state.RdxServerDate);
@@ -458,8 +460,7 @@ function ReportClass({ match, history }) {
 
             <ClassWrapper col={true}>
                 {/* <ClassHeaderBox /> */}
-                {/* <TypeBanner situation={achievesForTypes.value < 100 ? 'warning' : 'success'} value={achievesForTypes.value} /> */}
-                <BranchNav deps="2" />
+                {/* <BranchNav deps="2" /> */}
                 <div className="class-report-root">
                     <div className="class-report-header">
                         <div className="class-report-header-left">
@@ -467,7 +468,7 @@ function ReportClass({ match, history }) {
                             <p>{description}가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바</p>
                         </div>
                         <div className="class-report-header-right">
-                            <IsPresence type="eye" able={eyetrack} align="left" />
+                            <IsPresence type="eye" able={eyetrack} align="left" fontSize="0.94rem" />
                             <ToggleSwitch
                                 isStarted={new Date(mainReportData ? mainReportData.created : null).getTime() <= serverdate.datetime}
                                 toggle={toggleState['checked']}
@@ -555,7 +556,7 @@ function ReportClass({ match, history }) {
                     </section>
 
                     <section className="class-report-graph">
-                        <div className="class-report-title">
+                        <div className="class-report-title graph-title">
                             점수 비교 그래프
                             <div className="title-graph-right">
                                 <TypeBanner
@@ -572,7 +573,6 @@ function ReportClass({ match, history }) {
                                 </div>
                                 <div>
                                     <span>가장 취약한 영역 </span>
-                                    {console.log(averageScoresOfType)}
                                     {
                                         ProblemCategories.filter(
                                             (p) =>
@@ -597,7 +597,6 @@ function ReportClass({ match, history }) {
                             </div>
                             <div className="web-responsive">
                                 <span>가장 취약한 영역 </span>
-                                {console.log(averageScoresOfType)}
                                 {
                                     ProblemCategories.filter(
                                         (p) =>
@@ -651,7 +650,7 @@ function ReportClass({ match, history }) {
                 }
             >
                 {studentsData.map((data) => (
-                    <CardRoot key={data.student_id} cardHeight="250px">
+                    <CardRoot key={data.student_id} cardHeight="inherit">
                         <CardStudent
                             id={data.student_id}
                             data={data}

@@ -63,7 +63,6 @@ const cardSizer = (dt) => {
 function ClassWrapper({ children, col, type }) {
     useEffect(() => {
         let $wrapperParent = $('#class-wrapper').parent();
-        console.log('2: ', $wrapperParent);
 
         cardSizer({ width: $wrapperParent.width() });
         setTimeout(() => {

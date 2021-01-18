@@ -192,7 +192,7 @@ $textGray: #706d6d;
                 align-items: flex-start;
 
                 & .report-row + .report-row {
-                    padding-top: 16px;
+                    padding-top: 20px;
                 }
                 & .report-row {
                     width: 100%;
@@ -498,6 +498,84 @@ $textGray: #706d6d;
         }
         & .web-responsive {
             display: none;
+        }
+    }
+    & .class-report-header-right {
+        width: 40%;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-end;
+
+        & > span {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+    }
+}
+
+#responsive-mobile {
+    & .class-report-header {
+        flex-direction: column;
+        & .class-report-header-left {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        & .class-report-header-right {
+            width: 100%;
+            justify-content: flex-start;
+        }
+    }
+    & .class-report-info {
+        flex-direction: column;
+
+        & > .report-box:nth-child(1) {
+            flex: 1;
+        }
+        & > .report-box:nth-child(2) {
+            flex: 1;
+        }
+
+        & .report-box + .report-box {
+            margin-left: 0px;
+            margin-top: 17px;
+        }
+        & .left-content.tablet-responsive {
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 0.75rem;
+        }
+    }
+
+    & .graph-title {
+        flex-direction: column;
+        align-items: flex-start;
+        & .title-graph-right {
+            margin-top: 12px;
+            width: 100%;
+        }
+    }
+    & .graph-box-header {
+        flex-direction: column;
+        align-items: flex-start;
+
+        & > div:nth-child(2) {
+            flex: 1;
+            padding-right: 0;
+            border-right: 0;
+            width: 100%;
+        }
+        & > div:nth-child(3) {
+            flex: 1;
+            padding: 0;
+            border-right: 0;
+            width: 100%;
+            margin-top: 16px;
+        }
+        & > div:nth-child(4) {
+            flex: 1;
+            padding-left: 0;
+            width: 100%;
+            margin-top: 16px;
         }
     }
 }
