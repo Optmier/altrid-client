@@ -101,6 +101,11 @@ function App({ history }) {
                     .then((res2) => {
                         const academyName = res2.data.name;
                         updateSessions({ academyName: academyName });
+                        try {
+                            window.Android.ShowWebView();
+                        } catch (error) {
+                            console.error(error);
+                        }
                     })
                     .catch((err) => {
                         console.error(err);
