@@ -111,6 +111,16 @@ $textGray: #706d6d;
                 text-align-last: right;
             }
         }
+        & .title-time-analysis-left {
+            display: flex;
+            align-items: center;
+            & svg {
+                margin-left: 8px;
+            }
+        }
+
+        & .title-time-analysis-right {
+        }
     }
     & .class-report-root {
         width: 100%;
@@ -378,47 +388,37 @@ $textGray: #706d6d;
         & .student-report-header {
             width: 100%;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
 
-            & .student-report-left {
+            & .student-report-top {
                 display: flex;
                 flex-direction: column;
-                & .left-top {
-                    margin-bottom: 1.2rem;
-                    display: flex;
-                    flex-direction: column;
-                }
-                & .left-bottom {
-                    font-size: 1rem;
-                    font-weight: 300;
+                width: 100%;
+                margin-bottom: 28px;
 
-                    & > b {
-                        font-weight: 500;
-                        padding-right: 1rem;
-                    }
+                & .name {
+                    font-size: 1.68rem;
+                    font-weight: 600;
+                    margin-bottom: 11px;
                 }
-                & .left-bottom + .left-bottom {
-                    margin-top: 0.4rem;
+                & .class-name {
+                    font-size: 1.18rem;
+                    font-weight: 400;
+                    color: #707070;
                 }
             }
 
-            & .student-report-right {
+            & .student-report-bottom {
                 display: flex;
-                flex-direction: column;
-                max-width: 560px;
-                overflow: auto;
-
-                & .right-bottom {
-                    margin-top: 35px;
-                    display: flex;
-                    align-items: flex-start;
-                    justify-content: flex-start;
-
-                    & .right-bottom-col + .right-bottom-col {
-                        margin-left: 50px;
-                    }
-                }
+                align-items: flex-start;
+                justify-content: space-between;
+                background-color: white;
+                border-radius: 11px;
+                width: 100%;
+                padding: 35px 42px;
+                box-sizing: border-box;
             }
         }
 

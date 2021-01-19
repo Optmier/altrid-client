@@ -7,7 +7,6 @@ const StyleTotalProgress = styled.div`
     background-color: white;
     border-radius: 11px;
     padding: 30px 32px;
-    height: 250px;
     overflow: auto;
     position: relative;
 
