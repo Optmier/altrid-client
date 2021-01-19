@@ -66,7 +66,6 @@ function Class({ match }) {
     const [leftNavState, setLeftNavState] = useState(window.innerWidth > 902);
 
     const handleLeftNav = () => {
-        console.log('click! ');
         setLeftNavState(!leftNavState);
     };
 

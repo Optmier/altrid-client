@@ -130,7 +130,9 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     }, []);
 
     useEffect(() => {
-        setLeftNavState(false);
+        if (window.innerWidth <= 902) {
+            setLeftNavState(false);
+        }
     }, [history.location.pathname]);
 
     // error check 1. 아예 없는반에 접근시
