@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
-        zIndex: 9999 + 1,
+        zIndex: 9996 + 1,
         color: '#2d106b',
         backgroundColor: 'transparent',
     },
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         left: 0,
         top: 0,
-        zIndex: 9999,
+        zIndex: 9996,
     },
 }));
 

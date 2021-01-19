@@ -33,7 +33,7 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-function LeftNav({ match, history, leftNavState, handleLeftNav }) {
+function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState }) {
     const { num } = match.params;
 
     /** redux-module 불러내기 */
@@ -128,6 +128,10 @@ function LeftNav({ match, history, leftNavState, handleLeftNav }) {
             }
         };
     }, []);
+
+    useEffect(() => {
+        setLeftNavState(false);
+    }, [history.location.pathname]);
 
     // error check 1. 아예 없는반에 접근시
     if (!teacherData) history.replace('/error');
@@ -224,7 +228,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav }) {
                     ) : (
                         <div className="a-wrapper">
                             <LeftNavItem linkTo={`/main-draft`}>
-                                <div className="draft-button" id="">
+                                <div className="draft-button">
                                     <svg id="Folder" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                                         <path
                                             id="패스_178"

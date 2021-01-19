@@ -61,7 +61,7 @@ function TopNav({ leftNavState, handleLeftNav, match, deps }) {
                         transform="translate(10637 -18154)"
                         fill="none"
                         stroke="#707070"
-                        stroke-width="2"
+                        strokeWidth="2"
                     />
                     <path
                         id="패스_551"
@@ -70,7 +70,7 @@ function TopNav({ leftNavState, handleLeftNav, match, deps }) {
                         transform="translate(10631 -18154)"
                         fill="none"
                         stroke="#707070"
-                        stroke-width="2"
+                        strokeWidth="2"
                     />
                 </g>
             </StyleSVG>
@@ -97,7 +97,7 @@ function TopNav({ leftNavState, handleLeftNav, match, deps }) {
                 <img src={LogoColor} alt="logo_color"></img>
             </Link>
 
-            {match.params.id === 'share' ? <BranchNav deps={3} /> : null}
+            {/* {match.params.id === 'share' ? <BranchNav deps={3} /> : null} */}
         </StyleDiv>
     );
 }
