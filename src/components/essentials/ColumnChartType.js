@@ -24,7 +24,7 @@ function ColumnChartProblem({ datas }) {
                     columnWidth: '55%',
                 },
             },
-            colors: ['#008FF8'],
+            colors: ['#13E2A1'],
             dataLabels: {
                 enabled: false,
             },
