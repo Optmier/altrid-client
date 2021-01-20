@@ -120,6 +120,31 @@ $textGray: #706d6d;
         }
 
         & .title-time-analysis-right {
+            display: flex;
+            align-items: center;
+            font-size: 0.94rem;
+            color: #171717b3;
+
+            & span + span {
+                margin-left: 25px;
+            }
+            & > span {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                & .circle {
+                    width: 13px;
+                    height: 13px;
+                    border-radius: 50%;
+                    margin-left: 7px;
+                }
+                & .circle.student {
+                    background-color: #351e85;
+                }
+                & .circle.class {
+                    background-color: #68dea6;
+                }
+            }
         }
     }
     & .class-report-root {
@@ -132,7 +157,6 @@ $textGray: #706d6d;
         & section {
             padding-bottom: 100px;
         }
-
         & .class-report-header {
             display: flex;
             justify-content: space-between;
