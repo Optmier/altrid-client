@@ -1,11 +1,11 @@
 import React from 'react';
 
 const OnOffCircle = ({ fill }) => {
-    return <div style={{ width: '10px', height: '10px', borderRadius: '5px', backgroundColor: fill }}> </div>;
+    return <div style={{ width: '13px', height: '13px', borderRadius: '10px', backgroundColor: fill }}> </div>;
 };
-const BottomSpan = ({ color, fill, children, align, shareRef }) => {
+const BottomSpan = ({ color, fill, children, align, fontSize }) => {
     return (
-        <span className="card-bottom-p" style={{ color: color, display: 'flex', alignItems: 'center' }}>
+        <span className="card-bottom-p" style={{ color: color, display: 'flex', alignItems: 'center', fontSize: fontSize }}>
             {align === 'right' ? (
                 <>
                     <OnOffCircle fill={fill} />
@@ -26,7 +26,7 @@ const BottomSpan = ({ color, fill, children, align, shareRef }) => {
         </span>
     );
 };
-function IsPresence({ type, able, align }) {
+function IsPresence({ type, able, align, fontSize }) {
     //type : 'eye' 'analysis'
     //able : text...
     //align : 'left', 'right'
@@ -35,18 +35,22 @@ function IsPresence({ type, able, align }) {
         <>
             {type === 'eye' ? (
                 able ? (
-                    <BottomSpan color="black" fill="red" align={align}>
+                    <BottomSpan fontSize={fontSize} color="black" fill="red" align={align}>
                         시선흐름 분석 포함
                     </BottomSpan>
                 ) : (
-                    <BottomSpan align={align}>시선흐름 분석 미포함</BottomSpan>
+                    <BottomSpan fontSize={fontSize} align={align}>
+                        시선흐름 분석 미포함
+                    </BottomSpan>
                 )
             ) : !(able < 100) ? (
-                <BottomSpan color="black" fill="#39A0FE" align={align}>
+                <BottomSpan fontSize={fontSize} color="black" fill="#39A0FE" align={align}>
                     유형별 분석 가능
                 </BottomSpan>
             ) : (
-                <BottomSpan align={align}>유형별 분석 불가능</BottomSpan>
+                <BottomSpan fontSize={fontSize} align={align}>
+                    유형별 분석 불가능
+                </BottomSpan>
             )}
         </>
     );
@@ -59,6 +63,7 @@ BottomSpan.defaultProps = {
 
 IsPresence.defaultProps = {
     align: 'right',
+    fontSize: '0.75rem',
 };
 
 export default IsPresence;

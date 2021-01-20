@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/nav_left.scss';
 import { NavLink, withRouter } from 'react-router-dom';
-import LogoWhite from '../../images/logos/nav_logo_white.png';
 import People from '../../images/people.png';
 import Avatar from '../../images/avatar.png';
 import Axios from 'axios';
@@ -10,6 +9,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import TooltipCard from './TooltipCard';
 import { setCurrentVideoLecture, setStudentsNum, updateLiveCounts } from '../../redux_modules/currentClass';
 import Error from '../../pages/Error';
+import styled from 'styled-components';
+
+const StyleLeftNav = styled.div`
+    transition: all 0.4s;
+
+    @media (min-width: 903px) {
+        width: 240px;
+        left: ${(props) => (props.leftNavState ? '0' : '-240px')};
+    }
+
+    @media (min-width: 0) and (max-width: 902px) {
+        width: 100%;
+        left: ${(props) => (props.leftNavState ? '0' : '-100%')};
+    }
+`;
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -19,7 +33,7 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-function LeftNav({ match, history }) {
+function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState }) {
     const { num } = match.params;
 
     /** redux-module 불러내기 */
@@ -115,6 +129,12 @@ function LeftNav({ match, history }) {
         };
     }, []);
 
+    useEffect(() => {
+        if (window.innerWidth <= 902) {
+            setLeftNavState(false);
+        }
+    }, [history.location.pathname]);
+
     // error check 1. 아예 없는반에 접근시
     if (!teacherData) history.replace('/error');
     // error check 2. 선생님, 우리반이 아닌 다른 반 접근 시
@@ -125,9 +145,9 @@ function LeftNav({ match, history }) {
     }
 
     return (
-        <div className="left-nav-root">
+        <StyleLeftNav leftNavState={leftNavState} className="left-nav-root">
             <div className="left-nav">
-                <TooltipCard title="클래스 나가기">
+                {/* <TooltipCard title="클래스 나가기">
                     <div className="left-nav-box">
                         <LeftNavItem linkTo={`/`}>
                             <img src={LogoWhite} alt="logo_white"></img>
@@ -145,12 +165,41 @@ function LeftNav({ match, history }) {
                             </h4>
                         </TooltipCard>
                     </div>
-                </div>
+                </div> */}
                 <div className="left-nav-box">
+                    <div className="box-wrapper nav-hambuger">
+                        <div className="left-nav-hambuger">
+                            <TooltipCard title={teacherData['class_name'] ? teacherData['class_name'] : '-'}>
+                                <h5>{teacherData ? teacherData['class_name'] : ''}</h5>
+                            </TooltipCard>
+                            <div id="left-nav-drawer" onClick={handleLeftNav}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14.96" height="20.049" viewBox="0 0 14.96 20.049">
+                                    <g id="그룹_523" data-name="그룹 523" transform="translate(-227.939 -26.244)" opacity="0.558">
+                                        <path
+                                            id="패스_550"
+                                            data-name="패스 550"
+                                            d="M-10394.5,18180.551l-7.92,10.176,7.92,9.24"
+                                            transform="translate(10637 -18154)"
+                                            fill="none"
+                                            stroke="#fff"
+                                            strokeWidth="1"
+                                        />
+                                        <path
+                                            id="패스_551"
+                                            data-name="패스 551"
+                                            d="M-10394.5,18180.551l-7.92,10.176,7.92,9.24"
+                                            transform="translate(10631 -18154)"
+                                            fill="none"
+                                            stroke="#fff"
+                                            strokeWidth="1"
+                                        />
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="box-wrapper">
-                        <TooltipCard title={teacherData['class_name'] ? teacherData['class_name'] : '-'}>
-                            <h5>{teacherData ? teacherData['class_name'] : ''}</h5>
-                        </TooltipCard>
                         <>
                             <TooltipCard title={teacherData['description'] ? teacherData['description'] : '-'}>
                                 <p className="p-desc">{teacherData ? teacherData['description'] : ''}</p>
@@ -268,7 +317,7 @@ function LeftNav({ match, history }) {
                     )}
                 </div>
             </div>
-        </div>
+        </StyleLeftNav>
     );
 }
 

@@ -13,12 +13,12 @@ const StyleState = styled.div`
     height: 22px;
     font-size: 8px;
     color: white;
-    border-radius: 10px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background-color: ${(props) => (props.complete ? '#28BC8E' : '#C4C4C4')};
+    background-color: ${(props) => (props.complete ? '#FFBC00' : '#707070')};
 `;
 
 const pad = (n, width) => {
@@ -77,14 +77,14 @@ const CompareItems = ({ title, contents, enabled, children }) => {
             <TooltipCard title={contents.toFixed(1)}>
                 {enabled ? (
                     contents < 0 ? (
-                        <div style={{ fontSize: '30px', color: '#F57C7C', fontWeight: '400' }}>{contents.toFixed(1)}%</div>
+                        <div style={{ fontSize: '26px', color: '#F57C7C', fontWeight: '500' }}>{contents.toFixed(1)}%</div>
                     ) : contents === 0 ? (
-                        <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>-</div>
+                        <div style={{ fontSize: '26px', color: '#C4C4C4', fontWeight: '500' }}>-</div>
                     ) : (
-                        <div style={{ fontSize: '30px', color: '#7C88F5', fontWeight: '400' }}>+ {contents.toFixed(1)}%</div>
+                        <div style={{ fontSize: '26px', color: '#7C88F5', fontWeight: '500' }}>+ {contents.toFixed(1)}%</div>
                     )
                 ) : (
-                    <div style={{ fontSize: '30px', color: '#C4C4C4', fontWeight: '400' }}>-</div>
+                    <div style={{ fontSize: '26px', color: '#C4C4C4', fontWeight: '500' }}>-</div>
                 )}
             </TooltipCard>
         </div>
@@ -124,14 +124,8 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, existsCa
 
     return (
         <>
-            <div className="class-card-root">
-                <div
-                    className={classNames(
-                        { 'class-card-header': !(data.submitted && data.tries) },
-                        { 'class-card-header-on': data.submitted && data.tries },
-                        'class-card-wrapper',
-                    )}
-                >
+            <div className="class-card-root" style={{ padding: '12px 0' }}>
+                <div className="class-card-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <TooltipCard title={data.name}>
                             <div className="card-title-p card-title-name">{data.name}</div>
@@ -151,7 +145,7 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, existsCa
                     </span>
                 </div>
                 <div></div>
-                <div className="class-card-contents class-card-wrapper-student">
+                <div className="class-card-contents class-card-wrapper">
                     <div className="contents-block">
                         <InfoItems
                             title={'제출 날짜'}

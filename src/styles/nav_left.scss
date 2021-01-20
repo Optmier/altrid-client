@@ -9,10 +9,9 @@ a {
     background-color: #3b168a;
     background-image: url('/bg_images/nav_back.png');
     background-repeat: no-repeat;
-    width: 240px;
     height: 100%;
     position: fixed;
-    z-index: 1000;
+    z-index: 9999;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -22,6 +21,7 @@ a {
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
+        transition: all 0.5s;
 
         & .left-nav-box + .left-nav-box {
             border-top: 2px solid #6c4cb1;
@@ -36,13 +36,26 @@ a {
             }
 
             & .box-wrapper {
-                padding: 18px 24px;
+                padding: 8px 24px;
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
                 justify-content: center;
                 color: white;
-
+                & .left-nav-hambuger {
+                    width: 100%;
+                    height: 42px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    & svg {
+                        cursor: pointer;
+                        padding: 4px;
+                    }
+                    & svg:hover {
+                        background-color: #8467c391;
+                    }
+                }
                 & .p-desc {
                     line-height: 1.5;
                     overflow: hidden;
@@ -85,6 +98,15 @@ a {
                         margin-right: 16px;
                     }
                 }
+            }
+
+            & .nav-hambuger:hover {
+                cursor: pointer;
+                background-color: #8879a740;
+            }
+            & .a-wrapper:hover {
+                cursor: pointer;
+                background-color: #8879a740;
             }
 
             & .a-wrapper {

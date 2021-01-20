@@ -14,6 +14,12 @@ const StyleToggle = styled.div`
         color: white;
         margin-left: 8px;
     }
+    & .toggle-on-ment-right {
+        font-size: 14px;
+        font-weight: 500;
+        color: white;
+        margin-right: 8px;
+    }
     & .toggle-off-ment {
         font-size: 14px;
         font-weight: 500;
@@ -125,6 +131,13 @@ function ToggleSwitch({ isStarted, type, toggle, handleToggleChange, name }) {
                     </>
                 ) : type === 'share2' ? (
                     <>
+                        {toggle ? (
+                            <div style={{ color: '#13e2a1' }} className="toggle-on-ment-right">
+                                과제 진행중
+                            </div>
+                        ) : (
+                            <div className="toggle-off-ment">{isStarted ? '과제 완료됨' : '과제 시작전'}</div>
+                        )}
                         <DrawerSwitch
                             value="checkedC"
                             inputProps={{ 'aria-label': 'Switch C' }}
@@ -132,13 +145,6 @@ function ToggleSwitch({ isStarted, type, toggle, handleToggleChange, name }) {
                             onChange={handleToggleChange}
                             name={name}
                         />
-                        {toggle ? (
-                            <div style={{ color: '#13e2a1' }} className="toggle-on-ment">
-                                과제 진행중
-                            </div>
-                        ) : (
-                            <div className="toggle-off-ment">{isStarted ? '과제 완료됨' : '과제 시작전'}</div>
-                        )}
                     </>
                 ) : (
                     <DrawerSwitch

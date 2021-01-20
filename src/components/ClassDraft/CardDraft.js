@@ -350,7 +350,7 @@ function CardDraft({ cardData, match, history }) {
                                     contents={cardData['actived_count'] ? cardData['actived_count'] + '회' : '미게시'}
                                 />
                                 <HtmlTooltip
-                                    placement="bottom-center"
+                                    placement="bottom"
                                     title={
                                         <>
                                             {cardData['class_name']

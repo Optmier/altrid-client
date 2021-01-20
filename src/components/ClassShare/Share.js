@@ -122,11 +122,6 @@ function Share({ match, history }) {
                 <ClassDrawer />
             </Drawer>
 
-            <ClassWrapper>
-                {/* <ClassHeaderBox /> */}
-                {sessions.userType === 'students' ? '' : <TypeBanner situation="info" />}
-            </ClassWrapper>
-
             {shareDatas.length === 0 ? (
                 <ClassWrapper>
                     <GoDraftDiv>

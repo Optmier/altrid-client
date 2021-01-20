@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import RadarChart from '../essentials/RadarChart';
 import ColumnChart from '../essentials/ColumnChart';
@@ -26,9 +26,7 @@ const StyleStudentTypeScore = styled.div`
 `;
 
 function StudentTypeScore({ enabled, current, total }) {
-    console.log(enabled);
     const [sortedEnableCategories] = useState(enabled.sort((a, b) => a.category - b.category));
-    useEffect(() => {}, []);
     return (
         <StyleStudentTypeScore>
             <div className="chart-left">

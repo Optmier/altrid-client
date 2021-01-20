@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
 
 function ColumnChartProblem({ datas }) {
-    // console.log(datas);
     let state = {};
-
+    let [categorySorted, setCategorySorted] = useState(datas ? datas.sort((a, b) => a.category - b.category) : null);
+    let dummyDatas = ['문장요약', '세부정보찾기', '어휘', '지시대상', '추론', '문장삽입', '정보분류'];
     state = {
         series: [
             {
                 name: '정답률',
-                data: datas.map((v) => (v.score * 100).toFixed(1)),
+                data: datas ? categorySorted.map((v) => (v.score * 100).toFixed(1)) : [0],
             },
         ],
         options: {
@@ -24,7 +24,7 @@ function ColumnChartProblem({ datas }) {
                     columnWidth: '55%',
                 },
             },
-            colors: ['#008FF8'],
+            colors: ['#13E2A1'],
             dataLabels: {
                 enabled: false,
             },
@@ -34,7 +34,7 @@ function ColumnChartProblem({ datas }) {
                 colors: ['transparent'],
             },
             xaxis: {
-                categories: datas.map((v) => ProblemCategories.filter((i) => i.id === v.category)[0].name),
+                categories: datas ? categorySorted.map((v) => ProblemCategories.filter((i) => i.id === v.category)[0].name) : dummyDatas,
             },
             yaxis: {
                 min: 0,
@@ -53,8 +53,10 @@ function ColumnChartProblem({ datas }) {
         },
     };
     return (
-        <div id="chart">
-            <Chart options={state.options} series={state.series} type="bar" height={350} />
+        <div id="chart-wrapper">
+            <div id="chart">
+                <Chart options={state.options} series={state.series} type="bar" height={350} />
+            </div>
         </div>
     );
 }

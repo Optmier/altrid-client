@@ -112,7 +112,7 @@ function App({ history }) {
                     });
             })
             .catch((err) => {
-                // console.log(err.response);
+                console.log(err.response);
                 if (err.response.status === 401) {
                     if (!loginUrls.includes(history.location.pathname)) {
                         // alert('로그인이 필요합니다.');
@@ -174,8 +174,8 @@ function App({ history }) {
             <Element name="main_top_start" />
 
             <ScrollTop>
-                <ErrorOS os={navigator.userAgent.toLowerCase()} />
-                <MobileBody />
+                {/* <ErrorOS os={navigator.userAgent.toLowerCase()} /> */}
+                {/* <MobileBody /> */}
                 <main>
                     <Switch>
                         <Route path={$_root} component={Main} exact />

@@ -14,6 +14,20 @@ import { useState } from 'react';
 import StudentManage from '../components/ClassStudentManage/StudentManage';
 import VideoLecturesManage from '../components/VideoLectures/VideoLecturesManage';
 import styled from 'styled-components';
+import TopNav from '../components/essentials/TopNav';
+import * as $ from 'jquery';
+
+const StyleDiv = styled.div`
+    transition: all 0.4s;
+
+    @media (min-width: 903px) {
+        padding: ${(props) => (props.leftNavState ? '95px 0 0 240px' : '95px 0 0 0')};
+    }
+
+    @media (min-width: 0) and (max-width: 902px) {
+        padding: 95px 0 0 0;
+    }
+`;
 
 const ClassPageSwitcher = (match, sessions) => {
     if (!match.id || !match.path) return <></>;
@@ -49,6 +63,11 @@ function Class({ match }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const [stMatch, setStMatch] = useState({ id: null, path: null });
     const [RenderSubPage, setRenderSubPage] = useState(null);
+    const [leftNavState, setLeftNavState] = useState(window.innerWidth > 902);
+
+    const handleLeftNav = () => {
+        setLeftNavState(!leftNavState);
+    };
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
@@ -63,8 +82,9 @@ function Class({ match }) {
 
     return (
         <>
-            <LeftNav />
-            <div style={{ padding: '30px 0 0 240px' }} className="class-page-root">
+            <LeftNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} />
+            <StyleDiv leftNavState={leftNavState} className="class-page-root">
+                <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
                 <BackdropComponent open={loading && !data && !error} />
                 {error ? (
                     <Error />
@@ -72,7 +92,7 @@ function Class({ match }) {
                     // <ClassPageSwitcher sessions={sessions} match={stMatch} />
                     RenderSubPage
                 )}
-            </div>
+            </StyleDiv>
         </>
     );
 }
