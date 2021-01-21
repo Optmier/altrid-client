@@ -1,19 +1,47 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { SecondtoMinute } from '../essentials/TimeChange';
+import styled from 'styled-components';
 
-function LineChartTime({ currents, averages }) {
+const StyleWrapper = styled.div`
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+
+    & #chart {
+        min-width: 700px;
+    }
+`;
+
+function LineChartTime({ currents, averages, totalProblems }) {
     let state = {};
+    let currentsArr = [];
+    let averagesArr = [];
+    let maxNum = 0;
+
+    for (let i = 0; i < totalProblems; i++) {
+        currentsArr[i] = 0;
+        averagesArr[i] = 0;
+    }
+    for (let i = 0; i < currents.length; i++) {
+        currentsArr[i] = Math.round(currents[i]);
+        maxNum = maxNum < currentsArr[i] ? currentsArr[i] : maxNum;
+    }
+    for (let i = 0; i < averages.length; i++) {
+        averagesArr[i] = Math.round(averages[i]);
+        maxNum = maxNum < averagesArr[i] ? averagesArr[i] : maxNum;
+    }
 
     state = {
         series: [
             {
-                name: '학생 시간',
-                data: !currents || !currents.length ? [59, 32, 68, 36, 82, 18, 70, 50, 33, 74] : currents,
+                name: '평균 시간',
+                data: !averages || !averagesArr.length ? [32, 42, 76, 45, 32, 56, 21, 55, 22, 88] : averagesArr,
             },
             {
-                name: '평균 시간',
-                data: !averages || !averages.length ? [32, 42, 76, 45, 32, 56, 21, 55, 22, 88] : averages,
+                name: '학생 시간',
+                data: !currents || !currentsArr.length ? [59, 32, 68, 36, 82, 18, 70, 50, 33, 74] : currentsArr,
             },
         ],
         options: {
@@ -32,12 +60,12 @@ function LineChartTime({ currents, averages }) {
                     show: false,
                 },
             },
-            colors: ['#13e2a1', '#706d6d'],
+            colors: ['#68DEA6', '#351E85'],
             dataLabels: {
                 enabled: true,
                 formatter: function (val) {
                     let arr;
-                    arr = SecondtoMinute(Math.floor(val));
+                    arr = SecondtoMinute(Math.round(val));
 
                     if (!arr[0]) {
                         return arr[1] + '초';
@@ -59,25 +87,35 @@ function LineChartTime({ currents, averages }) {
                 size: 1,
             },
             xaxis: {
-                categories: currents.map((d, i) => i + 1 + '번'),
+                categories: averagesArr.map((d, i) => i + 1 + '번'),
             },
             yaxis: {
                 min: 0,
-                // max: 100,
+                max: maxNum + 5,
+                tickAmount: 5,
+                labels: {
+                    formatter: (value) => {
+                        let arr;
+                        arr = SecondtoMinute(Math.floor(value));
+
+                        if (!arr[0]) {
+                            return arr[1] + '초';
+                        }
+                        return arr[0] + '분 ' + arr[1] + '초';
+                    },
+                },
             },
             legend: {
-                position: 'top',
-                horizontalAlign: 'right',
-                floating: true,
-                offsetY: -25,
-                offsetX: -5,
+                show: false,
             },
         },
     };
     return (
-        <div id="chart">
-            <Chart options={state.options} series={state.series} type="line" height={350} />
-        </div>
+        <StyleWrapper>
+            <div id="chart">
+                <Chart options={state.options} series={state.series} type="line" height={350} />
+            </div>
+        </StyleWrapper>
     );
 }
 

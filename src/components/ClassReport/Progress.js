@@ -44,7 +44,7 @@ function Progress({ mode, idx, selections, problemNumbers }) {
                     </HtmlTooltip>,
                 ]);
             } else if (selections[i] === -2) {
-                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#f7f9f8' }}></div>]);
+                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: 'white' }}></div>]);
             } else if (selections[i].correct) {
                 setSquars((squares) => [
                     ...squares,

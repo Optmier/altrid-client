@@ -16,10 +16,14 @@ function RadarChart({ objDatas }) {
             chart: {
                 height: 350,
                 type: 'radar',
+                toolbar: {
+                    show: false,
+                },
             },
             dataLabels: {
                 enabled: true,
             },
+
             plotOptions: {
                 radar: {
                     size: 110,

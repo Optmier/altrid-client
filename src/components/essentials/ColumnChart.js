@@ -20,6 +20,9 @@ function ColumnChart({ currentObjs, averageObjs }) {
             chart: {
                 type: 'bar',
                 height: 350,
+                toolbar: {
+                    show: false,
+                },
             },
             plotOptions: {
                 bar: {
@@ -43,6 +46,11 @@ function ColumnChart({ currentObjs, averageObjs }) {
             yaxis: {
                 min: 0,
                 max: 100,
+                labels: {
+                    formatter: (value) => {
+                        return Math.round(value);
+                    },
+                },
             },
             fill: {
                 opacity: 1,
@@ -53,6 +61,9 @@ function ColumnChart({ currentObjs, averageObjs }) {
                         return val + '%';
                     },
                 },
+            },
+            legend: {
+                show: false,
             },
         },
     };
