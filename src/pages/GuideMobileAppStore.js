@@ -113,7 +113,7 @@ function GuideMobileAppStore() {
                 <style type="text/css">{`
                     html, body, #root {
                         height: 100% !important;
-                        background-color: #43138b;
+                        background-color: ##3B168A;
                     }
                 `}</style>
             </Helmet>
