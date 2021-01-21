@@ -7,7 +7,7 @@ const StyleWrapper = styled.div`
     position: relative;
     overflow-x: auto;
     overflow-y: hidden;
-    width:100%;
+    width: 100%;
 
     & #chart {
         min-width: 700px;
@@ -106,11 +106,7 @@ function LineChartTime({ currents, averages, totalProblems }) {
                 },
             },
             legend: {
-                position: 'top',
-                horizontalAlign: 'left',
-                floating: true,
-                offsetY: -25,
-                offsetX: -5,
+                show: false,
             },
         },
     };

@@ -4,23 +4,15 @@ import RadarChart from '../essentials/RadarChart';
 import ColumnChart from '../essentials/ColumnChart';
 
 const StyleStudentTypeScore = styled.div`
-    box-sizing: border-box;
-    background-color: white;
-
-    border-radius: 11px;
-    padding: 30px 32px;
-    width: 100%;
-    box-sizing: border-box;
-
     display: flex;
     flex-direction: column;
 
-    & .header-wrapper {
+    & .chart-header-wrapper {
         display: flex;
         align-items: center;
         justify-content: space-between;
 
-        & .header-center {
+        & .chart-header-center {
             display: flex;
             align-items: center;
             font-size: 0.94rem;
@@ -67,38 +59,40 @@ const StyleStudentTypeScore = styled.div`
     }
 `;
 
-function StudentTypeScore({ enabled, current, total, typeSelectState, handleTypeSelect }) {
+function StudentTypeScore({ enabled, current, total, typeSelectState, handleTypeSelect, achieveValue }) {
     const [sortedEnableCategories] = useState(enabled.sort((a, b) => a.category - b.category));
 
     return (
-        <StyleStudentTypeScore>
-            <div className="header-wrapper">
-                <div className="header-center">
-                    <span>
-                        학생 시간 <div className="circle student"></div>
-                    </span>
-                    <span>
-                        반 평균 <div className="circle class"></div>
-                    </span>
+        <div className="white-box">
+            <StyleStudentTypeScore>
+                <div className="chart-header-wrapper">
+                    <div className="chart-header-center">
+                        <span>
+                            학생 점수 <div className="circle student"></div>
+                        </span>
+                        <span>
+                            반 평균 <div className="circle class"></div>
+                        </span>
+                    </div>
+
+                    <select name="chart-option" onChange={handleTypeSelect}>
+                        <option value="0">방사형 그래프</option>
+                        <option value="1">막대형 그래프</option>
+                    </select>
                 </div>
 
-                <select name="chart-option" onChange={handleTypeSelect}>
-                    <option value="0">방사형 그래프</option>
-                    <option value="1">막대형 그래프</option>
-                </select>
-            </div>
-
-            <div className="chart-wrapper">
-                {typeSelectState === '0' ? (
-                    <RadarChart objDatas={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))} />
-                ) : (
-                    <ColumnChart
-                        currentObjs={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))}
-                        averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
-                    />
-                )}
-            </div>
-        </StyleStudentTypeScore>
+                <div className="chart-wrapper">
+                    {typeSelectState === '0' ? (
+                        <RadarChart objDatas={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))} />
+                    ) : (
+                        <ColumnChart
+                            currentObjs={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))}
+                            averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
+                        />
+                    )}
+                </div>
+            </StyleStudentTypeScore>
+        </div>
     );
 }
 

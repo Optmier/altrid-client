@@ -378,34 +378,62 @@ $textGray: #706d6d;
             width: 100%;
         }
 
+        & .white-box {
+            background-color: white;
+            border-radius: 11px;
+            width: 100%;
+            padding: 30px 32px;
+            box-sizing: border-box;
+        }
+        & .white-box + .white-box {
+            margin-top: 18px;
+        }
+
         & .ment-ai {
             font-size: 1.75rem;
             font-weight: 400;
-            color: $textBlack;
+            color: #707070;
+            display: flex;
+            align-items: center;
 
-            & .ment-ai-row {
+            & .ment-ai-col {
+                flex: 1;
                 display: flex;
-                align-items: center;
-            }
-            & .ment-ai-name {
-                max-width: 140px;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-            }
-            & .ment-ai-type {
-                max-width: 215px;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-            }
-            & b {
-                font-weight: 600;
-            }
+                flex-direction: column;
 
-            & > .underline {
-                color: #13e2a1;
-                text-decoration: underline;
+                & .ment-ai-name {
+                    color: black;
+                    font-weight: 600;
+                    max-width: 140px;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                }
+                & .ment-ai-underline {
+                    color: #3b168a;
+                    font-weight: 600;
+                    text-decoration: underline;
+                    max-width: 215px;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                }
+            }
+            & .ment-ai-col + .ment-ai-col {
+                padding-left: 32px;
+                border-left: 1px solid #7070704e;
+            }
+            & .ment-ai-row {
+                font-size: 1.18rem;
+                font-weight: 600;
+                color: #707070;
+                & > span {
+                    color: black;
+                    margin-right: 45px;
+                }
+            }
+            & .ment-ai-row + .ment-ai-row {
+                margin-top: 20px;
             }
         }
 
@@ -438,14 +466,8 @@ $textGray: #706d6d;
                 display: flex;
                 align-items: flex-start;
                 justify-content: space-between;
-                background-color: white;
-                border-radius: 11px;
-                width: 100%;
-                padding: 35px 42px;
-                box-sizing: border-box;
             }
         }
-
         & .student-report-observe {
             display: flex;
             align-items: center;

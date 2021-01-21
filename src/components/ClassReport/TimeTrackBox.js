@@ -19,10 +19,6 @@ const StyleTimeTrackWrapper = styled.div`
     flex-direction: column;
 
     & .time-box {
-        box-sizing: border-box;
-        background-color: white;
-        border-radius: 11px;
-        padding: 30px 32px;
         display: flex;
         align-items: center;
 
@@ -98,7 +94,7 @@ function TimeTrackBox({ data, total, totalProblems }) {
 
     return (
         <StyleTimeTrackWrapper>
-            <div className="time-box">
+            <div className="white-box time-box">
                 <div className="time-header-col">
                     <div>최장 소요시간(문제)</div> {timeValueToTimer(arranged[0].time)} ({arranged[0].pid + 1}번)
                 </div>
@@ -109,7 +105,7 @@ function TimeTrackBox({ data, total, totalProblems }) {
                         : SecondtoMinute(personalAvg)[1] + '초'}
                 </div>
             </div>
-            <div className="time-box">
+            <div className="white-box time-box">
                 {data ? <LineChartTime currents={data.map((d) => d.time)} averages={totalAvgs} totalProblems={totalProblems} /> : null}
             </div>
         </StyleTimeTrackWrapper>

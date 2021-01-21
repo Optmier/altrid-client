@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import BranchNav from '../essentials/BranchNav';
 import ClassWrapper from '../essentials/ClassWrapper';
 import Progress from './Progress';
 import styled from 'styled-components';
 import StudentTypeScore from './StudentTypeScore';
-import MoreBox from '../essentials/MoreBox';
 import EyeTrackBox from './EyeTrackBox';
 import {
     Button,
@@ -18,12 +16,13 @@ import {
     Tooltip,
     withStyles,
 } from '@material-ui/core';
+import problemCategories from '../TOFELEditor/ProblemCategories';
 import TimeTrackBox from './TimeTrackBox';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
-import problemCategories from '../TOFELEditor/ProblemCategories';
+
 import { Element, Link as AnimScrollTo } from 'react-scroll';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
@@ -721,13 +720,13 @@ function ReportStudent({ history, match }) {
                                 </div>
                             </>
                         ) : null}
-                    </div> */}
+                         </div> */}
 
                         <div className="student-report-top">
                             <div className="name">{stdName} 학생의 개인 리포트</div>
                             <div className="class-name">가낟라마바</div>
                         </div>
-                        <div className="student-report-bottom">
+                        <div className="white-box student-report-bottom">
                             {/* {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
                             ? division(
                                   currentStudentData.user_data.selections,
@@ -853,7 +852,7 @@ function ReportStudent({ history, match }) {
                         ) : null}
                     </section>
 
-                    <section>
+                    <section className="student-report-type-analysis">
                         <div className="class-report-title graph-title">
                             유형별 분석
                             <div className="title-graph-right">
@@ -864,6 +863,46 @@ function ReportStudent({ history, match }) {
                             </div>
                         </div>
 
+                        <div className="white-box">
+                            <div className="ment-ai">
+                                <div className="ment-ai-col">
+                                    <div>
+                                        <TooltipCard title={stdName}>
+                                            <b className="ment-ai-name">{stdName} </b>
+                                        </TooltipCard>
+                                        학생의 취약 영역은
+                                    </div>
+                                    <div>
+                                        <span className="ment-ai-underline">
+                                            {top3Weaks.length && top3Weaks[0] ? (
+                                                <TooltipCard
+                                                    title={
+                                                        problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name
+                                                    }
+                                                >
+                                                    <>{problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name}</>
+                                                </TooltipCard>
+                                            ) : null}
+                                        </span>{' '}
+                                        영역입니다.
+                                    </div>
+                                </div>
+                                <div className="ment-ai-col">
+                                    <div className="ment-ai-row">
+                                        <span>2번째 취약 영역</span>
+                                        {top3Weaks.length && top3Weaks[1]
+                                            ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0].name
+                                            : 'null'}
+                                    </div>
+                                    <div className="ment-ai-row">
+                                        <span>3번째 취약 영역</span>
+                                        {top3Weaks.length && top3Weaks[2]
+                                            ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0].name
+                                            : 'null'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         {achievesForTypes.value < 100 ? null : (
                             <StudentTypeScore
                                 enabled={achievesForTypes.allExists}
@@ -871,6 +910,8 @@ function ReportStudent({ history, match }) {
                                 total={averageScoresPerType}
                                 typeSelectState={typeSelectState}
                                 handleTypeSelect={handleTypeSelect}
+                                achieveValue={achievesForTypes.value}
+                                stdName={stdName}
                             />
                         )}
                     </section>
@@ -878,28 +919,33 @@ function ReportStudent({ history, match }) {
                     <Element name="analyze_page_start"></Element>
 
                     <section className="student-report-observe">
+                        <div className="class-report-title graph-title">
+                            <div>
+                                시선 흐름 및 패턴 분석
+                                <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
+                                            fill="#A9ACAF"
+                                        />
+                                    </svg>
+                                </HTMLTooltip>
+                            </div>
+                            <div className="title-graph-right">
+                                <TypeBanner
+                                    situation={achievesForTypes.value < 100 ? 'warning' : 'success'}
+                                    value={achievesForTypes.value}
+                                />
+                            </div>
+                        </div>
+
                         <div className="ment-ai observe-ment">
                             <b>{stdName}</b> 학생은 풀이 중 <br />
                             <b className="underline">총 {answerChangedProblems}문제</b>에서 답 변경 시도 하였으며, <br />그 중{' '}
                             <b className="underline">{aftChangedFaileds}문제</b>가 오답 처리되었습니다.
                         </div>
-                        <div className="observe-box">
-                            <MoreBox />
-                        </div>
-                    </section>
 
-                    <div className="class-report-title">
-                        <div>시선 흐름 및 패턴 분석</div>
-                        <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
-                                    fill="#A9ACAF"
-                                />
-                            </svg>
-                        </HTMLTooltip>
-                    </div>
-                    {/* <section className="student-report-eyetrack">
+                        {/* <div className="student-report-eyetrack">
                         {currentStudentData && patternDatas.length ? (
                             <EyeTrackBox
                                 hasEyetrack={currentStudentData.eyetrack}
@@ -912,7 +958,8 @@ function ReportStudent({ history, match }) {
                                 activedNum={activedNum}
                             />
                         ) : null}
-                    </section> */}
+                    </div> */}
+                    </section>
                 </div>
             </ClassWrapper>
         </>
