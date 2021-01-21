@@ -608,17 +608,17 @@ function ReportStudent({ history, match }) {
 
     return (
         <>
-            <StyleArrowButton>
+            {/* <StyleArrowButton>
                 <AnimScrollTo className="guide-show-analyze" to="analyze_page_start" spy={true} smooth={true} duration={700}>
-                    {/* <div className="guide-show-analyze"> */}
+                   
                     AI 데이터 확인하기
                     <div className="expand-icons">
                         <ExpandMoreIcon className="first" />
                         <ExpandMoreIcon className="second" />
                     </div>
-                    {/* </div> */}
+              
                 </AnimScrollTo>
-            </StyleArrowButton>
+            </StyleArrowButton> */}
             <Dialog open={eraseConfirmOpen} onClose={handleEraseConfirmClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title" color="secondary">
                     리포트 초기화
@@ -669,72 +669,11 @@ function ReportStudent({ history, match }) {
             <ClassWrapper col={true}>
                 <div className="student-report-root">
                     <section className="student-report-header">
-                        {/* <div className="student-report-left">
-                        <div className="ment-ai left-top">
-                            {achievesForTypes.value < 100 ? (
-                                <>
-                                    <b>{stdName}</b> 학생의 개인 리포트 입니다. <br />
-                                </>
-                            ) : (
-                                <>
-                                    <div className="ment-ai-row">
-                                        <TooltipCard title={stdName}>
-                                            <b className="ment-ai-name">{stdName}</b>
-                                        </TooltipCard>
-                                        학생의 취약 영역은 <br />
-                                    </div>
-                                    <div className="ment-ai-row">
-                                        <b className="underline" style={{ paddingRight: '0.5rem' }}>
-                                            {top3Weaks.length && top3Weaks[0] ? (
-                                                <TooltipCard
-                                                    title={
-                                                        problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name
-                                                    }
-                                                >
-                                                    <div className="ment-ai-type">
-                                                        {problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name}
-                                                    </div>
-                                                </TooltipCard>
-                                            ) : (
-                                                'null'
-                                            )}
-                                        </b>
-                                        영역입니다.
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                        {achievesForTypes.value >= 100 ? (
-                            <>
-                                <div className="left-bottom">
-                                    <b>2번째 취약 영역</b>
-                                    {top3Weaks.length && top3Weaks[1]
-                                        ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0].name
-                                        : 'null'}
-                                </div>
-                                <div className="left-bottom">
-                                    <b>3번째 취약 영역</b>
-                                    {top3Weaks.length && top3Weaks[2]
-                                        ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0].name
-                                        : 'null'}
-                                </div>
-                            </>
-                        ) : null}
-                         </div> */}
-
                         <div className="student-report-top">
                             <div className="name">{stdName} 학생의 개인 리포트</div>
                             <div className="class-name">가낟라마바</div>
                         </div>
                         <div className="white-box student-report-bottom">
-                            {/* {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
-                            ? division(
-                                  currentStudentData.user_data.selections,
-                                  currentStudentData.contents_data.flatMap((m) => m.problemDatas),
-                                  15,
-                              ).map((arr, idx) => <Progress mode key={idx} idx={idx} selections={arr} problemNumbers={999} />)
-                            : null} */}
-
                             <div className="bottom-col">
                                 <InfoItems title={'제출 날짜'} contents={submittedDate ? submittedDate : '-'}>
                                     <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -810,14 +749,15 @@ function ReportStudent({ history, match }) {
                                 </span>
                             </div>
                         </div>
-                        <div className="progress"></div>
-                        {/* {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
-                            ? division(
-                                  currentStudentData.user_data.selections,
-                                  currentStudentData.contents_data.flatMap((m) => m.problemDatas),
-                                  15,
-                              ).map((arr, idx) => <Progress mode key={idx} idx={idx} selections={arr} problemNumbers={999} />)
-                            : null}  */}
+                        <div className="white-box progress">
+                            {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
+                                ? division(
+                                      currentStudentData.user_data.selections,
+                                      currentStudentData.contents_data.flatMap((m) => m.problemDatas),
+                                      15,
+                                  ).map((arr, idx) => <Progress mode key={idx} idx={idx} selections={arr} problemNumbers={999} />)
+                                : null}
+                        </div>
                     </section>
 
                     <section className="student-report-timetrack">
@@ -920,7 +860,7 @@ function ReportStudent({ history, match }) {
 
                     <section className="student-report-observe">
                         <div className="class-report-title graph-title">
-                            <div>
+                            <div className="observe-header">
                                 시선 흐름 및 패턴 분석
                                 <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -932,20 +872,10 @@ function ReportStudent({ history, match }) {
                                 </HTMLTooltip>
                             </div>
                             <div className="title-graph-right">
-                                <TypeBanner
-                                    situation={achievesForTypes.value < 100 ? 'warning' : 'success'}
-                                    value={achievesForTypes.value}
-                                />
+                                <TypeBanner situation={'info'} value={achievesForTypes.value} />
                             </div>
                         </div>
 
-                        <div className="ment-ai observe-ment">
-                            <b>{stdName}</b> 학생은 풀이 중 <br />
-                            <b className="underline">총 {answerChangedProblems}문제</b>에서 답 변경 시도 하였으며, <br />그 중{' '}
-                            <b className="underline">{aftChangedFaileds}문제</b>가 오답 처리되었습니다.
-                        </div>
-
-                        {/* <div className="student-report-eyetrack">
                         {currentStudentData && patternDatas.length ? (
                             <EyeTrackBox
                                 hasEyetrack={currentStudentData.eyetrack}
@@ -956,9 +886,11 @@ function ReportStudent({ history, match }) {
                                 currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
                                 userId={queryUserId}
                                 activedNum={activedNum}
+                                stdName={stdName}
+                                answerChangedProblems={answerChangedProblems}
+                                aftChangedFaileds={aftChangedFaileds}
                             />
                         ) : null}
-                    </div> */}
                     </section>
                 </div>
             </ClassWrapper>

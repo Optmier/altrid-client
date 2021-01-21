@@ -377,7 +377,6 @@ $textGray: #706d6d;
             padding-bottom: 100px;
             width: 100%;
         }
-
         & .white-box {
             background-color: white;
             border-radius: 11px;
@@ -388,7 +387,6 @@ $textGray: #706d6d;
         & .white-box + .white-box {
             margin-top: 18px;
         }
-
         & .ment-ai {
             font-size: 1.75rem;
             font-weight: 400;
@@ -425,7 +423,7 @@ $textGray: #706d6d;
             }
             & .ment-ai-row {
                 font-size: 1.18rem;
-                font-weight: 600;
+                font-weight: 500;
                 color: #707070;
                 & > span {
                     color: black;
@@ -470,15 +468,14 @@ $textGray: #706d6d;
         }
         & .student-report-observe {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            & .observe-ment {
-                font-size: 1.5rem;
-                line-height: 1.75;
-            }
-
-            & .observe-box {
-                width: 50%;
+            flex-direction: column;
+            width: 100%;
+            & .observe-header {
+                display: flex;
+                align-items: center;
+                & svg {
+                    margin-left: 10px;
+                }
             }
         }
     }
