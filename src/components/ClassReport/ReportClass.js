@@ -484,8 +484,8 @@ function ReportClass({ match, history }) {
                 <div className="class-report-root">
                     <div className="class-report-header">
                         <div className="class-report-header-left">
-                            <h3>{title}가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바</h3>
-                            <p>{description}가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바</p>
+                            <h3>{title}</h3>
+                            <p>{description}</p>
                         </div>
                         <div className="class-report-header-right">
                             <IsPresence type="eye" able={eyetrack} align="left" fontSize="0.94rem" />

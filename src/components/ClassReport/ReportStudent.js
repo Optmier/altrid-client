@@ -240,6 +240,8 @@ function ReportStudent({ history, match }) {
     const [durTimes, setDurTimes] = useState('-');
     /** 제출 횟수 */
     const [tries, setTries] = useState('-');
+    /** 과제 title */
+    const [title, setTitle] = useState('-');
     /** 답을 변경한 문제 수 */
     const [answerChangedProblems, setAnswerChangedProblems] = useState('-');
     /** 답 변경 후 오답처리된 문제 수 */
@@ -432,6 +434,7 @@ function ReportStudent({ history, match }) {
 
     useEffect(() => {
         if (!studentsData || !studentsData.length) return;
+
         const currentStudent = studentsData.filter((d) => d.student_id === queryUserId)[0];
         setCurrentStudentData(currentStudent);
         // console.log(currentStudent);
@@ -441,6 +444,7 @@ function ReportStudent({ history, match }) {
         setScorePoints(currentStudent.score_points);
         setDurTimes(currentStudent.time);
         setTries(currentStudent.tries);
+        setTitle(currentStudent.title);
 
         if (currentStudent.contents_data) {
             setTotalProblems(currentStudent.contents_data.flatMap((m) => m.problemDatas).length);
@@ -671,7 +675,7 @@ function ReportStudent({ history, match }) {
                     <section className="student-report-header">
                         <div className="student-report-top">
                             <div className="name">{stdName} 학생의 개인 리포트</div>
-                            <div className="class-name">가낟라마바</div>
+                            <div className="class-name">{title}</div>
                         </div>
                         <div className="white-box student-report-bottom">
                             <div className="bottom-col">
