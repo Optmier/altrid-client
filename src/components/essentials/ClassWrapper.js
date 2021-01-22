@@ -49,14 +49,20 @@ const cardSizer = (dt) => {
         $('#class-wrapper').css({ width: '960px' });
         $('.class-report-root').removeAttr('id', 'responsive-tablet');
         $('.class-report-root').removeAttr('id', 'responsive-mobile');
+        $('.student-report-root').removeAttr('id', 'responsive-tablet');
+        $('.student-report-root').removeAttr('id', 'responsive-mobile');
     } else if (dt.width >= 663 && dt.width < 992) {
         $('#class-wrapper').css({ width: '632px' });
         $('.class-report-root').removeAttr('id', 'responsive-mobile');
         $('.class-report-root').attr('id', 'responsive-tablet');
+        $('.student-report-root').removeAttr('id', 'responsive-mobile');
+        $('.student-report-root').attr('id', 'responsive-tablet');
     } else {
         $('#class-wrapper').css({ width: 'initial' });
         $('.class-report-root').removeAttr('id', 'responsive-tablet');
         $('.class-report-root').attr('id', 'responsive-mobile');
+        $('.student-report-root').removeAttr('id', 'responsive-tablet');
+        $('.student-report-root').attr('id', 'responsive-mobile');
     }
 };
 

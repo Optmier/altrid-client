@@ -2,14 +2,18 @@ import React, { useEffect } from 'react';
 import Chart from 'react-apexcharts';
 import problemCategories from '../TOFELEditor/ProblemCategories';
 
-function RadarChart({ objDatas }) {
+function RadarChart({ currentObjs, averageObjs }) {
     let state = {};
 
     state = {
         series: [
             {
                 name: '학생 정답률',
-                data: objDatas.map((v) => (v.score * 100).toFixed(1)),
+                data: currentObjs.map((v) => (v.score * 100).toFixed(1)),
+            },
+            {
+                name: '평균 정답률',
+                data: averageObjs.map((v) => (v.score * 100).toFixed(1)),
             },
         ],
         options: {
@@ -36,12 +40,9 @@ function RadarChart({ objDatas }) {
                 },
             },
             title: {},
-            colors: ['#008FF8'],
+            colors: ['#351e85', '#68dea6'],
             markers: {
-                size: 4,
-                colors: ['#fff'],
-                strokeColor: '#008FF8',
-                strokeWidth: 2,
+                size: 0,
             },
             tooltip: {
                 y: {
@@ -51,7 +52,7 @@ function RadarChart({ objDatas }) {
                 },
             },
             xaxis: {
-                categories: objDatas.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
+                categories: averageObjs.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
                 // '기타',
             },
             yaxis: {
@@ -65,6 +66,9 @@ function RadarChart({ objDatas }) {
                         }
                     },
                 },
+            },
+            legend: {
+                show: false,
             },
         },
     };

@@ -83,7 +83,10 @@ function StudentTypeScore({ enabled, current, total, typeSelectState, handleType
 
                 <div className="chart-wrapper">
                     {typeSelectState === '0' ? (
-                        <RadarChart objDatas={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))} />
+                        <RadarChart
+                            currentObjs={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))}
+                            averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
+                        />
                     ) : (
                         <ColumnChart
                             currentObjs={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))}

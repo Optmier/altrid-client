@@ -31,7 +31,7 @@ function ColumnChart({ currentObjs, averageObjs }) {
                     endingShape: 'rounded',
                 },
             },
-            colors: ['#13e2a1', '#706d6d'],
+            colors: ['#351e85', '#68dea6'],
             dataLabels: {
                 enabled: false,
             },
