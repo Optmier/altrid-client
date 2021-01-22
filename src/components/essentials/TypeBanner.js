@@ -47,6 +47,18 @@ const StyleAlert = styled.div`
 
     @media (min-width: 0) and (max-width: 662px) {
         width: 100%;
+        & > div {
+            & > p {
+                font-size: 12px;
+            }
+        }
+
+        & > button {
+            font-size: 12px;
+            & > svg {
+                margin-left: 3px;
+            }
+        }
     }
 `;
 

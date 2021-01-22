@@ -47,10 +47,6 @@ const StyleItems = styled.div`
     align-items: center;
     justify-content: flex-start;
 
-    font-size: 1.18rem;
-    color: #706d6d;
-    font-weight: 400;
-
     &.critical {
         color: #f57c7c;
     }
@@ -158,11 +154,11 @@ const CompareItems = ({ title, contents, children }) => {
             {children}
             <div className="header-title">{title}</div>
             {contents < 0 ? (
-                <div style={{ fontSize: '1.1rem', color: '#F57C7C', fontWeight: '600' }}>{contents.toFixed(1)}%</div>
+                <div style={{ color: '#F57C7C' }}>{contents.toFixed(1)}%</div>
             ) : contents === 0 ? (
-                <div style={{ fontSize: '1.1rem', color: '#C4C4C4', fontWeight: '600' }}>-</div>
+                <div style={{ color: '#C4C4C4' }}>-</div>
             ) : (
-                <div style={{ fontSize: '1.1rem', color: '#7C88F5', fontWeight: '600' }}>+ {contents.toFixed(1)}%</div>
+                <div style={{ color: '#7C88F5' }}>+ {contents.toFixed(1)}%</div>
             )}
         </StyleItems>
     );
@@ -833,16 +829,20 @@ function ReportStudent({ history, match }) {
                                 </div>
                                 <div className="ment-ai-col">
                                     <div className="ment-ai-row">
-                                        <span>2번째 취약 영역</span>
-                                        {top3Weaks.length && top3Weaks[1]
-                                            ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0].name
-                                            : 'null'}
+                                        <span className="row-title">2번째 취약 영역</span>
+                                        <span className="row-desc">
+                                            {top3Weaks.length && top3Weaks[1]
+                                                ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0].name
+                                                : 'null'}
+                                        </span>
                                     </div>
                                     <div className="ment-ai-row">
-                                        <span>3번째 취약 영역</span>
-                                        {top3Weaks.length && top3Weaks[2]
-                                            ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0].name
-                                            : 'null'}
+                                        <span className="row-title">3번째 취약 영역</span>
+                                        <span className="row-desc">
+                                            {top3Weaks.length && top3Weaks[2]
+                                                ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0].name
+                                                : 'null'}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -880,7 +880,7 @@ function ReportStudent({ history, match }) {
                             </div>
                         </div>
 
-                        {currentStudentData && patternDatas.length ? (
+                        {/* {currentStudentData && patternDatas.length ? (
                             <EyeTrackBox
                                 hasEyetrack={currentStudentData.eyetrack}
                                 eyetrackData={currentStudentData.eyetrack_data}
@@ -894,7 +894,7 @@ function ReportStudent({ history, match }) {
                                 answerChangedProblems={answerChangedProblems}
                                 aftChangedFaileds={aftChangedFaileds}
                             />
-                        ) : null}
+                        ) : null} */}
                     </section>
                 </div>
             </ClassWrapper>

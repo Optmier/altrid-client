@@ -57,6 +57,11 @@ const StyleStudentTypeScore = styled.div`
             outline: none;
         }
     }
+    & .chart-wrapper {
+        position: relative;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
 `;
 
 function StudentTypeScore({ enabled, current, total, typeSelectState, handleTypeSelect, achieveValue }) {

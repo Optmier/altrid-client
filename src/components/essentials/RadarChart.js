@@ -1,6 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Chart from 'react-apexcharts';
 import problemCategories from '../TOFELEditor/ProblemCategories';
+import styled from 'styled-components';
+
+const StyleChartWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
 
 function RadarChart({ currentObjs, averageObjs }) {
     let state = {};
@@ -9,16 +17,17 @@ function RadarChart({ currentObjs, averageObjs }) {
         series: [
             {
                 name: '학생 정답률',
-                data: currentObjs.map((v) => (v.score * 100).toFixed(1)),
+                data: currentObjs.map((v) => Math.round(v.score * 100)),
             },
             {
                 name: '평균 정답률',
-                data: averageObjs.map((v) => (v.score * 100).toFixed(1)),
+                data: averageObjs.map((v) => Math.round(v.score * 100)),
             },
         ],
         options: {
             chart: {
-                height: 350,
+                width: '100%',
+                height: '100%',
                 type: 'radar',
                 toolbar: {
                     show: false,
@@ -73,9 +82,11 @@ function RadarChart({ currentObjs, averageObjs }) {
         },
     };
     return (
-        <div id="chart">
-            <Chart options={state.options} series={state.series} type="radar" height={350} />
-        </div>
+        <StyleChartWrapper>
+            <div id="chart">
+                <Chart options={state.options} series={state.series} type="radar" height={'300px'} width={'300px'} />
+            </div>
+        </StyleChartWrapper>
     );
 }
 

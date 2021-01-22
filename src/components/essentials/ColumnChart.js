@@ -1,6 +1,11 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import problemCategories from '../TOFELEditor/ProblemCategories';
+import styled from 'styled-components';
+
+const StyleChartWrapper = styled.div`
+    min-width: 600px;
+`;
 
 function ColumnChart({ currentObjs, averageObjs }) {
     let state = {};
@@ -68,9 +73,11 @@ function ColumnChart({ currentObjs, averageObjs }) {
         },
     };
     return (
-        <div id="chart">
-            <Chart options={state.options} series={state.series} type="bar" height={350} />
-        </div>
+        <StyleChartWrapper>
+            <div id="chart">
+                <Chart options={state.options} series={state.series} type="bar" height={350} />
+            </div>
+        </StyleChartWrapper>
     );
 }
 

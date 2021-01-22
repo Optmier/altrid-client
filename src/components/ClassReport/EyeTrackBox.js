@@ -158,16 +158,30 @@ function EyeTrackBox({
                 </div>
                 <div className="ment-ai-col">
                     <div className="ment-ai-row">
-                        <span>총 응시점 개수</span>
-                        {fixations}개 (평균 {fixationsTotalAvg}개)
+                        <span className="row-title">총 응시점 개수</span>
+                        <TooltipCard title={`${fixations}개 (평균 ${fixationsTotalAvg}개)`}>
+                            <span className="row-desc">
+                                {fixations}개 (평균 {fixationsTotalAvg}개)
+                            </span>
+                        </TooltipCard>
                     </div>
                     <div className="ment-ai-row">
-                        <span>평균 응시 속도</span>
-                        {avgFixVels}ms (평균 {avgFixDurTotalAvg}ms)
+                        <span className="row-title">평균 응시 속도</span>
+
+                        <TooltipCard title={`${avgFixVels}ms (평균 ${avgFixDurTotalAvg}ms)`}>
+                            <span className="row-desc">
+                                {avgFixVels}ms (평균 {avgFixDurTotalAvg}ms)
+                            </span>
+                        </TooltipCard>
                     </div>
                     <div className="ment-ai-row">
-                        <span>재응시 횟수</span>
-                        {regressions}회 (평균 {regressionsTotalAvg}회)
+                        <span className="row-title">재응시 횟수</span>
+
+                        <TooltipCard title={`${regressions}회 (평균 ${regressionsTotalAvg}회)`}>
+                            <span className="row-desc">
+                                {regressions}회 (평균 {regressionsTotalAvg}회)
+                            </span>
+                        </TooltipCard>
                     </div>
                 </div>
             </div>

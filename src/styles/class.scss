@@ -424,10 +424,20 @@ $textGray: #706d6d;
             & .ment-ai-row {
                 font-size: 1.18rem;
                 font-weight: 500;
-                color: #707070;
-                & > span {
+
+                display: flex;
+                align-items: center;
+
+                & .row-title {
                     color: black;
-                    margin-right: 45px;
+                    width: 50%;
+                }
+                & .row-desc {
+                    color: #707070;
+                    width: 50%;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
             }
             & .ment-ai-row + .ment-ai-row {
@@ -452,11 +462,21 @@ $textGray: #706d6d;
                     font-size: 1.68rem;
                     font-weight: 600;
                     margin-bottom: 11px;
+
+                    width: 100%;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
                 & .class-name {
                     font-size: 1.18rem;
                     font-weight: 400;
                     color: #707070;
+
+                    width: 100%;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
             }
 
@@ -464,6 +484,18 @@ $textGray: #706d6d;
                 display: flex;
                 align-items: flex-start;
                 justify-content: space-between;
+
+                & .bottom-col {
+                    font-size: 1.18rem;
+                    color: #706d6d;
+                    font-weight: 400;
+                }
+            }
+        }
+        & .student-report-progress {
+            & .progress {
+                position: relative;
+                overflow: auto;
             }
         }
         & .student-report-observe {
@@ -482,148 +514,226 @@ $textGray: #706d6d;
 }
 
 #responsive-tablet {
-    & .report-box:nth-child(1) {
-        flex: 2;
-    }
-    & .report-box:nth-child(2) {
-        flex: 1;
-    }
-    & .left-content.tablet-responsive {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    & .graph-box-header {
-        & > div:nth-child(1) {
+    &.class-report-root {
+        & .report-box:nth-child(1) {
             flex: 2;
-            padding-right: 30px;
         }
-        & > div:nth-child(2) {
-            flex: 0;
-        }
-        & > div:nth-child(3) {
-            flex: 0;
-        }
-        & > div:nth-child(4) {
+        & .report-box:nth-child(2) {
             flex: 1;
         }
-        & .tablet-responsive {
-            display: flex;
+        & .left-content.tablet-responsive {
             flex-direction: column;
-            height: 100%;
             align-items: flex-start;
-            border-right: 1px solid #7070704e;
-
-            & > div + div {
-                margin-top: 15px;
+        }
+        & .graph-box-header {
+            & > div:nth-child(1) {
+                flex: 2;
+                padding-right: 30px;
             }
-            & > div {
+            & > div:nth-child(2) {
+                flex: 0;
+            }
+            & > div:nth-child(3) {
+                flex: 0;
+            }
+            & > div:nth-child(4) {
+                flex: 1;
+            }
+            & .tablet-responsive {
                 display: flex;
-                align-items: center;
-                font-size: 1.1rem;
-                font-weight: 600;
-                color: #707070;
+                flex-direction: column;
+                height: 100%;
+                align-items: flex-start;
+                border-right: 1px solid #7070704e;
 
-                & > span {
-                    margin-right: 30px;
-                    color: black;
+                & > div + div {
+                    margin-top: 15px;
                 }
-                & select {
-                    cursor: pointer;
-                    background: url('/bg_images/Vector.png') no-repeat 92% 50%;
-                    width: 100%; /* 원하는 너비설정 */
-                    padding: 0.8rem 1rem; /* 여백으로 높이 설정 */
-                    font-family: inherit; /* 폰트 상속 */
-                    font-size: 1.001rem;
-                    border: none;
-                    border: 1px solid #707070;
-                    border-radius: 0px; /* iOS 둥근모서리 제거 */
-                    -webkit-appearance: none; /* 네이티브 외형 감추기 */
-                    -moz-appearance: none;
-                    appearance: none;
-                    outline: none;
+                & > div {
+                    display: flex;
+                    align-items: center;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    color: #707070;
+
+                    & > span {
+                        margin-right: 30px;
+                        color: black;
+                    }
+                    & select {
+                        cursor: pointer;
+                        background: url('/bg_images/Vector.png') no-repeat 92% 50%;
+                        width: 100%; /* 원하는 너비설정 */
+                        padding: 0.8rem 1rem; /* 여백으로 높이 설정 */
+                        font-family: inherit; /* 폰트 상속 */
+                        font-size: 1.001rem;
+                        border: none;
+                        border: 1px solid #707070;
+                        border-radius: 0px; /* iOS 둥근모서리 제거 */
+                        -webkit-appearance: none; /* 네이티브 외형 감추기 */
+                        -moz-appearance: none;
+                        appearance: none;
+                        outline: none;
+                    }
                 }
+            }
+            & .web-responsive {
+                display: none;
             }
         }
-        & .web-responsive {
-            display: none;
+        & .class-report-header-right {
+            width: 40%;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-end;
+
+            & > span {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
         }
     }
-    & .class-report-header-right {
-        width: 40%;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-end;
-
-        & > span {
-            margin-right: 0;
-            margin-bottom: 10px;
+    &.student-report-root {
+        & .white-box {
+            padding: 20px 22px;
+        }
+        & .ment-ai {
+            font-size: 1.25rem;
+            & .ment-ai-row {
+                font-size: 1rem;
+            }
+        }
+        & .student-report-bottom {
+            & .bottom-col {
+                font-size: 1rem;
+            }
+        }
+        & .time-header-col {
+            font-size: 1rem;
         }
     }
 }
 
 #responsive-mobile {
-    & .class-report-header {
-        flex-direction: column;
-        & .class-report-header-left {
-            width: 100%;
-            margin-bottom: 30px;
+    &.class-report-root {
+        & .class-report-header {
+            flex-direction: column;
+            & .class-report-header-left {
+                width: 100%;
+                margin-bottom: 30px;
+            }
+            & .class-report-header-right {
+                width: 100%;
+                justify-content: flex-start;
+            }
         }
-        & .class-report-header-right {
-            width: 100%;
-            justify-content: flex-start;
-        }
-    }
-    & .class-report-info {
-        flex-direction: column;
+        & .class-report-info {
+            flex-direction: column;
 
-        & > .report-box:nth-child(1) {
-            flex: 1;
-        }
-        & > .report-box:nth-child(2) {
-            flex: 1;
-        }
+            & > .report-box:nth-child(1) {
+                flex: 1;
+            }
+            & > .report-box:nth-child(2) {
+                flex: 1;
+            }
 
-        & .report-box + .report-box {
-            margin-left: 0px;
-            margin-top: 17px;
+            & .report-box + .report-box {
+                margin-left: 0px;
+                margin-top: 17px;
+            }
+            & .left-content.tablet-responsive {
+                flex-direction: column;
+                align-items: flex-start;
+                font-size: 0.75rem;
+            }
         }
-        & .left-content.tablet-responsive {
+        & .graph-title {
             flex-direction: column;
             align-items: flex-start;
-            font-size: 0.75rem;
+            & .title-graph-right {
+                margin-top: 12px;
+                width: 100%;
+            }
+        }
+        & .graph-box-header {
+            flex-direction: column;
+            align-items: flex-start;
+
+            & > div:nth-child(2) {
+                flex: 1;
+                padding-right: 0;
+                border-right: 0;
+                width: 100%;
+            }
+            & > div:nth-child(3) {
+                flex: 1;
+                padding: 0;
+                border-right: 0;
+                width: 100%;
+                margin-top: 16px;
+            }
+            & > div:nth-child(4) {
+                flex: 1;
+                padding-left: 0;
+                width: 100%;
+                margin-top: 16px;
+            }
         }
     }
+    &.student-report-root {
+        & .white-box {
+            padding: 20px 22px;
+        }
+        & .ment-ai {
+            font-size: 1.15rem;
+            flex-direction: column;
+            align-items: flex-start;
+            & .ment-ai-col {
+                width: 100%;
+            }
+            & .ment-ai-col + .ment-ai-col {
+                padding: 0%;
+                border: none;
+                margin-top: 20px;
+            }
+            & .ment-ai-row {
+                font-size: 0.95rem;
+            }
+            & .ment-ai-row + .ment-ai-row {
+                margin-top: 8px;
+            }
+        }
+        & .student-report-bottom {
+            flex-direction: column;
+            & .bottom-col {
+                font-size: 0.95rem;
+            }
 
-    & .graph-title {
-        flex-direction: column;
-        align-items: flex-start;
-        & .title-graph-right {
-            margin-top: 12px;
-            width: 100%;
+            & .bottom-col + .bottom-col {
+                margin-top: 1.25rem;
+            }
         }
-    }
-    & .graph-box-header {
-        flex-direction: column;
-        align-items: flex-start;
+        & .time-box {
+            flex-direction: column;
+            align-items: flex-start;
 
-        & > div:nth-child(2) {
-            flex: 1;
-            padding-right: 0;
-            border-right: 0;
-            width: 100%;
+            & .time-header-col {
+                font-size: 1rem;
+                width: 100%;
+            }
+            & .time-header-col + .time-header-col {
+                padding: 0;
+                margin-top: 14px;
+                border: none;
+            }
         }
-        & > div:nth-child(3) {
-            flex: 1;
-            padding: 0;
-            border-right: 0;
-            width: 100%;
-            margin-top: 16px;
-        }
-        & > div:nth-child(4) {
-            flex: 1;
-            padding-left: 0;
-            width: 100%;
-            margin-top: 16px;
+        & .graph-title {
+            flex-direction: column;
+            align-items: flex-start;
+            & .title-graph-right {
+                margin-top: 12px;
+                width: 100%;
+            }
         }
     }
 }
