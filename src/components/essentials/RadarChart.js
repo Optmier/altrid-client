@@ -84,7 +84,7 @@ function RadarChart({ currentObjs, averageObjs }) {
     return (
         <StyleChartWrapper>
             <div id="chart">
-                <Chart options={state.options} series={state.series} type="radar" height={'300px'} width={'300px'} />
+                <Chart options={state.options} series={state.series} type="radar" height={'325px'} width={'325px'} />
             </div>
         </StyleChartWrapper>
     );

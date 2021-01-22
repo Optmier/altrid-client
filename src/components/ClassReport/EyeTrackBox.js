@@ -187,7 +187,7 @@ function EyeTrackBox({
             </div>
 
             <div className="eyetrack-box">
-                <div className="eyetrack-left" style={{ width: hasEyetrack ? '72%' : '72%' }}>
+                <div className="eyetrack-left">
                     {hasEyetrack && mEyetrackData ? (
                         <EyetrackingPlayer data={mEyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
                     ) : (

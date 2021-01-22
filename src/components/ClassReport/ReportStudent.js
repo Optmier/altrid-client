@@ -880,7 +880,7 @@ function ReportStudent({ history, match }) {
                             </div>
                         </div>
 
-                        {/* {currentStudentData && patternDatas.length ? (
+                        {currentStudentData && patternDatas.length ? (
                             <EyeTrackBox
                                 hasEyetrack={currentStudentData.eyetrack}
                                 eyetrackData={currentStudentData.eyetrack_data}
@@ -894,7 +894,7 @@ function ReportStudent({ history, match }) {
                                 answerChangedProblems={answerChangedProblems}
                                 aftChangedFaileds={aftChangedFaileds}
                             />
-                        ) : null} */}
+                        ) : null}
                     </section>
                 </div>
             </ClassWrapper>
