@@ -281,6 +281,9 @@ body {
                         font-weight: 600;
                     }
                 }
+                & .mobile-accounts-welcome {
+                    display: none;
+                }
             }
         }
     }
@@ -454,10 +457,24 @@ body {
                 }
 
                 &.center {
+                    & > a {
+                        font-size: 0.95rem;
+                    }
                 }
 
                 &.right {
-                    margin: 0 16px 0 auto;
+                    margin: 0 16px 0 32px;
+
+                    & .accounts-welcome {
+                        display: none;
+                    }
+
+                    & .mobile-accounts-welcome {
+                        display: block;
+                        & img {
+                            width: 32px;
+                        }
+                    }
                 }
             }
         }

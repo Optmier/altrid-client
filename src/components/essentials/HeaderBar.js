@@ -5,6 +5,7 @@ import { Link as AnimScrollTo } from 'react-scroll';
 import LogoWhite from '../../images/logos/nav_logo_white.png';
 import AccountPopOver from './AccountPopOver';
 import { useSelector } from 'react-redux';
+import Avatar from '../../images/avatar.png';
 
 function HeaderBar({ match }) {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -71,6 +72,9 @@ function HeaderBar({ match }) {
                         <p>
                             반갑습니다 <span>{sessions.userName}</span> {sessions.userType === 'teachers' ? '선생님!' : '님!'}
                         </p>
+                    </div>
+                    <div className="mobile-accounts-welcome" ref={testRef}>
+                        <img src={Avatar} alt="avatar" />
                     </div>
                 </div>
             </header>
