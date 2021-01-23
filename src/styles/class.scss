@@ -615,10 +615,13 @@ $textGray: #706d6d;
             flex-direction: column-reverse;
             & .eyetrack-left {
                 width: 100%;
+                height: auto;
+                padding: 20px 22px;
             }
             & .eyetrack-right {
                 width: 100%;
                 height: 300px;
+                padding: 20px 22px;
                 margin-bottom: 18px;
             }
         }
@@ -756,10 +759,13 @@ $textGray: #706d6d;
             flex-direction: column-reverse;
             & .eyetrack-left {
                 width: 100%;
+                height: auto;
+                padding: 15px 22px;
             }
             & .eyetrack-right {
                 width: 100%;
                 height: 250px;
+                padding: 15px 22px;
                 margin-bottom: 18px;
             }
         }
