@@ -281,7 +281,7 @@ body {
                         font-weight: 600;
                     }
                 }
-                & .mobile-accounts-welcome {
+                & img {
                     display: none;
                 }
             }
@@ -465,15 +465,13 @@ body {
                 &.right {
                     margin: 0 16px 0 32px;
 
-                    & .accounts-welcome {
+                    & p {
                         display: none;
                     }
 
-                    & .mobile-accounts-welcome {
+                    & img {
                         display: block;
-                        & img {
-                            width: 32px;
-                        }
+                        width: 32px;
                     }
                 }
             }

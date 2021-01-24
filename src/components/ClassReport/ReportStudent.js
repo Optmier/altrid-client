@@ -813,17 +813,27 @@ function ReportStudent({ history, match }) {
                                         학생의 취약 영역은
                                     </div>
                                     <div>
-                                        <span className="ment-ai-underline">
-                                            {top3Weaks.length && top3Weaks[0] ? (
-                                                <TooltipCard
-                                                    title={
-                                                        problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name
-                                                    }
-                                                >
-                                                    <>{problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0].name}</>
-                                                </TooltipCard>
-                                            ) : null}
-                                        </span>{' '}
+                                        {achievesForTypes.value < 100 ? (
+                                            <span className="ment-ai-nounderline">-</span>
+                                        ) : (
+                                            <span className="ment-ai-underline">
+                                                {top3Weaks.length && top3Weaks[0] ? (
+                                                    <TooltipCard
+                                                        title={
+                                                            problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0]
+                                                                .name
+                                                        }
+                                                    >
+                                                        <>
+                                                            {
+                                                                problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0]
+                                                                    .name
+                                                            }
+                                                        </>
+                                                    </TooltipCard>
+                                                ) : null}
+                                            </span>
+                                        )}{' '}
                                         영역입니다.
                                     </div>
                                 </div>
@@ -831,7 +841,9 @@ function ReportStudent({ history, match }) {
                                     <div className="ment-ai-row">
                                         <span className="row-title">2번째 취약 영역</span>
                                         <span className="row-desc">
-                                            {top3Weaks.length && top3Weaks[1]
+                                            {achievesForTypes.value < 100
+                                                ? '-'
+                                                : top3Weaks.length && top3Weaks[1]
                                                 ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0].name
                                                 : 'null'}
                                         </span>
@@ -839,7 +851,9 @@ function ReportStudent({ history, match }) {
                                     <div className="ment-ai-row">
                                         <span className="row-title">3번째 취약 영역</span>
                                         <span className="row-desc">
-                                            {top3Weaks.length && top3Weaks[2]
+                                            {achievesForTypes.value < 100
+                                                ? '-'
+                                                : top3Weaks.length && top3Weaks[2]
                                                 ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0].name
                                                 : 'null'}
                                         </span>
@@ -847,7 +861,17 @@ function ReportStudent({ history, match }) {
                                 </div>
                             </div>
                         </div>
-                        {achievesForTypes.value < 100 ? null : (
+                        {achievesForTypes.value < 100 ? (
+                            <StudentTypeScore
+                                enabled={achievesForTypes.allExists}
+                                current={0}
+                                total={0}
+                                typeSelectState={typeSelectState}
+                                handleTypeSelect={handleTypeSelect}
+                                achieveValue={achievesForTypes.value}
+                                stdName={stdName}
+                            />
+                        ) : (
                             <StudentTypeScore
                                 enabled={achievesForTypes.allExists}
                                 current={currentScoresPerType}

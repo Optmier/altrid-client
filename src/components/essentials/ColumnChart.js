@@ -14,11 +14,11 @@ function ColumnChart({ currentObjs, averageObjs }) {
         series: [
             {
                 name: '학생 정답률',
-                data: currentObjs.map((v) => (v.score * 100).toFixed(1)),
+                data: currentObjs ? currentObjs.map((v) => (v.score * 100).toFixed(1)) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             },
             {
                 name: '평균 정답률',
-                data: averageObjs.map((v) => (v.score * 100).toFixed(1)),
+                data: currentObjs ? averageObjs.map((v) => (v.score * 100).toFixed(1)) : [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
             },
         ],
         options: {
@@ -46,7 +46,7 @@ function ColumnChart({ currentObjs, averageObjs }) {
                 colors: ['transparent'],
             },
             xaxis: {
-                categories: currentObjs.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
+                categories: averageObjs.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
             },
             yaxis: {
                 min: 0,

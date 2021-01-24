@@ -72,8 +72,6 @@ function HeaderBar({ match }) {
                         <p>
                             반갑습니다 <span>{sessions.userName}</span> {sessions.userType === 'teachers' ? '선생님!' : '님!'}
                         </p>
-                    </div>
-                    <div className="mobile-accounts-welcome" ref={testRef}>
                         <img src={Avatar} alt="avatar" />
                     </div>
                 </div>

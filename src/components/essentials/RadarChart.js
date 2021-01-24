@@ -17,11 +17,11 @@ function RadarChart({ currentObjs, averageObjs }) {
         series: [
             {
                 name: '학생 정답률',
-                data: currentObjs.map((v) => Math.round(v.score * 100)),
+                data: currentObjs ? currentObjs.map((v) => Math.round(v.score * 100)) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             },
             {
                 name: '평균 정답률',
-                data: averageObjs.map((v) => Math.round(v.score * 100)),
+                data: currentObjs ? averageObjs.map((v) => Math.round(v.score * 100)) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             },
         ],
         options: {

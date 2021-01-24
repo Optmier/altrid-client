@@ -33,8 +33,12 @@ const StyleEyeTrackBox = styled.div`
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 1.2rem;
+                font-size: 1rem;
                 font-weight: 500;
+                color: rgb(96, 95, 96);
+                & svg {
+                    margin-right: 10px;
+                }
             }
         }
         & .eyetrack-right {
