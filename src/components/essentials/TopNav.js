@@ -27,7 +27,7 @@ const StyleDiv = styled.div`
     display: flex;
     align-items: center;
     top: 0;
-    z-index: 9998;
+    z-index: 1298;
     background-color: #f7f9f8;
     box-shadow: 0 0 4px rgba(200, 200, 200, 0.4);
     border-bottom: 1px solid rgba(0, 0, 0, 0.098);

@@ -74,14 +74,13 @@ function EyeTrackBox({
     const [avgFixDurTotalAvg, setAvgFixDurTotalAvg] = useState('-');
     const [regressionsTotalAvg, setRegressionsTotalAvg] = useState('-');
     const [mEyetrackData, setEyetrackData] = useState(eyetrackData);
-    window.setEyetrackData = setEyetrackData;
     // window.setTrackTimeGoTo = setTrackTimeGoTo;
     const handleGoTo = (time) => {
         // console.log(time);
-        setTrackTimeGoTo(0);
-        for (let i = 0; i < eyetrackData.sequences.length; i++) {
-            if (eyetrackData.sequences[i].elapsedTime === time) {
-                setTrackTimeGoTo(i);
+        setTrackTimeGoTo(() => 0);
+        for (let i = 0; i < mEyetrackData.sequences.length; i++) {
+            if (mEyetrackData.sequences[i].elapsedTime === time) {
+                setTrackTimeGoTo(() => i);
                 break;
             }
         }

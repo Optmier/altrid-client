@@ -104,7 +104,7 @@ function App({ history }) {
                         try {
                             window.Android.ShowWebView();
                         } catch (error) {
-                            console.error(error);
+                            // console.error(error);
                         }
                     })
                     .catch((err) => {
