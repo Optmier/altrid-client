@@ -245,6 +245,8 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
         severity: 'success',
     });
     const [setNum, setSetNum] = useState(0);
+    const [deleteIdxs, setDeleteIdxs] = useState([]);
+    window.deleteIdxs = deleteIdxs;
 
     let forceUpdate = useForceUpdate();
 
@@ -331,8 +333,17 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
         if (confirmDialog) setContentsProblemDatas(contentsProblemDatas.filter((origData, idx) => idx !== delIdx));
     };
 
+    const onMultipleProlemsDelete = () => {
+        const confirmDialog = window.confirm('선택한 항목들을 삭제하시겠어요?');
+        if (confirmDialog) setContentsProblemDatas(contentsProblemDatas.filter((origData, idx) => !deleteIdxs.includes(idx)));
+    };
+
     const onProblemCardCheckChanged = (number, checked) => {
-        console.log('You checked number ', number, checked);
+        if (checked) {
+            setDeleteIdxs([...deleteIdxs, number]);
+        } else {
+            setDeleteIdxs(deleteIdxs.filter((idx) => idx !== number));
+        }
     };
 
     const handleSaveContents = () => {
@@ -693,7 +704,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                             <EdProblemAddButton variant="outlined" fullWidth startIcon={<PlaylistAddIcon />} onClick={handleProblemCreate}>
                                 새 문제 추가하기
                             </EdProblemAddButton>
-                            <EdProblemAddButton variant="outlined" fullWidth startIcon={<Delete />}>
+                            <EdProblemAddButton variant="outlined" fullWidth startIcon={<Delete />} onClick={onMultipleProlemsDelete}>
                                 문제 삭제하기
                             </EdProblemAddButton>
                         </AddButtonContainer>
