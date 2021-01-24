@@ -15,10 +15,18 @@ import StudentManage from '../components/ClassStudentManage/StudentManage';
 import VideoLecturesManage from '../components/VideoLectures/VideoLecturesManage';
 import styled from 'styled-components';
 import TopNav from '../components/essentials/TopNav';
+import * as $ from 'jquery';
 
 const StyleDiv = styled.div`
     transition: all 0.4s;
-    padding: ${(props) => (props.leftNavState ? '80px 0 0 240px' : '80px 0 0 0')};
+
+    @media (min-width: 903px) {
+        padding: ${(props) => (props.leftNavState ? '95px 0 0 240px' : '95px 0 0 0')};
+    }
+
+    @media (min-width: 0) and (max-width: 902px) {
+        padding: 95px 0 0 0;
+    }
 `;
 
 const ClassPageSwitcher = (match, sessions) => {
@@ -55,7 +63,7 @@ function Class({ match }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const [stMatch, setStMatch] = useState({ id: null, path: null });
     const [RenderSubPage, setRenderSubPage] = useState(null);
-    const [leftNavState, setLeftNavState] = useState(true);
+    const [leftNavState, setLeftNavState] = useState(window.innerWidth > 902);
 
     const handleLeftNav = () => {
         setLeftNavState(!leftNavState);
@@ -74,7 +82,7 @@ function Class({ match }) {
 
     return (
         <>
-            <LeftNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
+            <LeftNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} />
             <StyleDiv leftNavState={leftNavState} className="class-page-root">
                 <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
                 <BackdropComponent open={loading && !data && !error} />

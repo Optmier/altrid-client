@@ -1,25 +1,42 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Chart from 'react-apexcharts';
 import problemCategories from '../TOFELEditor/ProblemCategories';
+import styled from 'styled-components';
 
-function RadarChart({ objDatas }) {
+const StyleChartWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+function RadarChart({ currentObjs, averageObjs }) {
     let state = {};
 
     state = {
         series: [
             {
                 name: '학생 정답률',
-                data: objDatas.map((v) => (v.score * 100).toFixed(1)),
+                data: currentObjs ? currentObjs.map((v) => Math.round(v.score * 100)) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            },
+            {
+                name: '평균 정답률',
+                data: currentObjs ? averageObjs.map((v) => Math.round(v.score * 100)) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             },
         ],
         options: {
             chart: {
-                height: 350,
+                width: '100%',
+                height: '100%',
                 type: 'radar',
+                toolbar: {
+                    show: false,
+                },
             },
             dataLabels: {
                 enabled: true,
             },
+
             plotOptions: {
                 radar: {
                     size: 110,
@@ -32,12 +49,9 @@ function RadarChart({ objDatas }) {
                 },
             },
             title: {},
-            colors: ['#008FF8'],
+            colors: ['#351e85', '#68dea6'],
             markers: {
-                size: 4,
-                colors: ['#fff'],
-                strokeColor: '#008FF8',
-                strokeWidth: 2,
+                size: 0,
             },
             tooltip: {
                 y: {
@@ -47,7 +61,7 @@ function RadarChart({ objDatas }) {
                 },
             },
             xaxis: {
-                categories: objDatas.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
+                categories: averageObjs.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
                 // '기타',
             },
             yaxis: {
@@ -62,12 +76,17 @@ function RadarChart({ objDatas }) {
                     },
                 },
             },
+            legend: {
+                show: false,
+            },
         },
     };
     return (
-        <div id="chart">
-            <Chart options={state.options} series={state.series} type="radar" height={350} />
-        </div>
+        <StyleChartWrapper>
+            <div id="chart">
+                <Chart options={state.options} series={state.series} type="radar" height={'325px'} width={'325px'} />
+            </div>
+        </StyleChartWrapper>
     );
 }
 

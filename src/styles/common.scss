@@ -281,6 +281,9 @@ body {
                         font-weight: 600;
                     }
                 }
+                & img {
+                    display: none;
+                }
             }
         }
     }
@@ -454,10 +457,22 @@ body {
                 }
 
                 &.center {
+                    & > a {
+                        font-size: 0.95rem;
+                    }
                 }
 
                 &.right {
-                    margin: 0 16px 0 auto;
+                    margin: 0 16px 0 32px;
+
+                    & p {
+                        display: none;
+                    }
+
+                    & img {
+                        display: block;
+                        width: 32px;
+                    }
                 }
             }
         }
@@ -550,9 +565,7 @@ body {
                 }
             }
         }
-        & main {
-            display: none;
-        }
+
         & .main-divider {
             margin: 16px;
         }

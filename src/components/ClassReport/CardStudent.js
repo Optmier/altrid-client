@@ -124,7 +124,7 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, existsCa
 
     return (
         <>
-            <div className="class-card-root">
+            <div className="class-card-root" style={{ padding: '12px 0' }}>
                 <div className="class-card-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <TooltipCard title={data.name}>

@@ -63,6 +63,28 @@ const StudentCardHeader = styled.div`
         }
     }
 `;
+const LimitFuncWrapper = styled.div`
+    position: absolute;
+    display: flex;
+    align-items: center;
+    left: 27%;
+    top: 40%;
+    font-size: 1.2rem;
+    font-weight: 500;
+    z-index: 1000;
+
+    & svg {
+        margin-right: 15px;
+    }
+
+    @media (min-width: 0) and (max-width: 663px) {
+        font-size: 0.85rem;
+        text-align: center;
+        & svg {
+            margin-right: 5px;
+        }
+    }
+`;
 
 function ReportClass({ match, history }) {
     const { num, activedNum } = match.params;
@@ -458,16 +480,15 @@ function ReportClass({ match, history }) {
 
             <ClassWrapper col={true}>
                 {/* <ClassHeaderBox /> */}
-                {/* <TypeBanner situation={achievesForTypes.value < 100 ? 'warning' : 'success'} value={achievesForTypes.value} /> */}
-                <BranchNav deps="2" />
+                {/* <BranchNav deps="2" /> */}
                 <div className="class-report-root">
                     <div className="class-report-header">
                         <div className="class-report-header-left">
-                            <h3>{title}가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바</h3>
-                            <p>{description}가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바가나다라마바</p>
+                            <h3>{title}</h3>
+                            <p>{description}</p>
                         </div>
                         <div className="class-report-header-right">
-                            <IsPresence type="eye" able={eyetrack} align="left" />
+                            <IsPresence type="eye" able={eyetrack} align="left" fontSize="0.94rem" />
                             <ToggleSwitch
                                 isStarted={new Date(mainReportData ? mainReportData.created : null).getTime() <= serverdate.datetime}
                                 toggle={toggleState['checked']}
@@ -517,9 +538,11 @@ function ReportClass({ match, history }) {
                                     </svg>
                                     과제 기한
                                 </span>
-                                <span className="left-content reponsive">
-                                    <span>{startDate} ~ </span> <span>{dueDate}</span>
-                                    <ModifyButton handleDateChange={handleDateChange} />
+                                <span className="left-content tablet-responsive">
+                                    <span>{startDate} ~ </span>{' '}
+                                    <span>
+                                        {dueDate} <ModifyButton handleDateChange={handleDateChange} />
+                                    </span>
                                 </span>
                             </div>
                         </div>
@@ -553,7 +576,7 @@ function ReportClass({ match, history }) {
                     </section>
 
                     <section className="class-report-graph">
-                        <div className="class-report-title">
+                        <div className="class-report-title graph-title">
                             점수 비교 그래프
                             <div className="title-graph-right">
                                 <TypeBanner
@@ -563,13 +586,37 @@ function ReportClass({ match, history }) {
                             </div>
                         </div>
                         <div className="graph-box-header">
-                            <div>
+                            <div className="tablet-responsive">
+                                <div>
+                                    <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
+                                    {Math.min(...avgScoresOfNumber).toFixed(1)}%)
+                                </div>
+                                <div>
+                                    <span>가장 취약한 영역 </span>
+                                    {
+                                        ProblemCategories.filter(
+                                            (p) =>
+                                                p.id ===
+                                                achievesForTypes.allExists
+                                                    .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                                    .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].category,
+                                        )[0].name
+                                    }
+                                    (
+                                    {(
+                                        achievesForTypes.allExists
+                                            .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                            .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
+                                    ).toFixed(1) || 0}
+                                    %)
+                                </div>
+                            </div>
+                            <div className="web-responsive">
                                 <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
                                 {Math.min(...avgScoresOfNumber).toFixed(1)}%)
                             </div>
-                            <div>
+                            <div className="web-responsive">
                                 <span>가장 취약한 영역 </span>
-                                {console.log(averageScoresOfType)}
                                 {
                                     ProblemCategories.filter(
                                         (p) =>
@@ -590,17 +637,32 @@ function ReportClass({ match, history }) {
                             <div>
                                 <select name="chart-option" onChange={handleSelect}>
                                     <option value="0">문제별 정답률</option>
-                                    {achievesForTypes.value >= 100 ? <option value="1">유형별 정답률</option> : null}
+                                    <option value="1">유형별 정답률</option>
                                 </select>
                             </div>
                         </div>
                         <div className="graph-box">
                             {selectState === '0' ? (
                                 <ColumnChartProblem datas={avgScoresOfNumber} />
-                            ) : (
+                            ) : achievesForTypes.value >= 100 ? (
                                 <ColumnChartType
                                     datas={achievesForTypes.allExists.map((e) => ({ ...e, score: averageScoresOfType[e.category] }))}
                                 />
+                            ) : (
+                                <>
+                                    <LimitFuncWrapper>
+                                        <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                            <path
+                                                id="패스_35"
+                                                data-name="패스 35"
+                                                d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
+                                                fill="#605f60"
+                                            />
+                                        </svg>
+                                        과제를 더 다양한 문제로 만들어주세요!
+                                    </LimitFuncWrapper>
+                                    <ColumnChartType datas={0} />
+                                </>
                             )}
                         </div>
                     </section>
@@ -623,7 +685,7 @@ function ReportClass({ match, history }) {
                 }
             >
                 {studentsData.map((data) => (
-                    <CardRoot key={data.student_id} cardHeight="250px">
+                    <CardRoot key={data.student_id} cardHeight="inherit">
                         <CardStudent
                             id={data.student_id}
                             data={data}

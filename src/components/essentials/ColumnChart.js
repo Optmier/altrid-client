@@ -1,6 +1,11 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import problemCategories from '../TOFELEditor/ProblemCategories';
+import styled from 'styled-components';
+
+const StyleChartWrapper = styled.div`
+    min-width: 600px;
+`;
 
 function ColumnChart({ currentObjs, averageObjs }) {
     let state = {};
@@ -9,17 +14,20 @@ function ColumnChart({ currentObjs, averageObjs }) {
         series: [
             {
                 name: '학생 정답률',
-                data: currentObjs.map((v) => (v.score * 100).toFixed(1)),
+                data: currentObjs ? currentObjs.map((v) => (v.score * 100).toFixed(1)) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             },
             {
                 name: '평균 정답률',
-                data: averageObjs.map((v) => (v.score * 100).toFixed(1)),
+                data: currentObjs ? averageObjs.map((v) => (v.score * 100).toFixed(1)) : [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
             },
         ],
         options: {
             chart: {
                 type: 'bar',
                 height: 350,
+                toolbar: {
+                    show: false,
+                },
             },
             plotOptions: {
                 bar: {
@@ -28,7 +36,7 @@ function ColumnChart({ currentObjs, averageObjs }) {
                     endingShape: 'rounded',
                 },
             },
-            colors: ['#13e2a1', '#706d6d'],
+            colors: ['#351e85', '#68dea6'],
             dataLabels: {
                 enabled: false,
             },
@@ -38,11 +46,16 @@ function ColumnChart({ currentObjs, averageObjs }) {
                 colors: ['transparent'],
             },
             xaxis: {
-                categories: currentObjs.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
+                categories: averageObjs.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
             },
             yaxis: {
                 min: 0,
                 max: 100,
+                labels: {
+                    formatter: (value) => {
+                        return Math.round(value);
+                    },
+                },
             },
             fill: {
                 opacity: 1,
@@ -54,12 +67,17 @@ function ColumnChart({ currentObjs, averageObjs }) {
                     },
                 },
             },
+            legend: {
+                show: false,
+            },
         },
     };
     return (
-        <div id="chart">
-            <Chart options={state.options} series={state.series} type="bar" height={350} />
-        </div>
+        <StyleChartWrapper>
+            <div id="chart">
+                <Chart options={state.options} series={state.series} type="bar" height={350} />
+            </div>
+        </StyleChartWrapper>
     );
 }
 

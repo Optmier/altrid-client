@@ -11,6 +11,7 @@ const StyleAlert = styled.div`
     border-radius: 11px;
     padding: 9px 15px;
     width: 363px;
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -43,6 +44,22 @@ const StyleAlert = styled.div`
             margin-right: -5px;
         }
     }
+
+    @media (min-width: 0) and (max-width: 662px) {
+        width: 100%;
+        & > div {
+            & > p {
+                font-size: 12px;
+            }
+        }
+
+        & > button {
+            font-size: 12px;
+            & > svg {
+                margin-left: 3px;
+            }
+        }
+    }
 `;
 
 function TypeBanner({ situation, value }) {
@@ -60,7 +77,7 @@ function TypeBanner({ situation, value }) {
             {situation ? (
                 <a
                     href={
-                        situation === 'notice'
+                        situation === 'info'
                             ? 'https://www.notion.so/a4daf8676b2b4460b75613f25249abf3'
                             : 'https://www.notion.so/optmier/07bd3c8f53ac4e449242cda7eccdcb4e'
                     }

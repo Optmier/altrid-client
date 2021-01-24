@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import LineChartTime from '../essentials/LineChartTime';
+import { SecondtoMinute } from '../essentials/TimeChange';
 
 const pad = (n, width) => {
     n = n + '';
@@ -13,14 +14,38 @@ const timeValueToTimer = (seconds) => {
     else return `${pad(parseInt(secs / 60), 1)}분 ${pad(Math.floor(secs % 60), 1)}초`;
 };
 
-const StyleTimeTrackBox = styled.div`
+const StyleTimeTrackWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
-    background-color: white;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 10px;
-    padding: 30px 32px;
+
+    & .time-box {
+        display: flex;
+        align-items: center;
+
+        & .time-header-col {
+            width: 50%;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            font-size: 1.18rem;
+            font-weight: 500;
+            color: #707070;
+
+            & > div {
+                color: black;
+                margin-right: 1.5rem;
+            }
+        }
+
+        & .time-header-col + .time-header-col {
+            border-left: #7070704e 1px solid;
+            padding-left: 32px;
+        }
+    }
+
+    & .time-box + .time-box {
+        margin-top: 24px;
+    }
 
     & .time-header {
         width: 100%;
@@ -38,9 +63,10 @@ const StyleTimeTrackBox = styled.div`
     }
 `;
 
-function TimeTrackBox({ data, total }) {
+function TimeTrackBox({ data, total, totalProblems }) {
     const [arranged, setArranged] = useState([{ pid: 0, time: 0 }]);
     const [totalAvgs, setTotalAvgs] = useState([]);
+    const [personalAvg, setPersonalAvg] = useState(0);
 
     useEffect(() => {
         if (!data || !data.length) return;
@@ -55,15 +81,34 @@ function TimeTrackBox({ data, total }) {
             });
         });
         setTotalAvgs(Object.keys(sums).map((k) => (sums[k] / filtered.length).toFixed(1)));
+        setPersonalAvg(
+            Math.round(
+                data
+                    .map((d) => d.time)
+                    .reduce((sum, currValue) => {
+                        return sum + currValue;
+                    }, 0) / data.length,
+            ),
+        );
     }, [data]);
 
     return (
-        <StyleTimeTrackBox>
-            <div className="time-header">
-                <div>최장 소요시간 문제</div> {arranged[0].pid + 1}번 ({timeValueToTimer(arranged[0].time)})
+        <StyleTimeTrackWrapper>
+            <div className="white-box time-box">
+                <div className="time-header-col">
+                    <div>최장 소요시간(문제)</div> {timeValueToTimer(arranged[0].time)} ({arranged[0].pid + 1}번)
+                </div>
+                <div className="time-header-col">
+                    <div>문제당 평균 풀이시간</div>
+                    {SecondtoMinute(personalAvg)[0]
+                        ? SecondtoMinute(personalAvg)[0] + '분 ' + SecondtoMinute(personalAvg)[1] + '초'
+                        : SecondtoMinute(personalAvg)[1] + '초'}
+                </div>
             </div>
-            {data ? <LineChartTime currents={data.map((d) => d.time.toFixed(1))} averages={totalAvgs} /> : null}
-        </StyleTimeTrackBox>
+            <div className="white-box time-box">
+                {data ? <LineChartTime currents={data.map((d) => d.time)} averages={totalAvgs} totalProblems={totalProblems} /> : null}
+            </div>
+        </StyleTimeTrackWrapper>
     );
 }
 

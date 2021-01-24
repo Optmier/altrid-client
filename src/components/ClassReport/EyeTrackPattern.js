@@ -7,18 +7,6 @@ import { MdKeyboardArrowRight } from 'react-icons/md';
 
 const StylePatternBox = styled.div`
     width: 100%;
-
-    & .pattern-more {
-        display: flex;
-        align-items: center;
-        font-size: 0.8rem;
-        font-weight: 500;
-        text-decoration: underline;
-
-        & svg {
-            margin-left: 0.5rem;
-        }
-    }
 `;
 
 const StylePatternList = styled.div`
@@ -203,9 +191,6 @@ const PatternList = ({
 function EyeTrackPattern({ data, hasEyetrack, onEyetrackGoTo }) {
     return (
         <StylePatternBox>
-            <a className="pattern-more" href="https://www.notion.so/optmier/07bd3c8f53ac4e449242cda7eccdcb4e" target="_blank">
-                패턴이 무엇인가요? <MdKeyboardArrowRight />
-            </a>
             {data
                 ? Object.keys(data).map((patternIdx) => (
                       <PatternList

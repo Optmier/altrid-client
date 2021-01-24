@@ -23,7 +23,7 @@ function ColumnChartProblem({ datas }) {
                     columnWidth: '55%',
                 },
             },
-            colors: ['#13e2a1'],
+            colors: ['#6D2AFA'],
             dataLabels: {
                 enabled: false,
             },

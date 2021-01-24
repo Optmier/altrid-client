@@ -13,7 +13,16 @@ import styled from 'styled-components';
 
 const StyleLeftNav = styled.div`
     transition: all 0.4s;
-    left: ${(props) => (props.leftNavState ? '0' : '-240px')};
+
+    @media (min-width: 903px) {
+        width: 240px;
+        left: ${(props) => (props.leftNavState ? '0' : '-240px')};
+    }
+
+    @media (min-width: 0) and (max-width: 902px) {
+        width: 100%;
+        left: ${(props) => (props.leftNavState ? '0' : '-100%')};
+    }
 `;
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
@@ -24,7 +33,7 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-function LeftNav({ match, history, leftNavState, handleLeftNav }) {
+function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState }) {
     const { num } = match.params;
 
     /** redux-module 불러내기 */
@@ -120,6 +129,12 @@ function LeftNav({ match, history, leftNavState, handleLeftNav }) {
         };
     }, []);
 
+    useEffect(() => {
+        if (window.innerWidth <= 902) {
+            setLeftNavState(false);
+        }
+    }, [history.location.pathname]);
+
     // error check 1. 아예 없는반에 접근시
     if (!teacherData) history.replace('/error');
     // error check 2. 선생님, 우리반이 아닌 다른 반 접근 시
@@ -157,34 +172,30 @@ function LeftNav({ match, history, leftNavState, handleLeftNav }) {
                             <TooltipCard title={teacherData['class_name'] ? teacherData['class_name'] : '-'}>
                                 <h5>{teacherData ? teacherData['class_name'] : ''}</h5>
                             </TooltipCard>
-                            <svg
-                                onClick={handleLeftNav}
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="14.96"
-                                height="20.049"
-                                viewBox="0 0 14.96 20.049"
-                            >
-                                <g id="그룹_523" data-name="그룹 523" transform="translate(-227.939 -26.244)" opacity="0.558">
-                                    <path
-                                        id="패스_550"
-                                        data-name="패스 550"
-                                        d="M-10394.5,18180.551l-7.92,10.176,7.92,9.24"
-                                        transform="translate(10637 -18154)"
-                                        fill="none"
-                                        stroke="#fff"
-                                        stroke-width="1"
-                                    />
-                                    <path
-                                        id="패스_551"
-                                        data-name="패스 551"
-                                        d="M-10394.5,18180.551l-7.92,10.176,7.92,9.24"
-                                        transform="translate(10631 -18154)"
-                                        fill="none"
-                                        stroke="#fff"
-                                        stroke-width="1"
-                                    />
-                                </g>
-                            </svg>
+                            <div id="left-nav-drawer" onClick={handleLeftNav}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14.96" height="20.049" viewBox="0 0 14.96 20.049">
+                                    <g id="그룹_523" data-name="그룹 523" transform="translate(-227.939 -26.244)" opacity="0.558">
+                                        <path
+                                            id="패스_550"
+                                            data-name="패스 550"
+                                            d="M-10394.5,18180.551l-7.92,10.176,7.92,9.24"
+                                            transform="translate(10637 -18154)"
+                                            fill="none"
+                                            stroke="#fff"
+                                            strokeWidth="1"
+                                        />
+                                        <path
+                                            id="패스_551"
+                                            data-name="패스 551"
+                                            d="M-10394.5,18180.551l-7.92,10.176,7.92,9.24"
+                                            transform="translate(10631 -18154)"
+                                            fill="none"
+                                            stroke="#fff"
+                                            strokeWidth="1"
+                                        />
+                                    </g>
+                                </svg>
+                            </div>
                         </div>
                     </div>
 

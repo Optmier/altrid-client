@@ -163,6 +163,16 @@
             line-height: 1.3;
         }
     }
+
+    @media all and (max-width: 768px) {
+        & .contents-bottom-root {
+            display: flex;
+            flex-direction: column;
+            & .bottom-right {
+                margin: 20px 0;
+            }
+        }
+    }
 }
 
 .create-new-entry-root {

@@ -31,12 +31,13 @@ import MobileBody from './components/essentials/MobileBody';
 import GooroomeeTest from './pages/GooroomeeTest';
 import VideoLectureEyetracker from './components/VideoLectures/VideoLectureEyetracker';
 import VideoLectureEyetrackDetectionList from './components/VideoLectures/VideoLectureEyetrackDetectionList';
+import LoginMobileAppRedirect from './pages/LoginMobileAppRedirect';
 import MainDraft from './pages/MainDraft';
 
 window.axios = Axios;
 window.lastUrl = '/';
 window.tokenRefresher = null;
-const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin, '/login-candidated'];
+const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin, '/login-candidated', '/login-mobile-app-redirect'];
 // const excludesForAdminUrls = [];
 // const excludesForTeacherUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
 // const excludesForStudentUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
@@ -60,6 +61,9 @@ function App({ history }) {
                 // document.body.innerHTML = '로그아웃 되었습니다.';
                 // alert('성공적으로 로그아웃 되었습니다!');
                 document.location.replace($_loginDefault);
+                try {
+                    window.Android.CallMobAndroidLogin();
+                } catch (error) {}
             })
             .catch((err) => {
                 console.error(err);
@@ -97,17 +101,25 @@ function App({ history }) {
                     .then((res2) => {
                         const academyName = res2.data.name;
                         updateSessions({ academyName: academyName });
+                        try {
+                            window.Android.ShowWebView();
+                        } catch (error) {
+                            console.error(error);
+                        }
                     })
                     .catch((err) => {
                         console.error(err);
                     });
             })
             .catch((err) => {
-                // console.log(err.response);
+                console.log(err.response);
                 if (err.response.status === 401) {
                     if (!loginUrls.includes(history.location.pathname)) {
                         // alert('로그인이 필요합니다.');
                         history.replace($_loginDefault);
+                        try {
+                            window.Android.CallMobAndroidLogin();
+                        } catch (error) {}
                     }
                 } else if (err.response.data.code === 'TokenExpiredError') {
                     alert('세션이 만료되어 다시 로그인 해야합니다.');
@@ -162,8 +174,8 @@ function App({ history }) {
             <Element name="main_top_start" />
 
             <ScrollTop>
-                <ErrorOS os={navigator.userAgent.toLowerCase()} />
-                <MobileBody />
+                {/* <ErrorOS os={navigator.userAgent.toLowerCase()} /> */}
+                {/* <MobileBody /> */}
                 <main>
                     <Switch>
                         <Route path={$_root} component={Main} exact />
@@ -181,6 +193,10 @@ function App({ history }) {
                         <Route path="/video-lecture-eyetracker/:classnum" component={VideoLectureEyetracker} exact />
                         <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
+                        {navigator.userAgent.toLowerCase().includes('isnativeapp') ? (
+                            <Route path="/login-mobile-app-redirect" component={LoginMobileAppRedirect} exact />
+                        ) : null}
+
                         <Route>
                             <Error />
                         </Route>

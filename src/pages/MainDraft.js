@@ -22,6 +22,8 @@ import { IoIosArrowForward } from 'react-icons/io';
 import { BsExclamationTriangleFill } from 'react-icons/bs';
 import Footer from '../components/essentials/Footer';
 import Error from './Error';
+import isMobile from '../controllers/isMobile';
+import MobileBody from '../components/essentials/MobileBody';
 
 const InfoBanner = styled.a`
     width: 100%;
@@ -124,6 +126,7 @@ function MainDraft({ match }) {
         setOpenCreateNewDrawer(open);
     };
 
+    if (isMobile) return <MobileBody />;
     if (errorState) return <Error />;
     return (
         <>

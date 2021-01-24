@@ -8,55 +8,48 @@ import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
 
 const StyleEyeTrackBox = styled.div`
-    height: 500px;
     display: flex;
-    align-items: inherit;
-    justify-content: space-between;
+    flex-direction: column;
 
-    & .eyetrack-left {
-        box-sizing: border-box;
-        background-color: white;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 10px;
-        padding: 30px 32px;
-    }
-    & .eyetrack-right {
-        width: 26%; //반응형 예정
-
-        box-sizing: border-box;
-        background-color: white;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 10px;
-        padding: 30px 32px;
-        overflow: auto;
-    }
-
-    & .eyetrack-header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
-        margin-bottom: 10px;
-
-        & .eyetrack-text {
-            font-size: 0.8rem;
-            font-weight: 400;
-            color: #706d6d;
-            margin-right: 1.2rem;
-            & .eyetrack-title {
-                font-weight: 600;
-                margin-right: 0.3rem;
-            }
-        }
-    }
-
-    & .eyetrack-header-more {
-        cursor: pointer;
-        transition: all 0.3s;
+    & .eyetrack-box {
         display: flex;
         align-items: center;
-    }
-    & .eyetrack-header-more:hover {
-        margin-right: -5px;
+        justify-content: space-between;
+        margin-top: 18px;
+
+        & .eyetrack-left {
+            width: 72%;
+            height: 470px;
+            box-sizing: border-box;
+            background-color: white;
+            border-radius: 11px;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+
+            & .no-eyetrack {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem;
+                font-weight: 500;
+                color: rgb(96, 95, 96);
+                & svg {
+                    margin-right: 10px;
+                }
+            }
+        }
+        & .eyetrack-right {
+            width: 26%;
+            box-sizing: border-box;
+            background-color: white;
+            border-radius: 11px;
+            padding: 30px 32px;
+            overflow-y: auto;
+            height: 470px;
+        }
     }
 `;
 
@@ -69,6 +62,9 @@ function EyeTrackBox({
     totalStudentsDatas,
     activedNum,
     userId,
+    stdName,
+    answerChangedProblems,
+    aftChangedFaileds,
 }) {
     const [trackTimeGoTo, setTrackTimeGoTo] = useState(0);
     const [fixations, setFixations] = useState('-');
@@ -152,72 +148,70 @@ function EyeTrackBox({
 
     return (
         <StyleEyeTrackBox>
-            <div className="eyetrack-left" style={{ width: hasEyetrack ? '72%' : '72%' }}>
-                {hasEyetrack ? (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <div className="eyetrack-header">
-                            <div className="eyetrack-text">
-                                <span className="eyetrack-title">총 응시점 개수</span>
+            <div className="white-box ment-ai">
+                <div className="ment-ai-col">
+                    <div>
+                        <span className="ment-ai-name">{stdName}</span> 학생은 풀이 중 <br />
+                    </div>
+                    <div>
+                        <span className="ment-ai-underline">총 {answerChangedProblems}문제</span>에서 답 변경 후, <br />
+                    </div>
+                    <div>
+                        <span className="ment-ai-underline">{aftChangedFaileds}문제</span>가 오답 처리되었습니다.
+                    </div>
+                </div>
+                <div className="ment-ai-col">
+                    <div className="ment-ai-row">
+                        <span className="row-title">총 응시점 개수</span>
+                        <TooltipCard title={`${fixations}개 (평균 ${fixationsTotalAvg}개)`}>
+                            <span className="row-desc">
                                 {fixations}개 (평균 {fixationsTotalAvg}개)
-                            </div>
-                            <div className="eyetrack-text">
-                                <span className="eyetrack-title">평균 응시 속도</span>
+                            </span>
+                        </TooltipCard>
+                    </div>
+                    <div className="ment-ai-row">
+                        <span className="row-title">평균 응시 속도</span>
+
+                        <TooltipCard title={`${avgFixVels}ms (평균 ${avgFixDurTotalAvg}ms)`}>
+                            <span className="row-desc">
                                 {avgFixVels}ms (평균 {avgFixDurTotalAvg}ms)
-                            </div>
-                            <div className="eyetrack-text">
-                                <span className="eyetrack-title">재응시 횟수</span>
+                            </span>
+                        </TooltipCard>
+                    </div>
+                    <div className="ment-ai-row">
+                        <span className="row-title">재응시 횟수</span>
+
+                        <TooltipCard title={`${regressions}회 (평균 ${regressionsTotalAvg}회)`}>
+                            <span className="row-desc">
                                 {regressions}회 (평균 {regressionsTotalAvg}회)
-                            </div>
-                        </div>
-                        <a
-                            href="https://www.notion.so/optmier/07bd3c8f53ac4e449242cda7eccdcb4e"
-                            target="_blank"
-                            className="eyetrack-header-more"
-                        >
-                            <TooltipCard
-                                title={
-                                    <div>
-                                        응시에 대해서 알고싶으신가요? <br /> 이곳을 클릭해주세요 :)
-                                    </div>
-                                }
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="11" viewBox="0 0 30.414 11">
-                                    <path
-                                        id="icon"
-                                        d="M0 0h28l-8.27 8.27"
-                                        fill="none"
-                                        stroke="#706d6d"
-                                        strokeWidth="3px"
-                                        transform="translate(0 1)"
-                                    ></path>
-                                </svg>
-                            </TooltipCard>
-                        </a>
+                            </span>
+                        </TooltipCard>
                     </div>
-                ) : (
-                    <div className="eyetrack-header" style={{ height: '100%' }}>
-                        <div
-                            className="eyetrack-text"
-                            style={{
-                                height: '100%',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                width: '100%',
-                                margin: 0,
-                                alignItems: 'center',
-                            }}
-                        >
-                            시선추적 미포함 과제입니다.
-                        </div>
-                    </div>
-                )}
-                {hasEyetrack && mEyetrackData ? (
-                    <EyetrackingPlayer data={mEyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
-                ) : null}
+                </div>
             </div>
 
-            <div className="eyetrack-right">
-                <EyeTrackPattern data={patternData} hasEyetrack={hasEyetrack} onEyetrackGoTo={handleGoTo} />
+            <div className="eyetrack-box">
+                <div className="eyetrack-left">
+                    {hasEyetrack && mEyetrackData ? (
+                        <EyetrackingPlayer data={mEyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
+                    ) : (
+                        <div className="no-eyetrack">
+                            <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path
+                                    id="패스_35"
+                                    data-name="패스 35"
+                                    d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
+                                    fill="#605f60"
+                                />
+                            </svg>
+                            시선 추적이 포함되지 않은 과제입니다.
+                        </div>
+                    )}
+                </div>
+
+                <div className="eyetrack-right">
+                    <EyeTrackPattern data={patternData} hasEyetrack={hasEyetrack} onEyetrackGoTo={handleGoTo} />
+                </div>
             </div>
         </StyleEyeTrackBox>
     );
