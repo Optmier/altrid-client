@@ -74,6 +74,20 @@ const InfoBanner = styled.a`
             margin-right: -5px;
             transition: all 0.4s;
         }
+
+        @media (min-width: 0) and (max-width: 662px) {
+            & .banner-top {
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                & svg {
+                    margin: 0 0 1rem 0;
+                }
+            }
+            & .banner-central {
+                margin: 20px 0 0 0;
+            }
+        }
     }
 `;
 
