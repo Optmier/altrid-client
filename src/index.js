@@ -21,7 +21,8 @@ const reduxStore = createStore(rootReducer, composeWithDevTools(applyMiddleware(
 ReactDOM.render(
     <Router history={customHistory}>
         <Provider store={reduxStore}>
-            {isMobile && !navigator.userAgent.toLowerCase().includes('isnativeapp') ? <GuideMobileAppStore /> : <App />}
+            {/* {isMobile && !navigator.userAgent.toLowerCase().includes('isnativeapp') ? <GuideMobileAppStore /> : <App />} */}
+            <App />
         </Provider>
     </Router>,
     document.getElementById('root'),
