@@ -137,6 +137,20 @@ const Contents = styled.div`
 const ShortAnswerBox = styled.div`
     background-color: #f6f7f9;
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 0 32px 0 24px;
+    margin-top: 16px;
+    min-height: 40px;
+    width: fit-content;
+
+    & p {
+        color: rgba(112, 112, 112, 0.79);
+    }
+
+    & span {
+        color: rgba(112, 112, 112, 0.79);
+    }
 `;
 
 function ProblemCard({
@@ -218,7 +232,11 @@ function ProblemCard({
                     {type === 'short-answer' ? (
                         <>
                             <ShortAnswerBox>
-                                <p>{answer}</p>
+                                <p>
+                                    <span>정답</span>
+                                    <span style={{ padding: '0 32px 0 24px' }}>|</span>
+                                    {answer}
+                                </p>
                             </ShortAnswerBox>
                         </>
                     ) : (
