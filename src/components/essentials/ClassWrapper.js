@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components';
 import * as $ from 'jquery';
 
 const StyleWrapper = styled.div`
-    max-width: 960px;
     padding: 0 16px;
     margin: 0 auto;
     display: flex;

@@ -23,7 +23,7 @@ const StyleToggle = styled.div`
     & .toggle-off-ment {
         font-size: 14px;
         font-weight: 500;
-        color: #989696;
+        color: white;
         margin-left: 8px;
     }
 `;
@@ -37,7 +37,7 @@ const ShareSwitch = withStyles((theme) => ({
     },
     switchBase: {
         padding: 2,
-        color: '#E5E5E5',
+        color: '#707070',
         '&$checked': {
             transform: 'translateX(12px)',
             color: '#13e2a1',
@@ -49,7 +49,7 @@ const ShareSwitch = withStyles((theme) => ({
         },
 
         '& + $track': {
-            backgroundColor: '#C4C4C4',
+            backgroundColor: 'white',
             border: 'none',
         },
     },
