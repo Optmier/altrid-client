@@ -112,6 +112,10 @@ const Contents = styled.div`
                 margin-right: 20px;
             }
 
+            & .selection-text {
+                color: rgba(112, 112, 112, 0.79);
+            }
+
             & + .selection {
                 margin-top: 12px;
             }
@@ -128,6 +132,11 @@ const Contents = styled.div`
         border: 2px solid #777777;
         border-top: none;
     }
+`;
+
+const ShortAnswerBox = styled.div`
+    background-color: #f6f7f9;
+    border-radius: 10px;
 `;
 
 function ProblemCard({
@@ -206,7 +215,13 @@ function ProblemCard({
                     <div className="ql-container ql-snow" style={{ marginBottom: '1rem' }}>
                         {ReactHtmlParser(textForRender)}
                     </div>
-                    {type === 'short-answer' ? null : (
+                    {type === 'short-answer' ? (
+                        <>
+                            <ShortAnswerBox>
+                                <p>{answer}</p>
+                            </ShortAnswerBox>
+                        </>
+                    ) : (
                         <>
                             {SelectionRender(selections[1], 1, answer)}
                             {SelectionRender(selections[2], 2, answer)}
