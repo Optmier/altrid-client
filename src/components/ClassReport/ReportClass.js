@@ -67,16 +67,17 @@ const LimitFuncWrapper = styled.div`
     position: absolute;
     display: flex;
     align-items: center;
-    left: 27%;
-    top: 40%;
+    justify-content: center;
+    width: 97%;
+    height: 97%;
+    background: #f6f7f93d;
     font-size: 1.2rem;
     font-weight: 500;
     z-index: 1000;
-
+    color: rgb(96, 95, 96);
     & svg {
         margin-right: 15px;
     }
-
     @media (min-width: 0) and (max-width: 663px) {
         font-size: 0.85rem;
         text-align: center;

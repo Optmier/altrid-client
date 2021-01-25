@@ -12,6 +12,7 @@ import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { IoMdArrowDropdown } from 'react-icons/io';
+import TooltipCard from '../essentials/TooltipCard';
 
 const StyleCheckbox = withStyles({
     root: {
@@ -168,7 +169,23 @@ function StudentManage({ match, history }) {
                             <div key={i} className="list">
                                 <StyleCheckbox checked={checkstate.i} onChange={handleChange} name={i} />
                                 <div className="list-box">
-                                    <div className="list-box-left">{studentDatas[i][0]['name']}</div>
+                                    <div className="list-box-left">
+                                        <TooltipCard title={studentDatas[i][0]['name']}>
+                                            <div>{studentDatas[i][0]['name']}</div>
+                                        </TooltipCard>
+
+                                        <select name={i} onChange={handleSelectChange}>
+                                            <option value="">과제 리포트 선택</option>
+                                            {studentDatas[i]
+                                                .filter((item) => item['idx'] !== null)
+                                                .map((j) => (
+                                                    <option key={j['actived_number']} value={j['actived_number']}>
+                                                        {j['title']}
+                                                    </option>
+                                                ))}
+                                        </select>
+                                    </div>
+
                                     <div className="list-box-right">
                                         {/* <FormControl className={classes.formControl}>
                                             <InputLabel id="demo-simple-select-helper-label">과제 리포트 선택</InputLabel>
@@ -188,16 +205,7 @@ function StudentManage({ match, history }) {
                                                     ))}
                                             </Select>
                                         </FormControl> */}
-                                        <select name={i} onChange={handleSelectChange}>
-                                            <option value="">과제 리포트 선택</option>
-                                            {studentDatas[i]
-                                                .filter((item) => item['idx'] !== null)
-                                                .map((j) => (
-                                                    <option key={j['actived_number']} value={j['actived_number']}>
-                                                        {j['title']}
-                                                    </option>
-                                                ))}
-                                        </select>
+
                                         <button name={i} onClick={handleMoveReport}>
                                             확인하기
                                         </button>
