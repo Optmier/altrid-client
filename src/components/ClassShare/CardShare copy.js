@@ -67,17 +67,15 @@ const TimeItems = ({ title, time_limit }) => {
 };
 const DateItems = ({ title, start, end, userType, handleDateChange }) => {
     return (
-        <div className="card-item" style={{ alignItems: 'flex-start' }}>
+        <div className="card-item">
             <div className="card-content-title-p">{title}</div>
-            <div className="date-content">
-                <TooltipCard title={start + ' - ' + end}>
-                    <div className="card-content-p date-content-p">
-                        <span>{start} - </span>
-                        <span>{end}</span>
-                    </div>
-                </TooltipCard>
-                <div className="date-item">{userType === 'students' ? null : <ModifyButton handleDateChange={handleDateChange} />}</div>
-            </div>
+            <TooltipCard title={start + ' - ' + end}>
+                <div className="card-content-p">
+                    {start} - {end}
+                </div>
+            </TooltipCard>
+            <span style={{ marginRight: '6px' }}></span>
+            <div className="date-item">{userType === 'students' ? null : <ModifyButton handleDateChange={handleDateChange} />}</div>
         </div>
     );
 };
@@ -502,17 +500,11 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                             )
                                         }
                                     />
-                                    <div className="mobile-student-num">
-                                        <div className="title">제출한 학생</div>
-                                        <div className="contents">
-                                            {pad(cardData['submitted_number'], 2)} / {pad(totalStudents, 2)}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className="class-card-right">
-                            <div className="class-card-contents">
+                            <div className="class-card-contents ">
                                 {sessions.userType === 'students' ? null : (
                                     <>
                                         <StudentNum completeNum={pad(cardData['submitted_number'], 2)} totalNum={pad(totalStudents, 2)} />
