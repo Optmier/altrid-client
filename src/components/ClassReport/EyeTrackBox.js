@@ -74,6 +74,7 @@ function EyeTrackBox({
     const [avgFixDurTotalAvg, setAvgFixDurTotalAvg] = useState('-');
     const [regressionsTotalAvg, setRegressionsTotalAvg] = useState('-');
     const [mEyetrackData, setEyetrackData] = useState(eyetrackData);
+    window.mEyetrackData = mEyetrackData;
     // window.setTrackTimeGoTo = setTrackTimeGoTo;
     const handleGoTo = (time) => {
         // console.log(time);
