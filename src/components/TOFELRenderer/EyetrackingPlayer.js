@@ -560,7 +560,7 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
                     heatmap.setData({ data: [] });
                 }
                 const { x, y, value } = sequences[seqIdx];
-                const heatmapData = { x: x, y: y, value: value ? 10 : 0 };
+                const heatmapData = { x: x, y: y === 800 ? 799 : y, value: value ? 10 : 0 };
                 heatmap.addData(heatmapData);
             }
         }
