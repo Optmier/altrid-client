@@ -590,7 +590,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                     .quill.passage-editor > .ql-container.ql-snow > .ql-editor {
                         color: #707070;
                         font-family: Noto Sans CJK KR;
-                        font-weight: 400;
+                        font-weight: 500;
                         padding: 16px 48px;
                     }
                     .quill.passage-editor > .ql-container.ql-snow > .ql-editor > p > strong, b {

@@ -22,9 +22,13 @@ import {
 import QuillEditorToolbarOption from './QuillEditorToolbarOption';
 import ProblemCategories from './ProblemCategories';
 import * as $ from 'jquery';
+import { Helmet } from 'react-helmet';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import { RadioButtonChecked } from '@material-ui/icons';
 
 const Root = styled.div`
-    padding: 48px 72px;
+    padding: 36px 48px;
     max-width: 600px;
 
     @media all and (max-width: 768px) {
@@ -32,17 +36,26 @@ const Root = styled.div`
     }
 `;
 const CloseIconRoot = styled.div`
-    width: calc(100vw - 64px);
+    margin-top: 4px;
 `;
 const TitleContainer = styled.div`
-    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    color: rgba(0, 0, 0, 0.9);
+
+    & h2 {
+        font-size: 1.625rem;
+        font-weight: 700;
+    }
 
     @media all and (max-width: 768px) {
-        margin-top: 24px;
+        & h2 {
+            font-size: 1.5rem;
+        }
     }
 `;
 const FormBox = styled.div`
-    margin-top: 36px;
+    margin-top: 48px;
 `;
 const CategoryMenuItemContents = styled.div`
     display: flex;
@@ -59,19 +72,25 @@ const SelectorsContainer = styled.div`
 `;
 const CreateButtonContainer = styled.div`
     display: flex;
-    justify-content: flex-end;
-    margin-top: 42px;
+    justify-content: center;
+    margin-top: 72px;
 `;
 
 const CreateButton = withStyles((theme) => ({
     root: {
         borderRadius: '10px',
-        backgroundColor: '#a6a6a6',
         color: '#fff',
         fontFamily: 'inherit',
         fontSize: '0.9rem',
-        width: '150px',
-        height: '56px',
+        fontWeight: 700,
+        width: '96px',
+        height: '45px',
+        '&.primary': {
+            backgroundColor: '#13e2a1',
+        },
+        '& > span': {
+            pointerEvents: 'none',
+        },
     },
 }))(Button);
 
@@ -83,14 +102,81 @@ const UCOutlinedInput = withStyles((theme) => ({
     },
 }))(OutlinedInput);
 
-const CategorySelect = withStyles((theme) => ({
-    root: {
-        '&.MuiOutlinedInput-inputMarginDense': {
-            paddingTop: 11,
-            paddingBottom: 7,
-        },
-    },
-}))(Select);
+const CategorySelect = styled.select`
+    cursor: pointer;
+    background: url(/bg_images/Vector.png) no-repeat 92% 50%;
+    width: 100%;
+    min-height: 40px;
+    padding: 0.4rem 0.8rem;
+    font-family: inherit;
+    font-size: 1.001rem;
+    border: none;
+    border: 1px solid rgba(112, 112, 112, 0.79);
+    border-radius: 0px;
+    color: #707070;
+    font-weight: 700;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+
+    &.small {
+        width: 120px;
+    }
+
+    &.tiny {
+        width: 90px;
+        height: 32px;
+        min-height: initial;
+    }
+`;
+
+function GroupBoxContents({ title, description, rightComponent, onClick, children, ...rest }) {
+    const HeaderBox = styled.header`
+        align-items: flex-end;
+        border-bottom: 1px solid #707070;
+        color: #707070;
+        display: flex;
+        flex-direction: row;
+        font-weight: 500;
+        justify-content: space-between;
+        padding: 6px 0 6px 2px;
+        ${onClick === undefined ? null : 'cursor: pointer;'}
+
+        & h5.title {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        & p.description {
+            font-size: 0.875rem;
+            margin-bottom: 2px;
+        }
+
+        & svg.open-commentary-dropdown-icon {
+            cursor: pointer;
+        }
+    `;
+    return (
+        <div {...rest}>
+            <HeaderBox onClick={onClick}>
+                <h5 className="title">{title}</h5>
+                <p className="description">{description}</p>
+                {rightComponent}
+            </HeaderBox>
+            {children}
+        </div>
+    );
+}
+
+GroupBoxContents.defaultProps = {
+    title: '제목',
+    description: '',
+    rightComponent: <></>,
+    onClick: undefined,
+};
 
 function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     const rootRef = useRef();
@@ -106,6 +192,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     const [problemAnswer, setProblemAnswer] = useState(problemDatas.answer);
     const [problemScore, setProblemScore] = useState(problemDatas.score);
     const [problemSelections, setProblemSelections] = useState(problemDatas.selections);
+    const [commentOpen, setCommentOpen] = useState(false);
 
     const handleChangeCategory = (e) => {
         const cat = e.target.value;
@@ -123,6 +210,11 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     const handleChangeType = (e) => {
         const type = e.target.value;
         setProblemType(type);
+    };
+
+    const handleChangeScore = (e) => {
+        const score = e.target.value;
+        setProblemScore(parseInt(score));
     };
 
     const onSelectionButtonClick = (id) => (event) => {
@@ -168,6 +260,10 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
 
         onCreate(metadata);
         handleClose(false);
+    };
+
+    const handleCommentOpen = () => {
+        setCommentOpen(!commentOpen);
     };
 
     useEffect(() => {
@@ -221,35 +317,72 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
 
     useEffect(() => {
         const $quillContainer = $(rootRef.current).find('.ql-container');
-        $quillContainer.css({ 'min-height': '128px', 'max-height': '240px' });
-        $quillContainer.find('.ql-editor').css({ 'max-height': '240px' });
+        $quillContainer.css({ 'min-height': '128px', 'max-height': '192px' });
+        $quillContainer.find('.ql-editor').css({ 'min-height': '128px', 'max-height': '192px' });
     }, []);
     return (
-        <Root ref={rootRef} className="create-new-problem-root">
-            <CloseIconRoot>
-                <CloseIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
-            </CloseIconRoot>
-            <TitleContainer className="title">
-                <h2>{editmode ? '문제 수정' : '새 문제 만들기'}</h2>
-            </TitleContainer>
-            <FormBox>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sm={5}>
-                        <FormControl variant="outlined" fullWidth size={problemCategory === '' ? 'medium' : 'small'}>
-                            <InputLabel id="problem_category-label">영역 선택</InputLabel>
+        <>
+            <Helmet>
+                <style>{`
+                    .quill.problem-editor > .ql-toolbar.ql-snow {
+                        border: none;
+                        padding: 4px;
+                    }
+                    .quill.problem-editor > .ql-container.ql-snow {
+                        background-color: #F6F7F9;
+                        border: none;
+                        font-family: Noto Sans CJK KR;
+                    }
+                    .quill.problem-editor > .ql-container.ql-snow > .ql-editor {
+                        color: #707070;
+                        font-family: Noto Sans CJK KR;
+                        font-weight: 500;
+                        padding: 16px;
+                    }
+                    .quill.problem-editor > .ql-container.ql-snow > .ql-editor > p > strong, b {
+                        // filter: brightness(0.667);
+                    }
+                    .quill.problem-editor > .ql-container.ql-snow > .ql-editor.ql-blank::before {
+                        left: initial;
+                        right: initial;
+                        top: 50px;
+                        left: 24px;
+                        color: #707070;
+                        font-family: Noto Sans CJK KR;
+                        font-size: 1rem;
+                        font-style: normal;
+                        font-weight: 600;
+                        opacity: 0.7;
+                    }
+            `}</style>
+            </Helmet>
+            <Root ref={rootRef} className="create-new-problem-root">
+                <TitleContainer className="title">
+                    <h2>{editmode ? '문제 수정하기' : '새 문제 추가하기'}</h2>
+                    <CloseIconRoot>
+                        <CloseIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
+                    </CloseIconRoot>
+                </TitleContainer>
+                <FormBox>
+                    <Grid container spacing={2}>
+                        <Grid item xs={8} sm={5}>
+                            {/* <FormControl variant="outlined" fullWidth> */}
+                            {/* <InputLabel id="problem_category-label">영역 선택</InputLabel> */}
                             <CategorySelect
                                 labelId="problem_category-label"
                                 id="problem_category"
-                                value={problemCategory}
+                                defaultValue=""
                                 onChange={handleChangeCategory}
                                 label="category"
                             >
-                                <MenuItem value={0}>
-                                    <em style={{ color: '#999999' }}>없음 (기타)</em>
-                                </MenuItem>
+                                <option value="" disabled>
+                                    영역 선택
+                                    {/* <em style={{ color: '#999999' }}>없음 (기타)</em> */}
+                                </option>
                                 {ProblemCategories.map(({ id, name, eng, desc, nums }) => (
-                                    <MenuItem value={id} key={id}>
-                                        <Tooltip
+                                    <option value={id} key={id}>
+                                        {name}
+                                        {/* <Tooltip
                                             enterDelay={2000}
                                             title={
                                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -263,28 +396,45 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                                                 {name}
                                                 <span>{eng}</span>
                                             </CategoryMenuItemContents>
-                                        </Tooltip>
-                                    </MenuItem>
+                                        </Tooltip> */}
+                                    </option>
                                 ))}
                             </CategorySelect>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={5}>
-                        <FormControl variant="outlined" fullWidth>
-                            <InputLabel id="problem_type-label">문제 유형</InputLabel>
-                            <Select
+                            {/* </FormControl> */}
+                        </Grid>
+                        <Grid item xs={4} sm={3}>
+                            {/* <FormControl variant="outlined" fullWidth> */}
+                            {/* <InputLabel id="problem_type-label">문제 유형</InputLabel> */}
+                            {/* <CategorySelect
+                                className="small"
                                 labelId="problem_type-label"
                                 id="problem_type"
                                 value={problemType}
                                 onChange={handleChangeType}
                                 label="type"
                             >
-                                <MenuItem value="multiple-choice">선택형</MenuItem>
-                                <MenuItem value="short-answer">단답형</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
+                                <option value="multiple-choice">선택형</option>
+                                <option value="short-answer">단답형</option>
+                            </CategorySelect> */}
+                            <CategorySelect
+                                labelId="score_point-label"
+                                id="score_point"
+                                defaultValue={problemScore}
+                                onChange={handleChangeScore}
+                                label="score"
+                            >
+                                <option value="" disabled>
+                                    배점
+                                </option>
+                                <option value={1}>1</option>
+                                <option value={2}>2</option>
+                                <option value={3}>3</option>
+                                <option value={4}>4</option>
+                                <option value={5}>5</option>
+                            </CategorySelect>
+                            {/* </FormControl> */}
+                        </Grid>
+                        {/* <Grid item xs={12} sm={2}>
                         <TextField
                             type="number"
                             variant="outlined"
@@ -294,166 +444,219 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                             name="score_input"
                             onChange={onTextFieldChange}
                         />
+                    </Grid> */}
                     </Grid>
-                </Grid>
-                <Collapse in={problemCategory !== ''} style={{ marginTop: 16 }}>
-                    <ReactQuill
-                        id="texts_editor"
-                        modules={{ toolbar: QuillEditorToolbarOption }}
-                        placeholder="여기에 문제 내용을 입력해 주세요. (번호는 제외)"
-                        defaultValue={JSON.parse(
-                            problemDatas.textForEditor
-                                .replace(/\\n/g, '\\n')
-                                .replace(/\\'/g, "\\'")
-                                .replace(/\\"/g, '\\"')
-                                .replace(/\\&/g, '\\&')
-                                .replace(/\\r/g, '\\r')
-                                .replace(/\\t/g, '\\t')
-                                .replace(/\\b/g, '\\b')
-                                .replace(/\\f/g, '\\f')
-                                .replace(/[\u0000-\u0019]+/g, ''),
-                        )}
-                        onChange={onQuillEditorChange('texts_editor')}
-                    />
-                    <ReactQuill
-                        id="comments_editor"
-                        modules={{ toolbar: QuillEditorToolbarOption }}
-                        placeholder="여기에 해설을 입력해 주세요."
-                        defaultValue={JSON.parse(
-                            problemDatas.commentsForEditor
-                                .replace(/\\n/g, '\\n')
-                                .replace(/\\'/g, "\\'")
-                                .replace(/\\"/g, '\\"')
-                                .replace(/\\&/g, '\\&')
-                                .replace(/\\r/g, '\\r')
-                                .replace(/\\t/g, '\\t')
-                                .replace(/\\b/g, '\\b')
-                                .replace(/\\f/g, '\\f')
-                                .replace(/[\u0000-\u0019]+/g, ''),
-                        )}
-                        onChange={onQuillEditorChange('comments_editor')}
-                        style={{ marginTop: 8 }}
-                    />
-                    <SelectorsContainer>
-                        {problemType === 'short-answer' ? (
+                    <GroupBoxContents title="문제" style={{ marginTop: 28 }}>
+                        <ReactQuill
+                            id="texts_editor"
+                            className="problem-editor"
+                            modules={{ toolbar: QuillEditorToolbarOption }}
+                            placeholder="문제를 입력하세요. (번호는 제외)"
+                            defaultValue={JSON.parse(
+                                problemDatas.textForEditor
+                                    .replace(/\\n/g, '\\n')
+                                    .replace(/\\'/g, "\\'")
+                                    .replace(/\\"/g, '\\"')
+                                    .replace(/\\&/g, '\\&')
+                                    .replace(/\\r/g, '\\r')
+                                    .replace(/\\t/g, '\\t')
+                                    .replace(/\\b/g, '\\b')
+                                    .replace(/\\f/g, '\\f')
+                                    .replace(/[\u0000-\u0019]+/g, ''),
+                            )}
+                            onChange={onQuillEditorChange('texts_editor')}
+                        />
+                    </GroupBoxContents>
+                    <GroupBoxContents
+                        title="보기"
+                        description="*보기를 입력하고 정답을 선택해 주세요."
+                        rightComponent={
+                            <CategorySelect
+                                className="tiny"
+                                labelId="problem_type-label"
+                                id="problem_type"
+                                value={problemType}
+                                onChange={handleChangeType}
+                                label="type"
+                            >
+                                <option value="multiple-choice">선택형</option>
+                                <option value="short-answer">단답형</option>
+                            </CategorySelect>
+                        }
+                        style={{ marginTop: 48 }}
+                    >
+                        <SelectorsContainer>
+                            {problemType === 'short-answer' ? (
+                                <>
+                                    <UCOutlinedInput
+                                        variant="outlined"
+                                        size="small"
+                                        placeholder="정답 입력 (띄어쓰기 제외: 예] ABC)"
+                                        fullWidth
+                                        value={problemAnswer}
+                                        name="short_answer_input"
+                                        onChange={onTextFieldChange}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <OutlinedInput
+                                        variant="outlined"
+                                        size="small"
+                                        placeholder="선택 1"
+                                        fullWidth
+                                        name="selection_1"
+                                        value={problemSelections[1]}
+                                        onChange={onTextFieldChange}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Tooltip title="1번 선택지를 정답으로 선택">
+                                                    <IconButton onClick={onSelectionButtonClick(1)} edge="end" disableRipple>
+                                                        {problemAnswer === 1 ? (
+                                                            <>
+                                                                <span style={{ fontSize: '1rem' }}>정답</span> <RadioButtonChecked />
+                                                            </>
+                                                        ) : (
+                                                            <RadioButtonUncheckedIcon />
+                                                        )}
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                    <OutlinedInput
+                                        variant="outlined"
+                                        size="small"
+                                        placeholder="선택 2"
+                                        fullWidth
+                                        style={{ marginTop: 8 }}
+                                        name="selection_2"
+                                        value={problemSelections[2]}
+                                        onChange={onTextFieldChange}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Tooltip title="2번 선택지를 정답으로 선택">
+                                                    <IconButton onClick={onSelectionButtonClick(2)} edge="end">
+                                                        {problemAnswer === 2 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                    <OutlinedInput
+                                        variant="outlined"
+                                        size="small"
+                                        placeholder="선택 3"
+                                        fullWidth
+                                        style={{ marginTop: 8 }}
+                                        name="selection_3"
+                                        value={problemSelections[3]}
+                                        onChange={onTextFieldChange}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Tooltip title="3번 선택지를 정답으로 선택">
+                                                    <IconButton onClick={onSelectionButtonClick(3)} edge="end">
+                                                        {problemAnswer === 3 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                    <OutlinedInput
+                                        variant="outlined"
+                                        size="small"
+                                        placeholder="선택 4"
+                                        fullWidth
+                                        style={{ marginTop: 8 }}
+                                        name="selection_4"
+                                        value={problemSelections[4]}
+                                        onChange={onTextFieldChange}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Tooltip title="4번 선택지를 정답으로 선택">
+                                                    <IconButton onClick={onSelectionButtonClick(4)} edge="end">
+                                                        {problemAnswer === 4 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                    <OutlinedInput
+                                        variant="outlined"
+                                        size="small"
+                                        placeholder="선택 5"
+                                        fullWidth
+                                        style={{ marginTop: 8 }}
+                                        name="selection_5"
+                                        value={problemSelections[5]}
+                                        onChange={onTextFieldChange}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Tooltip title="5번 선택지를 정답으로 선택">
+                                                    <IconButton onClick={onSelectionButtonClick(5)} edge="end">
+                                                        {problemAnswer === 5 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                </>
+                            )}
+                        </SelectorsContainer>
+                    </GroupBoxContents>
+                    <GroupBoxContents
+                        title={
                             <>
-                                <UCOutlinedInput
-                                    variant="outlined"
-                                    size="small"
-                                    placeholder="정답 입력 (띄어쓰기 제외: 예] ABC)"
-                                    fullWidth
-                                    value={problemAnswer}
-                                    name="short_answer_input"
-                                    onChange={onTextFieldChange}
-                                />
+                                해설<span style={{ fontSize: '0.875rem', fontWeight: 500 }}> (선택)</span>
                             </>
-                        ) : (
-                            <>
-                                <OutlinedInput
-                                    variant="outlined"
-                                    size="small"
-                                    placeholder="선택 1"
-                                    fullWidth
-                                    name="selection_1"
-                                    value={problemSelections[1]}
-                                    onChange={onTextFieldChange}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <Tooltip title="1번 선택지를 정답으로 선택">
-                                                <IconButton onClick={onSelectionButtonClick(1)} edge="end">
-                                                    {problemAnswer === 1 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
-                                                </IconButton>
-                                            </Tooltip>
-                                        </InputAdornment>
-                                    }
-                                />
-                                <OutlinedInput
-                                    variant="outlined"
-                                    size="small"
-                                    placeholder="선택 2"
-                                    fullWidth
-                                    style={{ marginTop: 8 }}
-                                    name="selection_2"
-                                    value={problemSelections[2]}
-                                    onChange={onTextFieldChange}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <Tooltip title="2번 선택지를 정답으로 선택">
-                                                <IconButton onClick={onSelectionButtonClick(2)} edge="end">
-                                                    {problemAnswer === 2 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
-                                                </IconButton>
-                                            </Tooltip>
-                                        </InputAdornment>
-                                    }
-                                />
-                                <OutlinedInput
-                                    variant="outlined"
-                                    size="small"
-                                    placeholder="선택 3"
-                                    fullWidth
-                                    style={{ marginTop: 8 }}
-                                    name="selection_3"
-                                    value={problemSelections[3]}
-                                    onChange={onTextFieldChange}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <Tooltip title="3번 선택지를 정답으로 선택">
-                                                <IconButton onClick={onSelectionButtonClick(3)} edge="end">
-                                                    {problemAnswer === 3 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
-                                                </IconButton>
-                                            </Tooltip>
-                                        </InputAdornment>
-                                    }
-                                />
-                                <OutlinedInput
-                                    variant="outlined"
-                                    size="small"
-                                    placeholder="선택 4"
-                                    fullWidth
-                                    style={{ marginTop: 8 }}
-                                    name="selection_4"
-                                    value={problemSelections[4]}
-                                    onChange={onTextFieldChange}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <Tooltip title="4번 선택지를 정답으로 선택">
-                                                <IconButton onClick={onSelectionButtonClick(4)} edge="end">
-                                                    {problemAnswer === 4 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
-                                                </IconButton>
-                                            </Tooltip>
-                                        </InputAdornment>
-                                    }
-                                />
-                                <OutlinedInput
-                                    variant="outlined"
-                                    size="small"
-                                    placeholder="선택 5"
-                                    fullWidth
-                                    style={{ marginTop: 8 }}
-                                    name="selection_5"
-                                    value={problemSelections[5]}
-                                    onChange={onTextFieldChange}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <Tooltip title="5번 선택지를 정답으로 선택">
-                                                <IconButton onClick={onSelectionButtonClick(5)} edge="end">
-                                                    {problemAnswer === 5 ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
-                                                </IconButton>
-                                            </Tooltip>
-                                        </InputAdornment>
-                                    }
-                                />
-                            </>
-                        )}
-                    </SelectorsContainer>
+                        }
+                        rightComponent={
+                            commentOpen ? (
+                                <ArrowDropUpIcon className="open-commentary-dropdown-icon" viewBox="7 8 12 12" fontSize="inherit" />
+                            ) : (
+                                <ArrowDropDownIcon className="open-commentary-dropdown-icon" viewBox="7 8 12 12" fontSize="inherit" />
+                            )
+                        }
+                        onClick={handleCommentOpen}
+                        style={{ marginTop: 48 }}
+                    >
+                        <Collapse in={commentOpen}>
+                            <ReactQuill
+                                id="comments_editor"
+                                className="problem-editor"
+                                modules={{ toolbar: QuillEditorToolbarOption }}
+                                placeholder="해설을 입력하세요."
+                                defaultValue={JSON.parse(
+                                    problemDatas.commentsForEditor
+                                        .replace(/\\n/g, '\\n')
+                                        .replace(/\\'/g, "\\'")
+                                        .replace(/\\"/g, '\\"')
+                                        .replace(/\\&/g, '\\&')
+                                        .replace(/\\r/g, '\\r')
+                                        .replace(/\\t/g, '\\t')
+                                        .replace(/\\b/g, '\\b')
+                                        .replace(/\\f/g, '\\f')
+                                        .replace(/[\u0000-\u0019]+/g, ''),
+                                )}
+                                onChange={onQuillEditorChange('comments_editor')}
+                                style={{ marginTop: 8 }}
+                            />
+                        </Collapse>
+                    </GroupBoxContents>
                     <CreateButtonContainer>
-                        <CreateButton size="large" variant="contained" disabled={createButtonEnabled} onClick={handleOnCreate}>
-                            {editmode ? '수정' : '만들기'}
+                        <CreateButton
+                            className="primary"
+                            size="large"
+                            variant="contained"
+                            disabled={createButtonEnabled}
+                            onClick={handleOnCreate}
+                        >
+                            {editmode ? '수정하기' : '추가하기'}
                         </CreateButton>
                     </CreateButtonContainer>
-                </Collapse>
-            </FormBox>
-        </Root>
+                </FormBox>
+            </Root>
+        </>
     );
 }
 
