@@ -32,6 +32,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { getServerDate } from '../../redux_modules/serverdate';
+import isMobile from '../../controllers/isMobile';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -337,6 +338,8 @@ function VideoLecturesManage({ match, history }) {
     const enterVideoLecture = () => {
         dispatch(getServerDate());
         if (new Date(currentVideoLecture.start_at).getTime() > serverdate.datetime) return alert('아작 세션이 시작되지 않은 강의 입니다.');
+        if (isMobile && currentVideoLecture.eyetrack)
+            return alert('모바일에서는 시선추적이 있는 강의는 입장이 불가합니다.\n데스크탑 또는 랩탑을 이용해 주세요.');
         // 시선흐름 감시 기능이 있고, 학생인 경우, 시선추적 보정 창 띄움
         if (currentVideoLecture.eyetrack && sessions.userType === 'students') {
             window.open(
