@@ -372,7 +372,7 @@ function CardDraft({ cardData, match, history }) {
                         <div className="class-card-bottom-right">
                             {/* 시선흐름 유무 */}
                             <IsPresence type={'eye'} able={cardData['eyetrack']} align="left" />
-                            {/* 게시 유무 */}
+                            {/* 유형별 분석 유무 */}
                             <IsPresence type={'analysis'} able={assignmentTypeState} align="left" />
                         </div>
                     ) : (
@@ -387,7 +387,7 @@ function CardDraft({ cardData, match, history }) {
                             <div className="class-card-bottom-right">
                                 {/* 시선흐름 유무 */}
                                 <IsPresence type={'eye'} able={cardData['eyetrack']} align="left" />
-                                {/* 게시 유무 */}
+                                {/* 유형별 분석 유무 */}
                                 <IsPresence type={'analysis'} able={assignmentTypeState} align="left" />
                             </div>
                         </HtmlTooltip2>

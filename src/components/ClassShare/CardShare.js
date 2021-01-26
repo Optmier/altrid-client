@@ -483,25 +483,6 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                         userType={sessions.userType}
                                         handleDateChange={handleDateChange}
                                     />
-                                    <InfoItems
-                                        title={'유형별 분석'}
-                                        contents={
-                                            assignmentTypeState < 100 ? (
-                                                <HtmlTooltip2
-                                                    title={
-                                                        <>
-                                                            <ErrorOutlineIcon />
-                                                            <p>유형별 분석의 최소 조건은 상단 뱃지를 클릭하여 확인해주세요!</p>
-                                                        </>
-                                                    }
-                                                >
-                                                    <p style={{ color: '#ff8383' }}>불가능</p>
-                                                </HtmlTooltip2>
-                                            ) : (
-                                                '가능'
-                                            )
-                                        }
-                                    />
                                     <div className="mobile-student-num">
                                         <div className="title">제출한 학생</div>
                                         <div className="contents">
@@ -539,6 +520,9 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                     </div>
 
                     <div className="class-card-bottom">
+                        {sessions.userType === 'students' ? null : (
+                            <IsPresence type={'analysis'} able={assignmentTypeState} align="left" fontSize="0.85rem" />
+                        )}
                         <IsPresence type={'eye'} able={parseInt(cardData['eyetrack'])} align="left" fontSize="0.85rem" />
                     </div>
                 </div>
