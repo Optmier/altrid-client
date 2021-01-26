@@ -346,7 +346,7 @@ function LoginCandidated({ history }) {
         switch (step) {
             case 0:
                 return (
-                    <div className="login-form">
+                    <div className="login-form" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                         <h4>{usertype === 'students' ? '학생' : '선생님'} 데모 로그인</h4>
                         <input
                             className={classNames('default', inputError.candidated_code ? 'error' : '')}

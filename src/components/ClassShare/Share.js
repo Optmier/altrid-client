@@ -105,23 +105,12 @@ function Share({ match, history }) {
         shareDatas.map((i) => (moment(i['due_date']).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss') ? cnt++ : ''));
     }
 
-    const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
-    const toggleDrawer = (open) => (event) => {
-        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-            return;
-        }
-        setOpenCreateNewDrawer(open);
-    };
     if (error) return <Error />;
     if (!data) return null;
 
     return (
         <>
             <BackdropComponent open={loading && !data && !error} />
-            <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
-                <ClassDrawer />
-            </Drawer>
-
             {shareDatas.length === 0 ? (
                 <ClassWrapper>
                     <GoDraftDiv>

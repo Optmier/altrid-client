@@ -20,8 +20,19 @@ import moment from 'moment';
 import BackdropComponent from '../components/essentials/BackdropComponent';
 import ClassWrapper from '../components/essentials/ClassWrapper';
 import { IoIosArrowForward } from 'react-icons/io';
+import isMobile from '../controllers/isMobile';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+    drawerPaper: {
+        '@media (min-width: 0) and (max-width: 662px)': {
+            width: '100%',
+        },
+    },
+}));
 
 function Main({ history }) {
+    const classes = useStyles();
     const sessions = useSelector((state) => state.RdxSessions);
     const [backdropOpen, setBackdropOpen] = useState(false);
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
@@ -63,10 +74,25 @@ function Main({ history }) {
             <BackdropComponent open={backdropOpen} blind="#f7f9f8" />
             <Element name="main_top_start" />
             <HeaderBar />
-            <Drawer anchor="right" open={openCreateNewDrawer} onClose={toggleDrawer(false)}>
+            <Drawer
+                anchor="right"
+                open={openCreateNewDrawer}
+                onClose={toggleDrawer(false)}
+                classes={{
+                    paper: classes.drawerPaper,
+                }}
+            >
                 <CreateNewEntry history={history} handleClose={toggleDrawer(false)} />
             </Drawer>
-            <Drawer anchor="right" open={openAddTeacher} onClose={toggleAddTeacherDrawer(false)}>
+
+            <Drawer
+                anchor="right"
+                open={openAddTeacher}
+                onClose={toggleAddTeacherDrawer(false)}
+                classes={{
+                    paper: classes.drawerPaper,
+                }}
+            >
                 <AddClass handleClose={toggleAddTeacherDrawer(false)} />
             </Drawer>
             <main className="main-page">
@@ -175,7 +201,8 @@ function Main({ history }) {
                     </section>
                 )}
             </main>
-            <Footer />
+
+            {isMobile ? null : <Footer />}
         </>
     );
 }
