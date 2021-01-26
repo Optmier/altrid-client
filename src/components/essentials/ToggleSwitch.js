@@ -26,6 +26,12 @@ const StyleToggle = styled.div`
         color: white;
         margin-left: 8px;
     }
+    & .toggle-off-ment-right {
+        font-size: 14px;
+        font-weight: 500;
+        color: #707070;
+        margin-right: 8px;
+    }
 `;
 
 const ShareSwitch = withStyles((theme) => ({
@@ -136,7 +142,7 @@ function ToggleSwitch({ isStarted, type, toggle, handleToggleChange, name }) {
                                 과제 진행중
                             </div>
                         ) : (
-                            <div className="toggle-off-ment">{isStarted ? '과제 완료됨' : '과제 시작전'}</div>
+                            <div className="toggle-off-ment-right">{isStarted ? '과제 완료됨' : '과제 시작전'}</div>
                         )}
                         <DrawerSwitch
                             value="checkedC"

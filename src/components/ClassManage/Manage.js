@@ -30,7 +30,7 @@ const FormButton = styled.button`
 const CreateButton = withStyles((theme) => ({
     root: {
         borderRadius: '10px',
-        backgroundColor: '#a6a6a6',
+        backgroundColor: '#13E2A1',
         color: '#fff',
         fontFamily: 'inherit',
         fontSize: '0.9rem',
@@ -38,7 +38,7 @@ const CreateButton = withStyles((theme) => ({
         height: '56px',
 
         '&.critical': {
-            backgroundColor: 'rgba(255, 92, 92, 0.85)',
+            backgroundColor: '#a6a6a6',
         },
     },
 }))(Button);
