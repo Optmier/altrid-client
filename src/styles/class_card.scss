@@ -139,6 +139,9 @@
                 & .mobile-student-num {
                     display: none;
                 }
+                & .mobile-test-state {
+                    display: none;
+                }
                 & .date-content {
                     display: flex;
                     align-items: flex-end;
@@ -260,6 +263,9 @@
                             white-space: nowrap;
                             overflow: hidden;
                         }
+                    }
+                    & .mobile-test-state {
+                        display: block;
                     }
                 }
                 & .class-card-right {

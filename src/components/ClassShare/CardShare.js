@@ -454,7 +454,23 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                         userType={sessions.userType}
                                         handleDateChange={handleDateChange}
                                     />
-                                    {sessions.userType === 'students' ? null : (
+                                    {sessions.userType === 'students' ? (
+                                        <div className="mobile-test-state">
+                                            <StudentState
+                                                assignmentState={new Date(cardData.due_date).getTime() > datetime ? true : false}
+                                                state={
+                                                    cardData.time_limit === -2 && tries
+                                                        ? 'ing'
+                                                        : cardData.time_limit !== -2 && tries
+                                                        ? 'done'
+                                                        : 'pre'
+                                                }
+                                                handlePreTest={handlePreTest}
+                                                handleStartTest={handleStartTest}
+                                                handleGoToReport={handleGoToReport}
+                                            />
+                                        </div>
+                                    ) : (
                                         <div className="mobile-student-num">
                                             <div className="title">제출한 학생</div>
                                             <div className="contents">
@@ -488,21 +504,6 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                     </>
                                 )}
                             </div>
-
-                            {/* <div className="class-card-bottom-right card-bottom-p">
-                            {(sessions.userType === 'students' && tries && new Date(cardData['due_date']).getTime() < datetime) ||
-                            sessions.userType !== 'students' ? (
-                                <div className="goto-reports">
-                                    <div className="share-report">
-                                        {sessions.userType === 'students' ? '나의 리포트' : '과제별 리포트 보기'} <IoIosArrowForward />
-                                    </div>
-                                </div>
-                            ) : sessions.userType === 'students' && tries ? (
-                                <span style={{ color: 'rgb(152, 150, 150)', fontSize: '0.75rem', minWidth: '9.1rem', textAlign: 'end' }}>
-                                    기한 종료 후 리포트 활성화
-                                </span>
-                            ) : null}
-                        </div> */}
                         </div>
                     </div>
 

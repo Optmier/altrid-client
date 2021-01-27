@@ -155,7 +155,7 @@ function Share({ match, history }) {
                         >
                             {(sessions.userType === 'students' && tries) || sessions.userType !== 'students'
                                 ? Object.keys(shareDatas).map((key) => (
-                                      <CardRoot key={key} wider cardHeight="320px">
+                                      <CardRoot key={key} wider cardHeight="360px">
                                           <CardShare
                                               testNum={shareDatas[key]['idx']}
                                               cardData={shareDatas[key]}

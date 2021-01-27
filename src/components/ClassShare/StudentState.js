@@ -11,9 +11,15 @@ const StyleDiv = styled.div`
     box-sizing: border-box;
 
     & .header {
-        font-size: 1.4rem;
-        font-weight: 600;
-        color: #707070;
+        & .header-desc {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #707070;
+        }
+
+        & .header-title {
+            display: none;
+        }
     }
     & .buttons {
         display: flex;
@@ -40,6 +46,45 @@ const StyleDiv = styled.div`
             background-color: #707070;
         }
     }
+
+    @media (min-width: 0) and (max-width: 662px) {
+        padding: 12px 0 0 0;
+        align-items: flex-start;
+
+        & .header {
+            display: flex;
+            align-items: center;
+
+            & .header-title {
+                display: block;
+                width: 95px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: #706d6d;
+                margin: 0;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            & .header-desc {
+                font-size: 0.875rem;
+                font-weight: 400;
+                color: #706d6d;
+                margin: 0;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+        }
+        & .buttons {
+            flex-direction: row;
+            margin-top: 24px;
+
+            & button + button {
+                margin: 0 0 0 8px;
+            }
+        }
+    }
 `;
 
 function StudentState({ state, assignmentState, handlePreTest, handleStartTest, handleGoToReport }) {
@@ -48,16 +93,20 @@ function StudentState({ state, assignmentState, handlePreTest, handleStartTest, 
     return (
         <StyleDiv>
             <div className="header">
-                {assignmentState
-                    ? state === 'pre'
-                        ? '풀이 전'
-                        : state === 'ing'
-                        ? '풀이 중'
-                        : '풀이 완료'
-                    : state === 'pre'
-                    ? '풀이 미진행'
-                    : '풀이 완료'}
+                <div className="header-title">과제 상태 </div>
+                <div className="header-desc">
+                    {assignmentState
+                        ? state === 'pre'
+                            ? '풀이 전'
+                            : state === 'ing'
+                            ? '풀이 중'
+                            : '풀이 완료'
+                        : state === 'pre'
+                        ? '풀이 미진행'
+                        : '풀이 완료'}
+                </div>
             </div>
+
             <div className="buttons">
                 {assignmentState ? (
                     state === 'pre' ? (
