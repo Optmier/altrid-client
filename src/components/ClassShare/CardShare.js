@@ -23,6 +23,7 @@ import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import Error from '../../pages/Error';
 import TooltipCard from '../essentials/TooltipCard';
 import CardPopOverShare from '../essentials/CardPopOverShare';
+import StudentState from './StudentState';
 
 const pad = (n, width) => {
     n = n + '';
@@ -413,20 +414,25 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                     </TooltipCard>
                     <span className="card-option">
                         {sessions.userType === 'students' ? (
+                            // <>
+                            //     {toggleState['checked'] ? (
+                            //         <span style={{ color: '#ffffff', fontSize: 14 }}>
+                            //             {cardData.time_limit === -2 && tries
+                            //                 ? '제출됨, 재시도'
+                            //                 : cardData.time_limit !== -2 && tries
+                            //                 ? '제출됨'
+                            //                 : '진행중'}
+                            //         </span>
+                            //     ) : (
+                            //         <span style={{ color: '#989696', fontSize: 14 }}>
+                            //             {new Date(cardData.created).getTime() > datetime ? '시작전' : '과제 완료됨'}
+                            //         </span>
+                            //     )}
+                            // </>
                             <>
-                                {toggleState['checked'] ? (
-                                    <span style={{ color: '#ffffff', fontSize: 14 }}>
-                                        {cardData.time_limit === -2 && tries
-                                            ? '제출됨, 재시도'
-                                            : cardData.time_limit !== -2 && tries
-                                            ? '제출됨'
-                                            : '진행중'}
-                                    </span>
-                                ) : (
-                                    <span style={{ color: '#989696', fontSize: 14 }}>
-                                        {new Date(cardData.created).getTime() > datetime ? '시작전' : '완료됨'}
-                                    </span>
-                                )}
+                                <span style={{ color: 'white', fontSize: 14 }}>
+                                    {new Date(cardData.due_date).getTime() > datetime ? '과제 진행중' : '과제 완료됨'}
+                                </span>
                             </>
                         ) : (
                             <div className="card-option-teacher">
@@ -473,9 +479,9 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                         contents={cardData['contents_data'].flatMap((m) => m.problemDatas).length + '문제'}
                                     />
                                     <TimeItems title={'제한시간'} time_limit={cardData['time_limit']} />
-                                    {sessions.userType === 'students' ? (
+                                    {/* {sessions.userType === 'students' ? (
                                         <TriesItems title={'시도횟수'} tries={!tries ? '없음' : tries} />
-                                    ) : null}
+                                    ) : null} */}
                                     <DateItems
                                         title={'과제기한'}
                                         start={moment(cardData['created']).format('MM.DD HH:mm')}
@@ -483,18 +489,22 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                         userType={sessions.userType}
                                         handleDateChange={handleDateChange}
                                     />
-                                    <div className="mobile-student-num">
-                                        <div className="title">제출한 학생</div>
-                                        <div className="contents">
-                                            {pad(cardData['submitted_number'], 2)} / {pad(totalStudents, 2)}
+                                    {sessions.userType === 'students' ? null : (
+                                        <div className="mobile-student-num">
+                                            <div className="title">제출한 학생</div>
+                                            <div className="contents">
+                                                {pad(cardData['submitted_number'], 2)} / {pad(totalStudents, 2)}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
                         <div className="class-card-right">
                             <div className="class-card-contents">
-                                {sessions.userType === 'students' ? null : (
+                                {sessions.userType === 'students' ? (
+                                    <StudentState assignmentState={new Date(cardData.due_date).getTime() > datetime ? true : false} />
+                                ) : (
                                     <>
                                         <StudentNum completeNum={pad(cardData['submitted_number'], 2)} totalNum={pad(totalStudents, 2)} />
                                         <div className="student-complete-text">제출한 학생</div>
