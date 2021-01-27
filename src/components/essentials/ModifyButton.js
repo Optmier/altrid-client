@@ -18,7 +18,11 @@ const StyleButton = styled.button`
 `;
 
 function ModifyButton({ handleDateChange }) {
-    return <StyleButton onClick={handleDateChange}>수정</StyleButton>;
+    return (
+        <StyleButton id="modify" onClick={handleDateChange}>
+            수정
+        </StyleButton>
+    );
 }
 
 export default ModifyButton;
