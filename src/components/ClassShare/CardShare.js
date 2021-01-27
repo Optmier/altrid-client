@@ -382,21 +382,6 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                     </TooltipCard>
                     <span className="card-option">
                         {sessions.userType === 'students' ? (
-                            // <>
-                            //     {toggleState['checked'] ? (
-                            //         <span style={{ color: '#ffffff', fontSize: 14 }}>
-                            //             {cardData.time_limit === -2 && tries
-                            //                 ? '제출됨, 재시도'
-                            //                 : cardData.time_limit !== -2 && tries
-                            //                 ? '제출됨'
-                            //                 : '진행중'}
-                            //         </span>
-                            //     ) : (
-                            //         <span style={{ color: '#989696', fontSize: 14 }}>
-                            //             {new Date(cardData.created).getTime() > datetime ? '시작전' : '과제 완료됨'}
-                            //         </span>
-                            //     )}
-                            // </>
                             <>
                                 <span style={{ color: 'white', fontSize: 14 }}>
                                     {new Date(cardData.due_date).getTime() > datetime ? '과제 진행중' : '과제 완료됨'}
