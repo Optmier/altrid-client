@@ -453,6 +453,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                                 handlePreTest={handlePreTest}
                                                 handleStartTest={handleStartTest}
                                                 handleGoToReport={handleGoToReport}
+                                                dueDate={new Date(cardData.due_date)}
                                             />
                                         </div>
                                     ) : (
@@ -481,6 +482,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                         handlePreTest={handlePreTest}
                                         handleStartTest={handleStartTest}
                                         handleGoToReport={handleGoToReport}
+                                        dueDate={new Date(cardData.due_date)}
                                     />
                                 ) : (
                                     <>

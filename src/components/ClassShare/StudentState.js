@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import moment from 'moment-timezone';
 
 const StyleDiv = styled.div`
     display: flex;
@@ -12,7 +13,7 @@ const StyleDiv = styled.div`
 
     & .header {
         & .header-desc {
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             font-weight: 600;
             color: #707070;
         }
@@ -39,11 +40,11 @@ const StyleDiv = styled.div`
         & button + button {
             margin-top: 8px;
         }
-        & .top {
+        & .main {
             background-color: #3f1990;
         }
-        & .bottom {
-            background-color: #707070;
+        & .sub {
+            background-color: #6d2bf5;
         }
     }
 
@@ -87,9 +88,14 @@ const StyleDiv = styled.div`
     }
 `;
 
-function StudentState({ state, assignmentState, handlePreTest, handleStartTest, handleGoToReport }) {
+function StudentState({ state, assignmentState, handlePreTest, handleStartTest, handleGoToReport, dueDate }) {
     //state(풀이 상태) : pre, ing, done
     //assignmentState(과제 상태) : true(과제 기한 진행중), false(과제 기한 완료)
+
+    let t1 = moment(dueDate);
+    let t2 = moment();
+    let dday = t1.diff(t2, 'days') + 1;
+
     return (
         <StyleDiv>
             <div className="header">
@@ -97,45 +103,45 @@ function StudentState({ state, assignmentState, handlePreTest, handleStartTest, 
                 <div className="header-desc">
                     {assignmentState
                         ? state === 'pre'
-                            ? '풀이 전'
+                            ? 'D-' + dday
                             : state === 'ing'
-                            ? '풀이 중'
-                            : '풀이 완료'
+                            ? 'D-' + dday
+                            : null
                         : state === 'pre'
-                        ? '풀이 미진행'
-                        : '풀이 완료'}
+                        ? '미제출'
+                        : null}
                 </div>
             </div>
 
             <div className="buttons">
                 {assignmentState ? (
                     state === 'pre' ? (
-                        <button onClick={handleStartTest} className="top">
-                            문제 풀기
+                        <button onClick={handleStartTest} className="main">
+                            과제 풀기
                         </button>
                     ) : state === 'ing' ? (
-                        <button onClick={handleStartTest} className="top">
+                        <button onClick={handleStartTest} className="main">
                             이어 풀기
                         </button>
                     ) : (
-                        <button onClick={handleGoToReport} className="top">
+                        <button onClick={handleGoToReport} className="sub">
                             리포트 보기
                         </button>
                     )
                 ) : state === 'pre' ? null : (
-                    <button onClick={handleGoToReport} className="top">
+                    <button onClick={handleGoToReport} className="sub">
                         리포트 보기
                     </button>
                 )}
 
                 {assignmentState ? (
                     state === 'done' ? (
-                        <button onClick={handlePreTest} className="bottom">
+                        <button onClick={handlePreTest} className="main">
                             과제 보기
                         </button>
                     ) : null
                 ) : (
-                    <button onClick={handlePreTest} className="bottom">
+                    <button onClick={handlePreTest} className="main">
                         과제 보기
                     </button>
                 )}
