@@ -60,7 +60,7 @@ const StyleDiv = styled.div`
                 width: 95px;
                 font-size: 0.875rem;
                 font-weight: 600;
-                color: #706d6d;
+                color: #2e2c2c;
                 margin: 0;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -69,7 +69,7 @@ const StyleDiv = styled.div`
             & .header-desc {
                 font-size: 0.875rem;
                 font-weight: 400;
-                color: #706d6d;
+                color: #2e2c2c;
                 margin: 0;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -78,7 +78,7 @@ const StyleDiv = styled.div`
         }
         & .buttons {
             flex-direction: row;
-            margin: 24px 0;
+            margin: 24px 0 0 0;
 
             & button + button {
                 margin: 0 0 0 8px;
