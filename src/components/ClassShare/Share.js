@@ -43,8 +43,8 @@ const GoDraftDiv = styled.div`
         align-items: center;
         padding: 1.2rem 1.5rem;
         filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-        margin-top: 30px;
-        border-radius: 10px;
+        margin: 30px 0;
+        border-radius: 11px;
         cursor: pointer;
         background-color: #13e2a1;
 
@@ -155,7 +155,7 @@ function Share({ match, history }) {
                         >
                             {(sessions.userType === 'students' && tries) || sessions.userType !== 'students'
                                 ? Object.keys(shareDatas).map((key) => (
-                                      <CardRoot key={key} wider cardHeight="360px">
+                                      <CardRoot key={key} wider>
                                           <CardShare
                                               testNum={shareDatas[key]['idx']}
                                               cardData={shareDatas[key]}

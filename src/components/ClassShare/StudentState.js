@@ -78,7 +78,7 @@ const StyleDiv = styled.div`
         }
         & .buttons {
             flex-direction: row;
-            margin-top: 24px;
+            margin: 24px 0;
 
             & button + button {
                 margin: 0 0 0 8px;
