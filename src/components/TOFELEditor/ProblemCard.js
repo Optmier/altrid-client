@@ -87,8 +87,10 @@ const ContentsContainer = styled.div`
     & div.order-number {
         display: flex;
         color: #707070;
+        font-weight: 500;
         line-height: 1.5rem;
         margin-right: 18px;
+        margin-top: -0.2rem;
     }
 `;
 const Contents = styled.div`
