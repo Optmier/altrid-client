@@ -46,6 +46,30 @@ $textGray: #706d6d;
                 text-align: center;
             }
         }
+        & .class-share-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 54px;
+
+            & .header-title {
+                font-size: 1.75rem;
+                font-weight: 600;
+                margin-right: 50px;
+            }
+            & .header-menu {
+                display: flex;
+
+                & > button {
+                    font-size: 1.12rem;
+                    font-weight: 500;
+                    background-color: transparent;
+                    padding: 5px;
+                }
+                & > button + button {
+                    margin-left: 25px;
+                }
+            }
+        }
 
         & section {
             padding-bottom: 100px;

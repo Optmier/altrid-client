@@ -92,8 +92,9 @@ function StudentState({ state, assignmentState, handlePreTest, handleStartTest, 
     //state(풀이 상태) : pre, ing, done
     //assignmentState(과제 상태) : true(과제 기한 진행중), false(과제 기한 완료)
 
-    let t1 = moment(dueDate);
-    let t2 = moment();
+    let t1 = moment(dueDate).hours(0).minutes(0);
+    let t2 = moment().hours(0).minutes(0);
+
     let dday = t1.diff(t2, 'days') + 1;
 
     return (

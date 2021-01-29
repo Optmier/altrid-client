@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import CardShare from './CardShare';
 import CardLists from '../essentials/CardLists';
 import CardRoot from '../essentials/CardRoot';
@@ -62,12 +62,9 @@ const GoDraftDiv = styled.div`
         }
     }
 `;
-
-const AssignmentWarnings = styled.p`
-    color: #b72a2a;
-    font-size: 0.875rem;
-    line-height: 1.2rem;
-    margin-top: 0.5rem;
+const ButtonAble = styled.button`
+    color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
+    border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
 `;
 
 function Share({ match, history }) {
@@ -85,6 +82,28 @@ function Share({ match, history }) {
     const dispatch = useDispatch();
     const [tries, setTries] = useState(undefined);
     const currentClass = useSelector((state) => state.RdxCurrentClass);
+    const [ableState, setAbleSate] = useState({
+        total: true,
+        ing: false,
+        done: false,
+    });
+
+    const handleShareCardList = useCallback(
+        (e) => {
+            const { name, value } = e.target;
+
+            setAbleSate({
+                total: false,
+                ing: false,
+                done: false,
+            });
+            setAbleSate((prevState) => ({
+                ...prevState,
+                [name]: !(value === 'true'),
+            }));
+        },
+        [ableState],
+    );
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
@@ -138,18 +157,28 @@ function Share({ match, history }) {
                 </ClassWrapper>
             ) : (
                 <div className="class-section-root">
+                    <ClassWrapper>
+                        <div className="class-share-header">
+                            <div className="header-title">과제 게시판</div>
+                            <div className="header-menu">
+                                <ButtonAble name="total" able={ableState['total']} value={ableState['total']} onClick={handleShareCardList}>
+                                    전체
+                                </ButtonAble>
+                                <ButtonAble name="ing" able={ableState['ing']} value={ableState['ing']} onClick={handleShareCardList}>
+                                    진행중
+                                </ButtonAble>
+                                <ButtonAble name="done" able={ableState['done']} value={ableState['done']} onClick={handleShareCardList}>
+                                    진행 완료
+                                </ButtonAble>
+                            </div>
+                        </div>
+                    </ClassWrapper>
+
                     <div className="class-draft-card">
                         <CardLists
                             upperDeck={
                                 <div className="class-title">
                                     <b>총 {shareDatas.length}개</b>의 과제중 <b>{cnt}개</b>의 과제가 <span>진행중</span>입니다.
-                                    {sessions.userType === 'students' ? (
-                                        <AssignmentWarnings>
-                                            주의: 과제 시작과 동시에 시도횟수가 증가하며, 끝낼 때는 반드시 종료 버튼을 눌러주세요!
-                                            <br></br>
-                                            제한시간이 있는 과제는 중간에 종료하시면 재시도가 불가하오니 유의하시기 바랍니다.
-                                        </AssignmentWarnings>
-                                    ) : null}
                                 </div>
                             }
                         >
@@ -177,4 +206,4 @@ function Share({ match, history }) {
     );
 }
 
-export default Share;
+export default React.memo(Share);
