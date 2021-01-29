@@ -771,7 +771,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                             <IconButton onClick={handlePrevSet} size="small">
                                 <ArrowBack fontSize="small" />
                             </IconButton>
-                            <span style={{ margin: '0px 4px', color: '#707070', fontWeight: 600, paddingTop: 2 }}>
+                            <span style={{ margin: '0px 4px', color: '#707070', fontWeight: 500, paddingTop: 2 }}>
                                 {setNum + 1} / {metadata.length}
                             </span>
                             <IconButton onClick={handleNextSet} size="small">
