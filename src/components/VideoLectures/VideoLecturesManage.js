@@ -227,7 +227,6 @@ const EdPaper = styled.div`
 `;
 
 function VideoLecturesManage({ match, history }) {
-    window.hhistory = history;
     const classNum = match.params.num;
     const classes = useStyles();
     // 나중에 리덕스로 변경 예정
@@ -528,123 +527,7 @@ function VideoLecturesManage({ match, history }) {
                     </DialogActionButton>
                 </DialogActions>
             </Dialog>
-            <ClassWrapper col="col">
-                {currentVideoLecture ? (
-                    <div className="class-manage-root">
-                        <div>
-                            <div className="manage-header">
-                                <h2 className="manage-title">현재 진행 중인 화상 강의</h2>
-                                <p className="manage-subTitle">입장 전 반드시 정보 확인 바랍니다.</p>
-                            </div>
-                            <EdPaper
-                                onMouseEnter={() => {
-                                    if (sessions.userType === 'students') return;
-                                    setItemHovered(0);
-                                }}
-                                onMouseLeave={() => {
-                                    if (sessions.userType === 'students') return;
-                                    setItemHovered(false);
-                                }}
-                            >
-                                {itemHovered === 0 ? (
-                                    <div className="top-icons">
-                                        {/* <IconButton size="small">
-                                            <EditIcon fontSize="inherit" />
-                                        </IconButton> */}
-                                        <IconButton size="small" onClick={closeVideoLecture}>
-                                            <DeleteIcon fontSize="inherit" />
-                                        </IconButton>
-                                    </div>
-                                ) : null}
-                                <div className="infos-container">
-                                    <h4 className="title">{currentVideoLecture.title}</h4>
-                                    <p className="description">{currentVideoLecture.description}</p>
-                                    <div className="bottom-container">
-                                        <div className="element">
-                                            <HtmlTooltip
-                                                title={
-                                                    new Date(currentVideoLecture.end_at).getTime() - serverdate.datetime < 1800000
-                                                        ? '세션이 곧 종료됩니다.'
-                                                        : '세션 시작일 ~ 세션 종료일'
-                                                }
-                                            >
-                                                <div
-                                                    className={`icon-item date${
-                                                        new Date(currentVideoLecture.end_at).getTime() - serverdate.datetime < 1800000
-                                                            ? ' error'
-                                                            : ''
-                                                    }`}
-                                                >
-                                                    <DateRangeOutlinedIcon fontSize="inherit" />
-                                                    {moment(currentVideoLecture.start_at).format('YYYY년 MM월 DD일 HH시 mm분')} ~{' '}
-                                                    {moment(currentVideoLecture.end_at).format('YYYY년 MM월 DD일 HH시 mm분')}
-                                                </div>
-                                            </HtmlTooltip>
-                                        </div>
-                                        <div className="element">
-                                            <div
-                                                className={`icon-item live-counts${
-                                                    currentVideoLecture.liveCounts < 1 ? ' no-participants' : ''
-                                                }`}
-                                            >
-                                                {currentVideoLecture.liveCounts < 1 ? (
-                                                    '참여 중인 인원 없음'
-                                                ) : (
-                                                    <>
-                                                        <FiberManualRecordIcon fontSize="inherit" />
-                                                        현재 {currentVideoLecture.liveCounts}명 참여 중
-                                                    </>
-                                                )}
-                                            </div>
-                                            <HtmlTooltip title="총 참여가능 인원 수">
-                                                <div className="icon-item participants">
-                                                    <GroupIcon fontSize="inherit" />
-                                                    {currentVideoLecture.max_joins}명
-                                                </div>
-                                            </HtmlTooltip>
-                                            <HtmlTooltip title="시선추적 여부">
-                                                <div className="icon-item eyetrack">
-                                                    <FaceIcon fontSize="inherit" />
-                                                    {currentVideoLecture.eyetrack ? '시선추적 있음' : '시선추적 없음'}
-                                                </div>
-                                            </HtmlTooltip>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="entrance-container">
-                                    <EntranceButton
-                                        disabled={new Date(currentVideoLecture.start_at).getTime() > serverdate.datetime}
-                                        startIcon={<MeetingRoomIcon />}
-                                        variant="text"
-                                        onClick={enterVideoLecture}
-                                    >
-                                        입장
-                                    </EntranceButton>
-                                </div>
-                            </EdPaper>
-                        </div>
-                    </div>
-                ) : (
-                    <OpenNewVidLec>
-                        <h1>진행 중인 화상 강의가 없습니다.</h1>
-                        {sessions.userType === 'students' ? null : (
-                            <button onClick={handleNewVideoLectureDialogOpen}>
-                                <p>강의 개설하기</p>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30.414" height="9.978" viewBox="0 0 30.414 9.978">
-                                    <path
-                                        id="icon"
-                                        d="M0 0h28l-8.27 8.27"
-                                        fill="none"
-                                        stroke="#fff"
-                                        strokeWidth="2px"
-                                        transform="translate(0 1)"
-                                    />
-                                </svg>
-                            </button>
-                        )}
-                    </OpenNewVidLec>
-                )}
-            </ClassWrapper>
+            <ClassWrapper col="col"></ClassWrapper>
         </>
     );
 }

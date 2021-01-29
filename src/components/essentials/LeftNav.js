@@ -10,6 +10,7 @@ import TooltipCard from './TooltipCard';
 import { setCurrentVideoLecture, setStudentsNum, updateLiveCounts } from '../../redux_modules/currentClass';
 import Error from '../../pages/Error';
 import styled from 'styled-components';
+import VideocamIcon from '@material-ui/icons/Videocam';
 
 const StyleLeftNav = styled.div`
     transition: all 0.4s;
@@ -213,21 +214,15 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                         </>
                     </div>
 
-                    {sessions.userType === 'students' ? (
-                        hasVideoLecture ? (
-                            <div className="a-wrapper">
-                                <LeftNavItem linkTo={`/class/${num}/vid-lecture`}>
-                                    <div className="draft-ment">화상 강의 진행중</div>
-                                    <svg width="18" height="18" viewBox="0 0 24 24">
-                                        <path
-                                            fill="white"
-                                            d="M15,12V20H5V12H15M16,10H4A1,1 0 0,0 3,11V21A1,1 0 0,0 4,22H16A1,1 0 0,0 17,21V17.5L21,21.5V10.5L17,14.5V11A1,1 0 0,0 16,10M3,3.86L4.4,5.24C7.5,2.19 12.5,2.19 15.6,5.24L17,3.86C13.14,0.05 6.87,0.05 3,3.86M5.8,6.63L7.2,8C8.75,6.5 11.25,6.5 12.8,8L14.2,6.63C11.88,4.34 8.12,4.34 5.8,6.63Z"
-                                        />
-                                    </svg>
-                                </LeftNavItem>
-                            </div>
-                        ) : null
-                    ) : (
+                    {sessions.userType === 'students' ? //                 <path //             <svg width="18" height="18" viewBox="0 0 24 24"> //             <div className="draft-ment">화상 강의 진행중</div> //         <LeftNavItem linkTo={`/class/${num}/vid-lecture`}> //     <div className="a-wrapper"> // hasVideoLecture ? (
+                    //                     fill="white"
+                    //                     d="M15,12V20H5V12H15M16,10H4A1,1 0 0,0 3,11V21A1,1 0 0,0 4,22H16A1,1 0 0,0 17,21V17.5L21,21.5V10.5L17,14.5V11A1,1 0 0,0 16,10M3,3.86L4.4,5.24C7.5,2.19 12.5,2.19 15.6,5.24L17,3.86C13.14,0.05 6.87,0.05 3,3.86M5.8,6.63L7.2,8C8.75,6.5 11.25,6.5 12.8,8L14.2,6.63C11.88,4.34 8.12,4.34 5.8,6.63Z"
+                    //                 />
+                    //             </svg>
+                    //         </LeftNavItem>
+                    //     </div>
+                    // ) : null
+                    null : (
                         <div className="a-wrapper">
                             <LeftNavItem linkTo={`/main-draft`}>
                                 <div className="draft-button">
@@ -266,13 +261,9 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                         <>
                             <div className="a-wrapper">
                                 <LeftNavItem linkTo={`/class/${num}/vid-lecture`}>
-                                    <svg width="15" height="17" viewBox="0 0 22 24">
-                                        <path
-                                            fill="white"
-                                            d="M15,12V20H5V12H15M16,10H4A1,1 0 0,0 3,11V21A1,1 0 0,0 4,22H16A1,1 0 0,0 17,21V17.5L21,21.5V10.5L17,14.5V11A1,1 0 0,0 16,10M3,3.86L4.4,5.24C7.5,2.19 12.5,2.19 15.6,5.24L17,3.86C13.14,0.05 6.87,0.05 3,3.86M5.8,6.63L7.2,8C8.75,6.5 11.25,6.5 12.8,8L14.2,6.63C11.88,4.34 8.12,4.34 5.8,6.63Z"
-                                        />
-                                    </svg>
-                                    <p>실시간 화상 강의</p>
+                                    <VideocamIcon fontSize="small" style={{ marginLeft: -3 }} />
+                                    <p>화상 강의</p>
+                                    <div className="live-streaming-mark">LIVE</div>
                                 </LeftNavItem>
                             </div>
                             <div className="a-wrapper">

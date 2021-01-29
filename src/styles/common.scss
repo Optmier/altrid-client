@@ -382,6 +382,19 @@ body {
         display: none;
     }
 
+    & .live-streaming-mark {
+        background-color: #ff7a60;
+        border: none;
+        border-radius: 10px;
+        color: #ffffff;
+        margin-left: auto;
+        width: 44px;
+        height: 19px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-align: center;
+    }
+
     @media all and (min-width: 769px) and (max-width: 1280) {
         input {
             border: none;
