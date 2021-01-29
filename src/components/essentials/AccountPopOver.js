@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Popover, Card, CardContent, Avatar, CardActions, List, ListItem, withStyles, makeStyles, Divider } from '@material-ui/core';
 import * as $ from 'jquery';
+import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,7 +47,7 @@ function ListItemLink(props) {
     return <EdListItem button component="a" {...props} />;
 }
 
-function AccountPopOver({ targetEl, userName }) {
+function AccountPopOver({ targetEl, userName, history }) {
     const classes = useStyles();
     const [accountPopOverAnchorEl, setAccountPopOverAnchorEl] = useState(null);
     const accountPopOverOpen = Boolean(accountPopOverAnchorEl);
@@ -116,6 +117,9 @@ function AccountPopOver({ targetEl, userName }) {
                         <EdListItem button onClick={handleLogout}>
                             로그아웃
                         </EdListItem>
+                        <EdListItem button onClick={() => history.replace('/mypage')}>
+                            마이페이지
+                        </EdListItem>
                     </List>
                 </CardActions>
             </Card>
@@ -123,4 +127,4 @@ function AccountPopOver({ targetEl, userName }) {
     );
 }
 
-export default AccountPopOver;
+export default withRouter(AccountPopOver);

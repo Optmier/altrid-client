@@ -17,7 +17,7 @@ import styled from 'styled-components';
 import TopNav from '../components/essentials/TopNav';
 import * as $ from 'jquery';
 
-const StyleDiv = styled.div`
+const SlideWrapper = styled.div`
     transition: all 0.4s;
 
     @media (min-width: 903px) {
@@ -83,16 +83,11 @@ function Class({ match }) {
     return (
         <>
             <LeftNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} />
-            <StyleDiv leftNavState={leftNavState} className="class-page-root">
+            <SlideWrapper leftNavState={leftNavState} className="class-page-root">
                 <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
                 <BackdropComponent open={loading && !data && !error} />
-                {error ? (
-                    <Error />
-                ) : !data && sessions.userType === 'teachers' ? null : (
-                    // <ClassPageSwitcher sessions={sessions} match={stMatch} />
-                    RenderSubPage
-                )}
-            </StyleDiv>
+                {error ? <Error /> : !data && sessions.userType === 'teachers' ? null : RenderSubPage}
+            </SlideWrapper>
         </>
     );
 }
