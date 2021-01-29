@@ -139,6 +139,9 @@
                 & .mobile-student-num {
                     display: none;
                 }
+                & .mobile-test-state {
+                    display: none;
+                }
                 & .date-content {
                     display: flex;
                     align-items: flex-end;
@@ -156,7 +159,7 @@
                 height: 100%;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
+                justify-content: center;
 
                 & .student-complete-text {
                     width: 100%;
@@ -170,6 +173,10 @@
             width: 100%;
             display: flex;
             justify-content: flex-end;
+
+            & > span + span {
+                margin-left: 14px;
+            }
         }
     }
 
@@ -229,6 +236,7 @@
     @media (min-width: 0) and (max-width: 662px) {
         & .class-card-flex {
             & .class-card-top {
+                margin-bottom: 20px;
                 & .class-card-left {
                     width: 100%;
                     & .mobile-student-num {
@@ -240,22 +248,24 @@
                             width: 95px;
                             font-size: 0.875rem;
                             font-weight: 600;
-                            color: #706d6d;
+                            color: #2e2c2c;
                             margin: 0;
                             text-overflow: ellipsis;
                             white-space: nowrap;
                             overflow: hidden;
                         }
                         & .contents {
-                            font-size: 1.15rem;
-                            font-weight: 500;
+                            font-size: 0.875rem;
                             font-weight: 400;
-                            color: #706d6d;
+                            color: #2e2c2c;
                             margin: 0;
                             text-overflow: ellipsis;
                             white-space: nowrap;
                             overflow: hidden;
                         }
+                    }
+                    & .mobile-test-state {
+                        display: block;
                     }
                 }
                 & .class-card-right {

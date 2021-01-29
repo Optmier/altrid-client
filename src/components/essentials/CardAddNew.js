@@ -9,7 +9,7 @@ function CardAddNew({ children, ...rest }) {
                 <div className="icon-container">
                     <AddIcon />
                 </div>
-                <p>{children}</p>
+                <p style={{ fontWeight: '600' }}>{children}</p>
             </div>
         </div>
     );

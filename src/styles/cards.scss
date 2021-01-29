@@ -40,6 +40,9 @@ $cardHover: #f6f7f9;
                 &.wider {
                     width: 468px;
                     height: 280px;
+                    @media (min-width: 0) and (max-width: 662px) {
+                        height: auto;
+                    }
                 }
 
                 &:hover {

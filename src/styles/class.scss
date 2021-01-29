@@ -25,7 +25,7 @@ $textGray: #706d6d;
         font-size: 16px;
         font-weight: 400;
         width: 100%;
-        padding: 34px 0;
+        padding: 1rem 0;
         & > b {
             font-weight: 600;
         }
@@ -44,6 +44,41 @@ $textGray: #706d6d;
                 margin: 20px 0;
                 width: 100%;
                 text-align: center;
+            }
+        }
+        & .class-share-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 54px;
+
+            & .header-title {
+                font-size: 1.75rem;
+                font-weight: 600;
+                margin-right: 50px;
+            }
+            & .header-menu {
+                display: flex;
+
+                & > button {
+                    font-size: 1.12rem;
+                    font-weight: 500;
+                    background-color: transparent;
+                    padding: 5px;
+                }
+                & > button + button {
+                    margin-left: 25px;
+                }
+            }
+
+            @media (min-width: 0) and (max-width: 662px) {
+                margin-bottom: 30px;
+
+                & .header-title {
+                    font-size: 1.5rem;
+                }
+                & .header-menu {
+                    display: none;
+                }
             }
         }
 

@@ -23,6 +23,7 @@ import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import Error from '../../pages/Error';
 import TooltipCard from '../essentials/TooltipCard';
 import CardPopOverShare from '../essentials/CardPopOverShare';
+import StudentState from './StudentState';
 
 const pad = (n, width) => {
     n = n + '';
@@ -112,25 +113,29 @@ const HtmlTooltip2 = withStyles((theme) => ({
 
 function CardShare({ testNum, cardData, tries, totalStudents, history, match }) {
     let path = history.location.pathname;
+    const dispatch = useDispatch();
+
     /** Redux-state */
     const { data } = useSelector((state) => state.assignmentActived.dueData);
     const sessions = useSelector((state) => state.RdxSessions);
     const { datetime, loading, error } = useSelector((state) => state.RdxServerDate);
-    const dispatch = useDispatch();
 
-    /** class-dialog 메소드 */
-    // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
+    /** component-state */
+    const [subTypeState, setSubTypeState] = useState('init');
     const [dateDialogopen, setDateDialogopen] = useState(false);
     const [testDialogopen, setTestDialogopen] = useState(false);
     const [deleteDialogopen, setDeleteDialogopen] = useState(false);
 
-    /** 옵션 버튼 state */
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null); //옵션 버튼 state
+    const [assignmentTypeState, setAssignmentTypeState] = useState(0); //유형별 분석 메소드
+    const [toggleState, setToggleState] = useState({
+        checked: new Date(cardData['due_date']).getTime() >= datetime && new Date(cardData['created']).getTime() <= datetime, // toggle state
+    });
+    const [openPreview, setOpenPreview] = useState(false); //ProblemPreview 메소드
 
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
     };
-
     const handleDeleteDialogOpen = () => {
         setDeleteDialogopen(true);
         handleOptionClose();
@@ -146,7 +151,6 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
             setDeleteDialogopen(false);
         }
     };
-
     /** toggle 버튼 메소드 */
     const handleTestDialogClose = (e) => {
         const { name } = e.target;
@@ -180,8 +184,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
             dispatch(changeDueDate(''));
         }
     };
-
-    //과제 기한 수정 클릭
+    /** 과제 기한 수정 클릭 */
     const handleDateDialogClose = (e) => {
         const { name } = e.target;
 
@@ -198,31 +201,12 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
 
         dispatch(changeDueDate(''));
     };
-    /** =================== */
-
-    /** toggle state */
-    const [toggleState, setToggleState] = useState({
-        checked: new Date(cardData['due_date']).getTime() >= datetime && new Date(cardData['created']).getTime() <= datetime,
-    });
-
-    useEffect(() => {
-        if (!datetime) return;
-        setToggleState({
-            ...toggleState,
-            checked: new Date(cardData['due_date']).getTime() >= datetime && new Date(cardData['created']).getTime() <= datetime,
-        });
-    }, [cardData['due_date'], datetime]);
-
-    const [subTypeState, setSubTypeState] = useState('init');
-
     const handleToggleChange = () => {
         //setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
 
         toggleState['checked'] ? setSubTypeState('init') : setSubTypeState('modify');
         handleDialogOpen('test');
     };
-    /**===================== */
-
     /** 학생인 경우 과제 수행 */
     const onAssignmentCardItemClick = (idx, classNumber, assignmentTitle) => {
         const conf = window.confirm('과제를 시작하시겠습니까?');
@@ -274,59 +258,70 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
             // open.addEventListener('load', windowOpened);
         }
     };
-
     /** modify state */
     const handleDateChange = () => {
         handleDialogOpen('date');
     };
-
-    /** ProblemPreview 메소드 */
-    const [openPreview, setOpenPreview] = useState(false);
-
     const handlePreviewOpen = () => {
         if (cardData['contents_data'].flatMap((m) => m.problemDatas).length === 0) {
             return alert('과제 수정을 통해 에디터에서 문항을 추가해주세요 !');
         }
         setOpenPreview(true);
     };
-
     const handlePreviewClose = () => {
         setOpenPreview(false);
     };
+    const handleGoToReport = () => {
+        handleOptionClose();
 
+        if (sessions.userType === 'students') {
+            history.push(`${path}/${testNum}/details?user=${sessions.authId}`);
+        } else {
+            if (!totalStudents) {
+                alert('아직 클래스에 초대된 학생이 없습니다.\n학생들을 클래스에 초대 후, 이용 부탁드립니다.');
+                return;
+            } else if (!cardData['submitted_number']) {
+                alert('아직 제출한 학생이 없습니다.');
+                return;
+            } else {
+                history.push(`${path}/${testNum}`);
+            }
+        }
+    };
+    const handleCardClick = (e) => {
+        if (e.target.id === 'modify') {
+            return;
+        }
+        if (sessions.userType === 'teachers') {
+            handleGoToReport();
+            handleOptionClose();
+        }
+    };
     const handlePreTest = (e) => {
         const $target = $(e.target);
-        if (
-            !(
-                $target.parents('.card-option').length ||
-                $target.attr('class') === 'card-option' ||
-                $target.parents('.date-item').length ||
-                $target.attr('class') === 'date-item' ||
-                $target.parents('.goto-reports').length ||
-                $target.attr('class') === 'goto-reports'
-            )
-        ) {
-            if (new Date(cardData.created).getTime() > datetime && sessions.userType === 'students') {
-                alert('아직 시작되지 않은 과제입니다.');
-                return;
-            } else if (new Date(cardData.due_date).getTime() < datetime && sessions.userType === 'students') {
-                alert('기간이 지난 과제이므로 리포트 조회만 가능합니다.');
-                return;
-            } else if (tries && cardData.time_limit !== -2) {
-                alert('시도횟수를 초과하셨습니다.\n문제가 발생한 경우는 선생님께 문의해 주세요!');
-                return;
-            }
 
-            if (sessions.userType === 'students') {
-                onAssignmentCardItemClick(testNum, match.params.num, cardData['title']);
-            } else handlePreviewOpen();
+        if (!($target.parents('.card-option').length || $target.attr('class') === 'card-option')) {
+            handlePreviewOpen();
         }
-
-        handleOptionClose();
+    };
+    const handleStartTest = (e) => {
+        onAssignmentCardItemClick(testNum, match.params.num, cardData['title']);
+    };
+    /** 옵션 버튼 메소드 */
+    const handleOptionClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleOptionClose = () => {
+        setAnchorEl(null);
     };
 
-    /** 유형별 분석 메소드 */
-    const [assignmentTypeState, setAssignmentTypeState] = useState(0);
+    useEffect(() => {
+        if (!datetime) return;
+        setToggleState({
+            ...toggleState,
+            checked: new Date(cardData['due_date']).getTime() >= datetime && new Date(cardData['created']).getTime() <= datetime,
+        });
+    }, [cardData['due_date'], datetime]);
 
     const _o = {};
     useEffect(() => {
@@ -349,32 +344,6 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         );
         return () => {};
     }, [cardData['contents_data']]);
-
-    const handleGoToReport = () => {
-        handleOptionClose();
-
-        if (sessions.userType === 'students') {
-            history.push(`${path}/${testNum}/details?user=${sessions.authId}`);
-        } else {
-            if (!totalStudents) {
-                alert('아직 클래스에 초대된 학생이 없습니다.\n학생들을 클래스에 초대 후, 이용 부탁드립니다.');
-                return;
-            } else if (!cardData['submitted_number']) {
-                alert('아직 제출한 학생이 없습니다.');
-                return;
-            } else {
-                history.push(`${path}/${testNum}`);
-            }
-        }
-    };
-
-    /** 옵션 버튼 메소드 */
-    const handleOptionClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleOptionClose = () => {
-        setAnchorEl(null);
-    };
 
     if (loading === true && datetime === null)
         return <div style={{ backgroundColor: '#eeeeee', width: '100%', height: '100%', borderRadius: '10px' }}></div>;
@@ -414,19 +383,9 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                     <span className="card-option">
                         {sessions.userType === 'students' ? (
                             <>
-                                {toggleState['checked'] ? (
-                                    <span style={{ color: '#ffffff', fontSize: 14 }}>
-                                        {cardData.time_limit === -2 && tries
-                                            ? '제출됨, 재시도'
-                                            : cardData.time_limit !== -2 && tries
-                                            ? '제출됨'
-                                            : '진행중'}
-                                    </span>
-                                ) : (
-                                    <span style={{ color: '#989696', fontSize: 14 }}>
-                                        {new Date(cardData.created).getTime() > datetime ? '시작전' : '완료됨'}
-                                    </span>
-                                )}
+                                <span style={{ color: 'white', fontSize: 14 }}>
+                                    {new Date(cardData.due_date).getTime() > datetime ? '과제 진행중' : '과제 완료됨'}
+                                </span>
                             </>
                         ) : (
                             <div className="card-option-teacher">
@@ -455,7 +414,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                     </span>
                 </div>
 
-                <div className="class-card-flex class-card-wrapper" onClick={handlePreTest}>
+                <div className="class-card-flex class-card-wrapper" onClick={handleCardClick}>
                     <div className="class-card-top">
                         <div className="class-card-left">
                             <div className="class-card-contents ">
@@ -473,9 +432,6 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                         contents={cardData['contents_data'].flatMap((m) => m.problemDatas).length + '문제'}
                                     />
                                     <TimeItems title={'제한시간'} time_limit={cardData['time_limit']} />
-                                    {sessions.userType === 'students' ? (
-                                        <TriesItems title={'시도횟수'} tries={!tries ? '없음' : tries} />
-                                    ) : null}
                                     <DateItems
                                         title={'과제기한'}
                                         start={moment(cardData['created']).format('MM.DD HH:mm')}
@@ -483,62 +439,65 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                         userType={sessions.userType}
                                         handleDateChange={handleDateChange}
                                     />
-                                    <InfoItems
-                                        title={'유형별 분석'}
-                                        contents={
-                                            assignmentTypeState < 100 ? (
-                                                <HtmlTooltip2
-                                                    title={
-                                                        <>
-                                                            <ErrorOutlineIcon />
-                                                            <p>유형별 분석의 최소 조건은 상단 뱃지를 클릭하여 확인해주세요!</p>
-                                                        </>
-                                                    }
-                                                >
-                                                    <p style={{ color: '#ff8383' }}>불가능</p>
-                                                </HtmlTooltip2>
-                                            ) : (
-                                                '가능'
-                                            )
-                                        }
-                                    />
-                                    <div className="mobile-student-num">
-                                        <div className="title">제출한 학생</div>
-                                        <div className="contents">
-                                            {pad(cardData['submitted_number'], 2)} / {pad(totalStudents, 2)}
+                                    {sessions.userType === 'students' ? (
+                                        <div className="mobile-test-state">
+                                            <StudentState
+                                                assignmentState={new Date(cardData.due_date).getTime() > datetime ? true : false}
+                                                state={
+                                                    cardData.time_limit === -2 && tries
+                                                        ? 'ing'
+                                                        : cardData.time_limit !== -2 && tries
+                                                        ? 'done'
+                                                        : 'pre'
+                                                }
+                                                handlePreTest={handlePreTest}
+                                                handleStartTest={handleStartTest}
+                                                handleGoToReport={handleGoToReport}
+                                                dueDate={new Date(cardData.due_date)}
+                                            />
                                         </div>
-                                    </div>
+                                    ) : (
+                                        <div className="mobile-student-num">
+                                            <div className="title">제출한 학생</div>
+                                            <div className="contents">
+                                                {pad(cardData['submitted_number'], 2)} / {pad(totalStudents, 2)}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
                         <div className="class-card-right">
                             <div className="class-card-contents">
-                                {sessions.userType === 'students' ? null : (
+                                {sessions.userType === 'students' ? (
+                                    <StudentState
+                                        assignmentState={new Date(cardData.due_date).getTime() > datetime ? true : false}
+                                        state={
+                                            cardData.time_limit === -2 && tries
+                                                ? 'ing'
+                                                : cardData.time_limit !== -2 && tries
+                                                ? 'done'
+                                                : 'pre'
+                                        }
+                                        handlePreTest={handlePreTest}
+                                        handleStartTest={handleStartTest}
+                                        handleGoToReport={handleGoToReport}
+                                        dueDate={new Date(cardData.due_date)}
+                                    />
+                                ) : (
                                     <>
                                         <StudentNum completeNum={pad(cardData['submitted_number'], 2)} totalNum={pad(totalStudents, 2)} />
                                         <div className="student-complete-text">제출한 학생</div>
                                     </>
                                 )}
                             </div>
-
-                            {/* <div className="class-card-bottom-right card-bottom-p">
-                            {(sessions.userType === 'students' && tries && new Date(cardData['due_date']).getTime() < datetime) ||
-                            sessions.userType !== 'students' ? (
-                                <div className="goto-reports">
-                                    <div className="share-report">
-                                        {sessions.userType === 'students' ? '나의 리포트' : '과제별 리포트 보기'} <IoIosArrowForward />
-                                    </div>
-                                </div>
-                            ) : sessions.userType === 'students' && tries ? (
-                                <span style={{ color: 'rgb(152, 150, 150)', fontSize: '0.75rem', minWidth: '9.1rem', textAlign: 'end' }}>
-                                    기한 종료 후 리포트 활성화
-                                </span>
-                            ) : null}
-                        </div> */}
                         </div>
                     </div>
 
                     <div className="class-card-bottom">
+                        {sessions.userType === 'students' ? null : (
+                            <IsPresence type={'analysis'} able={assignmentTypeState} align="left" fontSize="0.85rem" />
+                        )}
                         <IsPresence type={'eye'} able={parseInt(cardData['eyetrack'])} align="left" fontSize="0.85rem" />
                     </div>
                 </div>

@@ -6,14 +6,13 @@ import LoginButtons from '../components/Login/LoginButtons';
 import '../styles/logins.scss';
 import { apiUrl } from '../configs/configs';
 import { withRouter } from 'react-router-dom';
-import { Link, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import * as $ from 'jquery';
-import TeachersList from '../components/Login/TeachersList';
 import { $_loginDefault, $_loginStudent, $_loginTeacher } from '../configs/front_urls';
 import Radio from '@material-ui/core/Radio';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import isMobile from '../controllers/isMobile';
 
 const WhiteRadio = withStyles({
     root: {
@@ -475,7 +474,7 @@ function Login({ history }) {
             <main className={classNames('login-page', usertype === 'students' ? 'students' : 'teachers')}>
                 <section className="contents-root">{getContentsForStep(loginStep)}</section>
             </main>
-            <Footer />
+            {isMobile ? null : <Footer />}
         </>
     );
 }

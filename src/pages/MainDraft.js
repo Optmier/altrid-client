@@ -163,7 +163,7 @@ function MainDraft({ match }) {
                         <CardLists
                             upperDeck={
                                 <div style={{ color: 'white', fontSize: '20px' }} className="class-title">
-                                    <b>{sessions.userName}</b> 선생님께서 만드신 과제는 총 <b>{data.length}개</b> 입니다.
+                                    <b>{sessions.userName}</b> 선생님의 과제 <b>{data.length}개</b>
                                 </div>
                             }
                         >
