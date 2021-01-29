@@ -194,7 +194,7 @@ function App({ history }) {
                         <Route path="/video-lecture-eyetracker/:classnum" component={VideoLectureEyetracker} exact />
                         <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
-                        <Route path="/mypage" component={MyPage} exact />
+                        <Route path="/mypage/:menu" component={MyPage} />
 
                         {navigator.userAgent.toLowerCase().includes('isnativeapp') ? (
                             <Route path="/login-mobile-app-redirect" component={LoginMobileAppRedirect} exact />

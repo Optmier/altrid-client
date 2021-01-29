@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import '../styles/mypage.scss';
-import LeftNav from '../components/essentials/LeftNav';
 import TopNav from '../components/essentials/TopNav';
 import ClassWrapper from '../components/essentials/ClassWrapper';
+import LeftNavMyPage from '../components/essentials/LeftNavMyPage';
+import Error from './Error';
+import Profile from '../components/MyPage/Profile';
+import Plan from '../components/MyPage/Plan';
+import DeleteAccount from '../components/MyPage/DeleteAccount';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -17,9 +21,21 @@ const SlideWrapper = styled.div`
     }
 `;
 
-const MyPageSwitcher = () => {};
+const MyPageSwitcher = (menu) => {
+    switch (menu) {
+        case 'profile':
+            return <Profile />;
+        case 'manage-plan':
+            return <Plan />;
+        case 'delete-account':
+            return <DeleteAccount />;
 
-function MyPage() {
+        default:
+            return <Error />;
+    }
+};
+
+function MyPage({ match }) {
     const [leftNavState, setLeftNavState] = useState(window.innerWidth > 902);
 
     const handleLeftNav = () => {
@@ -28,10 +44,10 @@ function MyPage() {
 
     return (
         <>
-            <LeftNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} />
+            <LeftNavMyPage leftNavState={leftNavState} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} />
             <SlideWrapper leftNavState={leftNavState} className="mypage-root">
                 <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
-                <ClassWrapper>{MyPageSwitcher}</ClassWrapper>
+                <ClassWrapper>{MyPageSwitcher(match.params.menu)}</ClassWrapper>
             </SlideWrapper>
         </>
     );

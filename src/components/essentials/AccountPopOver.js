@@ -117,7 +117,7 @@ function AccountPopOver({ targetEl, userName, history }) {
                         <EdListItem button onClick={handleLogout}>
                             로그아웃
                         </EdListItem>
-                        <EdListItem button onClick={() => history.replace('/mypage')}>
+                        <EdListItem button onClick={() => history.replace('/mypage/profile')}>
                             마이페이지
                         </EdListItem>
                     </List>
