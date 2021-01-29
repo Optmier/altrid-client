@@ -118,17 +118,13 @@ function StudentState({ state, assignmentState, handlePreTest, handleStartTest, 
             <div className="buttons">
                 {assignmentState ? (
                     state === 'pre' ? (
-                        isMobile ? null : (
-                            <button onClick={handleStartTest} className="main">
-                                과제 풀기
-                            </button>
-                        )
+                        <button onClick={handleStartTest} className="main">
+                            과제 풀기
+                        </button>
                     ) : state === 'ing' ? (
-                        isMobile ? null : (
-                            <button onClick={handleStartTest} className="main">
-                                이어 풀기
-                            </button>
-                        )
+                        <button onClick={handleStartTest} className="main">
+                            이어 풀기
+                        </button>
                     ) : (
                         <button onClick={handleGoToReport} className="sub">
                             리포트 보기
