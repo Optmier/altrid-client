@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
+import isMobile from '../../controllers/isMobile';
 
 const StyleDiv = styled.div`
     display: flex;
@@ -117,13 +118,17 @@ function StudentState({ state, assignmentState, handlePreTest, handleStartTest, 
             <div className="buttons">
                 {assignmentState ? (
                     state === 'pre' ? (
-                        <button onClick={handleStartTest} className="main">
-                            과제 풀기
-                        </button>
+                        isMobile ? null : (
+                            <button onClick={handleStartTest} className="main">
+                                과제 풀기
+                            </button>
+                        )
                     ) : state === 'ing' ? (
-                        <button onClick={handleStartTest} className="main">
-                            이어 풀기
-                        </button>
+                        isMobile ? null : (
+                            <button onClick={handleStartTest} className="main">
+                                이어 풀기
+                            </button>
+                        )
                     ) : (
                         <button onClick={handleGoToReport} className="sub">
                             리포트 보기

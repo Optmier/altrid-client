@@ -18,7 +18,6 @@ import * as $ from 'jquery';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
 import { Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import Error from '../../pages/Error';
 import TooltipCard from '../essentials/TooltipCard';
