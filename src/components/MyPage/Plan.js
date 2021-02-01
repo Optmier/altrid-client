@@ -4,6 +4,7 @@ function Plan() {
     const handlePlanBtn = () => {
         alert('현재는 베타 서비스 기간으로, 플랜변경이 불가능합니다!');
     };
+
     return (
         <div className="plan-root">
             <div className="mypage-title">플랜 관리</div>

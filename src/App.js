@@ -96,17 +96,20 @@ function App({ history }) {
                 //         break;
                 // }
 
-                const { authId, academyCode, exp, iat, iss, userName, userType, image } = res1.data;
+                const { authId, exp, academyCode, iat, iss, userName, userType, image } = res1.data;
                 saveSessions(authId, userName, userType, academyCode, null, iss, iat, exp, image);
 
                 Axios.get(`${apiUrl}/academies/current/name`, { withCredentials: true })
                     .then((res2) => {
                         const academyName = res2.data.name;
-                        updateSessions({ academyName: academyName });
+
+                        if (academyName) {
+                            updateSessions({ academyName: academyName });
+                        }
                         try {
                             window.Android.ShowWebView();
                         } catch (error) {
-                            // console.error(error);
+                            console.error(error);
                         }
                     })
                     .catch((err) => {

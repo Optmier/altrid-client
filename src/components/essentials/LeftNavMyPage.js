@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../styles/nav_left.scss';
 import { NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 const StyleLeftNav = styled.div`
     transition: all 0.4s;
@@ -26,6 +27,8 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
 });
 
 function LeftNavMyPage({ history, leftNavState, handleLeftNav, setLeftNavState }) {
+    const sessions = useSelector((state) => state.RdxSessions);
+
     useEffect(() => {
         if (window.innerWidth <= 902) {
             setLeftNavState(false);
@@ -81,19 +84,22 @@ function LeftNavMyPage({ history, leftNavState, handleLeftNav, setLeftNavState }
                             <p>프로필 설정</p>
                         </LeftNavItem>
                     </div>
-                    <div className="a-wrapper">
-                        <LeftNavItem linkTo={`/mypage/manage-plan`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13.11" viewBox="0 0 12 13.11">
-                                <path
-                                    id="mdi_file_copy"
-                                    d="M10.342.75H2.763A1.233,1.233,0,0,0,1.5,1.942v8.343H2.763V1.942h7.579ZM9.711,3.134,13.5,6.709v5.959a1.233,1.233,0,0,1-1.263,1.192H5.283a1.227,1.227,0,0,1-1.257-1.192l.006-8.343A1.227,1.227,0,0,1,5.289,3.134ZM9.079,7.305h3.474L9.079,4.028Z"
-                                    transform="translate(-1.5 -0.75)"
-                                    fill="#fff"
-                                />
-                            </svg>
-                            <p>플랜 관리</p>
-                        </LeftNavItem>
-                    </div>
+                    {sessions.userType === 'teachers' ? (
+                        <div className="a-wrapper">
+                            <LeftNavItem linkTo={`/mypage/manage-plan`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13.11" viewBox="0 0 12 13.11">
+                                    <path
+                                        id="mdi_file_copy"
+                                        d="M10.342.75H2.763A1.233,1.233,0,0,0,1.5,1.942v8.343H2.763V1.942h7.579ZM9.711,3.134,13.5,6.709v5.959a1.233,1.233,0,0,1-1.263,1.192H5.283a1.227,1.227,0,0,1-1.257-1.192l.006-8.343A1.227,1.227,0,0,1,5.289,3.134ZM9.079,7.305h3.474L9.079,4.028Z"
+                                        transform="translate(-1.5 -0.75)"
+                                        fill="#fff"
+                                    />
+                                </svg>
+                                <p>플랜 관리</p>
+                            </LeftNavItem>
+                        </div>
+                    ) : null}
+
                     <div className="a-wrapper">
                         <LeftNavItem linkTo={`/mypage/delete-account`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13.11" viewBox="0 0 12 13.11">

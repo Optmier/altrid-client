@@ -8,6 +8,7 @@ import Error from './Error';
 import Profile from '../components/MyPage/Profile';
 import Plan from '../components/MyPage/Plan';
 import DeleteAccount from '../components/MyPage/DeleteAccount';
+import { useSelector } from 'react-redux';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -21,12 +22,16 @@ const SlideWrapper = styled.div`
     }
 `;
 
-const MyPageSwitcher = (menu) => {
+const MyPageSwitcher = (menu, userType) => {
     switch (menu) {
         case 'profile':
             return <Profile />;
         case 'manage-plan':
-            return <Plan />;
+            if (userType === 'teachers') {
+                return <Plan />;
+            } else {
+                return <Error />;
+            }
         case 'delete-account':
             return <DeleteAccount />;
 
@@ -37,6 +42,7 @@ const MyPageSwitcher = (menu) => {
 
 function MyPage({ match }) {
     const [leftNavState, setLeftNavState] = useState(window.innerWidth > 902);
+    const sessions = useSelector((state) => state.RdxSessions);
 
     const handleLeftNav = () => {
         setLeftNavState(!leftNavState);
@@ -47,7 +53,7 @@ function MyPage({ match }) {
             <LeftNavMyPage leftNavState={leftNavState} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} />
             <SlideWrapper leftNavState={leftNavState} className="mypage-root">
                 <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
-                <ClassWrapper>{MyPageSwitcher(match.params.menu)}</ClassWrapper>
+                <ClassWrapper>{MyPageSwitcher(match.params.menu, sessions.userType)}</ClassWrapper>
             </SlideWrapper>
         </>
     );

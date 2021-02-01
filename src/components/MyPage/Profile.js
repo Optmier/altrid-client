@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
+import { useSelector } from 'react-redux';
 
 function Profile() {
+    const sessions = useSelector((state) => state.RdxSessions);
+
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [emailWith, setEmailWith] = useState('');
     const [academyName, setAcademyName] = useState('');
     const [academyCode, setAcademyCode] = useState('');
-    const [image, setImage] = useState('');
 
     const handleSave = () => {
         Axios.put(
@@ -31,22 +33,23 @@ function Profile() {
     };
 
     useEffect(() => {
-        Axios.get(`${apiUrl}/my-page/profile`, { withCredentials: true })
-            .then((res) => {
-                const { name, email, academy_code, academy_name, auth_with, image } = res.data;
-                setName(name);
-                setEmail(email);
-                setEmailWith(auth_with);
-                setAcademyName(academy_name);
-                setAcademyCode(academy_code);
-                setImage(image);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        if (sessions.userType) {
+            Axios.get(`${apiUrl}/my-page/profile/${sessions.userType}`, { withCredentials: true })
+                .then((res) => {
+                    const { name, email, academy_code, academy_name, auth_with } = res.data;
+                    setName(name);
+                    setEmail(email);
+                    setEmailWith(auth_with);
+                    setAcademyName(academy_name);
+                    setAcademyCode(academy_code);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
 
         return () => {};
-    }, []);
+    }, [sessions.userType]);
 
     return (
         <div className="profile-root">
@@ -54,8 +57,8 @@ function Profile() {
             <section>
                 <div className="mypage-header">프로필 사진</div>
                 <div className="mypage-contents profile-image">
-                    {image ? (
-                        <img src={image} alt="my_profile.." />
+                    {sessions.image ? (
+                        <img src={sessions.image} alt="my_profile.." />
                     ) : (
                         <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -89,12 +92,15 @@ function Profile() {
                     </div>
                     <div className="row">
                         <div className="row-title">학원명</div>
-                        <div className="row-desc">{academyName}</div>
+                        <div className="row-desc">{academyName ? academyName : '클래스를 입장하시면, 자동으로 학원 등록됩니다.'}</div>
                     </div>
-                    <div className="row">
-                        <div className="row-title">학원코드</div>
-                        <div className="row-desc">{academyCode} </div>
-                    </div>
+
+                    {sessions.userType === 'teachers' ? (
+                        <div className="row">
+                            <div className="row-title">학원코드</div>
+                            <div className="row-desc">{academyCode} </div>
+                        </div>
+                    ) : null}
                 </div>
             </section>
 
