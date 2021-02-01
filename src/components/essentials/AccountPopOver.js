@@ -47,7 +47,7 @@ function ListItemLink(props) {
     return <EdListItem button component="a" {...props} />;
 }
 
-function AccountPopOver({ targetEl, userName, history }) {
+function AccountPopOver({ targetEl, image, userName, history }) {
     const classes = useStyles();
     const [accountPopOverAnchorEl, setAccountPopOverAnchorEl] = useState(null);
     const accountPopOverOpen = Boolean(accountPopOverAnchorEl);
@@ -99,8 +99,12 @@ function AccountPopOver({ targetEl, userName, history }) {
         >
             <Card className={classes.root}>
                 <CardContent>
-                    <div style={{ width: '100%' }}>
-                        <Avatar src="/broken-image.jpg" style={{ width: 72, height: 72, margin: '0 auto' }} />
+                    <div className="nav-popover-acc-header">
+                        {image ? (
+                            <img src={image} alt="avatar" />
+                        ) : (
+                            <Avatar src="/broken-image.jpg" style={{ width: 72, height: 72, margin: '0 auto' }} />
+                        )}
                         <div className="nav-popover-acc-name">{userName} 님</div>
                     </div>
                 </CardContent>

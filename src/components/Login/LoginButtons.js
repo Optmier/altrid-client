@@ -72,7 +72,7 @@ function LoginButtons({ onSuccessGoogleAuth, onFailedGoogleAuth, onSuccessKakaoA
                     cookiePolicy={'single_host_origin'}
                 />
                 <div className="auth-kakao-root">
-                    <img className="simbol" src={SimbolLoginWithKakao} width="18" height="18" />
+                    <img alt="img.." className="simbol" src={SimbolLoginWithKakao} width="18" height="18" />
                     <KakaoLogin
                         className="button-auth kakao"
                         jsKey={kakaoAuthJSKey}

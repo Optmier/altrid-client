@@ -45,8 +45,8 @@ const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin,
 function App({ history }) {
     const dispatch = useDispatch();
     const saveSessions = useCallback(
-        (authId, userName, userType, academyCode, academyName, issuer, iat, exp) =>
-            dispatch(saveSession(authId, userName, userType, academyCode, academyName, issuer, iat, exp)),
+        (authId, userName, userType, academyCode, academyName, issuer, iat, exp, image) =>
+            dispatch(saveSession(authId, userName, userType, academyCode, academyName, issuer, iat, exp, image)),
         [dispatch],
     );
     const updateSessions = useCallback((updateStates) => dispatch(updateSession(updateStates)), [dispatch]);
@@ -95,8 +95,9 @@ function App({ history }) {
                 //         }
                 //         break;
                 // }
-                const { authId, academyCode, exp, iat, iss, userName, userType } = res1.data;
-                saveSessions(authId, userName, userType, academyCode, null, iss, iat, exp);
+
+                const { authId, academyCode, exp, iat, iss, userName, userType, image } = res1.data;
+                saveSessions(authId, userName, userType, academyCode, null, iss, iat, exp, image);
 
                 Axios.get(`${apiUrl}/academies/current/name`, { withCredentials: true })
                     .then((res2) => {
@@ -113,7 +114,6 @@ function App({ history }) {
                     });
             })
             .catch((err) => {
-                console.log(err.response);
                 if (err.response.status === 401) {
                     if (!loginUrls.includes(history.location.pathname)) {
                         // alert('로그인이 필요합니다.');

@@ -5,7 +5,7 @@ const REFRESH_SESSION = 'REFRESH_SESSION';
 const DELETE_SESSION = 'DELETE_SESSION';
 
 /** Action creator functions */
-function saveSession(authId, userName, userType, academyCode, academyName, issuer, iat, exp) {
+function saveSession(authId, userName, userType, academyCode, academyName, issuer, iat, exp, image) {
     return {
         type: SAVE_SESSION,
         authId: authId,
@@ -16,6 +16,7 @@ function saveSession(authId, userName, userType, academyCode, academyName, issue
         issuer: issuer,
         iat: iat,
         exp: exp,
+        image: image,
     };
 }
 
@@ -49,6 +50,7 @@ const initStates = {
     issuer: null,
     iat: null,
     exp: null,
+    image: null,
 };
 
 /** Reducer & functions */
@@ -78,6 +80,7 @@ function applySaveSession(state, action) {
         issuer: action.issuer,
         iat: action.iat,
         exp: action.exp,
+        image: action.image,
     };
 }
 

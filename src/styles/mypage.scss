@@ -1,6 +1,7 @@
 .mypage-root {
     min-height: 80vh;
 
+    /** mypage 공용 css */
     & section + section {
         margin-top: 63px;
     }
@@ -21,6 +22,12 @@
         align-items: center;
         padding: 35px 24px;
     }
+    & .mypage-footer {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     & button {
         font-size: 0.9rem;
         font-weight: 500;
@@ -34,6 +41,9 @@
     }
     & .btn-gray {
         background-color: #707070;
+    }
+    & .btn-green {
+        background-color: #13e2a1;
     }
     & .white-box {
         margin-top: 15px;
@@ -58,13 +68,35 @@
             }
             & .row-desc {
                 font-weight: 400;
+
+                & > span {
+                    font-weight: 500;
+                }
+                & > input {
+                    width: 150px;
+                    font-size: 1.18rem;
+                    color: black;
+                    font-weight: 400;
+                    border: 1px solid black;
+                    padding: 5px;
+                }
+                & > input::placeholder {
+                    color: #707070;
+                }
             }
         }
     }
+
+    /** mypage 컴포넌트별 css */
     & .profile-root {
         width: 100%;
 
         & .profile-image {
+            & img {
+                width: 65px;
+                height: 65px;
+                border-radius: 50%;
+            }
             & svg {
                 width: 65px;
                 height: 65px;

@@ -14,6 +14,7 @@ function LoginAdmin({ history }) {
             {
                 email: profileObj.email,
                 authId: profileObj.authId + '',
+                image: profileObj.image,
             },
             { withCredentials: true },
         )
@@ -29,6 +30,8 @@ function LoginAdmin({ history }) {
                         break;
                     case 'not-approved':
                         alert('승인이 필요한 관리자 입니다.');
+                        break;
+                    default:
                         break;
                 }
             });

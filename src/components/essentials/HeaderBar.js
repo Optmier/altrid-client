@@ -35,7 +35,7 @@ function HeaderBar({ match }) {
 
     return (
         <>
-            <AccountPopOver userName={popoverName} targetEl={testRef ? testRef : null} />
+            <AccountPopOver userName={popoverName} image={sessions.image} targetEl={testRef ? testRef : null} />
             <header
                 className={classNames(
                     'header-bar',
@@ -72,7 +72,7 @@ function HeaderBar({ match }) {
                         <p>
                             반갑습니다 <span>{sessions.userName}</span> {sessions.userType === 'teachers' ? '선생님!' : '님!'}
                         </p>
-                        <img src={Avatar} alt="avatar" />
+                        <img src={sessions.image ? sessions.image : Avatar} alt="avatar" />
                     </div>
                 </div>
             </header>
