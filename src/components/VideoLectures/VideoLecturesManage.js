@@ -17,7 +17,7 @@ import {
     withStyles,
 } from '@material-ui/core';
 import Axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
@@ -31,8 +31,10 @@ import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { getServerDate } from '../../redux_modules/serverdate';
 import isMobile from '../../controllers/isMobile';
+import { CurrentVideoLectureCard, LogsVideoLectureCard, NoLecturesCard, ScheduledVideoLectureCard } from './ListCards';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -226,6 +228,160 @@ const EdPaper = styled.div`
     }
 `;
 
+const ButtonAble = styled.button`
+    color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
+    border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
+`;
+
+const VideoLectureRoot = styled.div`
+    & .class-share-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 54px;
+        width: 100%;
+
+        & div.left {
+            display: inherit;
+
+            & .header-title {
+                font-size: 1.75rem;
+                font-weight: 600;
+                margin-right: 50px;
+            }
+            & .header-menu {
+                display: flex;
+
+                & > button {
+                    font-size: 1.12rem;
+                    font-weight: 500;
+                    background-color: transparent;
+                    padding: 5px;
+                }
+                & > button + button {
+                    margin-left: 25px;
+                }
+            }
+        }
+
+        & div.right {
+            display: inherit;
+            margin-left: auto;
+        }
+
+        @media (min-width: 0) and (max-width: 767px) {
+            flex-direction: column;
+            margin-bottom: 42px;
+
+            & div.left {
+                width: 100%;
+                & .header-title {
+                    font-size: 1.5rem;
+                }
+            }
+            & div.right {
+                width: 100%;
+                margin: initial;
+                margin-top: 24px;
+            }
+        }
+    }
+`;
+
+const StyledButton = styled.button`
+    &.video-lecture {
+        background-color: #707070;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: white;
+        padding: 12px 0;
+        border-radius: 11px;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
+        width: 96px;
+
+        &.main {
+            background-color: #3f1990;
+            width: 96px;
+        }
+        &.sub {
+            background-color: #6d2bf5;
+            width: 190px;
+        }
+
+        & svg.MuiSvgIcon-root {
+            margin-right: 12px;
+            font-size: 1rem;
+        }
+
+        @media (min-width: 0) and (max-width: 767px) {
+            &,
+            &.main,
+            &.sub {
+                width: 100%;
+            }
+        }
+    }
+`;
+
+const EdIconButton = withStyles((theme) => ({
+    root: {
+        padding: 0,
+        '&:hover': {
+            backgroundColor: '#ffffff00',
+        },
+    },
+}))(IconButton);
+
+const ContentsWrapper = styled.div`
+    width: 100%;
+`;
+
+const HeaderBox = styled.header`
+    align-items: flex-end;
+    border-bottom: 1px solid rgba(112, 112, 112, 0.7);
+    color: #000;
+    display: flex;
+    flex-direction: row;
+    font-weight: 500;
+    justify-content: space-between;
+    padding: 6px 2px 6px 2px;
+    margin-bottom: 16px;
+
+    & h5.title {
+        font-size: 1.25rem;
+        font-weight: 500;
+    }
+
+    & div.right-comp {
+        margin-left: auto;
+    }
+
+    & svg.open-commentary-dropdown-icon {
+        cursor: pointer;
+    }
+`;
+
+const GroupBoxContents = React.memo(function ({ title, rightComponent, onClick, children, ...rest }) {
+    return (
+        <div {...rest}>
+            <HeaderBox onClick={onClick}>
+                <h5 className="title">{title}</h5>
+                <div className="right-comp">{rightComponent}</div>
+            </HeaderBox>
+            {children}
+        </div>
+    );
+});
+
+GroupBoxContents.defaultProps = {
+    title: '제목',
+    rightComponent: <></>,
+    onClick: undefined,
+};
+
 function VideoLecturesManage({ match, history }) {
     const classNum = match.params.num;
     const classes = useStyles();
@@ -248,6 +404,9 @@ function VideoLecturesManage({ match, history }) {
         description: false,
         endDate: false,
     });
+
+    const [ableState, setAbleState] = useState('ing');
+
     const [itemHovered, setItemHovered] = useState(false);
     const dispatch = useDispatch();
 
@@ -412,6 +571,49 @@ function VideoLecturesManage({ match, history }) {
             });
     };
 
+    const handleTopMenuClick = ({ target }) => {
+        const { name } = target;
+        setAbleState(name);
+    };
+
+    const ListSwitcher = (id) => {
+        switch (id) {
+            case 'ing':
+                return (
+                    <>
+                        <GroupBoxContents title="현재 진행 중인 강의">
+                            <CurrentVideoLectureCard />
+                        </GroupBoxContents>
+                        <GroupBoxContents
+                            title="진행 예정인 강의"
+                            style={{ marginTop: 90 }}
+                            rightComponent={
+                                sessions.userType === 'students' ? null : (
+                                    <EdIconButton size="small" disableRipple>
+                                        <DeleteIcon style={{ marginRight: 8 }} />
+                                        <span style={{ fontSize: '1rem', marginTop: 3 }}>선택 삭제</span>
+                                    </EdIconButton>
+                                )
+                            }
+                        >
+                            <ScheduledVideoLectureCard hasEyetrack={false} serverDate={serverdate.datetime} />
+                            <ScheduledVideoLectureCard hasEyetrack={false} serverDate={serverdate.datetime} userType={'students'} />
+                        </GroupBoxContents>
+                    </>
+                );
+            case 'done':
+                return (
+                    <>
+                        <GroupBoxContents title="완료된 화상 강의">
+                            <LogsVideoLectureCard />
+                        </GroupBoxContents>
+                    </>
+                );
+            default:
+                return <>렌더링 오류!</>;
+        }
+    };
+
     useEffect(() => {
         if (!currentClass.currentVideoLecture) return;
         const endDateTime = new Date(currentClass.currentVideoLecture.end_at).getTime();
@@ -527,7 +729,30 @@ function VideoLecturesManage({ match, history }) {
                     </DialogActionButton>
                 </DialogActions>
             </Dialog>
-            <ClassWrapper col="col"></ClassWrapper>
+
+            <VideoLectureRoot>
+                <ClassWrapper col="col">
+                    <div className="class-share-header">
+                        <div className="left">
+                            <div className="header-title">화상 강의</div>
+                            <div className="header-menu">
+                                <ButtonAble name="ing" able={ableState === 'ing'} value={ableState} onClick={handleTopMenuClick}>
+                                    진행 중
+                                </ButtonAble>
+                                <ButtonAble name="done" able={ableState === 'done'} value={ableState} onClick={handleTopMenuClick}>
+                                    진행 완료
+                                </ButtonAble>
+                            </div>
+                        </div>
+                        <div className="right">
+                            <StyledButton className="video-lecture sub">
+                                <AddCircleOutlineIcon fontSize="small" />새 화상 강의 만들기
+                            </StyledButton>
+                        </div>
+                    </div>
+                    <ContentsWrapper>{ListSwitcher(ableState)}</ContentsWrapper>
+                </ClassWrapper>
+            </VideoLectureRoot>
         </>
     );
 }
