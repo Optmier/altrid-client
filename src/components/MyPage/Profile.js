@@ -34,7 +34,7 @@ function Profile() {
 
     useEffect(() => {
         if (sessions.userType) {
-            Axios.get(`${apiUrl}/my-page/profile/${sessions.userType}`, { withCredentials: true })
+            Axios.get(`${apiUrl}/my-page/profile`, { withCredentials: true })
                 .then((res) => {
                     const { name, email, academy_code, academy_name, auth_with } = res.data;
                     setName(name);
