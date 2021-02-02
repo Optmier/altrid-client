@@ -6,6 +6,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Drawer,
     FormControlLabel,
     FormGroup,
     Grid,
@@ -17,7 +18,7 @@ import {
     withStyles,
 } from '@material-ui/core';
 import Axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
@@ -31,8 +32,11 @@ import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { getServerDate } from '../../redux_modules/serverdate';
 import isMobile from '../../controllers/isMobile';
+import { CurrentVideoLectureCard, LogsVideoLectureCard, NoLecturesCard, ScheduledVideoLectureCard } from './ListCards';
+import CreateNewVideoLecture from './CreateNewVideoLecture';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -226,12 +230,169 @@ const EdPaper = styled.div`
     }
 `;
 
+const ButtonAble = styled.button`
+    color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
+    border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
+`;
+
+const VideoLectureRoot = styled.div`
+    & .class-share-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 54px;
+        width: 100%;
+
+        & div.left {
+            display: inherit;
+
+            & .header-title {
+                font-size: 1.75rem;
+                font-weight: 600;
+                margin-right: 50px;
+            }
+            & .header-menu {
+                display: flex;
+
+                & > button {
+                    font-size: 1.12rem;
+                    font-weight: 500;
+                    background-color: transparent;
+                    padding: 5px;
+                }
+                & > button + button {
+                    margin-left: 25px;
+                }
+            }
+        }
+
+        & div.right {
+            display: inherit;
+            margin-left: auto;
+        }
+
+        @media (min-width: 0) and (max-width: 767px) {
+            flex-direction: column;
+            margin-bottom: 42px;
+
+            & div.left {
+                width: 100%;
+                & .header-title {
+                    font-size: 1.5rem;
+                }
+            }
+            & div.right {
+                width: 100%;
+                margin: initial;
+                margin-top: 24px;
+            }
+        }
+    }
+`;
+
+const StyledButton = styled.button`
+    &.video-lecture {
+        background-color: #707070;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: white;
+        padding: 12px 0;
+        border-radius: 11px;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
+        width: 96px;
+
+        &.main {
+            background-color: #3f1990;
+            width: 96px;
+        }
+        &.sub {
+            background-color: #6d2bf5;
+            width: 190px;
+        }
+
+        & svg.MuiSvgIcon-root {
+            margin-right: 12px;
+            font-size: 1rem;
+        }
+
+        @media (min-width: 0) and (max-width: 767px) {
+            &,
+            &.main,
+            &.sub {
+                width: 100%;
+            }
+        }
+    }
+`;
+
+const EdIconButton = withStyles((theme) => ({
+    root: {
+        padding: 0,
+        '&:hover': {
+            backgroundColor: '#ffffff00',
+        },
+    },
+}))(IconButton);
+
+const ContentsWrapper = styled.div`
+    width: 100%;
+`;
+
+const HeaderBox = styled.header`
+    align-items: flex-end;
+    border-bottom: 1px solid rgba(112, 112, 112, 0.7);
+    color: #000;
+    display: flex;
+    flex-direction: row;
+    font-weight: 500;
+    justify-content: space-between;
+    padding: 6px 2px 6px 2px;
+    margin-bottom: 16px;
+
+    & h5.title {
+        font-size: 1.25rem;
+        font-weight: 500;
+    }
+
+    & div.right-comp {
+        margin-left: auto;
+    }
+
+    & svg.open-commentary-dropdown-icon {
+        cursor: pointer;
+    }
+`;
+
+const GroupBoxContents = React.memo(function ({ title, rightComponent, onClick, children, ...rest }) {
+    return (
+        <div {...rest}>
+            <HeaderBox onClick={onClick}>
+                <h5 className="title">{title}</h5>
+                <div className="right-comp">{rightComponent}</div>
+            </HeaderBox>
+            {children}
+        </div>
+    );
+});
+
+GroupBoxContents.defaultProps = {
+    title: '제목',
+    rightComponent: <></>,
+    onClick: undefined,
+};
+
 function VideoLecturesManage({ match, history }) {
-    window.hhistory = history;
     const classNum = match.params.num;
     const classes = useStyles();
     // 나중에 리덕스로 변경 예정
-    const [currentVideoLecture, setCurrentVideoLecture] = useState(null);
+    const [currentVideoLectures, setCurrentVideoLectures] = useState({
+        current: [],
+        scheduled: [],
+        done: [],
+    });
     const serverdate = useSelector((state) => state.RdxServerDate);
     const sessions = useSelector((state) => state.RdxSessions);
     const currentClass = useSelector((state) => state.RdxCurrentClass);
@@ -249,7 +410,10 @@ function VideoLecturesManage({ match, history }) {
         description: false,
         endDate: false,
     });
-    const [itemHovered, setItemHovered] = useState(false);
+    const [ableState, setAbleState] = useState('ing');
+    const [scheduledIdxs, setScheduledIdxs] = useState([]);
+    const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
+
     const dispatch = useDispatch();
 
     const handleNewVideoLectureDialogOpen = () => {
@@ -286,39 +450,25 @@ function VideoLecturesManage({ match, history }) {
         }
     };
 
-    const submitNewVideoLectures = () => {
-        let formFieldsPassed = true;
-        let titleCheck = false;
-        let descCheck = false;
-        let endDateCheck = false;
-        if (!formFields.title || !formFields.title.trim()) {
-            titleCheck = true;
-            formFieldsPassed = false;
+    const submitNewVideoLectures = ({ title, description, startDate, endDate, hasStartDate, hasEyetrack }) => {
+        if (!title || !title.trim()) {
+            return alert('강의 제목은 필수입니다.');
         }
-        if (!formFields.description || !formFields.description.trim()) {
-            descCheck = true;
-            formFieldsPassed = false;
+        if (!description || !description.trim()) {
+            return alert('강의 설명은 필수입니다.');
         }
-        if (!formFields.endDate || !formFields.endDate.trim()) {
-            endDateCheck = true;
-            formFieldsPassed = false;
+        if (!endDate || !endDate.trim()) {
+            return alert('종료 날짜를 설정해 주세요.');
         }
-        setFormFieldsError({
-            ...formFieldsError,
-            title: titleCheck,
-            description: descCheck,
-            endDate: endDateCheck,
-        });
-        if (!formFieldsPassed) return;
 
         Axios.post(
             `${apiUrl}/meeting-room`,
             {
-                roomTitle: formFields.title,
-                description: formFields.description,
-                startDate: formFields.hasStartDate ? new Date(formFields.startDate).toUTCString() : null,
-                endDate: new Date(formFields.endDate).toUTCString(),
-                eyetrack: formFields.hasEyetrack,
+                roomTitle: title,
+                description: description,
+                startDate: hasStartDate ? new Date(startDate).toUTCString() : null,
+                endDate: new Date(endDate).toUTCString(),
+                eyetrack: hasEyetrack,
                 classNumber: classNum,
                 maxJoinCount: currentClass.currentStudentsNumber + 1,
             },
@@ -335,33 +485,33 @@ function VideoLecturesManage({ match, history }) {
             });
     };
 
-    const enterVideoLecture = () => {
+    const enterVideoLecture = (data) => (event) => {
         dispatch(getServerDate());
-        if (new Date(currentVideoLecture.start_at).getTime() > serverdate.datetime) return alert('아작 세션이 시작되지 않은 강의 입니다.');
-        if (isMobile && currentVideoLecture.eyetrack)
+        if (new Date(data.start_at).getTime() > serverdate.datetime) return alert('아작 세션이 시작되지 않은 강의 입니다.');
+        if (isMobile && data.eyetrack)
             return alert('모바일에서는 시선추적이 있는 강의는 입장이 불가합니다.\n데스크탑 또는 랩탑을 이용해 주세요.');
         // 시선흐름 감시 기능이 있고, 학생인 경우, 시선추적 보정 창 띄움
-        if (currentVideoLecture.eyetrack && sessions.userType === 'students') {
+        if (data.eyetrack && sessions.userType === 'students') {
             window.open(
-                `/video-lecture-eyetracker/${classNum}?roomId=${currentVideoLecture.room_id}`,
+                `/video-lecture-eyetracker/${classNum}?roomId=${data.room_id}`,
                 'Gooroomee Biz_withEyetracker',
                 `toolbar=no, scrollbars=no, resizable=no, status=no`,
                 true,
             );
         }
         // 시선흐름 감시 기능이 있고, 선생님인 경우, 왼쪽에 화상 강의 창, 오른쪽엔 시선흐름 이상 감지 학생 목록 창을 분할하여 띄움
-        else if (currentVideoLecture.eyetrack && sessions.userType !== 'students') {
+        else if (data.eyetrack && sessions.userType !== 'students') {
             let screenWidth = window.screen.availWidth;
             let screenHeight = window.screen.availHeight;
             // 시선흐름 감시 창
             window.open(
-                `/video-lecture-detect-lists/${classNum}?roomId=${currentVideoLecture.room_id}`,
+                `/video-lecture-detect-lists/${classNum}?roomId=${data.room_id}`,
                 'Gooroomee Biz_withEyetracker',
                 `width=${300}, height=${screenHeight}, left=${screenWidth - 300}, toolbar=no, scrollbars=no, resizable=no, status=no`,
                 true,
             );
             // window.open(
-            //     `/video-lecture-eyetracker/${classNum}?roomId=${currentVideoLecture.room_id}`,
+            //     `/video-lecture-eyetracker/${classNum}?roomId=${data.room_id}`,
             //     'Gooroomee Biz_withEyetracker',
             //     `toolbar=no, scrollbars=no, resizable=no, status=no`,
             //     true,
@@ -373,7 +523,7 @@ function VideoLecturesManage({ match, history }) {
             Axios.post(
                 `${apiUrl}/meeting-room/otp`,
                 {
-                    roomId: currentVideoLecture.room_id,
+                    roomId: data.room_id,
                     username: sessions.userName,
                     roleId: sessions.userType === 'students' ? 'participant' : 'emcee',
                     ignorePasswd: true,
@@ -383,7 +533,6 @@ function VideoLecturesManage({ match, history }) {
             )
                 .then((res) => {
                     const otpCode = res.data.data.roomUserOtp.otp;
-                    console.log(otpCode);
                     window.open(
                         `https://biz.gooroomee.com/room/otp/${otpCode}`,
                         'Gooroomee Biz',
@@ -398,11 +547,11 @@ function VideoLecturesManage({ match, history }) {
         }
     };
 
-    const closeVideoLecture = () => {
+    const closeVideoLecture = (data) => (event) => {
         const conf = window.confirm('정말로 화상 강의를 닫으시겠습니까?');
         if (!conf) return;
 
-        Axios.delete(`${apiUrl}/meeting-room/${currentVideoLecture.room_id}`, { withCredentials: true })
+        Axios.delete(`${apiUrl}/meeting-room/${data.room_id}`, { withCredentials: true })
             .then((res) => {
                 console.log(res);
                 history.replace();
@@ -413,14 +562,157 @@ function VideoLecturesManage({ match, history }) {
             });
     };
 
+    const closeMultipleVideoLectures = () => {
+        if (scheduledIdxs.length < 1) return;
+        const conf = window.confirm('예약된 강의들을 취소하시겠습니까?');
+        if (!conf) return;
+
+        Axios.delete(`${apiUrl}/meeting-room`, {
+            params: {
+                roomIds: scheduledIdxs,
+            },
+            withCredentials: true,
+        })
+            .then((res) => {
+                console.log(res);
+                history.replace();
+            })
+            .catch((err) => {
+                console.error(err);
+                alert('화상 강의를 닫는 중 오류가 발생했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.');
+            });
+    };
+
+    const handleTopMenuClick = ({ target }) => {
+        const { name } = target;
+        setAbleState(name);
+    };
+
+    const onScheduledCheckedChange = (targetIdx, checked) => {
+        if (checked) {
+            setScheduledIdxs([...scheduledIdxs, targetIdx]);
+        } else {
+            setScheduledIdxs(scheduledIdxs.filter((d, i) => d !== targetIdx));
+        }
+    };
+
+    const ListSwitcher = (id) => {
+        switch (id) {
+            case 'ing':
+                return (
+                    <>
+                        <GroupBoxContents title="현재 진행 중인 강의">
+                            {currentVideoLectures.current.length ? (
+                                currentVideoLectures.current.map((d, i) => (
+                                    <CurrentVideoLectureCard
+                                        key={d.room_id}
+                                        number={i}
+                                        title={d.title}
+                                        description={d.description}
+                                        hasEyetrack={d.eyetrack}
+                                        startDate={new Date(d.start_at)}
+                                        endDate={new Date(d.end_at)}
+                                        totalParticipants={currentClass.currentStudentsNumber}
+                                        currentParticipants={d.liveCounts}
+                                        userType={sessions.userType}
+                                        serverDate={serverdate.datetime}
+                                        onEntranceClick={enterVideoLecture(d)}
+                                        onLectureCloseClick={closeVideoLecture(d)}
+                                    />
+                                ))
+                            ) : (
+                                <NoLecturesCard />
+                            )}
+                        </GroupBoxContents>
+                        <GroupBoxContents
+                            title="진행 예정인 강의"
+                            style={{ marginTop: 90 }}
+                            rightComponent={
+                                sessions.userType === 'students' ? null : (
+                                    <EdIconButton size="small" disableRipple onClick={closeMultipleVideoLectures}>
+                                        <DeleteIcon style={{ marginRight: 8 }} />
+                                        <span style={{ fontSize: '1rem', marginTop: 3 }}>선택 삭제</span>
+                                    </EdIconButton>
+                                )
+                            }
+                        >
+                            {currentVideoLectures.scheduled.length ? (
+                                currentVideoLectures.scheduled.map((d, i) => (
+                                    <ScheduledVideoLectureCard
+                                        key={d.room_id}
+                                        number={d.room_id}
+                                        title={d.title}
+                                        description={d.description}
+                                        hasEyetrack={d.eyetrack}
+                                        startDate={new Date(d.start_at)}
+                                        endDate={new Date(d.end_at)}
+                                        userType={sessions.userType}
+                                        serverDate={serverdate.datetime}
+                                        onCheckboxChanged={onScheduledCheckedChange}
+                                    />
+                                ))
+                            ) : (
+                                <NoLecturesCard message="예정된 강의가 없습니다." />
+                            )}
+                        </GroupBoxContents>
+                    </>
+                );
+            case 'done':
+                return (
+                    <>
+                        <GroupBoxContents title="완료된 화상 강의">
+                            <LogsVideoLectureCard />
+                            {currentVideoLectures.done.length ? (
+                                currentVideoLectures.done.map((d, i) => (
+                                    <LogsVideoLectureCard
+                                        key={d.room_id}
+                                        number={i}
+                                        title={d.title}
+                                        description={d.description}
+                                        hasEyetrack={d.eyetrack}
+                                        startDate={new Date(d.start_at)}
+                                        endDate={new Date(d.end_at)}
+                                    />
+                                ))
+                            ) : (
+                                <NoLecturesCard message="기록이 없습니다." />
+                            )}
+                        </GroupBoxContents>
+                    </>
+                );
+            default:
+                return <>렌더링 오류!</>;
+        }
+    };
+
+    const toggleDrawer = (open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        setOpenCreateNewDrawer(open);
+    };
+
     useEffect(() => {
-        if (!currentClass.currentVideoLecture) return;
-        const endDateTime = new Date(currentClass.currentVideoLecture.end_at).getTime();
-        if (endDateTime < serverdate.datetime) return;
-        setCurrentVideoLecture(currentClass.currentVideoLecture);
-    }, [currentClass.currentVideoLecture]);
+        if (!currentClass.currentVideoLectures) return;
+        setCurrentVideoLectures(currentClass.currentVideoLectures);
+    }, [currentClass.currentVideoLectures]);
+
+    useEffect(() => {
+        return () => {
+            if (window.liveCountsInterval) {
+                Object.keys(window.liveCountsInterval).forEach((key) => {
+                    clearInterval(window.liveCountsInterval[key]);
+                    delete window.liveCountsInterval[key];
+                });
+            }
+        };
+    }, []);
+
     return (
         <>
+            <Drawer anchor="right" open={openCreateNewDrawer}>
+                <CreateNewVideoLecture handleClose={toggleDrawer(false)} onCreate={submitNewVideoLectures} />
+            </Drawer>
             <Dialog
                 open={newVidLecDlgOpen}
                 onClose={handleNewVideoLectureDialogClose}
@@ -528,123 +820,34 @@ function VideoLecturesManage({ match, history }) {
                     </DialogActionButton>
                 </DialogActions>
             </Dialog>
-            <ClassWrapper col="col">
-                {currentVideoLecture ? (
-                    <div className="class-manage-root">
-                        <div>
-                            <div className="manage-header">
-                                <h2 className="manage-title">현재 진행 중인 화상 강의</h2>
-                                <p className="manage-subTitle">입장 전 반드시 정보 확인 바랍니다.</p>
+
+            <VideoLectureRoot>
+                <ClassWrapper col="col">
+                    <div className="class-share-header">
+                        <div className="left">
+                            <div className="header-title">화상 강의</div>
+                            <div className="header-menu">
+                                <ButtonAble name="ing" able={ableState === 'ing'} value={ableState} onClick={handleTopMenuClick}>
+                                    진행 중
+                                </ButtonAble>
+                                {sessions.userType === 'students' ? null : (
+                                    <ButtonAble name="done" able={ableState === 'done'} value={ableState} onClick={handleTopMenuClick}>
+                                        진행 완료
+                                    </ButtonAble>
+                                )}
                             </div>
-                            <EdPaper
-                                onMouseEnter={() => {
-                                    if (sessions.userType === 'students') return;
-                                    setItemHovered(0);
-                                }}
-                                onMouseLeave={() => {
-                                    if (sessions.userType === 'students') return;
-                                    setItemHovered(false);
-                                }}
-                            >
-                                {itemHovered === 0 ? (
-                                    <div className="top-icons">
-                                        {/* <IconButton size="small">
-                                            <EditIcon fontSize="inherit" />
-                                        </IconButton> */}
-                                        <IconButton size="small" onClick={closeVideoLecture}>
-                                            <DeleteIcon fontSize="inherit" />
-                                        </IconButton>
-                                    </div>
-                                ) : null}
-                                <div className="infos-container">
-                                    <h4 className="title">{currentVideoLecture.title}</h4>
-                                    <p className="description">{currentVideoLecture.description}</p>
-                                    <div className="bottom-container">
-                                        <div className="element">
-                                            <HtmlTooltip
-                                                title={
-                                                    new Date(currentVideoLecture.end_at).getTime() - serverdate.datetime < 1800000
-                                                        ? '세션이 곧 종료됩니다.'
-                                                        : '세션 시작일 ~ 세션 종료일'
-                                                }
-                                            >
-                                                <div
-                                                    className={`icon-item date${
-                                                        new Date(currentVideoLecture.end_at).getTime() - serverdate.datetime < 1800000
-                                                            ? ' error'
-                                                            : ''
-                                                    }`}
-                                                >
-                                                    <DateRangeOutlinedIcon fontSize="inherit" />
-                                                    {moment(currentVideoLecture.start_at).format('YYYY년 MM월 DD일 HH시 mm분')} ~{' '}
-                                                    {moment(currentVideoLecture.end_at).format('YYYY년 MM월 DD일 HH시 mm분')}
-                                                </div>
-                                            </HtmlTooltip>
-                                        </div>
-                                        <div className="element">
-                                            <div
-                                                className={`icon-item live-counts${
-                                                    currentVideoLecture.liveCounts < 1 ? ' no-participants' : ''
-                                                }`}
-                                            >
-                                                {currentVideoLecture.liveCounts < 1 ? (
-                                                    '참여 중인 인원 없음'
-                                                ) : (
-                                                    <>
-                                                        <FiberManualRecordIcon fontSize="inherit" />
-                                                        현재 {currentVideoLecture.liveCounts}명 참여 중
-                                                    </>
-                                                )}
-                                            </div>
-                                            <HtmlTooltip title="총 참여가능 인원 수">
-                                                <div className="icon-item participants">
-                                                    <GroupIcon fontSize="inherit" />
-                                                    {currentVideoLecture.max_joins}명
-                                                </div>
-                                            </HtmlTooltip>
-                                            <HtmlTooltip title="시선추적 여부">
-                                                <div className="icon-item eyetrack">
-                                                    <FaceIcon fontSize="inherit" />
-                                                    {currentVideoLecture.eyetrack ? '시선추적 있음' : '시선추적 없음'}
-                                                </div>
-                                            </HtmlTooltip>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="entrance-container">
-                                    <EntranceButton
-                                        disabled={new Date(currentVideoLecture.start_at).getTime() > serverdate.datetime}
-                                        startIcon={<MeetingRoomIcon />}
-                                        variant="text"
-                                        onClick={enterVideoLecture}
-                                    >
-                                        입장
-                                    </EntranceButton>
-                                </div>
-                            </EdPaper>
+                        </div>
+                        <div className="right">
+                            {sessions.userType === 'students' ? null : (
+                                <StyledButton className="video-lecture sub" onClick={toggleDrawer(true)}>
+                                    <AddCircleOutlineIcon fontSize="small" />새 화상 강의 만들기
+                                </StyledButton>
+                            )}
                         </div>
                     </div>
-                ) : (
-                    <OpenNewVidLec>
-                        <h1>진행 중인 화상 강의가 없습니다.</h1>
-                        {sessions.userType === 'students' ? null : (
-                            <button onClick={handleNewVideoLectureDialogOpen}>
-                                <p>강의 개설하기</p>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30.414" height="9.978" viewBox="0 0 30.414 9.978">
-                                    <path
-                                        id="icon"
-                                        d="M0 0h28l-8.27 8.27"
-                                        fill="none"
-                                        stroke="#fff"
-                                        strokeWidth="2px"
-                                        transform="translate(0 1)"
-                                    />
-                                </svg>
-                            </button>
-                        )}
-                    </OpenNewVidLec>
-                )}
-            </ClassWrapper>
+                    <ContentsWrapper>{ListSwitcher(ableState)}</ContentsWrapper>
+                </ClassWrapper>
+            </VideoLectureRoot>
         </>
     );
 }

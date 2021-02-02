@@ -365,7 +365,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     return (
         <>
             <Dialog fullScreen open={editDialogOpen} onClose={handleEditDialogClose}>
-                <div style={{ height: 'calc(100% - 114px)' }}>
+                <div style={{ height: 'calc(100% - 142px)' }}>
                     <TOFELEditor
                         mode
                         datas={contentsData}

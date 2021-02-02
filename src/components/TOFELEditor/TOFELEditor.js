@@ -1,4 +1,4 @@
-import { AppBar, Button, Dialog, Drawer, Snackbar, TextField, Toolbar, withStyles } from '@material-ui/core';
+import { AppBar, Button, Dialog, Drawer, IconButton, Snackbar, TextField, Toolbar, withStyles } from '@material-ui/core';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 import ReactQuill from 'react-quill';
@@ -58,7 +58,7 @@ const fitEditorSize = (height) => {
     const $quillContainer = $('#new_tofel_passage').find('.ql-container');
     const $problemContainer = $('.problem-container');
     $quillContainer.height(rootHeight - headerHeight - quillToolbarHeight - 36);
-    $problemContainer.height(rootHeight - headerHeight - 70);
+    $problemContainer.height(rootHeight - headerHeight - 60);
 };
 
 const EdAppBar = withStyles((theme) => ({
@@ -109,6 +109,25 @@ const EdProblemAddButton = withStyles((theme) => ({
 
         '& + &': {
             marginLeft: 16,
+        },
+    },
+}))(Button);
+
+const EdSetCtrlButton = withStyles((theme) => ({
+    root: {
+        borderColor: '#707070',
+        borderRadius: 10,
+        borderWidth: 1,
+        color: '#707070',
+        fontFamily: 'Noto Sans CJK KR',
+        fontWeight: 500,
+        padding: '2px 8px',
+        // position: 'absolute',
+        minHeight: 34,
+        minWidth: 120,
+
+        '& + &': {
+            marginLeft: 8,
         },
     },
 }))(Button);
@@ -187,7 +206,7 @@ const NoContentsProblemWarning = styled.div`
     position: absolute;
     text-align: center;
     top: calc(50% + 32px);
-    width: calc(40% - 16px);
+    width: calc(45% - 25px);
     font-size: 1.25rem;
     font-weight: 600;
     color: #0000004d;
@@ -205,13 +224,23 @@ const PreviewContainer = styled.div`
     height: 750px;
 `;
 const BottomContainer = styled.div`
+    align-items: center;
+    border-top: 1px solid #e5e5e5;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     padding: 8px;
+    min-height: 64px;
+    position: relative;
+`;
+
+const BottomContainerWrapper = styled.div`
+    display: inherit;
+    align-items: center;
+    width: 55%;
 
     & .group {
         & + .group {
-            margin-left: 16px;
+            margin-left: 8%;
         }
     }
 `;
@@ -226,7 +255,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     const generateUid = useRef();
 
     const [metadata, setMetadata] = useState(datas);
-    window.contentsMeta = metadata;
+    // window.contentsMeta = metadata;
     const [contentsSetData, setContentsSetData] = useState(datas[0]);
     const [contentsTitle, setContentsTitle] = useState(datas[0].title);
     const [contentsPassage, setContentsPassage] = useState({ render: datas[0].passageForRender, editor: datas[0].passageForEditor });
@@ -246,7 +275,6 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     });
     const [setNum, setSetNum] = useState(0);
     const [deleteIdxs, setDeleteIdxs] = useState([]);
-    window.deleteIdxs = deleteIdxs;
 
     let forceUpdate = useForceUpdate();
 
@@ -590,7 +618,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                     .quill.passage-editor > .ql-container.ql-snow > .ql-editor {
                         color: #707070;
                         font-family: Noto Sans CJK KR;
-                        font-weight: 400;
+                        font-weight: 500;
                         padding: 16px 48px;
                     }
                     .quill.passage-editor > .ql-container.ql-snow > .ql-editor > p > strong, b {
@@ -737,25 +765,32 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                     </RightContainer>
                 </Container>
                 <BottomContainer>
-                    <div className="group">
-                        <Button startIcon={<ArrowBack />} onClick={handlePrevSet}>
-                            이전 세트
-                        </Button>
-                        <span style={{ margin: '0 8px' }}>
-                            {setNum + 1} / {metadata.length}
-                        </span>
-                        <Button endIcon={<ArrowForward />} onClick={handleNextSet}>
-                            다음 세트
-                        </Button>
-                    </div>
-                    <div className="group">
-                        <Button startIcon={<PostAdd />} onClick={addSet}>
-                            세트 추가
-                        </Button>
-                        <Button color="secondary" startIcon={<DeleteForever />} onClick={removeCurrentSet}>
-                            세트 삭제
-                        </Button>
-                    </div>
+                    <BottomContainerWrapper>
+                        <div className="group">
+                            <IconButton onClick={handlePrevSet} size="small">
+                                <ArrowBack fontSize="small" />
+                            </IconButton>
+                            <span style={{ margin: '0px 4px', color: '#707070', fontWeight: 500, paddingTop: 2 }}>
+                                {setNum + 1} / {metadata.length}
+                            </span>
+                            <IconButton onClick={handleNextSet} size="small">
+                                <ArrowForward fontSize="small" />
+                            </IconButton>
+                        </div>
+                        <div className="group">
+                            <EdSetCtrlButton variant="outlined" startIcon={<PostAdd />} onClick={addSet}>
+                                세트 추가
+                            </EdSetCtrlButton>
+                            <EdSetCtrlButton
+                                variant="outlined"
+                                startIcon={<DeleteForever />}
+                                onClick={removeCurrentSet}
+                                style={{ right: 0 }}
+                            >
+                                세트 삭제
+                            </EdSetCtrlButton>
+                        </div>
+                    </BottomContainerWrapper>
                 </BottomContainer>
             </Root>
         </>

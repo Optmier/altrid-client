@@ -11,16 +11,17 @@ function setStudentsNum(nums) {
     };
 }
 
-function setCurrentVideoLecture(obj) {
+function setCurrentVideoLectures(obj) {
     return {
         type: SET_CURRENT_VIDEO_LECTURE,
-        currentVideoLecture: obj,
+        currentVideoLectures: obj,
     };
 }
 
-function updateLiveCounts(num) {
+function updateLiveCounts(roomId, num) {
     return {
         type: UPDATE_LIVE_COUNTS,
+        roomId: roomId,
         liveCounts: num,
     };
 }
@@ -28,7 +29,11 @@ function updateLiveCounts(num) {
 /** Define initial states */
 const initialState = {
     currentStudentsNumber: 0,
-    currentVideoLecture: null,
+    currentVideoLectures: {
+        current: [],
+        scheduled: [],
+        done: [],
+    },
 };
 
 /** Reducer & functions */
@@ -37,7 +42,7 @@ function RdxCurrentClass(state = initialState, action) {
         case SET_STUDENTS_NUM:
             return applyStudentsNumber(state, action);
         case SET_CURRENT_VIDEO_LECTURE:
-            return applyCurrentVideoLecture(state, action);
+            return applyCurrentVideoLectures(state, action);
         case UPDATE_LIVE_COUNTS:
             return applyUpdateLiveCounts(state, action);
         default:
@@ -52,25 +57,27 @@ function applyStudentsNumber(state, action) {
     };
 }
 
-function applyCurrentVideoLecture(state, action) {
+function applyCurrentVideoLectures(state, action) {
     return {
         ...state,
-        currentVideoLecture: action.currentVideoLecture,
+        currentVideoLectures: action.currentVideoLectures,
     };
 }
 
 function applyUpdateLiveCounts(state, action) {
     return {
         ...state,
-        currentVideoLecture: {
-            ...state.currentVideoLecture,
-            liveCounts: action.liveCounts,
+        currentVideoLectures: {
+            ...state.currentVideoLectures,
+            current: state.currentVideoLectures.current.map((d, i) =>
+                d.room_id === action.roomId ? { ...d, liveCounts: action.liveCounts } : d,
+            ),
         },
     };
 }
 
 /** Export action creators */
-export { setStudentsNum, setCurrentVideoLecture, updateLiveCounts };
+export { setStudentsNum, setCurrentVideoLectures, updateLiveCounts };
 
 /** Export reducer */
 export default RdxCurrentClass;

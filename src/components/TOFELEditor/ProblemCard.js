@@ -87,8 +87,10 @@ const ContentsContainer = styled.div`
     & div.order-number {
         display: flex;
         color: #707070;
+        font-weight: 500;
         line-height: 1.5rem;
         margin-right: 18px;
+        margin-top: -0.2rem;
     }
 `;
 const Contents = styled.div`
@@ -99,14 +101,14 @@ const Contents = styled.div`
         color: #707070;
         font-family: inherit;
         font-size: 1rem;
-        font-weight: 400;
+        font-weight: 500;
         /* line-height: 1rem; */
 
         &.selection {
             color: rgba(112, 112, 112, 0.79);
             display: flex;
             font-family: inherit;
-            font-weight: 400;
+            font-weight: 500;
 
             & .answer-selected-icon {
                 margin-right: 20px;
