@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { useSelector } from 'react-redux';
@@ -11,6 +11,10 @@ function Profile() {
     const [emailWith, setEmailWith] = useState('');
     const [academyName, setAcademyName] = useState('');
     const [academyCode, setAcademyCode] = useState('');
+    const [imgSrc, setImgSrc] = useState('');
+    const [attachFiles, setAttachFiles] = useState(new FormData());
+
+    const filesInput = useRef();
 
     const handleSave = () => {
         Axios.put(
@@ -21,7 +25,37 @@ function Profile() {
             { withCredentials: true },
         )
             .then((res) => {
-                alert('회원정보 변경이 완료되었습니다 !');
+                if (imgSrc.substr(0, 4) === 'blob') {
+                    console.log(imgSrc);
+
+                    Axios.patch(
+                        `${apiUrl}/auth`,
+                        {
+                            image: imgSrc,
+                        },
+                        { withCredentials: true },
+                    )
+                        .then((res2) => {
+                            console.log('refresh token!');
+                        })
+                        .catch((err) => {
+                            console.log('refresh error...');
+                            console.error(err);
+                        });
+
+                    Axios.post(`${apiUrl}/files/requests-image`, attachFiles, { withCredentials: true })
+                        .then((res3) => {
+                            //console.log(res3.data.file_name);
+                            alert('회원정보(이름 또는 이미지) 변경이 완료되었습니다 !');
+                            window.location.reload();
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
+                } else {
+                    alert('회원정보(이름) 변경이 완료되었습니다 !');
+                    window.location.reload();
+                }
             })
             .catch((err) => {
                 console.error(err);
@@ -30,6 +64,18 @@ function Profile() {
     const handleInput = (e) => {
         const { value } = e.target;
         setName(value);
+    };
+    const handleChangeFile = (e) => {
+        if (!e.target.files[0]) return;
+
+        console.log('change!');
+        var reader = new FileReader(e.target.files[0]);
+        reader.onload = function () {
+            setImgSrc(reader.result);
+        };
+
+        // attachFiles.append(e.target.files[0].name, e.target.files[0], e.target.files[0].name);
+        // setImgSrc(URL.createObjectURL(e.target.files[0]));
     };
 
     useEffect(() => {
@@ -42,6 +88,7 @@ function Profile() {
                     setEmailWith(auth_with);
                     setAcademyName(academy_name);
                     setAcademyCode(academy_code);
+                    setImgSrc(sessions.image);
                 })
                 .catch((err) => {
                     console.error(err);
@@ -51,14 +98,18 @@ function Profile() {
         return () => {};
     }, [sessions.userType]);
 
+    console.log(imgSrc);
+
+    window.imgSrc = imgSrc;
+
     return (
         <div className="profile-root">
             <div className="mypage-title">프로필 설정</div>
             <section>
                 <div className="mypage-header">프로필 사진</div>
                 <div className="mypage-contents profile-image">
-                    {sessions.image ? (
-                        <img src={sessions.image} alt="my_profile.." />
+                    {imgSrc ? (
+                        <img src={imgSrc} alt="my_profile.." />
                     ) : (
                         <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -69,7 +120,19 @@ function Profile() {
                     )}
 
                     <div className="profile-image-right">
-                        <button className="btn-purple">사진 변경</button>
+                        <div>
+                            <input
+                                ref={filesInput}
+                                id="file-click"
+                                type="file"
+                                accept="image/gif,image/jpeg,image/png"
+                                onChange={handleChangeFile}
+                            />
+                            <label htmlFor="file-click" className="btn-purple">
+                                사진 변경
+                            </label>
+                        </div>
+
                         <button className="btn-gray">삭제하기</button>
                     </div>
                 </div>
