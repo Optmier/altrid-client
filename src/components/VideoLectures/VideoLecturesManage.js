@@ -386,7 +386,11 @@ function VideoLecturesManage({ match, history }) {
     const classNum = match.params.num;
     const classes = useStyles();
     // 나중에 리덕스로 변경 예정
-    const [currentVideoLecture, setCurrentVideoLecture] = useState(null);
+    const [currentVideoLectures, setCurrentVideoLectures] = useState({
+        current: [],
+        scheduled: [],
+        done: [],
+    });
     const serverdate = useSelector((state) => state.RdxServerDate);
     const sessions = useSelector((state) => state.RdxSessions);
     const currentClass = useSelector((state) => state.RdxCurrentClass);
@@ -404,10 +408,9 @@ function VideoLecturesManage({ match, history }) {
         description: false,
         endDate: false,
     });
-
     const [ableState, setAbleState] = useState('ing');
+    const [scheduledIdxs, setScheduledIdxs] = useState([]);
 
-    const [itemHovered, setItemHovered] = useState(false);
     const dispatch = useDispatch();
 
     const handleNewVideoLectureDialogOpen = () => {
@@ -493,33 +496,33 @@ function VideoLecturesManage({ match, history }) {
             });
     };
 
-    const enterVideoLecture = () => {
+    const enterVideoLecture = (data) => (event) => {
         dispatch(getServerDate());
-        if (new Date(currentVideoLecture.start_at).getTime() > serverdate.datetime) return alert('아작 세션이 시작되지 않은 강의 입니다.');
-        if (isMobile && currentVideoLecture.eyetrack)
+        if (new Date(data.start_at).getTime() > serverdate.datetime) return alert('아작 세션이 시작되지 않은 강의 입니다.');
+        if (isMobile && data.eyetrack)
             return alert('모바일에서는 시선추적이 있는 강의는 입장이 불가합니다.\n데스크탑 또는 랩탑을 이용해 주세요.');
         // 시선흐름 감시 기능이 있고, 학생인 경우, 시선추적 보정 창 띄움
-        if (currentVideoLecture.eyetrack && sessions.userType === 'students') {
+        if (data.eyetrack && sessions.userType === 'students') {
             window.open(
-                `/video-lecture-eyetracker/${classNum}?roomId=${currentVideoLecture.room_id}`,
+                `/video-lecture-eyetracker/${classNum}?roomId=${data.room_id}`,
                 'Gooroomee Biz_withEyetracker',
                 `toolbar=no, scrollbars=no, resizable=no, status=no`,
                 true,
             );
         }
         // 시선흐름 감시 기능이 있고, 선생님인 경우, 왼쪽에 화상 강의 창, 오른쪽엔 시선흐름 이상 감지 학생 목록 창을 분할하여 띄움
-        else if (currentVideoLecture.eyetrack && sessions.userType !== 'students') {
+        else if (data.eyetrack && sessions.userType !== 'students') {
             let screenWidth = window.screen.availWidth;
             let screenHeight = window.screen.availHeight;
             // 시선흐름 감시 창
             window.open(
-                `/video-lecture-detect-lists/${classNum}?roomId=${currentVideoLecture.room_id}`,
+                `/video-lecture-detect-lists/${classNum}?roomId=${data.room_id}`,
                 'Gooroomee Biz_withEyetracker',
                 `width=${300}, height=${screenHeight}, left=${screenWidth - 300}, toolbar=no, scrollbars=no, resizable=no, status=no`,
                 true,
             );
             // window.open(
-            //     `/video-lecture-eyetracker/${classNum}?roomId=${currentVideoLecture.room_id}`,
+            //     `/video-lecture-eyetracker/${classNum}?roomId=${data.room_id}`,
             //     'Gooroomee Biz_withEyetracker',
             //     `toolbar=no, scrollbars=no, resizable=no, status=no`,
             //     true,
@@ -531,7 +534,7 @@ function VideoLecturesManage({ match, history }) {
             Axios.post(
                 `${apiUrl}/meeting-room/otp`,
                 {
-                    roomId: currentVideoLecture.room_id,
+                    roomId: data.room_id,
                     username: sessions.userName,
                     roleId: sessions.userType === 'students' ? 'participant' : 'emcee',
                     ignorePasswd: true,
@@ -541,7 +544,6 @@ function VideoLecturesManage({ match, history }) {
             )
                 .then((res) => {
                     const otpCode = res.data.data.roomUserOtp.otp;
-                    console.log(otpCode);
                     window.open(
                         `https://biz.gooroomee.com/room/otp/${otpCode}`,
                         'Gooroomee Biz',
@@ -556,11 +558,32 @@ function VideoLecturesManage({ match, history }) {
         }
     };
 
-    const closeVideoLecture = () => {
+    const closeVideoLecture = (data) => (event) => {
         const conf = window.confirm('정말로 화상 강의를 닫으시겠습니까?');
         if (!conf) return;
 
-        Axios.delete(`${apiUrl}/meeting-room/${currentVideoLecture.room_id}`, { withCredentials: true })
+        Axios.delete(`${apiUrl}/meeting-room/${data.room_id}`, { withCredentials: true })
+            .then((res) => {
+                console.log(res);
+                history.replace();
+            })
+            .catch((err) => {
+                console.error(err);
+                alert('화상 강의를 닫는 중 오류가 발생했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.');
+            });
+    };
+
+    const closeMultipleVideoLectures = () => {
+        if (scheduledIdxs.length < 1) return;
+        const conf = window.confirm('진행 예정인 강의들을 취소 하시겠습니까?');
+        if (!conf) return;
+
+        Axios.delete(`${apiUrl}/meeting-room`, {
+            params: {
+                roomIds: scheduledIdxs,
+            },
+            withCredentials: true,
+        })
             .then((res) => {
                 console.log(res);
                 history.replace();
@@ -576,28 +599,72 @@ function VideoLecturesManage({ match, history }) {
         setAbleState(name);
     };
 
+    const onScheduledCheckedChange = (targetIdx, checked) => {
+        if (checked) {
+            setScheduledIdxs([...scheduledIdxs, targetIdx]);
+        } else {
+            setScheduledIdxs(scheduledIdxs.filter((d, i) => d !== targetIdx));
+        }
+    };
+
     const ListSwitcher = (id) => {
         switch (id) {
             case 'ing':
                 return (
                     <>
                         <GroupBoxContents title="현재 진행 중인 강의">
-                            <CurrentVideoLectureCard />
+                            {currentVideoLectures.current.length ? (
+                                currentVideoLectures.current.map((d, i) => (
+                                    <CurrentVideoLectureCard
+                                        key={d.room_id}
+                                        number={i}
+                                        title={d.title}
+                                        description={d.description}
+                                        hasEyetrack={d.eyetrack}
+                                        startDate={new Date(d.start_at)}
+                                        endDate={new Date(d.end_at)}
+                                        totalParticipants={currentClass.currentStudentsNumber}
+                                        currentParticipants={d.liveCounts}
+                                        userType={sessions.userType}
+                                        serverDate={serverdate.datetime}
+                                        onEntranceClick={enterVideoLecture(d)}
+                                        onLectureCloseClick={closeVideoLecture(d)}
+                                    />
+                                ))
+                            ) : (
+                                <NoLecturesCard />
+                            )}
                         </GroupBoxContents>
                         <GroupBoxContents
                             title="진행 예정인 강의"
                             style={{ marginTop: 90 }}
                             rightComponent={
                                 sessions.userType === 'students' ? null : (
-                                    <EdIconButton size="small" disableRipple>
+                                    <EdIconButton size="small" disableRipple onClick={closeMultipleVideoLectures}>
                                         <DeleteIcon style={{ marginRight: 8 }} />
                                         <span style={{ fontSize: '1rem', marginTop: 3 }}>선택 삭제</span>
                                     </EdIconButton>
                                 )
                             }
                         >
-                            <ScheduledVideoLectureCard hasEyetrack={false} serverDate={serverdate.datetime} />
-                            <ScheduledVideoLectureCard hasEyetrack={false} serverDate={serverdate.datetime} userType={'students'} />
+                            {currentVideoLectures.scheduled.length ? (
+                                currentVideoLectures.scheduled.map((d, i) => (
+                                    <ScheduledVideoLectureCard
+                                        key={d.room_id}
+                                        number={d.room_id}
+                                        title={d.title}
+                                        description={d.description}
+                                        hasEyetrack={d.eyetrack}
+                                        startDate={new Date(d.start_at)}
+                                        endDate={new Date(d.end_at)}
+                                        userType={sessions.userType}
+                                        serverDate={serverdate.datetime}
+                                        onCheckboxChanged={onScheduledCheckedChange}
+                                    />
+                                ))
+                            ) : (
+                                <NoLecturesCard message="예정된 강의가 없습니다." />
+                            )}
                         </GroupBoxContents>
                     </>
                 );
@@ -606,6 +673,21 @@ function VideoLecturesManage({ match, history }) {
                     <>
                         <GroupBoxContents title="완료된 화상 강의">
                             <LogsVideoLectureCard />
+                            {currentVideoLectures.done.length ? (
+                                currentVideoLectures.done.map((d, i) => (
+                                    <LogsVideoLectureCard
+                                        key={d.room_id}
+                                        number={i}
+                                        title={d.title}
+                                        description={d.description}
+                                        hasEyetrack={d.eyetrack}
+                                        startDate={new Date(d.start_at)}
+                                        endDate={new Date(d.end_at)}
+                                    />
+                                ))
+                            ) : (
+                                <NoLecturesCard message="기록이 없습니다." />
+                            )}
                         </GroupBoxContents>
                     </>
                 );
@@ -615,11 +697,21 @@ function VideoLecturesManage({ match, history }) {
     };
 
     useEffect(() => {
-        if (!currentClass.currentVideoLecture) return;
-        const endDateTime = new Date(currentClass.currentVideoLecture.end_at).getTime();
-        if (endDateTime < serverdate.datetime) return;
-        setCurrentVideoLecture(currentClass.currentVideoLecture);
-    }, [currentClass.currentVideoLecture]);
+        if (!currentClass.currentVideoLectures) return;
+        setCurrentVideoLectures(currentClass.currentVideoLectures);
+    }, [currentClass.currentVideoLectures]);
+
+    useEffect(() => {
+        return () => {
+            if (window.liveCountsInterval) {
+                Object.keys(window.liveCountsInterval).forEach((key) => {
+                    clearInterval(window.liveCountsInterval[key]);
+                    delete window.liveCountsInterval[key];
+                });
+            }
+        };
+    }, []);
+
     return (
         <>
             <Dialog
@@ -745,7 +837,7 @@ function VideoLecturesManage({ match, history }) {
                             </div>
                         </div>
                         <div className="right">
-                            <StyledButton className="video-lecture sub">
+                            <StyledButton className="video-lecture sub" onClick={handleNewVideoLectureDialogOpen}>
                                 <AddCircleOutlineIcon fontSize="small" />새 화상 강의 만들기
                             </StyledButton>
                         </div>

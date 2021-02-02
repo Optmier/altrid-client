@@ -7,10 +7,12 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
 import TooltipCard from './TooltipCard';
-import { setCurrentVideoLecture, setStudentsNum, updateLiveCounts } from '../../redux_modules/currentClass';
+import { setCurrentVideoLectures, setStudentsNum, updateLiveCounts } from '../../redux_modules/currentClass';
 import Error from '../../pages/Error';
 import styled from 'styled-components';
 import VideocamIcon from '@material-ui/icons/Videocam';
+
+window.liveCountsInterval = {};
 
 const StyleLeftNav = styled.div`
     transition: all 0.4s;
@@ -35,24 +37,22 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
 });
 
 function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState }) {
-    const { num } = match.params;
-
+    const { num, id } = match.params;
     /** redux-module 불러내기 */
     const dispatch = useDispatch();
     const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
     const sessions = useSelector((state) => state.RdxSessions);
     const serverdate = useSelector((state) => state.RdxServerDate);
     const setStudentsNumber = useCallback((studentsNumber) => dispatch(setStudentsNum(studentsNumber)));
-    const setVideoLecture = useCallback((videoLecture) => dispatch(setCurrentVideoLecture(videoLecture)));
-    const updateVideoLiveCounts = useCallback((liveCounts) => dispatch(updateLiveCounts(liveCounts)));
+    const setVideoLectures = useCallback((videoLecture) => dispatch(setCurrentVideoLectures(videoLecture)));
+    const updateVideoLiveCounts = useCallback((roomId, liveCounts) => dispatch(updateLiveCounts(roomId, liveCounts)));
 
     const [studentData, setStudentData] = useState([]);
     const [teacherData, setTeacherData] = useState({});
-
     const [hasVideoLecture, setHasVideoLecture] = useState(false);
 
     useEffect(() => {
-        if (!sessions || !sessions.userType || !sessions.academyName) return;
+        if (!sessions || !sessions.userType || !sessions.academyName || !serverdate.datetime) return;
 
         if (sessions.userType === 'teachers') {
             Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
@@ -73,62 +73,78 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                 console.error(err);
             });
 
-        Axios.get(`${apiUrl}/meeting-room/last`, {
-            params: {
-                creatorId: sessions.userType === 'students' ? null : sessions.authId,
-                classNumber: num,
-                academyCode: sessions.academyCode,
-            },
-            withCredentials: true,
-        })
-            .then((res) => {
-                if (window.intervalLiveCounts) {
-                    clearInterval(window.intervalLiveCounts);
-                    delete window.intervalLiveCounts;
-                }
-                if (!res.data || new Date(res.data.end_at).getTime() < new Date().getTime()) {
-                    setVideoLecture(null);
-                    return;
-                }
-                setVideoLecture({ ...res.data, liveCounts: 0 });
-                setHasVideoLecture(true);
-                Axios.get(`${apiUrl}/meeting-room/live-counts/${res.data.room_id}`, { withCredentials: true })
-                    .then((res) => {
-                        if (res.data !== null || res.data !== undefined) {
-                            updateVideoLiveCounts(res.data);
-                        }
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                    });
-                if (!window.intervalLiveCounts) {
-                    window.intervalLiveCounts = setInterval(() => {
-                        Axios.get(`${apiUrl}/meeting-room/live-counts/${res.data.room_id}`, { withCredentials: true })
-                            .then((res) => {
-                                if (res.data !== null || res.data !== undefined) {
-                                    updateVideoLiveCounts(res.data);
-                                }
-                            })
-                            .catch((err) => {
-                                console.error(err);
-                            });
-                    }, 15000);
-                }
+        if (id === 'vid-lecture') {
+            Axios.get(`${apiUrl}/meeting-room`, {
+                params: {
+                    creatorId: sessions.userType === 'students' ? null : sessions.authId,
+                    classNumber: num,
+                    academyCode: sessions.academyCode,
+                },
+                withCredentials: true,
             })
-            .catch((err) => {
-                console.error(err);
-            });
-        return () => {};
-    }, [sessions.authId, sessions.academyName]);
+                .then((res) => {
+                    const listLength = res.data.length;
+                    const filteredList = {
+                        current: [],
+                        scheduled: [],
+                        done: [],
+                    };
 
-    useEffect(() => {
-        return () => {
-            if (window.intervalLiveCounts) {
-                clearInterval(window.intervalLiveCounts);
-                delete window.intervalLiveCounts;
-            }
-        };
-    }, []);
+                    for (let i = 0; i < listLength; i++) {
+                        const lectureStartDate = new Date(res.data[i].start_at).getTime();
+                        const lectureEndDate = new Date(res.data[i].end_at).getTime();
+                        const forceClosed = res.data[i].force_closed;
+                        // 진행 예정 강의
+                        if (lectureStartDate > serverdate.datetime && !forceClosed) {
+                            filteredList.scheduled.push(res.data[i]);
+                        }
+                        // 완료된 강의
+                        else if (lectureEndDate < serverdate.datetime || forceClosed) {
+                            filteredList.done.push(res.data[i]);
+                        }
+                        // 진행 중인 강의
+                        else {
+                            if (!hasVideoLecture) setHasVideoLecture(true);
+                            filteredList.current.push({ ...res.data[i], liveCounts: 0 });
+                            Axios.get(`${apiUrl}/meeting-room/live-counts/${res.data[i].room_id}`, { withCredentials: true })
+                                .then((counts) => {
+                                    if (counts.data !== null || counts.data !== undefined) {
+                                        updateVideoLiveCounts(res.data[i].room_id, counts.data);
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.error(err);
+                                });
+                            // 라이브 카운터 등록
+                            if (!window.liveCountsInterval[res.data[i].room_id]) {
+                                window.liveCountsInterval[res.data[i].room_id] = setInterval(() => {
+                                    Axios.get(`${apiUrl}/meeting-room/live-counts/${res.data[i].room_id}`, { withCredentials: true })
+                                        .then((counts) => {
+                                            if (counts.data !== null || counts.data !== undefined) {
+                                                updateVideoLiveCounts(res.data[i].room_id, counts.data);
+                                            }
+                                        })
+                                        .catch((err) => {
+                                            console.error(err);
+                                        });
+                                }, 15000);
+                            }
+                        }
+                    }
+
+                    // 정렬
+                    filteredList.done.sort((a, b) => new Date(b.start_at).getTime() - new Date(a.start_at).getTime());
+                    filteredList.scheduled.sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime());
+                    filteredList.current.sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime());
+
+                    setVideoLectures(filteredList);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+        return () => {};
+    }, [sessions.authId, sessions.academyName, serverdate.datetime]);
 
     useEffect(() => {
         if (window.innerWidth <= 902) {
@@ -214,15 +230,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                         </>
                     </div>
 
-                    {sessions.userType === 'students' ? //                 <path //             <svg width="18" height="18" viewBox="0 0 24 24"> //             <div className="draft-ment">화상 강의 진행중</div> //         <LeftNavItem linkTo={`/class/${num}/vid-lecture`}> //     <div className="a-wrapper"> // hasVideoLecture ? (
-                    //                     fill="white"
-                    //                     d="M15,12V20H5V12H15M16,10H4A1,1 0 0,0 3,11V21A1,1 0 0,0 4,22H16A1,1 0 0,0 17,21V17.5L21,21.5V10.5L17,14.5V11A1,1 0 0,0 16,10M3,3.86L4.4,5.24C7.5,2.19 12.5,2.19 15.6,5.24L17,3.86C13.14,0.05 6.87,0.05 3,3.86M5.8,6.63L7.2,8C8.75,6.5 11.25,6.5 12.8,8L14.2,6.63C11.88,4.34 8.12,4.34 5.8,6.63Z"
-                    //                 />
-                    //             </svg>
-                    //         </LeftNavItem>
-                    //     </div>
-                    // ) : null
-                    null : (
+                    {sessions.userType === 'students' ? null : ( // ) : null //     </div> //         </LeftNavItem> //             </svg> //                 /> //                     d="M15,12V20H5V12H15M16,10H4A1,1 0 0,0 3,11V21A1,1 0 0,0 4,22H16A1,1 0 0,0 17,21V17.5L21,21.5V10.5L17,14.5V11A1,1 0 0,0 16,10M3,3.86L4.4,5.24C7.5,2.19 12.5,2.19 15.6,5.24L17,3.86C13.14,0.05 6.87,0.05 3,3.86M5.8,6.63L7.2,8C8.75,6.5 11.25,6.5 12.8,8L14.2,6.63C11.88,4.34 8.12,4.34 5.8,6.63Z" //                     fill="white" //                 <path //             <svg width="18" height="18" viewBox="0 0 24 24"> //             <div className="draft-ment">화상 강의 진행중</div> //         <LeftNavItem linkTo={`/class/${num}/vid-lecture`}> //     <div className="a-wrapper"> // hasVideoLecture ? (
                         <div className="a-wrapper">
                             <LeftNavItem linkTo={`/main-draft`}>
                                 <div className="draft-button">
@@ -263,7 +271,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                 <LeftNavItem linkTo={`/class/${num}/vid-lecture`}>
                                     <VideocamIcon fontSize="small" style={{ marginLeft: -3 }} />
                                     <p>화상 강의</p>
-                                    <div className="live-streaming-mark">LIVE</div>
+                                    {hasVideoLecture ? <div className="live-streaming-mark">LIVE</div> : null}
                                 </LeftNavItem>
                             </div>
                             <div className="a-wrapper">

@@ -114,13 +114,14 @@ const CardLeft = styled.div`
             & div.eyetrack-indicator {
                 align-items: center;
                 display: inherit;
-                margin-left: 40px;
+                margin-left: 28px;
 
                 & p {
                     color: #666666;
                     font-size: 0.625rem;
                     font-weight: 400;
                     margin-right: 8px;
+                    min-width: 4.3rem;
                 }
             }
         }
@@ -491,7 +492,7 @@ const ScheduledVideoLectureCard = React.memo(function ({
     const t2 = moment(startDate);
     const daysDiff = moment.duration(t2.diff(t1)).days();
     const hoursDiff = moment.duration(t2.diff(t1)).hours();
-    const minutesDiff = moment.duration(t2.diff(t1)).days();
+    const minutesDiff = moment.duration(t2.diff(t1)).minutes();
     const [cardChecked, setCardChecked] = useState(false);
     const handleChangeCheckbox = ({ target }) => {
         const { checked } = target;
@@ -550,7 +551,9 @@ const ScheduledVideoLectureCard = React.memo(function ({
                             <div className="participants-container scheduled">
                                 <p className="tag">남은 시간</p>
                                 <div className="numbers">
-                                    {`${daysDiff < 1 ? '' : '일'} ${hoursDiff < 1 ? '' : '시간'} ${minutesDiff}분`}
+                                    {`${daysDiff < 1 ? '' : daysDiff + '일'} ${hoursDiff < 1 ? '' : hoursDiff + '시간'} ${
+                                        daysDiff < 1 && hoursDiff < 1 && minutesDiff < 1 ? '1분 미만' : minutesDiff + '분'
+                                    }`}
                                 </div>
                             </div>
                             <div className="participants-container-mobile">
@@ -558,7 +561,8 @@ const ScheduledVideoLectureCard = React.memo(function ({
                                     <TimerIcon fontSize="small" />
                                     <p className="tag">남은 시간</p>
                                     <p className="numbers">
-                                        {`${daysDiff < 1 ? '' : '일'} ${hoursDiff < 1 ? '' : '시간'} ${minutesDiff}분`}
+                                        ${daysDiff < 1 ? '' : daysDiff + '일'} ${hoursDiff < 1 ? '' : hoursDiff + '시간'} $
+                                        {daysDiff < 1 && hoursDiff < 1 && minutesDiff < 1 ? '1분 미만' : minutesDiff + '분'}
                                     </p>
                                 </div>
                             </div>
@@ -584,7 +588,11 @@ ScheduledVideoLectureCard.defaultProps = {
     },
 };
 
-const LogsWrapper = styled.div``;
+const LogsWrapper = styled.div`
+    & + & {
+        margin-top: 18px;
+    }
+`;
 
 const LogsCardRoot = styled.div`
     background-color: #ffffff;
@@ -606,7 +614,7 @@ const LogsCardLeft = styled.div`
     display: flex;
     flex-direction: column;
     width: 50%;
-    padding-right: 8px;
+    padding-right: 16px;
 
     & div.title {
         display: flex;
@@ -619,7 +627,7 @@ const LogsCardLeft = styled.div`
         & div.eyetrack-indicator {
             align-items: center;
             display: inherit;
-            margin-left: 40px;
+            margin-left: 28px;
 
             & p {
                 color: #666666;
@@ -670,7 +678,7 @@ const LogsCardRight = styled.div`
     & div.date {
         color: rgba(23, 23, 23, 0.7);
         display: flex;
-        justify-content: center;
+        margin-left: 4%;
         width: 100%;
 
         & p.t {
@@ -694,6 +702,7 @@ const LogsCardRight = styled.div`
 
         & div.date {
             justify-content: initial;
+            margin-left: initial;
         }
     }
 `;
@@ -745,6 +754,9 @@ LogsVideoLectureCard.defaultProps = {
     title: '이전 강의 제목입니다',
     description: '이전 강의 설명입니다.',
     hasEyetrack: false,
+    startDate: new Date(),
+    endDate: new Date(),
+    onReportClick() {},
 };
 
 const NoLecturesCard = ({ message }) => (
