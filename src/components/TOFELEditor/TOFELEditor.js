@@ -206,7 +206,7 @@ const NoContentsProblemWarning = styled.div`
     position: absolute;
     text-align: center;
     top: calc(50% + 32px);
-    width: calc(40% - 16px);
+    width: calc(45% - 25px);
     font-size: 1.25rem;
     font-weight: 600;
     color: #0000004d;
