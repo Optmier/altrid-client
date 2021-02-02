@@ -6,6 +6,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Drawer,
     FormControlLabel,
     FormGroup,
     Grid,
@@ -35,6 +36,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { getServerDate } from '../../redux_modules/serverdate';
 import isMobile from '../../controllers/isMobile';
 import { CurrentVideoLectureCard, LogsVideoLectureCard, NoLecturesCard, ScheduledVideoLectureCard } from './ListCards';
+import CreateNewVideoLecture from './CreateNewVideoLecture';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -410,6 +412,7 @@ function VideoLecturesManage({ match, history }) {
     });
     const [ableState, setAbleState] = useState('ing');
     const [scheduledIdxs, setScheduledIdxs] = useState([]);
+    const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -447,39 +450,25 @@ function VideoLecturesManage({ match, history }) {
         }
     };
 
-    const submitNewVideoLectures = () => {
-        let formFieldsPassed = true;
-        let titleCheck = false;
-        let descCheck = false;
-        let endDateCheck = false;
-        if (!formFields.title || !formFields.title.trim()) {
-            titleCheck = true;
-            formFieldsPassed = false;
+    const submitNewVideoLectures = ({ title, description, startDate, endDate, hasStartDate, hasEyetrack }) => {
+        if (!title || !title.trim()) {
+            return alert('강의 제목은 필수입니다.');
         }
-        if (!formFields.description || !formFields.description.trim()) {
-            descCheck = true;
-            formFieldsPassed = false;
+        if (!description || !description.trim()) {
+            return alert('강의 설명은 필수입니다.');
         }
-        if (!formFields.endDate || !formFields.endDate.trim()) {
-            endDateCheck = true;
-            formFieldsPassed = false;
+        if (!endDate || !endDate.trim()) {
+            return alert('종료 날짜를 설정해 주세요.');
         }
-        setFormFieldsError({
-            ...formFieldsError,
-            title: titleCheck,
-            description: descCheck,
-            endDate: endDateCheck,
-        });
-        if (!formFieldsPassed) return;
 
         Axios.post(
             `${apiUrl}/meeting-room`,
             {
-                roomTitle: formFields.title,
-                description: formFields.description,
-                startDate: formFields.hasStartDate ? new Date(formFields.startDate).toUTCString() : null,
-                endDate: new Date(formFields.endDate).toUTCString(),
-                eyetrack: formFields.hasEyetrack,
+                roomTitle: title,
+                description: description,
+                startDate: hasStartDate ? new Date(startDate).toUTCString() : null,
+                endDate: new Date(endDate).toUTCString(),
+                eyetrack: hasEyetrack,
                 classNumber: classNum,
                 maxJoinCount: currentClass.currentStudentsNumber + 1,
             },
@@ -575,7 +564,7 @@ function VideoLecturesManage({ match, history }) {
 
     const closeMultipleVideoLectures = () => {
         if (scheduledIdxs.length < 1) return;
-        const conf = window.confirm('진행 예정인 강의들을 취소 하시겠습니까?');
+        const conf = window.confirm('예약된 강의들을 취소하시겠습니까?');
         if (!conf) return;
 
         Axios.delete(`${apiUrl}/meeting-room`, {
@@ -696,6 +685,13 @@ function VideoLecturesManage({ match, history }) {
         }
     };
 
+    const toggleDrawer = (open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        setOpenCreateNewDrawer(open);
+    };
+
     useEffect(() => {
         if (!currentClass.currentVideoLectures) return;
         setCurrentVideoLectures(currentClass.currentVideoLectures);
@@ -714,6 +710,9 @@ function VideoLecturesManage({ match, history }) {
 
     return (
         <>
+            <Drawer anchor="right" open={openCreateNewDrawer}>
+                <CreateNewVideoLecture handleClose={toggleDrawer(false)} onCreate={submitNewVideoLectures} />
+            </Drawer>
             <Dialog
                 open={newVidLecDlgOpen}
                 onClose={handleNewVideoLectureDialogClose}
@@ -831,15 +830,19 @@ function VideoLecturesManage({ match, history }) {
                                 <ButtonAble name="ing" able={ableState === 'ing'} value={ableState} onClick={handleTopMenuClick}>
                                     진행 중
                                 </ButtonAble>
-                                <ButtonAble name="done" able={ableState === 'done'} value={ableState} onClick={handleTopMenuClick}>
-                                    진행 완료
-                                </ButtonAble>
+                                {sessions.userType === 'students' ? null : (
+                                    <ButtonAble name="done" able={ableState === 'done'} value={ableState} onClick={handleTopMenuClick}>
+                                        진행 완료
+                                    </ButtonAble>
+                                )}
                             </div>
                         </div>
                         <div className="right">
-                            <StyledButton className="video-lecture sub" onClick={handleNewVideoLectureDialogOpen}>
-                                <AddCircleOutlineIcon fontSize="small" />새 화상 강의 만들기
-                            </StyledButton>
+                            {sessions.userType === 'students' ? null : (
+                                <StyledButton className="video-lecture sub" onClick={toggleDrawer(true)}>
+                                    <AddCircleOutlineIcon fontSize="small" />새 화상 강의 만들기
+                                </StyledButton>
+                            )}
                         </div>
                     </div>
                     <ContentsWrapper>{ListSwitcher(ableState)}</ContentsWrapper>

@@ -54,16 +54,16 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName || !serverdate.datetime) return;
 
-        if (sessions.userType === 'teachers') {
-            Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
-                .then((res) => {
-                    setStudentData(res.data);
-                    setStudentsNumber(res.data.length || 0);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        }
+        // if (sessions.userType === 'teachers') {
+        Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
+            .then((res) => {
+                setStudentData(res.data);
+                setStudentsNumber(res.data.length || 0);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+        // }
 
         Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
             .then((res) => {
@@ -265,15 +265,15 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                             <p>과제 게시판</p>
                         </LeftNavItem>
                     </div>
+                    <div className="a-wrapper">
+                        <LeftNavItem linkTo={`/class/${num}/vid-lecture`}>
+                            <VideocamIcon fontSize="small" style={{ marginLeft: -3 }} />
+                            <p>화상 강의</p>
+                            {hasVideoLecture ? <div className="live-streaming-mark">LIVE</div> : null}
+                        </LeftNavItem>
+                    </div>
                     {sessions.userType === 'students' ? null : (
                         <>
-                            <div className="a-wrapper">
-                                <LeftNavItem linkTo={`/class/${num}/vid-lecture`}>
-                                    <VideocamIcon fontSize="small" style={{ marginLeft: -3 }} />
-                                    <p>화상 강의</p>
-                                    {hasVideoLecture ? <div className="live-streaming-mark">LIVE</div> : null}
-                                </LeftNavItem>
-                            </div>
                             <div className="a-wrapper">
                                 <LeftNavItem linkTo={`/class/${num}/student-manage`}>
                                     <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">

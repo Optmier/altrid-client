@@ -30,7 +30,7 @@ const TitleContainer = styled.div`
 
     & h2 {
         font-size: 1.625rem;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     @media all and (max-width: 768px) {
@@ -65,7 +65,7 @@ const CreateButton = withStyles((theme) => ({
         color: '#fff',
         fontFamily: 'Noto Sans CJK KR',
         fontSize: '0.9rem',
-        fontWeight: 700,
+        fontWeight: 600,
         width: '96px',
         height: '45px',
         '&.primary': {
@@ -100,14 +100,14 @@ const CategorySelect = styled.select`
     background: url(/bg_images/Vector.png) no-repeat 92% 50%;
     width: 100%;
     min-height: 40px;
-    padding: 0.4rem 0.8rem;
+    padding: 0 0.8rem;
     font-family: inherit;
     font-size: 1.001rem;
     border: none;
     border: 1px solid rgba(112, 112, 112, 0.79);
     border-radius: 0px;
     color: #707070;
-    font-weight: 700;
+    font-weight: 500;
     -webkit-appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -138,7 +138,7 @@ const HeaderBox = styled.header`
 
     & h5.title {
         font-size: 1rem;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     & p.description {

@@ -255,7 +255,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     const generateUid = useRef();
 
     const [metadata, setMetadata] = useState(datas);
-    window.contentsMeta = metadata;
+    // window.contentsMeta = metadata;
     const [contentsSetData, setContentsSetData] = useState(datas[0]);
     const [contentsTitle, setContentsTitle] = useState(datas[0].title);
     const [contentsPassage, setContentsPassage] = useState({ render: datas[0].passageForRender, editor: datas[0].passageForEditor });
@@ -275,7 +275,6 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     });
     const [setNum, setSetNum] = useState(0);
     const [deleteIdxs, setDeleteIdxs] = useState([]);
-    window.deleteIdxs = deleteIdxs;
 
     let forceUpdate = useForceUpdate();
 
