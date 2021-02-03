@@ -105,6 +105,9 @@
                 height: 75px;
                 border-radius: 50%;
             }
+            & canvas {
+                display: none;
+            }
             & svg {
                 width: 65px;
                 height: 65px;

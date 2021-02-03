@@ -2,6 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { useSelector } from 'react-redux';
+import styled from 'styled-components';
+
+const BtnAble = styled.button`
+    pointer-events: ${(props) => (props.btnAbleState ? 'auto' : 'none')};
+`;
 
 function Profile() {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -11,51 +16,38 @@ function Profile() {
     const [emailWith, setEmailWith] = useState('');
     const [academyName, setAcademyName] = useState('');
     const [academyCode, setAcademyCode] = useState('');
-    const [imgSrc, setImgSrc] = useState('');
-    const [attachFiles, setAttachFiles] = useState(new FormData());
-
-    const filesInput = useRef();
+    const [imgSrc, setImgSrc] = useState(null);
+    const [btnAbleState, setBtnAbleState] = useState(false);
 
     const handleSave = () => {
+        // 1. db에 저장...
         Axios.put(
             `${apiUrl}/my-page/profile`,
             {
                 name: name,
+                image: imgSrc ? imgSrc : null,
             },
             { withCredentials: true },
         )
             .then((res) => {
-                if (imgSrc.substr(0, 4) === 'blob') {
-                    console.log(imgSrc);
+                //2. 세션 처리...
+                Axios.patch(
+                    `${apiUrl}/auth`,
+                    {
+                        userName: name,
+                        image: imgSrc ? imgSrc : null,
+                    },
+                    { withCredentials: true },
+                )
+                    .then((res2) => {
+                        console.log('refresh token!');
+                    })
+                    .catch((err) => {
+                        console.log('refresh error...');
+                        console.error(err);
+                    });
 
-                    Axios.patch(
-                        `${apiUrl}/auth`,
-                        {
-                            image: imgSrc,
-                        },
-                        { withCredentials: true },
-                    )
-                        .then((res2) => {
-                            console.log('refresh token!');
-                        })
-                        .catch((err) => {
-                            console.log('refresh error...');
-                            console.error(err);
-                        });
-
-                    Axios.post(`${apiUrl}/files/requests-image`, attachFiles, { withCredentials: true })
-                        .then((res3) => {
-                            //console.log(res3.data.file_name);
-                            alert('회원정보(이름 또는 이미지) 변경이 완료되었습니다 !');
-                            window.location.reload();
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                        });
-                } else {
-                    alert('회원정보(이름) 변경이 완료되었습니다 !');
-                    window.location.reload();
-                }
+                window.location.reload();
             })
             .catch((err) => {
                 console.error(err);
@@ -64,30 +56,52 @@ function Profile() {
     const handleInput = (e) => {
         const { value } = e.target;
         setName(value);
+        setBtnAbleState(true);
     };
     const handleChangeFile = (e) => {
         if (!e.target.files[0]) return;
+        if (e.target.files[0].size > 3 * 1024 * 1024) {
+            alert('파일당 최대 크기는 3MB입니다.');
+            return;
+        }
 
-        console.log('change!');
-        var reader = new FileReader(e.target.files[0]);
-        reader.onload = function () {
-            setImgSrc(reader.result);
+        setBtnAbleState(true);
+
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        let maxW = 75;
+        let maxH = 75;
+        let img = new Image();
+        img.onload = function () {
+            let iw = img.width;
+            let ih = img.height;
+            let scale = Math.min(maxW / iw, maxH / ih);
+            let iwScaled = iw * scale;
+            let ihScaled = ih * scale;
+            canvas.width = iwScaled;
+            canvas.height = ihScaled;
+            ctx.drawImage(img, 0, 0, iwScaled, ihScaled);
+
+            setImgSrc(canvas.toDataURL('image/jpeg', 0.8));
         };
-
-        // attachFiles.append(e.target.files[0].name, e.target.files[0], e.target.files[0].name);
-        // setImgSrc(URL.createObjectURL(e.target.files[0]));
+        img.src = URL.createObjectURL(e.target.files[0]);
+    };
+    const handleDeleteImg = () => {
+        setImgSrc(null);
+        setBtnAbleState(true);
     };
 
     useEffect(() => {
         if (sessions.userType) {
             Axios.get(`${apiUrl}/my-page/profile`, { withCredentials: true })
                 .then((res) => {
-                    const { name, email, academy_code, academy_name, auth_with } = res.data;
-                    setName(name);
+                    const { email, auth_with } = res.data;
+
                     setEmail(email);
                     setEmailWith(auth_with);
-                    setAcademyName(academy_name);
-                    setAcademyCode(academy_code);
+                    setName(sessions.userName);
+                    setAcademyName(sessions.academyName);
+                    setAcademyCode(sessions.academyCode);
                     setImgSrc(sessions.image);
                 })
                 .catch((err) => {
@@ -96,11 +110,7 @@ function Profile() {
         }
 
         return () => {};
-    }, [sessions.userType]);
-
-    console.log(imgSrc);
-
-    window.imgSrc = imgSrc;
+    }, [sessions.academyName]);
 
     return (
         <div className="profile-root">
@@ -108,6 +118,8 @@ function Profile() {
             <section>
                 <div className="mypage-header">프로필 사진</div>
                 <div className="mypage-contents profile-image">
+                    <canvas id="canvas" width="75" height="75"></canvas>
+
                     {imgSrc ? (
                         <img src={imgSrc} alt="my_profile.." />
                     ) : (
@@ -121,23 +133,18 @@ function Profile() {
 
                     <div className="profile-image-right">
                         <div>
-                            <input
-                                ref={filesInput}
-                                id="file-click"
-                                type="file"
-                                accept="image/gif,image/jpeg,image/png"
-                                onChange={handleChangeFile}
-                            />
+                            <input id="file-click" type="file" accept="image/gif,image/jpeg,image/png" onChange={handleChangeFile} />
                             <label htmlFor="file-click" className="btn-purple">
                                 사진 변경
                             </label>
                         </div>
 
-                        <button className="btn-gray">삭제하기</button>
+                        <button className="btn-gray" onClick={handleDeleteImg}>
+                            삭제하기
+                        </button>
                     </div>
                 </div>
             </section>
-
             <section>
                 <div className="mypage-header">이름 / 학원명</div>
                 <div className="mypage-contents white-box profile-info">
@@ -155,6 +162,7 @@ function Profile() {
                     </div>
                     <div className="row">
                         <div className="row-title">학원명</div>
+                        {console.log('useState', academyName, 'session', sessions.academyName)}
                         <div className="row-desc">{academyName ? academyName : '클래스를 입장하시면, 자동으로 학원 등록됩니다.'}</div>
                     </div>
 
@@ -166,12 +174,11 @@ function Profile() {
                     ) : null}
                 </div>
             </section>
-
             <section>
                 <div className="mypage-footer">
-                    <button className="btn-green" onClick={handleSave}>
+                    <BtnAble btnAbleState={btnAbleState} className="btn-green" onClick={handleSave}>
                         저장하기
-                    </button>
+                    </BtnAble>
                 </div>
             </section>
         </div>
