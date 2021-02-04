@@ -343,10 +343,16 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
         if (problemEditmode)
             setContentsProblemDatas(
                 contentsProblemDatas.map((origData, idx) =>
-                    idx === problemEditIdx ? { ...newData, setNum: setNum } : { ...origData, setNum: setNum },
+                    idx === problemEditIdx
+                        ? { ...newData, passageUid: contentsSetData.uuid }
+                        : { ...origData, passageUid: contentsSetData.uuid },
                 ),
             );
-        else setContentsProblemDatas([...contentsProblemDatas, { ...newData, setNum: setNum, uuid: generateUid.current(8) }]);
+        else
+            setContentsProblemDatas([
+                ...contentsProblemDatas,
+                { ...newData, passageUid: contentsSetData.uuid, uuid: generateUid.current(8) },
+            ]);
     };
 
     const onProblemEdit = (editIdx) => (event) => {
@@ -418,6 +424,9 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
 
     const handleNextSet = () => {
         if (setNum >= metadata.length - 1) return;
+        if (!metadata[setNum + 1].uuid) {
+            setMetadata((metadata) => metadata.map((d, i) => (i === setNum + 1 ? { ...d, uuid: generateUid.current(7) } : d)));
+        }
         setSetNum(setNum + 1);
     };
 
@@ -576,19 +585,19 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
 
         $(window).unbind('keydown');
         $(window).bind('keydown', (e) => {
-            if (e.keyCode === 80 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
-                e.preventDefault();
-                setOpenCreateNewDrawer(true);
-            } else if (e.keyCode === 66 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
-                e.preventDefault();
-                setOpenPreview(!openPreview);
-            } else if (e.keyCode === 49 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
-                e.preventDefault();
-                // addPassageSplitter();
-            } else if (e.keyCode === 50 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
-                e.preventDefault();
-                // addParagraphSplitter();
-            }
+            // if (e.keyCode === 80 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+            //     e.preventDefault();
+            //     setOpenCreateNewDrawer(true);
+            // } else if (e.keyCode === 66 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+            //     e.preventDefault();
+            //     setOpenPreview(!openPreview);
+            // } else if (e.keyCode === 49 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+            //     e.preventDefault();
+            //     // addPassageSplitter();
+            // } else if (e.keyCode === 50 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
+            //     e.preventDefault();
+            //     // addParagraphSplitter();
+            // }
         });
 
         // assign ShortUniqueId function

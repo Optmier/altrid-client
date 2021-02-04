@@ -298,7 +298,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
 
     const handleChangeCategory = (e) => {
         const cat = e.target.value;
-        setProblemCategory(cat);
+        setProblemCategory(parseInt(cat));
         // switch (cat) {
         //     case 9:
         //         setProblemType('short-answer');

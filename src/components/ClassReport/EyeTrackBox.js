@@ -172,9 +172,9 @@ function EyeTrackBox({
                     <div className="ment-ai-row">
                         <span className="row-title">평균 응시 속도</span>
 
-                        <TooltipCard title={`${avgFixVels}ms (평균 ${avgFixDurTotalAvg}ms)`}>
+                        <TooltipCard title={`${avgFixVels}px/s (평균 ${avgFixDurTotalAvg}px/s)`}>
                             <span className="row-desc">
-                                {avgFixVels}ms (평균 {avgFixDurTotalAvg}ms)
+                                {avgFixVels}px/s (평균 {avgFixDurTotalAvg}px/s)
                             </span>
                         </TooltipCard>
                     </div>

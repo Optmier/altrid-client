@@ -152,7 +152,6 @@ function SmartTOFELRender({
     const [metadata, setMetadata] = useState(userDatas);
     const [triggerExit, setTriggerExit] = useState(false);
     const [forceEnd, setForceEnd] = useState(false);
-    window.metadata = metadata;
 
     const handlePrev = () => {
         setCurrentLog((currentLog) => {
@@ -162,7 +161,7 @@ function SmartTOFELRender({
                 time: timeLimit === -2 ? timer : timeLimit - timer,
                 answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
                 correct: userSelectionDatas[currentProblemIdx].correct,
-                setNum: userSelectionDatas[currentProblemIdx].setNum,
+                setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
             };
             // console.log(state);
             // onPrev(currentProblemIdx - 1);
@@ -179,7 +178,7 @@ function SmartTOFELRender({
                 time: timeLimit === -2 ? timer : timeLimit - timer,
                 answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
                 correct: userSelectionDatas[currentProblemIdx].correct,
-                setNum: userSelectionDatas[currentProblemIdx].setNum,
+                setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
             };
             // console.log(state);
             if (currentProblemIdx < problemDatas.length - 1) {
@@ -207,7 +206,7 @@ function SmartTOFELRender({
                 answerBefore: userSelectionDatas[currentProblemIdx].answerUser,
                 answerAfter: userAnswer,
                 correct: isCorrect,
-                setNum: userSelectionDatas[currentProblemIdx].setNum,
+                setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
             };
             // console.log(state);
             return state;
@@ -217,10 +216,10 @@ function SmartTOFELRender({
                 idx === currentProblemIdx
                     ? {
                           ...data,
-                          setNum: problemDatas[currentProblemIdx].setNum,
+                          setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
                           qUUID: problemDatas[currentProblemIdx].uuid,
-                          pUUID: pUUIDs[problemDatas[currentProblemIdx].setNum]
-                              ? pUUIDs[problemDatas[currentProblemIdx].setNum]
+                          pUUID: pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
+                              ? pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
                               : undefined,
                           type: problemDatas[currentProblemIdx].type,
                           category: problemDatas[currentProblemIdx].category,
@@ -256,7 +255,7 @@ function SmartTOFELRender({
                 time: timeLimit === -2 || timeLimit === -3 ? timer : timeLimit - timer,
                 answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
                 correct: userSelectionDatas[currentProblemIdx].correct,
-                setNum: userSelectionDatas[currentProblemIdx].setNum,
+                setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
             };
             // console.log(state);
             setForceEnd(true);
@@ -272,9 +271,11 @@ function SmartTOFELRender({
                 setUserSelectionDatas([
                     ...userSelectionDatas,
                     {
-                        setNum: problemDatas[currentProblemIdx].setNum,
+                        setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
                         qUUID: problemDatas[currentProblemIdx].uuid,
-                        pUUID: pUUIDs[problemDatas[currentProblemIdx].setNum] ? pUUIDs[problemDatas[currentProblemIdx].setNum] : undefined,
+                        pUUID: pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
+                            ? pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
+                            : undefined,
                         type: problemDatas[currentProblemIdx].type,
                         category: problemDatas[currentProblemIdx].category,
                         answerUser: problemDatas[currentProblemIdx].answer,
@@ -287,9 +288,11 @@ function SmartTOFELRender({
                 setUserSelectionDatas([
                     ...userSelectionDatas,
                     {
-                        setNum: problemDatas[currentProblemIdx].setNum,
+                        setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
                         qUUID: problemDatas[currentProblemIdx].uuid,
-                        pUUID: pUUIDs[problemDatas[currentProblemIdx].setNum] ? pUUIDs[problemDatas[currentProblemIdx].setNum] : undefined,
+                        pUUID: pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
+                            ? pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
+                            : undefined,
                         type: problemDatas[currentProblemIdx].type,
                         category: problemDatas[currentProblemIdx].category,
                         answerUser: problemDatas[currentProblemIdx].type === 'short-answer' ? '' : 0,
@@ -321,7 +324,7 @@ function SmartTOFELRender({
                     answerBefore: userSelectionDatas[currentProblemIdx].answerUser,
                     answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
                     correct: userSelectionDatas[currentProblemIdx].correct,
-                    setNum: userSelectionDatas[currentProblemIdx].setNum,
+                    setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
                 };
                 // console.log(state);
                 return state;
@@ -332,7 +335,10 @@ function SmartTOFELRender({
         // 문제
         const $problems = $('.problems');
         /** 세트 번호 다를시 지문 영역 스크롤 초기화 */
-        if (problemDatas[lastProblemIdx].setNum !== problemDatas[currentProblemIdx].setNum) {
+        if (
+            pUUIDs.findIndex((d) => d === problemDatas[lastProblemIdx].passageUid) !==
+            pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)
+        ) {
             $passage.scrollTop(0);
         }
         /** 문제 바뀔시 문제 영역 스크롤 초기화 */
@@ -393,7 +399,7 @@ function SmartTOFELRender({
         <RenderRoot>
             <HeaderToolbar>
                 <HeaderTitle>
-                    <h4>{title[problemDatas.length ? problemDatas[currentProblemIdx].setNum : 0]}</h4>
+                    <h4>{title[problemDatas.length ? pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid) : 0]}</h4>
                 </HeaderTitle>
                 <HeaderTimer
                     className={
@@ -430,7 +436,7 @@ function SmartTOFELRender({
             </HeaderToolbar>
             <ContentsContainer>
                 <PassageContainer className="passages">
-                    {HtmlParser(passageForRender[problemDatas[currentProblemIdx].setNum])}
+                    {HtmlParser(passageForRender[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)])}
                 </PassageContainer>
                 <ProblemsContainer className="problems">
                     {problemDatas.length > 0 ? (

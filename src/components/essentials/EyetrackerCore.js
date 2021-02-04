@@ -298,10 +298,10 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         });
         $('.calib-dots').removeClass('ok');
         localStorage.setItem('eye_calibrated', false);
-        setCalibBtnText('보정 완료');
+        // setCalibBtnText('보정 완료');
         setCalibBtnDisabled(true);
         Webgazer.clearData().then(() => {
-            setCalibBtnText('보정 완료');
+            // setCalibBtnText('보정 완료');
             setTimeout(() => {
                 setWebgazerLoaded(true);
             }, 500);
@@ -508,16 +508,6 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
 
     window.dots = calibDotCounts;
 
-    // useEffect(() => {
-    //     return () => {
-    //         try {
-    //             Webgazer.end();
-    //         } catch (e) {
-    //             console.warn(e);
-    //         }
-    //     };
-    // }, []);
-
     useEffect(() => {
         if (!start) return;
         let allCalibrated = true;
@@ -554,6 +544,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         // 보정 사용 유무 단계
         if (translateNum === 200) {
             if (calibrateState === 'new') {
+                restartCalibration();
                 setTranslateNum(translateNum - 100);
                 setStepBtnState(false);
             } else if (calibrateState === 'pre') {
@@ -599,9 +590,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     //보정 사용 유무 메소드
     const handleCalibration = (e) => {
         const { name } = e.target;
-
         setCalibrateState(name);
-
         setStepBtnState(true);
     };
     //데이터 수집 동의 메소드
@@ -609,6 +598,16 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         setAgreeCheck(e.target.checked);
         setStepBtnState(e.target.checked);
     };
+
+    useEffect(() => {
+        return () => {
+            try {
+                Webgazer.end();
+            } catch (e) {
+                console.warn(e);
+            }
+        };
+    }, []);
 
     return (
         <>
