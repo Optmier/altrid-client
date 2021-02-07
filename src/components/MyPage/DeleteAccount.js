@@ -1,8 +1,21 @@
 import React from 'react';
 import CheckIcon from '@material-ui/icons/Check';
+import { apiUrl } from '../../configs/configs';
+import Axios from 'axios';
 
 function DeleteAccount() {
-    const handleDelete = () => {};
+    const handleDelete = () => {
+        Axios.delete(`${apiUrl}/my-page/profile`, { withCredentials: true })
+            .then((res) => {
+                if (window.confirm('정말 계정을 삭제하시겠습니까?\n삭제된 계정의 데이터는 복구되지 않습니다.')) {
+                    alert('회원 탈퇴가 완료되었습니다.');
+                    window.logout();
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
     return (
         <div className="delete-root">
             <div className="mypage-title">계정 탈퇴</div>

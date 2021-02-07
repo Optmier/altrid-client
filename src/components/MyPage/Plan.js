@@ -19,7 +19,7 @@ function Plan() {
                         </div>
                         <div className="row">
                             <div className="row-title">사용 기간</div>
-                            <div className="row-desc">2021년 1월 10일 ~ 2021년 2월 10일</div>
+                            <div className="row-desc">현재는 베타 서비스 기간입니다.</div>
                         </div>
                     </div>
                     <div className="now-plan-right">
