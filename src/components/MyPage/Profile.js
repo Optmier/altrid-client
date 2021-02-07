@@ -154,7 +154,7 @@ function Profile() {
                         )}
 
                         <div className="profile-image-right">
-                            <div>
+                            <div style={{ height: '47px', widht: '97px', display: 'flex' }}>
                                 <input id="file-click" type="file" accept="image/gif,image/jpeg,image/png" onChange={handleChangeFile} />
                                 <label htmlFor="file-click" className="btn-purple">
                                     사진 변경
@@ -193,11 +193,10 @@ function Profile() {
                                 <div className="row-title">학원코드</div>
                                 <div className="row-desc">
                                     <input readOnly type="text" className="code-input" defaultValue={academyCode} ref={textCopy} />
+                                    <button className="btn-purple" onClick={handleCopy}>
+                                        복사하기
+                                    </button>
                                 </div>
-
-                                <button className="btn-purple" onClick={handleCopy}>
-                                    복사하기
-                                </button>
                             </div>
                         ) : null}
                     </div>
