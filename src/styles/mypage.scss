@@ -1,5 +1,6 @@
 .mypage-root {
     min-height: 80vh;
+    margin-bottom: 50px;
 
     /** mypage 공용 css */
     & section + section {
@@ -190,13 +191,30 @@
                 }
             }
         }
+        & .btn-green {
+            width: 100%;
+        }
         & .profile-root {
+            margin-bottom: 50px;
             & .profile-image {
                 & .profile-image-right {
                     flex-direction: column;
                     align-items: flex-start;
                     & > button {
                         margin: 1rem 0 0 0;
+                    }
+                }
+            }
+        }
+        & .plan-root {
+            & .now-plan {
+                flex-direction: column;
+                align-items: flex-start;
+                & .now-plan-right {
+                    width: 100%;
+                    & > button {
+                        width: 100%;
+                        margin-top: 2rem;
                     }
                 }
             }
