@@ -360,11 +360,25 @@ body {
         }
     }
 
-    & .nav-popover-acc-name {
-        text-align: center;
-        font-size: 1.5rem;
-        font-weight: 300;
-        margin-top: 1em;
+    & .nav-popover-acc-header {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        & > img {
+            width: 95px;
+            height: 95px;
+            border-radius: 50%;
+        }
+
+        & .nav-popover-acc-name {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-top: 1em;
+        }
     }
 
     & .MuiDrawer-root.MuiDrawer-modal {
@@ -486,6 +500,7 @@ body {
 
                     & img {
                         display: block;
+                        border-radius: 50%;
                         width: 32px;
                     }
                 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Popover, Card, CardContent, Avatar, CardActions, List, ListItem, withStyles, makeStyles, Divider } from '@material-ui/core';
 import * as $ from 'jquery';
+import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,7 +47,7 @@ function ListItemLink(props) {
     return <EdListItem button component="a" {...props} />;
 }
 
-function AccountPopOver({ targetEl, userName }) {
+function AccountPopOver({ targetEl, image, userName, history }) {
     const classes = useStyles();
     const [accountPopOverAnchorEl, setAccountPopOverAnchorEl] = useState(null);
     const accountPopOverOpen = Boolean(accountPopOverAnchorEl);
@@ -98,8 +99,12 @@ function AccountPopOver({ targetEl, userName }) {
         >
             <Card className={classes.root}>
                 <CardContent>
-                    <div style={{ width: '100%' }}>
-                        <Avatar src="/broken-image.jpg" style={{ width: 72, height: 72, margin: '0 auto' }} />
+                    <div className="nav-popover-acc-header">
+                        {image ? (
+                            <img src={image} alt="avatar" />
+                        ) : (
+                            <Avatar src="/broken-image.jpg" style={{ width: 72, height: 72, margin: '0 auto' }} />
+                        )}
                         <div className="nav-popover-acc-name">{userName} 님</div>
                     </div>
                 </CardContent>
@@ -116,6 +121,9 @@ function AccountPopOver({ targetEl, userName }) {
                         <EdListItem button onClick={handleLogout}>
                             로그아웃
                         </EdListItem>
+                        <EdListItem button onClick={() => history.replace('/mypage/profile')}>
+                            마이페이지
+                        </EdListItem>
                     </List>
                 </CardActions>
             </Card>
@@ -123,4 +131,4 @@ function AccountPopOver({ targetEl, userName }) {
     );
 }
 
-export default AccountPopOver;
+export default withRouter(AccountPopOver);

@@ -99,7 +99,6 @@ function Login({ history }) {
     };
 
     const onSuccessGoogleAuth = ({ profileObj }) => {
-        // console.log(profileObj);
         setProfileData({
             ...profileData,
             email: profileObj.email,
@@ -209,6 +208,8 @@ function Login({ history }) {
         const authWith = profileData.authWith;
         // 학원 코드
         const academyCode = inputState.academy_code;
+        //프로필 이미지
+        const image = profileData.image;
         // 전화번호
         const phone = '';
         // 승인 여부( 선생님, 학생 모두 즉시 승인)
@@ -226,6 +227,7 @@ function Login({ history }) {
                     authWith: authWith,
                     academyCode: '',
                     approved: approved,
+                    image: image,
                 },
                 { withCredentials: true },
             )
@@ -260,13 +262,13 @@ function Login({ history }) {
                     authWith: authWith,
                     academyCode: academyCode,
                     approved: approved,
+                    image: image,
                 },
                 { withCredentials: true },
             )
                 .then((res) => {
                     alert('계정 등록이 완료 되었습니다:)');
                     loginMethod(email, authId);
-                    document.location.replace('/login');
                 })
                 .catch((err) => {
                     console.error(err);

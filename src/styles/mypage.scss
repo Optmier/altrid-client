@@ -1,0 +1,223 @@
+.mypage-root {
+    min-height: 80vh;
+    margin-bottom: 50px;
+
+    /** mypage 공용 css */
+    & section + section {
+        margin-top: 63px;
+    }
+    & .mypage-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 50px;
+    }
+    & .mypage-header {
+        font-size: 1.18rem;
+        font-weight: 500;
+        padding-bottom: 5px;
+        width: 100%;
+        border-bottom: 1px solid #707070;
+    }
+    & .mypage-contents {
+        display: flex;
+        align-items: center;
+        padding: 35px 24px;
+    }
+    & .mypage-footer {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    & button,
+    label {
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: white;
+        border-radius: 11px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+    & button {
+        padding: 15px 20px;
+    }
+    & label {
+        padding: 12.5px 20px;
+    }
+    & .btn-purple {
+        background-color: #3f1990;
+    }
+    & .btn-gray {
+        background-color: #707070;
+    }
+    & .btn-green {
+        background-color: #13e2a1;
+    }
+    & .white-box {
+        margin-top: 15px;
+        background-color: white;
+        border-radius: 11px;
+        padding: 24px;
+        display: flex;
+        align-items: flex-start;
+
+        & .row + .row {
+            margin-top: 25px;
+        }
+
+        & .row {
+            font-size: 1.18rem;
+            color: #707070;
+            display: flex;
+            align-items: center;
+
+            & .row-title {
+                font-weight: 600;
+                width: 134px;
+            }
+            & .row-desc {
+                font-weight: 400;
+
+                & > span {
+                    font-weight: 500;
+                }
+                & > input {
+                    width: 150px;
+                    font-size: 1.18rem;
+                    color: black;
+                    font-weight: 400;
+                    border: 1px solid black;
+                    padding: 5px;
+                }
+                & > input::placeholder {
+                    color: #707070;
+                }
+
+                & .code-input {
+                    border: none;
+                }
+            }
+        }
+    }
+
+    /** mypage 컴포넌트별 css */
+    & .profile-root {
+        width: 100%;
+
+        & .profile-image {
+            & img {
+                width: 75px;
+                height: 75px;
+                border-radius: 50%;
+            }
+            & canvas {
+                display: none;
+            }
+            & svg {
+                width: 65px;
+                height: 65px;
+            }
+            & .profile-image-right {
+                margin-left: 70px;
+                display: flex;
+                align-items: center;
+
+                & input[type='file'] {
+                    /* 파일 필드 숨기기 */
+                    position: absolute;
+                    width: 1px;
+                    height: 1px;
+                    padding: 0;
+                    margin: -1px;
+                    overflow: hidden;
+                    clip: rect(0, 0, 0, 0);
+                    border: 0;
+                }
+                & #file-click {
+                    pointer-events: none;
+                }
+                & > button {
+                    margin-left: 13px;
+                    width: 97px;
+                }
+            }
+        }
+        & .profile-info {
+            flex-direction: column;
+        }
+    }
+    & .plan-root {
+        width: 100%;
+
+        & .now-plan {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
+    & .delete-root {
+        width: 100%;
+
+        & .delete-list {
+            flex-direction: column;
+
+            & p {
+                line-height: 1.6;
+                margin-left: 1rem;
+                font-size: 1.18rem;
+                font-weight: 400;
+            }
+        }
+    }
+
+    @media (min-width: 0) and (max-width: 662px) {
+        & .white-box {
+            & .row {
+                font-size: 1.001rem;
+                display: flex;
+                align-items: flex-start;
+                & .row-desc {
+                    width: calc(100% - 134px);
+                    display: flex;
+                    flex-direction: column;
+                    & > input {
+                        font-size: 1.001rem;
+                    }
+                    & > button {
+                        width: 100px;
+                        font-size: 1rem;
+                        margin-top: 10px;
+                    }
+                }
+            }
+        }
+        & .btn-green {
+            width: 100%;
+        }
+        & .profile-root {
+            margin-bottom: 50px;
+            & .profile-image {
+                & .profile-image-right {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    & > button {
+                        margin: 1rem 0 0 0;
+                    }
+                }
+            }
+        }
+        & .plan-root {
+            & .now-plan {
+                flex-direction: column;
+                align-items: flex-start;
+                & .now-plan-right {
+                    width: 100%;
+                    & > button {
+                        width: 100%;
+                        margin-top: 2rem;
+                    }
+                }
+            }
+        }
+    }
+}

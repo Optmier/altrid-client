@@ -497,7 +497,13 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                         {ver === 'draft' ? (
                             <>
                                 <div className="drawer-selects">
-                                    <input ref={filesInput} id="file-click" type="file" onChange={handleChangeFile} />
+                                    <input
+                                        ref={filesInput}
+                                        id="file-click"
+                                        type="file"
+                                        accept=".hwp,.pdf,.docx"
+                                        onChange={handleChangeFile}
+                                    />
 
                                     <StyleLabel clicked={selectState} className="drawer-select" htmlFor="file-click">
                                         <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">

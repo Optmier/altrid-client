@@ -33,6 +33,7 @@ import VideoLectureEyetracker from './components/VideoLectures/VideoLectureEyetr
 import VideoLectureEyetrackDetectionList from './components/VideoLectures/VideoLectureEyetrackDetectionList';
 import LoginMobileAppRedirect from './pages/LoginMobileAppRedirect';
 import MainDraft from './pages/MainDraft';
+import MyPage from './pages/MyPage';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -44,8 +45,8 @@ const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin,
 function App({ history }) {
     const dispatch = useDispatch();
     const saveSessions = useCallback(
-        (authId, userName, userType, academyCode, academyName, issuer, iat, exp) =>
-            dispatch(saveSession(authId, userName, userType, academyCode, academyName, issuer, iat, exp)),
+        (authId, userName, userType, academyCode, academyName, issuer, iat, exp, image) =>
+            dispatch(saveSession(authId, userName, userType, academyCode, academyName, issuer, iat, exp, image)),
         [dispatch],
     );
     const updateSessions = useCallback((updateStates) => dispatch(updateSession(updateStates)), [dispatch]);
@@ -94,17 +95,21 @@ function App({ history }) {
                 //         }
                 //         break;
                 // }
-                const { authId, academyCode, exp, iat, iss, userName, userType } = res1.data;
-                saveSessions(authId, userName, userType, academyCode, null, iss, iat, exp);
+
+                const { authId, exp, academyCode, iat, iss, userName, userType, image } = res1.data;
+                saveSessions(authId, userName, userType, academyCode, null, iss, iat, exp, image);
 
                 Axios.get(`${apiUrl}/academies/current/name`, { withCredentials: true })
                     .then((res2) => {
                         const academyName = res2.data.name;
-                        updateSessions({ academyName: academyName });
+
+                        if (academyName) {
+                            updateSessions({ academyName: academyName });
+                        }
                         try {
                             window.Android.ShowWebView();
                         } catch (error) {
-                            // console.error(error);
+                            console.error(error);
                         }
                     })
                     .catch((err) => {
@@ -112,7 +117,6 @@ function App({ history }) {
                     });
             })
             .catch((err) => {
-                console.log(err.response);
                 if (err.response.status === 401) {
                     if (!loginUrls.includes(history.location.pathname)) {
                         // alert('로그인이 필요합니다.');
@@ -193,6 +197,8 @@ function App({ history }) {
                         <Route path="/video-lecture-eyetracker/:classnum" component={VideoLectureEyetracker} exact />
                         <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
+                        <Route path="/mypage/:menu" component={MyPage} />
+
                         {navigator.userAgent.toLowerCase().includes('isnativeapp') ? (
                             <Route path="/login-mobile-app-redirect" component={LoginMobileAppRedirect} exact />
                         ) : null}
