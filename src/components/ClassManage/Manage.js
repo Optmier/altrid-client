@@ -10,7 +10,11 @@ import { withRouter } from 'react-router-dom';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
 import { Button, withStyles } from '@material-ui/core';
 import styled from 'styled-components';
+import PopOverClipboard from '../essentials/PopOverClipboard';
 
+const CopyButton = styled.div`
+    pointer-events: ${(props) => (props.state ? 'none' : 'all')};
+`;
 const FormButton = styled.button`
     background-color: ${(props) => (props.able ? '#43138b' : '#f6f7f9')};
     color: ${(props) => (props.able ? 'white' : '#707070')};
@@ -57,6 +61,7 @@ function Manage({ match, history }) {
     const [studentsData, setStudentsData] = useState([]);
     const [createButtonEnabled, setCreateButtonEnabled] = useState(false);
     const [codeState, setCodeState] = useState('');
+    const [clipboardState, setClipboardState] = useState(false);
     const [buttonAble, setButtonAble] = useState({
         월: false,
         화: false,
@@ -278,14 +283,24 @@ function Manage({ match, history }) {
     };
     /**  복사하기 버튼 */
     const handleCopy = () => {
+        if (clipboardState) return;
+
         textCopy.current.select();
         textCopy.current.setSelectionRange(0, 9999);
 
         document.execCommand('copy');
+
+        console.log(clipboardState);
+
+        setClipboardState(true);
+        setTimeout(function () {
+            setClipboardState(false);
+        }, 3000);
     };
 
     return (
         <>
+            <PopOverClipboard state={clipboardState} />
             <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
             <ClassWrapper col="col">
                 <div className="class-manage-root">
@@ -296,7 +311,7 @@ function Manage({ match, history }) {
                         <div className="manage-inputs">
                             <div className="manage-inputs-header">클래스 초대 코드</div>
                             <div className="manage-invite">
-                                <input type="text" defaultValue={codeState} ref={textCopy} />
+                                <input readOnly type="text" defaultValue={codeState} ref={textCopy} />
                                 <button onClick={handleCopy}>복사하기</button>
                             </div>
                         </div>

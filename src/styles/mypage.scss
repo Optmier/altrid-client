@@ -91,6 +91,10 @@
                 & > input::placeholder {
                     color: #707070;
                 }
+
+                & .code-input {
+                    border: none;
+                }
             }
         }
     }
