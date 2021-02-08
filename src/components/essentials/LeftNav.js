@@ -244,7 +244,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                         />
                                         <rect id="사각형_1447" data-name="사각형 1447" width="16" height="16" fill="none" />
                                     </svg>
-                                    과제 생성하기
+                                    과제 생성 및 게시
                                 </div>
                             </LeftNavItem>
                         </div>

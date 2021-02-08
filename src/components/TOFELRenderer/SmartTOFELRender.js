@@ -20,6 +20,18 @@ const timeValueToTimer = (seconds) => {
     else return `${pad(parseInt(secs / 60), 2)}:${pad(Math.floor(secs % 60), 2)}`;
 };
 
+const StyleButton = styled.button`
+    background-color: ${(props) => (props.type === 'save' ? '#572AB5' : '#6D2AFA')};
+    border: none;
+    border-radius: 11px;
+    padding: 8px 10px;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 500;
+    box-shadow: 0px 1px 10px 1px rgb(0 0 0 / 16%);
+    margin-left: 12px;
+`;
+
 const RenderRoot = styled.div`
     min-width: 1280px;
     min-height: 750px;
@@ -152,6 +164,7 @@ function SmartTOFELRender({
     const [metadata, setMetadata] = useState(userDatas);
     const [triggerExit, setTriggerExit] = useState(false);
     const [forceEnd, setForceEnd] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(0);
 
     const handlePrev = () => {
         setCurrentLog((currentLog) => {
@@ -233,19 +246,28 @@ function SmartTOFELRender({
         );
     };
 
-    const handleEnd = () => {
-        // console.log(timer, timeLimit);
+    const handleEnd = (e) => {
+        //console.log(timer, timeLimit);
         if (preview) {
             onEnd();
             return;
         }
         if (timeLimit === -3) {
-        } else if (timeLimit === -2) {
+            setIsSubmitted(1);
+        } else if (timeLimit === -2 && e.target.name === 'save') {
             const conf = window.confirm('정말로 종료하시겠습니까?\n현재까지 변경사항이 저장됩니다.');
             if (!conf) return;
-        } else if (timer > 0) {
+            setIsSubmitted(0);
+        } else if (timeLimit === -2 && e.target.name === 'submit') {
+            const conf = window.confirm('제출 후에는 변경이 불가능합니다.\n정말로 종료하시겠습니까?');
+
+            if (!conf) return;
+
+            setIsSubmitted(1);
+        } else if (timeLimit !== -2 && timer > 0) {
             const conf = window.confirm('아직 제한시간이 남아있습니다.\n정말로 종료하시겠습니까?');
             if (!conf) return;
+            setIsSubmitted(1);
         }
         setCurrentLog((currentLog) => {
             // console.log(timeLimit, timer);
@@ -376,11 +398,11 @@ function SmartTOFELRender({
         }
         if (triggerExit) {
             // console.log(timer, metadata);
-            onEnd(timer, metadata);
+            onEnd(timer, isSubmitted, metadata);
             setTriggerExit(false);
         }
         setLastProblemIdx(currentProblemIdx);
-    }, [metadata]);
+    }, [metadata, isSubmitted]);
 
     useEffect(() => {
         setCurrentProblemIdx(userDatas.lastProblem);
@@ -428,9 +450,14 @@ function SmartTOFELRender({
                         <NavigateNextIcon />
                     </IconButton>
                     <HeaderMasterSWs>
-                        <Button size="small" endIcon={<ExitToAppIcon />} color="secondary" onClick={handleEnd}>
-                            종료
-                        </Button>
+                        {timeLimit === -2 ? (
+                            <StyleButton type={'save'} name="save" onClick={handleEnd}>
+                                저장하기
+                            </StyleButton>
+                        ) : null}
+                        <StyleButton type={'submit'} name="submit" onClick={handleEnd}>
+                            제출하기
+                        </StyleButton>
                     </HeaderMasterSWs>
                 </HeaderPageController>
             </HeaderToolbar>
