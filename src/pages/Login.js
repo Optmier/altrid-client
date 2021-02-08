@@ -50,7 +50,7 @@ function Login({ history }) {
         authWith: '',
     });
     // 로그인, 회원가입 페이지 설정
-    const [loginStep, setLoginStep] = useState(2);
+    const [loginStep, setLoginStep] = useState(0);
     const [inputState, setInputState] = useState({
         real_name: '',
         academy_code: '',
@@ -70,7 +70,7 @@ function Login({ history }) {
         address: '',
         teachers: [],
     });
-    const [requestButtonEnable, setRequestButtonEnable] = useState(true);
+    const [requestButtonEnable, setRequestButtonEnable] = useState(false);
     const generateUid = useRef();
 
     const loginMethod = (email, authId) => {
@@ -224,10 +224,12 @@ function Login({ history }) {
         const authWith = profileData.authWith;
         // 학원 코드
         const academyCode = inputState.academy_code;
+        // 학원 이름
+        const academyName = inputState.academy_name;
         //프로필 이미지
         const image = profileData.image;
         // 전화번호
-        const phone = '';
+        const phone = inputState.phone_no;
         // 승인 여부( 선생님, 학생 모두 즉시 승인)
         const approved = 1;
         // 현재 등록하는 대상이 학생인 경우 선생님 선택 목록 구성
@@ -269,27 +271,68 @@ function Login({ history }) {
                     console.error(err);
                 });
         } else if (usertype === 'teachers') {
-            Axios.post(
-                `${apiUrl}/teachers`,
-                {
-                    email: email || '',
-                    name: name || '',
-                    authId: authId,
-                    authWith: authWith,
-                    academyCode: academyCode,
-                    approved: approved,
-                    image: image,
-                },
-                { withCredentials: true },
-            )
-                .then((res) => {
-                    alert('계정 등록이 완료 되었습니다:)');
-                    loginMethod(email, authId);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
+            const addTeacherMethod = () => {
+                Axios.post(
+                    `${apiUrl}/teachers`,
+                    {
+                        email: email || '',
+                        name: name || '',
+                        authId: authId,
+                        authWith: authWith,
+                        academyCode: academyCode,
+                        approved: approved,
+                        image: image,
+                    },
+                    { withCredentials: true },
+                )
+                    .then((res) => {
+                        alert('계정 등록이 완료 되었습니다:)');
+                        loginMethod(email, authId);
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+            };
+
+            if (createOrEntrance === 'create') {
+                Axios.post(
+                    `${apiUrl}/academies`,
+                    {
+                        code: academyCode,
+                        name: academyName,
+                        address: null,
+                        email: null,
+                        phone: phone,
+                        numOfStudents: 5,
+                        numOfTeachers: 1,
+                    },
+                    { withCredentials: true },
+                )
+                    .then((resAcademyCreation) => {
+                        addTeacherMethod();
+                    })
+                    .catch((errorAcademyCreation) => {
+                        console.error(errorAcademyCreation);
+                    });
+            } else {
+                addTeacherMethod();
+            }
         }
+    };
+
+    const handleCheckDuplicateAcademyName = ({ target }) => {
+        const { value } = target;
+        console.log(value);
+        Axios.get(`${apiUrl}/academies/exists-name/${inputState['academy_name']}`, { withCredentials: true })
+            .then((res) => {
+                console.log(res.data);
+                setInputError({ ...inputError, academy_name: res.data.is_exists });
+                if (res.data.is_exists) alert('다른 곳에서 사용 중인 학원 이름입니다.\n다른 이름을 입력해 주세요.');
+            })
+            .catch((err) => {
+                console.error(err);
+                setInputError({ ...inputError, academy_name: true });
+            });
     };
 
     useEffect(() => {
@@ -368,6 +411,13 @@ function Login({ history }) {
 
         // console.log(inputState, usertype, academyInfo, profileData);
     }, [usertype, academyInfo, inputState, profileData]);
+
+    useEffect(() => {
+        if (loginStep > 2) return;
+        setRequestButtonEnable(false);
+        setInputState({ ...inputState, academy_name: '', phone_no: '', academy_code: '' });
+        setAcademyInfo({ ...academyInfo, is_exists: false, name: '', address: '' });
+    }, [loginStep, createOrEntrance]);
 
     useEffect(() => {
         const urlSearchParams = new URLSearchParams(history.location.search);
