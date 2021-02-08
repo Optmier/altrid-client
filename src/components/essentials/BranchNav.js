@@ -9,6 +9,10 @@ const StyleBranch = styled.div`
     align-items: center;
     justify-content: flex-start;
     margin-left: 25px;
+
+    @media (min-width: 0) and (max-width: 662px) {
+        display: none;
+    }
 `;
 
 const StyleBranchItem = styled.div`
