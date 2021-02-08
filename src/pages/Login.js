@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
 import LogoWhite from '../images/logos/nav_logo_white.png';
 import Footer from '../components/essentials/Footer';
@@ -13,6 +13,11 @@ import { $_loginDefault, $_loginStudent, $_loginTeacher } from '../configs/front
 import Radio from '@material-ui/core/Radio';
 import styled from 'styled-components';
 import isMobile from '../controllers/isMobile';
+/** https://github.com/jeanlescure/short-unique-id
+ * Copyright (c) 2018-2020 Short Unique ID Contributors.
+ * Licensed under the Apache License 2.0.
+ */
+import ShortUniqueId from 'short-unique-id';
 
 const WhiteRadio = withStyles({
     root: {
@@ -28,7 +33,7 @@ const RequestButton = styled.button`
     background-color: ${(props) => (props.disable ? (props.usertype === 'students' ? '#43138B' : '#13E2A1') : '#707070')};
     pointer-events: ${(props) => (props.disable ? 'auto' : 'none')};
     box-shadow: 0px 3px 6px #00000029;
-    color: white;
+    color: ${(props) => (props.disable ? '#fff' : '#ffffff5c')};
     font-family: inherit;
     width: 126px;
     height: 45px;
@@ -37,21 +42,27 @@ const RequestButton = styled.button`
 
 function Login({ history }) {
     const [usertype, setUsertype] = useState('students');
+    const [createOrEntrance, setCreateOrEntrance] = useState('create');
     const [profileData, setProfileData] = useState({
         email: '',
         authId: '',
         image: '',
         authWith: '',
     });
-    const [loginStep, setLoginStep] = useState(0);
+    // 로그인, 회원가입 페이지 설정
+    const [loginStep, setLoginStep] = useState(2);
     const [inputState, setInputState] = useState({
         real_name: '',
         academy_code: '',
+        academy_name: '',
+        phone_no: '',
         teacher_selected: [],
     });
     const [inputError, setInputError] = useState({
         real_name: false,
         academy_code: false,
+        academy_name: false,
+        phone_no: false,
     });
     const [academyInfo, setAcademyInfo] = useState({
         is_exists: false,
@@ -60,6 +71,7 @@ function Login({ history }) {
         teachers: [],
     });
     const [requestButtonEnable, setRequestButtonEnable] = useState(true);
+    const generateUid = useRef();
 
     const loginMethod = (email, authId) => {
         Axios.post(
@@ -173,6 +185,10 @@ function Login({ history }) {
         } else {
             history.replace($_loginStudent);
         }
+    };
+
+    const handleChangeCreateOrEntrance = (e) => {
+        setCreateOrEntrance(e.target.value);
     };
 
     const handleInputChange = (e) => {
@@ -313,18 +329,41 @@ function Login({ history }) {
     }, [inputState.academy_code]);
 
     useEffect(() => {
-        if (usertype === 'students') {
-            if (!inputState['real_name'].trim()) {
+        switch (loginStep) {
+            case 0:
+                break;
+            case 1:
+                if (!inputState['real_name'].trim()) {
+                    setRequestButtonEnable(false);
+                } else {
+                    setRequestButtonEnable(true);
+                }
+                break;
+            case 2:
+                const phoneReg = new RegExp('^[0-9]{8,32}$');
+                if (createOrEntrance === 'create') {
+                    if (
+                        !inputState['academy_name'].trim() ||
+                        !inputState['phone_no'].trim() ||
+                        !inputState['phone_no'].trim().match(phoneReg)
+                    ) {
+                        setRequestButtonEnable(false);
+                    } else {
+                        setRequestButtonEnable(true);
+                    }
+                } else {
+                    if (!inputState['academy_code'].trim() || !academyInfo.name) {
+                        setRequestButtonEnable(false);
+                    } else {
+                        setRequestButtonEnable(true);
+                    }
+                }
+                break;
+            case 3:
+                break;
+            default:
                 setRequestButtonEnable(false);
-            } else {
-                setRequestButtonEnable(true);
-            }
-        } else {
-            if (!inputState['real_name'].trim() || !academyInfo.is_exists) {
-                setRequestButtonEnable(false);
-            } else {
-                setRequestButtonEnable(true);
-            }
+                break;
         }
 
         // console.log(inputState, usertype, academyInfo, profileData);
@@ -339,7 +378,7 @@ function Login({ history }) {
             localStorage.setItem('loginFor', queryUserType);
             setUsertype(queryUserType);
         }
-        setLoginStep(0);
+        // setLoginStep(0);
     }, [history.location]);
 
     useEffect(() => {
@@ -353,6 +392,8 @@ function Login({ history }) {
             localStorage.setItem('loginFor', queryUserType);
             history.replace(`${$_loginDefault}?user=${queryUserType}`);
         }
+        // assign ShortUniqueId function
+        generateUid.current = new ShortUniqueId();
     }, []);
 
     const getContentsForStep = (step) => {
@@ -401,23 +442,13 @@ function Login({ history }) {
                     <div className="additional-auth-root">
                         <div className={classNames('additional-auth-box', usertype === 'students' ? 'bg-s' : 'bg-t')}>
                             {usertype === 'students' ? (
-                                <h3>
-                                    학생의 이름을 <br />
-                                    정확히 <br />
-                                    입력해 주세요.
-                                </h3>
+                                <h3>학생의 이름을 정확히 입력해 주세요.</h3>
                             ) : (
-                                <h3>
-                                    본인의 이름과 <br /> 학원 코드를 <br />
-                                    입력해 주세요.
-                                </h3>
+                                <h3>본인의 이름을 정확히 입력해 주세요.</h3>
                             )}
 
                             <div className="auth-right">
-                                <h5>
-                                    해당 정보는 본인 확인을 위한 용도로 이용되니, <br />
-                                    정확히 기입 해주시기 바랍니다.
-                                </h5>
+                                <h5>해당 정보는 본인 확인을 위한 용도로 이용되니, 정확히 기입 해주시기 바랍니다.</h5>
                                 <div className="form">
                                     <input
                                         className={classNames('default', inputError.real_name ? 'error' : '')}
@@ -428,7 +459,7 @@ function Login({ history }) {
                                         onChange={handleInputChange}
                                         value={inputState['real_name']}
                                     />
-                                    {usertype === 'students' ? (
+                                    {/* {usertype === 'students' ? (
                                         ''
                                     ) : (
                                         <input
@@ -440,18 +471,131 @@ function Login({ history }) {
                                             onChange={handleInputChange}
                                             value={inputState['academy_code']}
                                         />
-                                    )}
-
-                                    {academyInfo.name ? (
-                                        <div className="academy-search-results">
-                                            <p className="name">{academyInfo.name}</p>
-                                            <p className="address">{academyInfo.address}</p>
-                                        </div>
+                                    )} */}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="request-button">
+                            {usertype === 'students' ? (
+                                <RequestButton disable={requestButtonEnable} usertype={usertype} onClick={handleRequestButtonClick}>
+                                    계정 등록
+                                </RequestButton>
+                            ) : (
+                                <RequestButton
+                                    disable={requestButtonEnable}
+                                    usertype={usertype}
+                                    onClick={() => {
+                                        setLoginStep(2);
+                                    }}
+                                >
+                                    다음
+                                </RequestButton>
+                            )}
+                        </div>
+                    </div>
+                );
+            case 2:
+                return (
+                    <div className="additional-auth-root">
+                        <div className={classNames('additional-auth-box', usertype === 'students' ? 'bg-s' : 'bg-t')}>
+                            <h3>새로운 학원을 개설하시거나 기존 학원에 입장해주세요.</h3>
+                            <div className="auth-right">
+                                <div className="radio-group-container">
+                                    <span>
+                                        <WhiteRadio
+                                            onChange={handleChangeCreateOrEntrance}
+                                            checked={createOrEntrance === 'create'}
+                                            value="create"
+                                            name="create"
+                                        />
+                                        새 학원 개설하기
+                                    </span>
+                                    <span>
+                                        <WhiteRadio
+                                            onChange={handleChangeCreateOrEntrance}
+                                            checked={createOrEntrance === 'entrance'}
+                                            value="entrance"
+                                            name="entrance"
+                                        />
+                                        학원 입장하기
+                                    </span>
+                                </div>
+                                <div className="form">
+                                    {createOrEntrance === 'create' ? (
+                                        <>
+                                            <input
+                                                className={classNames('default', inputError.academy_name ? 'error' : '')}
+                                                type="text"
+                                                name="academy_name"
+                                                id="academy_name"
+                                                placeholder="학원 이름"
+                                                onChange={handleInputChange}
+                                                value={inputState['academy_name']}
+                                            />
+                                            <input
+                                                className={classNames('default', inputError.phone_no ? 'error' : '')}
+                                                type="text"
+                                                name="phone_no"
+                                                id="phone_no"
+                                                placeholder="연락처 ('-' 제외)"
+                                                onChange={handleInputChange}
+                                                value={inputState['phone_no']}
+                                            />
+                                        </>
                                     ) : (
-                                        ''
+                                        <>
+                                            <input
+                                                className={classNames('default', inputError.academy_code ? 'error' : '')}
+                                                type="text"
+                                                name="academy_code"
+                                                id="academy_code"
+                                                placeholder="학원 코드"
+                                                onChange={handleInputChange}
+                                                value={inputState['academy_code']}
+                                            />
+                                            {academyInfo.name ? (
+                                                <div className="academy-search-results">
+                                                    <p className="name">{academyInfo.name}</p>
+                                                    <p className="address">{academyInfo.address}</p>
+                                                </div>
+                                            ) : (
+                                                ''
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             </div>
+                        </div>
+                        <div className="request-button">
+                            {createOrEntrance === 'create' ? (
+                                <RequestButton
+                                    disable={requestButtonEnable}
+                                    usertype={usertype}
+                                    onClick={() => {
+                                        const newCode = String.fromCharCode((Date.now() % 26) + 65) + generateUid.current(4);
+                                        setInputState({ ...inputState, academy_code: newCode });
+                                        setLoginStep(3);
+                                    }}
+                                >
+                                    다음
+                                </RequestButton>
+                            ) : (
+                                <RequestButton disable={requestButtonEnable} usertype={usertype} onClick={handleRequestButtonClick}>
+                                    계정 등록
+                                </RequestButton>
+                            )}
+                        </div>
+                    </div>
+                );
+            case 3:
+                return (
+                    <div className="additional-auth-root">
+                        <div className={classNames('additional-auth-box new-academy-code', usertype === 'students' ? 'bg-s' : 'bg-t')}>
+                            <h3 className="no-width">
+                                <span className="academy-name">{inputState['academy_name']}</span>의 학원 코드는
+                            </h3>
+                            <h3 className="code-block">{inputState['academy_code']}</h3>
+                            <h3 className="no-width ed">입니다.</h3>
                         </div>
                         <div className="request-button">
                             <RequestButton disable={requestButtonEnable} usertype={usertype} onClick={handleRequestButtonClick}>

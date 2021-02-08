@@ -104,17 +104,43 @@
                 box-shadow: 5px 5px 15px #c3bcbc24;
                 border-radius: 11px;
 
+                &.new-academy-code {
+                    justify-content: center;
+                }
+
                 & h3 {
                     line-height: 1.7;
                     font-weight: 600;
                     font-size: 1.5rem;
-                    width: 180px;
+                    width: 260px;
+
+                    &.no-width {
+                        display: flex;
+                        width: initial;
+
+                        & span.academy-name {
+                            display: block;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            max-width: 192px;
+                        }
+                    }
+
+                    &.code-block {
+                        background-color: #ffffff5c;
+                        border-radius: 10px;
+                        margin: 0 1rem;
+                        text-align: center;
+                        width: 200px;
+                    }
                 }
 
                 & .auth-right {
                     display: flex;
                     flex-direction: column;
-                    margin-left: 150px;
+                    width: 45%;
+
                     & h5 {
                         font-size: 1rem;
                         font-weight: 400;
@@ -156,6 +182,11 @@
                                 line-height: 1.1rem;
                             }
                         }
+                    }
+
+                    & div.radio-group-container {
+                        display: flex;
+                        flex-direction: column;
                     }
                 }
             }
@@ -207,7 +238,59 @@
         }
     }
 
-    @media all and (min-width: 769px) and (max-width: 1280) {
+    @media all and (min-width: 769px) and (max-width: 1280px) {
+        & .contents-root {
+            & .additional-auth-root {
+                align-items: center;
+                width: initial;
+                & .additional-auth-box {
+                    align-items: initial;
+                    background-color: transparent;
+                    box-shadow: none;
+                    flex-direction: column;
+                    max-width: 400px;
+                    margin: 0 auto;
+                    padding: 0;
+
+                    & h3 {
+                        width: initial;
+
+                        &.no-width {
+                            display: flex;
+                            text-align: center;
+
+                            &.ed {
+                                display: none;
+                            }
+                        }
+
+                        &.code-block {
+                            margin: initial;
+                            width: initial;
+                        }
+                    }
+                    & .auth-right {
+                        margin-top: 12px;
+                        margin-left: initial;
+                        width: initial;
+
+                        & div.radio-group-container {
+                            display: flex;
+                        }
+                    }
+                }
+
+                & .request-button {
+                    max-width: 400px;
+                    margin: 16px auto 0 auto;
+                    width: 100%;
+
+                    & button {
+                        width: 100%;
+                    }
+                }
+            }
+        }
     }
 
     @media all and (max-width: 768px) {
@@ -235,6 +318,53 @@
 
                 & h3 {
                     margin: 0 0 20px 0;
+                }
+            }
+
+            & .additional-auth-root {
+                align-items: center;
+                width: initial;
+                & .additional-auth-box {
+                    align-items: initial;
+                    background-color: transparent;
+                    box-shadow: none;
+                    flex-direction: column;
+                    max-width: 400px;
+                    margin: 0 auto;
+                    padding: 0;
+
+                    & h3 {
+                        width: initial;
+
+                        &.no-width {
+                            display: flex;
+                            text-align: center;
+
+                            &.ed {
+                                display: none;
+                            }
+                        }
+
+                        &.code-block {
+                            margin: initial;
+                            width: initial;
+                        }
+                    }
+                    & .auth-right {
+                        margin-top: 12px;
+                        margin-left: initial;
+                        width: initial;
+                    }
+                }
+
+                & .request-button {
+                    max-width: 400px;
+                    margin: 16px auto 0 auto;
+                    width: 100%;
+
+                    & button {
+                        width: 100%;
+                    }
                 }
             }
         }
