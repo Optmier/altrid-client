@@ -63,9 +63,10 @@ const StyleDiv = styled.div`
     }
 `;
 
-function TopNav({ leftNavState, handleLeftNav, match, deps }) {
+function TopNav({ leftNavState, handleLeftNav, match }) {
     const testRef = useRef();
     const sessions = useSelector((state) => state.RdxSessions);
+
     const [popoverName, setPopoverName] = useState('');
 
     useEffect(() => {
@@ -129,7 +130,8 @@ function TopNav({ leftNavState, handleLeftNav, match, deps }) {
                     <Link to={`/`}>
                         <img src={LogoColor} alt="logo_color"></img>
                     </Link>
-                    {/* {match.params.id === 'share' ? <BranchNav deps={3} /> : null} */}
+
+                    {sessions.userType === 'teachers' ? match.params.id === 'share' ? <BranchNav /> : null : null}
                 </div>
                 <div className="top-nav-right" ref={testRef}>
                     {sessions.image ? (

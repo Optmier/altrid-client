@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import BranchNav from '../essentials/BranchNav';
 import ClassWrapper from '../essentials/ClassWrapper';
 import IsPresence from '../essentials/IsPresence';
 import ToggleSwitch from '../essentials/ToggleSwitch';
@@ -25,6 +24,7 @@ import { patchActivedOnly, changeDueDate, deleteActived, getActivedOnly, patchAc
 import { getServerDate } from '../../redux_modules/serverdate';
 import BackdropComponent from '../essentials/BackdropComponent';
 import Error from '../../pages/Error';
+import { changePramas } from '../../redux_modules/params';
 
 const pad = (n, width) => {
     n = n + '';
@@ -393,6 +393,7 @@ function ReportClass({ match, history }) {
         setStartDate(moment(mainReportData.created).format('MM.DD HH:mm'));
         setDueDate(moment(mainReportData.due_date).format('MM.DD HH:mm'));
         dispatch(getActivedOnly(mainReportData.idx, mainReportData.created, mainReportData.due_date));
+        dispatch(changePramas(2, activedNum));
 
         if (mainReportData.contents_data) {
             const contentsData = mainReportData.contents_data;

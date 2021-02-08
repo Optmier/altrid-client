@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const StyleBranch = styled.div`
     display: flex;
@@ -12,8 +13,8 @@ const StyleBranch = styled.div`
 
 const StyleBranchItem = styled.div`
     color: #706d6d;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 400;
     display: flex;
     align-items: center;
 
@@ -34,19 +35,28 @@ const StyleBranchItem = styled.div`
     }
 `;
 
-const shareArr = ['과제 게시판', '과제별 리포트', '학생별 리포트'];
-
-function BranchNav({ deps, match }) {
+function BranchNav({ match }) {
     const { num } = match.params;
+    const { params, data } = useSelector((state) => state.params);
+    const sessions = useSelector((state) => state.RdxSessions);
+
+    const [deps, setDeps] = useState(1);
+
+    const shareArr = ['과제 게시판', '과제별 리포트', '학생별 리포트'];
+    const urlArr = [`/class/${num}/share`, `/class/${num}/share/${data}`, `/class/${num}/share/${data}/details?user=${sessions.authId}`];
+
+    useEffect(() => {
+        setDeps(params);
+    }, [params]);
     return (
         <StyleBranch>
             {shareArr
                 .filter((item, idx) => {
                     return idx < deps;
                 })
-                .map((depsName, key) => (
-                    <StyleBranchItem key={key}>
-                        <Link to={`/class/${num}/share`}>{depsName} </Link>
+                .map((depsName, idx) => (
+                    <StyleBranchItem key={idx}>
+                        <Link to={urlArr[idx]}>{depsName} </Link>
                     </StyleBranchItem>
                 ))}
         </StyleBranch>
