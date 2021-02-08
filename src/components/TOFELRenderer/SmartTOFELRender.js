@@ -4,10 +4,11 @@ import styled from 'styled-components';
 import TimerIcon from '@material-ui/icons/Timer';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Button, IconButton } from '@material-ui/core';
 import ProblemComponent from './ProblemComponent';
 import * as $ from 'jquery';
+import { FaBeer } from 'react-icons/fa';
+import { AiOutlineClose } from 'react-icons/ai';
 
 const pad = (n, width) => {
     n = n + '';
@@ -450,14 +451,20 @@ function SmartTOFELRender({
                         <NavigateNextIcon />
                     </IconButton>
                     <HeaderMasterSWs>
-                        {timeLimit === -2 ? (
-                            <StyleButton type={'save'} name="save" onClick={handleEnd}>
-                                저장하기
-                            </StyleButton>
-                        ) : null}
-                        <StyleButton type={'submit'} name="submit" onClick={handleEnd}>
-                            제출하기
-                        </StyleButton>
+                        {preview ? (
+                            <AiOutlineClose onClick={handleEnd} style={{ cursor: 'pointer' }} />
+                        ) : (
+                            <>
+                                {timeLimit === -2 ? (
+                                    <StyleButton type={'save'} name="save" onClick={handleEnd}>
+                                        저장하기
+                                    </StyleButton>
+                                ) : null}
+                                <StyleButton type={'submit'} name="submit" onClick={handleEnd}>
+                                    제출하기
+                                </StyleButton>
+                            </>
+                        )}
                     </HeaderMasterSWs>
                 </HeaderPageController>
             </HeaderToolbar>
