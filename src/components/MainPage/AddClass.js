@@ -136,7 +136,7 @@ function AddClass({ handleClose, history }) {
         <div className="create-new-entry-root">
             <div className="drawer-header">
                 <div className="title">
-                    <h2>클래스에 코드를 통해 입장해보세요 :)</h2>
+                    <h2>코드를 통해 클래스에 입장해주세요 :)</h2>
                 </div>
                 <div className="close-icon" onClick={handleClose}>
                     <CloseIcon />
@@ -149,7 +149,7 @@ function AddClass({ handleClose, history }) {
                     type="text"
                     name="teacher_id"
                     id="teacher_id"
-                    placeholder="발급 받은 수업 코드를 입력해주세요."
+                    placeholder="전달 받은 수업 코드를 입력해주세요."
                     onChange={handleInputChange}
                     value={inputState}
                 />

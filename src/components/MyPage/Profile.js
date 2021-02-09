@@ -184,8 +184,8 @@ function Profile() {
                         </div>
                         <div className="row">
                             <div className="row-title">학원명</div>
-                            {console.log('useState', academyName, 'session', sessions.academyName)}
-                            <div className="row-desc">{academyName ? academyName : '클래스를 입장하시면, 자동으로 학원 등록됩니다.'}</div>
+                            {/* {console.log('useState', academyName, 'session', sessions.academyName)} */}
+                            <div className="row-desc">{academyName ? academyName : '클래스에 입장하시면, 자동으로 학원이 등록됩니다.'}</div>
                         </div>
 
                         {sessions.userType === 'teachers' ? (

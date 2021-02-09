@@ -118,11 +118,11 @@ function AccountPopOver({ targetEl, image, userName, history }) {
                         onClick={handleAccountPopoverClose}
                     >
                         {/* <ListItemLink href={'/'}>마이페이지</ListItemLink> */}
-                        <EdListItem button onClick={handleLogout}>
-                            로그아웃
-                        </EdListItem>
                         <EdListItem button onClick={() => history.replace('/mypage/profile')}>
                             마이페이지
+                        </EdListItem>
+                        <EdListItem button onClick={handleLogout}>
+                            로그아웃
                         </EdListItem>
                     </List>
                 </CardActions>

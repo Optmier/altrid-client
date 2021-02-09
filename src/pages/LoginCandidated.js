@@ -129,7 +129,13 @@ function LoginCandidated({ history }) {
 
     const onFailedGoogleAuth = (err) => {
         console.error(err);
-        alert('로그인에 실패했습니다. 에러코드 :: ' + err);
+        switch (err.error) {
+            case 'popup_closed_by_user':
+                break;
+            default:
+                alert('로그인에 실패했습니다. 에러코드 :: ' + err.error);
+                break;
+        }
     };
 
     const onSuccessKakaoAuth = ({ profile }) => {
