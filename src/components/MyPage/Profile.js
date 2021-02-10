@@ -4,12 +4,18 @@ import { apiUrl } from '../../configs/configs';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import PopOverClipboard from '../essentials/PopOverClipboard';
+/** https://github.com/jeanlescure/short-unique-id
+ * Copyright (c) 2018-2020 Short Unique ID Contributors.
+ * Licensed under the Apache License 2.0.
+ */
+import ShortUniqueId from 'short-unique-id';
+import { withRouter } from 'react-router-dom';
 
 const BtnAble = styled.button`
     pointer-events: ${(props) => (props.btnAbleState ? 'auto' : 'none')};
 `;
 
-function Profile() {
+function Profile({ history }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const textCopy = useRef();
 
@@ -19,42 +25,63 @@ function Profile() {
     const [academyName, setAcademyName] = useState('');
     const [academyCode, setAcademyCode] = useState('');
     const [imgSrc, setImgSrc] = useState(null);
+    const [imgBlob, setImgBlob] = useState(null);
     const [btnAbleState, setBtnAbleState] = useState(false);
     const [clipboardState, setClipboardState] = useState(false);
 
     const handleSave = () => {
-        // 1. db에 저장...
-        Axios.put(
-            `${apiUrl}/my-page/profile`,
-            {
-                name: name,
-                image: imgSrc ? imgSrc : null,
-            },
-            { withCredentials: true },
-        )
-            .then((res) => {
-                //2. 세션 처리...
-                Axios.patch(
-                    `${apiUrl}/auth`,
-                    {
-                        userName: name,
-                        image: imgSrc ? imgSrc : null,
-                    },
-                    { withCredentials: true },
-                )
-                    .then((res2) => {
-                        console.log('refresh token!');
-                    })
-                    .catch((err) => {
-                        console.log('refresh error...');
-                        console.error(err);
-                    });
+        const saveDB = (_imgsrc) => {
+            // 1. db에 저장...
+            Axios.put(
+                `${apiUrl}/my-page/profile`,
+                {
+                    name: name,
+                    image: _imgsrc ? _imgsrc : null,
+                },
+                { withCredentials: true },
+            )
+                .then((res) => {
+                    //2. 세션 처리...
+                    Axios.patch(
+                        `${apiUrl}/auth`,
+                        {
+                            userName: name,
+                            image: _imgsrc ? _imgsrc : null,
+                        },
+                        { withCredentials: true },
+                    )
+                        .then((res2) => {
+                            // console.log('refresh token!');
+                        })
+                        .catch((err) => {
+                            console.log('refresh error...');
+                            console.error(err);
+                        });
+                    // window.location.reload();
+                    history.replace();
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        };
 
-                window.location.reload();
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        if (imgBlob) {
+            const randomStr = new ShortUniqueId();
+            const randomFileName = 'profile_' + randomStr.randomUUID(16);
+            const profImageForm = new FormData();
+            profImageForm.append(randomFileName, imgBlob, randomFileName);
+
+            Axios.post(`${apiUrl}/files/profile-images`, profImageForm, { withCredentials: true })
+                .then((res) => {
+                    saveDB(apiUrl + '/files/' + res.data.file_name);
+                })
+                .catch((err) => {
+                    alert('프로필 이미지를 저장하는 도중 오류가 발생했습니다.');
+                    console.error(err);
+                });
+        } else {
+            saveDB(imgSrc);
+        }
     };
     const handleInput = (e) => {
         const { value } = e.target;
@@ -72,8 +99,8 @@ function Profile() {
 
         let canvas = document.getElementById('canvas');
         let ctx = canvas.getContext('2d');
-        let maxW = 75;
-        let maxH = 75;
+        let maxW = 512;
+        let maxH = 512;
         let img = new Image();
         img.onload = function () {
             let iw = img.width;
@@ -84,10 +111,13 @@ function Profile() {
             canvas.width = iwScaled;
             canvas.height = ihScaled;
             ctx.drawImage(img, 0, 0, iwScaled, ihScaled);
-
-            setImgSrc(canvas.toDataURL('image/jpeg', 0.8));
+            // console.log(canvas.toDataURL('image/jpeg'));
+            canvas.toBlob((blob) => {
+                setImgBlob(blob);
+            });
         };
         img.src = URL.createObjectURL(e.target.files[0]);
+        setImgSrc(img.src);
     };
     const handleDeleteImg = () => {
         setImgSrc(null);
@@ -134,7 +164,6 @@ function Profile() {
     return (
         <>
             <PopOverClipboard state={clipboardState} />
-
             <div className="profile-root">
                 <div className="mypage-title">프로필 설정</div>
                 <section>
@@ -213,4 +242,4 @@ function Profile() {
     );
 }
 
-export default Profile;
+export default withRouter(Profile);
