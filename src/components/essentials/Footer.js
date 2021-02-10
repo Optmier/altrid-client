@@ -27,7 +27,7 @@ function Footer() {
                     <div className="infos">
                         옵트미어(Optmier)
                         <br />
-                        대표 전광휘 | 전화<a href="tel:010-5912-1545"> 010-5912-1545</a> | 이메일
+                        대표 전광휘 | 전화<a href="tel:02-469-9703"> 02-469-9703</a> | 이메일
                         <a href="mailto:rikjeon94@optmier.com"> rikjeon94@optmier.com</a> | 사업자등록번호 309-30-62706 <br />
                         기술 지원 <a href="mailto:chsi1995@optmier.com"> chsi1995@optmier.com(최세인)</a> |{' '}
                         <a href="mailto:jun094@optmier.com"> jun094@optmier.com(최준영)</a>
