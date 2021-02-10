@@ -34,8 +34,8 @@ const StyleLabel2 = styled.label`
             : ''}
 `;
 const StyleSelectdiv = styled.div`
-    font-size: 0.85rem;
-    text-decoration: underline;
+    font-size: 0.75rem;
+    font-weight: 400;
     color: ${(props) => (props.errorCheck === '생성방법을 선택해주세요!' ? 'red' : 'black')};
 
     max-width: 300px;
@@ -310,10 +310,16 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
 
         //1. 제한시간 설정
         if (toggleState['timeAttack'] === true) {
-            if (timeInputs['mm'] === '' && timeInputs['ss'] === '') {
+            if ((timeInputs['mm'] === '' && timeInputs['ss'] === '') || (timeInputs['mm'] <= 0 && timeInputs['ss'] <= 0)) {
                 return setInputsError({
                     ...inputsError,
-                    time_error: '최소시간을 넘겨주세요!',
+                    time_error: '제한시간을 입력해주세요!',
+                });
+            }
+            if (isNaN(timeInputs['mm']) || isNaN(timeInputs['ss'])) {
+                return setInputsError({
+                    ...inputsError,
+                    time_error: '올바른 값을 입력해주세요!',
                 });
             }
         }
@@ -403,15 +409,15 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                         <div className="drawer-subTitle">
                             {ver === 'draft' ? (
                                 <>
-                                    1. 과제의 선택적인 정보를 입력해주세요.
-                                    {toggleState['eyetrack'] ? (
-                                        <StyleSelectdiv>시선흐름 측정시, 제한시간은 필수사항입니다.</StyleSelectdiv>
-                                    ) : (
-                                        ''
-                                    )}
+                                    <span>1. 과제의 선택적인 정보를 입력해주세요.</span>
+                                    <span className="drawer-error" style={{ textAlign: 'right' }}>
+                                        {time_error}
+                                    </span>
                                 </>
                             ) : (
-                                <StyleSelectdiv>* 시선흐름 측정시, 제한시간은 필수사항입니다.</StyleSelectdiv>
+                                <div className="drawer-error" style={{ width: '100%', textAlign: 'right' }}>
+                                    {time_error}
+                                </div>
                             )}
                         </div>
                         <div className="drawer-toggle">
@@ -456,9 +462,9 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                                 />
                             </span>
                         </div>
-                        <div className="drawer-error" style={{ textAlign: 'right', padding: '0 1.5rem 0 0' }}>
-                            {time_error}
-                        </div>
+
+                        <div className="drawer-select-warn">** 시선흐름 측정시, 제한시간은 필수사항입니다.</div>
+                        <div className="drawer-select-warn">** 제한시간이 포함된 과제는 단 1번의 풀이 기회가 제공됩니다. </div>
                     </div>
                     <div className="class-drawer-block">
                         {ver === 'draft' ? <p className="drawer-subTitle">2. 과제의 필수적인 정보를 입력해주세요.</p> : ''}

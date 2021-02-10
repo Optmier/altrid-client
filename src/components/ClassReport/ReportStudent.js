@@ -25,11 +25,12 @@ import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 
 import { Element, Link as AnimScrollTo } from 'react-scroll';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import BackdropComponent from '../essentials/BackdropComponent';
 import TooltipCard from '../essentials/TooltipCard';
 import TypeBanner from '../essentials/TypeBanner';
 import TotalProgress from './TotalProgress';
+import { changePramas } from '../../redux_modules/params';
 
 const pad = (n, width) => {
     n = n + '';
@@ -214,6 +215,7 @@ const HTMLTooltip = withStyles((theme) => ({
 }))(Tooltip);
 
 function ReportStudent({ history, match }) {
+    const dispatch = useDispatch();
     const sessions = useSelector((state) => state.RdxSessions);
     const urlSearchParams = new URLSearchParams(history.location.search);
     const queryUserId = urlSearchParams.get('user');
@@ -441,6 +443,7 @@ function ReportStudent({ history, match }) {
         setDurTimes(currentStudent.time);
         setTries(currentStudent.tries);
         setTitle(currentStudent.title);
+        dispatch(changePramas(3, activedNum));
 
         if (currentStudent.contents_data) {
             setTotalProblems(currentStudent.contents_data.flatMap((m) => m.problemDatas).length);

@@ -35,6 +35,9 @@ $primaryColor: #13e2a1;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        & > span {
+            width: 50%;
+        }
     }
     & .drawer-modify-title {
         margin-bottom: 1rem;
