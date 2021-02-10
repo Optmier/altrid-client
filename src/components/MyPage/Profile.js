@@ -57,8 +57,8 @@ function Profile({ history }) {
                             console.log('refresh error...');
                             console.error(err);
                         });
-                    // window.location.reload();
-                    history.replace();
+                    window.location.reload();
+                    // history.replace();
                 })
                 .catch((err) => {
                     console.error(err);
