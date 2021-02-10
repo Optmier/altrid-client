@@ -21,7 +21,7 @@ const StylePopOver = styled.div`
     color: #8b8989;
 
     & .row {
-        padding: 0.8rem 1.6rem;
+        padding: 0.8rem 2rem;
         display: flex;
         align-items: center;
 
