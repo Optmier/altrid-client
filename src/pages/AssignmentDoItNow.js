@@ -80,7 +80,8 @@ function AssignmentDoItNow({ history, match }) {
             });
     };
 
-    const updateResultData = (metadata, time, onSuccess) => {
+    const updateResultData = (metadata, isSubmitted, time, onSuccess) => {
+        console.log(isSubmitted);
         const userData = JSON.stringify(metadata);
         const eyetrackData = JSON.stringify(window.etRes);
         const activedNumber = match.params.assignmentid;
@@ -153,6 +154,7 @@ function AssignmentDoItNow({ history, match }) {
                 clusterCounts: window.clusterCountsOfFixations,
                 numOfRegs: window.numberOfRegressions,
                 time: time,
+                isSubmitted: isSubmitted,
             },
             { withCredentials: true },
         )
@@ -179,7 +181,7 @@ function AssignmentDoItNow({ history, match }) {
 
     const onNext = (step, time, metadata) => {
         // console.log(time);
-        updateResultData(metadata, timerState.elapsedTime, () => {});
+        updateResultData(metadata, 0, timerState.elapsedTime, () => {});
         setActiveStep(step);
     };
 
@@ -188,12 +190,12 @@ function AssignmentDoItNow({ history, match }) {
         setUserAnswer(answer);
     };
 
-    const onEnd = (time, metadata) => {
+    const onEnd = (time, isSubmitted, metadata) => {
         // console.log(time, metadata);
         if (timerInterval) {
             clearInterval(timerInterval);
         }
-        updateResultData(metadata, timerState.elapsedTime, () => {
+        updateResultData(metadata, isSubmitted, timerState.elapsedTime, () => {
             setEnableBeforeUnload(false);
             if (originalDatas.time_limit === -3) alert('과제 기한이 종료되었습니다.\n지금까지 진행 사항은 저장됩니다.');
             else alert('종료되었습니다.');
@@ -219,6 +221,8 @@ function AssignmentDoItNow({ history, match }) {
                     });
             }
             window.close();
+            console.log('close');
+            window.location.reload();
         });
     };
 

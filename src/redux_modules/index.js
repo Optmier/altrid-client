@@ -7,6 +7,7 @@ import RdxReports from './reports';
 import RdxServerDate from './serverdate';
 import RdxCurrentClass from './currentClass';
 import classes from './classes';
+import params from './params';
 
 const rootReducer = combineReducers({
     RdxSessions,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
     RdxServerDate,
     RdxCurrentClass,
     classes,
+    params,
 });
 
 export default rootReducer;

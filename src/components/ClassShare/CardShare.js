@@ -443,11 +443,13 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                             <StudentState
                                                 assignmentState={new Date(cardData.due_date).getTime() > datetime ? true : false}
                                                 state={
-                                                    cardData.time_limit === -2 && tries
-                                                        ? 'ing'
-                                                        : cardData.time_limit !== -2 && tries
+                                                    cardData.is_submitted === 1
                                                         ? 'done'
-                                                        : 'pre'
+                                                        : cardData.is_submitted === null
+                                                        ? 'pre'
+                                                        : cardData.is_submitted === 0
+                                                        ? 'ing'
+                                                        : null
                                                 }
                                                 handlePreTest={handlePreTest}
                                                 handleStartTest={handleStartTest}
@@ -472,11 +474,13 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                     <StudentState
                                         assignmentState={new Date(cardData.due_date).getTime() > datetime ? true : false}
                                         state={
-                                            cardData.time_limit === -2 && tries
-                                                ? 'ing'
-                                                : cardData.time_limit !== -2 && tries
+                                            cardData.is_submitted === 1
                                                 ? 'done'
-                                                : 'pre'
+                                                : cardData.is_submitted === null
+                                                ? 'pre'
+                                                : cardData.is_submitted === 0
+                                                ? 'ing'
+                                                : null
                                         }
                                         handlePreTest={handlePreTest}
                                         handleStartTest={handleStartTest}
