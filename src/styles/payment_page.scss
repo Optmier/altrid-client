@@ -1,7 +1,133 @@
 .payment-root {
     min-height: 80vh;
+    padding-top: 120px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    #color-Free {
+        color: rgba(19, 226, 161, 1);
+    }
+    #color-Standard {
+        color: rgba(109, 42, 250, 1);
+    }
+    #color-Premier {
+        color: rgba(59, 22, 138, 1);
+    }
+    #small-text {
+        font-size: 11px;
+        font-weight: 400;
+    }
+
+    & section + section {
+        margin-top: 56px;
+    }
+    & section {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    & .payment-header {
+        font-size: 1.75rem;
+        font-weight: 600;
+        width: 100%;
+        border-bottom: 1px solid black;
+        padding-bottom: 10px;
+        margin-bottom: 27px;
+    }
+
+    & .payment-confirm {
+        & .payment-confirm-box {
+            background-color: white;
+            padding: 30px 34px;
+            border-radius: 11px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+
+            & .left {
+                display: flex;
+                align-items: center;
+                & .left-title {
+                    color: rgba(19, 226, 161, 1);
+                    font-weight: 600;
+                    font-size: 1.75rem;
+                    margin-right: 28px;
+                }
+                & .left-contents {
+                    color: rgba(87, 85, 85, 1);
+                    font-weight: 400;
+                    font-size: 1rem;
+                    width: 286px;
+                }
+            }
+
+            & .right {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+
+                & .right-top {
+                    font-size: 1.25rem;
+                    font-weight: 500;
+                    color: rgba(112, 112, 112, 1);
+
+                    width: fit-content;
+                    border-bottom: 1px solid #707070;
+                    height: 15px;
+                    margin-bottom: 10px;
+                }
+                & .right-bottom {
+                    font-size: 1.5rem;
+                    font-weight: 500;
+                }
+                & .gray {
+                    color: rgba(130, 130, 130, 1);
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+    & .payment-select {
+        & .payment-selects {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            & .payment-select-box {
+                background-color: white;
+                padding: 30px 34px;
+                border-radius: 11px;
+                display: flex;
+                align-items: center;
+                width: 100%;
+
+                font-size: 1rem;
+                font-weight: 400;
+                color: #575555;
+
+                & svg {
+                    margin-right: 16px;
+                }
+            }
+            & .payment-select-box:hover {
+                cursor: pointer;
+                box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.09);
+                transition: all 0.6s;
+            }
+        }
+    }
+    & .payment-footer {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        & button {
+            background-color: #13e2a1;
+            width: 100%;
+            padding: 18px 0;
+            color: white;
+            font-weight: 500;
+            font-size: 1rem;
+            border-radius: 11px;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
+        }
+    }
 }
