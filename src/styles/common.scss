@@ -222,7 +222,6 @@ body {
     }
 
     & .header-bar {
-        color: #ffffff;
         display: flex;
         position: fixed;
         width: 100%;
@@ -242,6 +241,9 @@ body {
             }
             &.teachers {
                 background-color: $secondaryColor;
+            }
+            &.white {
+                background-color: white;
             }
 
             &.admins {
@@ -275,24 +277,6 @@ body {
             &.right {
                 margin: 0 5% 0 auto;
 
-                & > a {
-                    margin-left: 20px;
-
-                    height: 28px;
-                    background: rgba(196, 196, 196, 0.23);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 11px;
-                    font-size: 11px;
-                    font-weight: 500;
-                    padding: 0 14px;
-                    color: #e8e8e8;
-
-                    & > svg {
-                        margin-right: 10px;
-                    }
-                }
                 & p {
                     cursor: pointer;
                     & span {
@@ -496,14 +480,11 @@ body {
         & .header-bar {
             & .container {
                 &.left {
-                    margin: 0 auto 0 16px;
-
-                    & img {
-                        height: 40px;
-                    }
+                    display: none;
                 }
 
                 &.center {
+                    margin: 0 auto 0 16px;
                     & > a {
                         font-size: 0.95rem;
                     }

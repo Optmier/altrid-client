@@ -14,7 +14,7 @@ function Payment() {
 
     return (
         <>
-            <HeaderBar defalutColor="#13E2A1" />
+            <HeaderBar defaultColor="white" />
             <div className="payment-root">
                 <ClassWrapper col={true} type="main_page">
                     <section className="payment-confirm">

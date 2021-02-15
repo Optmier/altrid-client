@@ -18,7 +18,7 @@ function PriceDetails({ location, history }) {
     };
     return (
         <>
-            <HeaderBar defalutColor="#6d2bf5" />
+            <HeaderBar defaultColor="white" />
 
             <div className="price-detail-root">
                 <div className="price-nav">
