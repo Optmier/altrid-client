@@ -35,6 +35,7 @@ import LoginMobileAppRedirect from './pages/LoginMobileAppRedirect';
 import MainDraft from './pages/MainDraft';
 import MyPage from './pages/MyPage';
 import Price from './pages/Price';
+import PriceDetails from './components/Price/PriceDetails';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -199,7 +200,8 @@ function App({ history }) {
                         <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
                         <Route path="/mypage/:menu" component={MyPage} />
-                        <Route path="/pricing" component={Price} />
+                        <Route path="/pricing" component={Price} exact />
+                        <Route path="/pricing/details" component={PriceDetails} exact />
 
                         {navigator.userAgent.toLowerCase().includes('isnativeapp') ? (
                             <Route path="/login-mobile-app-redirect" component={LoginMobileAppRedirect} exact />

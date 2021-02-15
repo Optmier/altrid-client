@@ -6,8 +6,13 @@ import LogoWhite from '../../images/logos/nav_logo_white.png';
 import AccountPopOver from './AccountPopOver';
 import { useSelector } from 'react-redux';
 import Avatar from '../../images/avatar.png';
+import styled from 'styled-components';
 
-function HeaderBar({ match }) {
+const StyleHeader = styled.header`
+    background-color: ${(props) => (props.defalutColor ? props.defalutColor : 'transparent')};
+`;
+
+function HeaderBar({ match, defalutColor }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const [isScrolled, setScrolled] = useState(false);
     const [popoverName, setPopoverName] = useState('');
@@ -36,7 +41,8 @@ function HeaderBar({ match }) {
     return (
         <>
             <AccountPopOver userName={popoverName} image={sessions.image} targetEl={testRef ? testRef : null} />
-            <header
+            <StyleHeader
+                defalutColor={defalutColor}
                 className={classNames(
                     'header-bar',
                     isScrolled ? 'scrolled' : '',
@@ -75,7 +81,7 @@ function HeaderBar({ match }) {
                         <img src={sessions.image ? sessions.image : Avatar} alt="avatar" />
                     </div>
                 </div>
-            </header>
+            </StyleHeader>
         </>
     );
 }

@@ -315,7 +315,7 @@ function Price({ history }) {
                         <div className="price-footer"></div>
                     </ClassWrapper>
                 </div>
-            </div>{' '}
+            </div>
         </>
     );
 }
