@@ -36,6 +36,7 @@ import MainDraft from './pages/MainDraft';
 import MyPage from './pages/MyPage';
 import Price from './pages/Price';
 import PriceDetails from './components/Price/PriceDetails';
+import Payment from './pages/Payment';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -202,6 +203,7 @@ function App({ history }) {
                         <Route path="/mypage/:menu" component={MyPage} />
                         <Route path="/pricing" component={Price} exact />
                         <Route path="/pricing/details" component={PriceDetails} exact />
+                        <Route path="/payment" component={Payment} exact />
 
                         {navigator.userAgent.toLowerCase().includes('isnativeapp') ? (
                             <Route path="/login-mobile-app-redirect" component={LoginMobileAppRedirect} exact />
