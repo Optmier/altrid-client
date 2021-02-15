@@ -136,6 +136,13 @@ $secondColor: #3b168a;
                         font-size: 1.75rem;
                         font-weight: 600;
                     }
+                    & button {
+                        background-color: transparent;
+                        padding: 0;
+                        & > svg {
+                            pointer-events: none;
+                        }
+                    }
                     & a {
                         display: none;
                     }
@@ -271,7 +278,7 @@ $secondColor: #3b168a;
                     }
                     & .col-box {
                         & .menu-box-title {
-                            & > svg {
+                            & > button {
                                 display: none;
                             }
 

@@ -13,8 +13,8 @@ function PriceDetails({ location, history }) {
     const handleChange = (event) => {
         setPriceState(event.target.value);
     };
-    const goToPayments = () => {
-        history.push('/payment');
+    const goToPayments = (e) => {
+        history.push(`/payment?type=${e.target.name}`);
     };
     return (
         <>
@@ -26,7 +26,11 @@ function PriceDetails({ location, history }) {
                         {queryString.parse(location.search).plan}
                     </div>
                     <div className="nav-right">
-                        <button onClick={goToPayments} id={'backcolor-' + queryString.parse(location.search).plan}>
+                        <button
+                            onClick={goToPayments}
+                            name={queryString.parse(location.search).plan}
+                            id={'backcolor-' + queryString.parse(location.search).plan}
+                        >
                             결제하기
                             <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path

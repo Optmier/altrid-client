@@ -2,8 +2,11 @@ import React, { useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import '../styles/payment_page.scss';
 import HeaderBar from '../components/essentials/HeaderBar';
+import queryString from 'query-string';
+import PriceData from '../datas/PriceData.json';
+import MenuData from '../datas/MenuData.json';
 
-function Payment() {
+function Payment({ location }) {
     useEffect(() => {
         //alert('현재는 베타 서비스 기간입니다!\n무료 베타 버전 이용을 원하시는 고객님께서는 우하단 상담 버튼을 클릭해주세요 :)');
         //window.location.href = `${apiUrl}/login?user=teachers`;
@@ -19,19 +22,23 @@ function Payment() {
                     <div className="payment-header">결제 상품 확인</div>
                     <div className="payment-confirm-box">
                         <div className="left">
-                            <div className="left-title">Free</div>
-                            <div className="left-contents">알트리드 서비스에 기본 적용된 000 기능과 000 기능을 사용 할 수 있습니다.</div>
+                            <div className="left-title" id={`color-${queryString.parse(location.search).type}`}>
+                                {queryString.parse(location.search).type}
+                            </div>
+                            <div className="left-contents"> {MenuData[queryString.parse(location.search).type]['desc']}</div>
                         </div>
                         <div className="right">
                             <div className="right-top">
-                                9999<span id="small-text">원</span>
+                                {MenuData[queryString.parse(location.search).type]['price']}
+                                <span id="small-text">원</span>
                             </div>
-                            <div className="right-bottom" id="color-Free">
+                            <div className="right-bottom" id={`color-${queryString.parse(location.search).type}`}>
                                 <span id="small-text" className="gray">
                                     (학생당/월)
                                 </span>
                                 <div>
-                                    9999<span id="small-text">원</span>
+                                    {MenuData[queryString.parse(location.search).type]['discount_' + 'personal']}
+                                    <span id="small-text">원</span>
                                 </div>
                             </div>
                         </div>
@@ -52,7 +59,9 @@ function Payment() {
                     </div>
                 </section>
                 <section className="payment-footer">
-                    <button onClick={handlePayment}>9999원 결제하기</button>
+                    <button id={`back-color-${queryString.parse(location.search).type}`} onClick={handlePayment}>
+                        9999원 결제하기
+                    </button>
                 </section>
             </div>
         </>

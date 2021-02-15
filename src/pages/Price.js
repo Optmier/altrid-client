@@ -72,8 +72,9 @@ function Price({ history }) {
         setPriceState(event.target.value);
     };
 
-    const goToPayments = () => {
-        history.push('/payment');
+    const goToPayments = (e) => {
+        console.log(e.target, e.target.name);
+        history.push(`/payment?type=${e.target.name}`);
     };
 
     return (
@@ -93,7 +94,9 @@ function Price({ history }) {
                                 할인된 가격으로 제공해드립니다.
                             </div>
                             <div className="header-btn">
-                                <button onClick={goToPayments}>무료 체험하기</button>
+                                <button name="Free" onClick={goToPayments}>
+                                    무료 체험하기
+                                </button>
                             </div>
                         </div>
                     </ClassWrapper>
@@ -181,24 +184,20 @@ function Price({ history }) {
                             </div>
                             {Object.keys(MenuData).map((i, idx) => (
                                 <div key={idx} className="col-box">
-                                    <div className="menu-box-title ">
+                                    <div className="menu-box-title">
                                         <div className="header" id={'color-' + i}>
                                             {i}
                                         </div>
 
-                                        <svg
-                                            onClick={goToPayments}
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                d="M8.59009 16.59L13.1701 12L8.59009 7.41L10.0001 6L16.0001 12L10.0001 18L8.59009 16.59Z"
-                                                fill="#707070"
-                                            />
-                                        </svg>
+                                        <button onClick={goToPayments} name={i}>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M8.59009 16.59L13.1701 12L8.59009 7.41L10.0001 6L16.0001 12L10.0001 18L8.59009 16.59Z"
+                                                    fill="#707070"
+                                                />
+                                            </svg>
+                                        </button>
+
                                         <Link to={`/pricing/details?plan=${i}`}>
                                             <div className="mobile-header-more">
                                                 결제 및 자세히 보기

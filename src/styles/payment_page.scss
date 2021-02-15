@@ -15,8 +15,17 @@
     #color-Standard {
         color: rgba(109, 42, 250, 1);
     }
-    #color-Premier {
+    #color-Premium {
         color: rgba(59, 22, 138, 1);
+    }
+    #back-color-Free {
+        background-color: rgba(19, 226, 161, 1);
+    }
+    #back-color-Standard {
+        background-color: rgba(109, 42, 250, 1);
+    }
+    #back-color-Premium {
+        background-color: rgba(59, 22, 138, 1);
     }
     #small-text {
         font-size: 11px;
@@ -62,7 +71,7 @@
                     color: rgba(87, 85, 85, 1);
                     font-weight: 400;
                     font-size: 1rem;
-                    width: 260px;
+                    width: 200px;
                 }
             }
 
@@ -128,7 +137,6 @@
         align-items: center;
         justify-content: center;
         & button {
-            background-color: #13e2a1;
             width: 100%;
             padding: 18px 0;
             color: white;
@@ -161,6 +169,9 @@
                         & .left-title {
                             font-size: 1.5rem;
                         }
+                        & .left-contents {
+                            width: 100%;
+                        }
                     }
 
                     & .right {
@@ -176,6 +187,13 @@
                         & .gray {
                             margin: 0 0 0 10px;
                         }
+                    }
+                }
+            }
+            & .payment-select {
+                & .payment-selects {
+                    & .payment-select-box {
+                        padding: 24px;
                     }
                 }
             }
