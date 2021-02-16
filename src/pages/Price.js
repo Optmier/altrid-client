@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/price_page.scss';
 import styled from 'styled-components';
 import PriceData from '../datas/PriceData.json';
@@ -76,6 +76,12 @@ function Price({ history }) {
         console.log(e.target, e.target.name);
         history.push(`/payment?type=${e.target.name}`);
     };
+
+    useEffect(() => {
+        //axios 학원 검사...
+        // 학원 = pop up x
+        // 개인 = pop up O
+    }, []);
 
     return (
         <>

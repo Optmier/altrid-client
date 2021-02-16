@@ -8,8 +8,7 @@ import MenuData from '../datas/MenuData.json';
 
 function Payment({ location }) {
     useEffect(() => {
-        //alert('현재는 베타 서비스 기간입니다!\n무료 베타 버전 이용을 원하시는 고객님께서는 우하단 상담 버튼을 클릭해주세요 :)');
-        //window.location.href = `${apiUrl}/login?user=teachers`;
+        //axios 쿠폰 검사...
     }, []);
 
     const handlePayment = () => {};
@@ -18,6 +17,10 @@ function Payment({ location }) {
         <>
             <HeaderBar defaultColor="white" />
             <div className="payment-root">
+                <section className="payment-coupon">
+                    <div className="payment-header">쿠폰 확인</div>
+                </section>
+
                 <section className="payment-confirm">
                     <div className="payment-header">결제 상품 확인</div>
                     <div className="payment-confirm-box">
