@@ -13,7 +13,7 @@ const StyleWrapper = styled.div`
     ${(props) =>
         props.type === 'main_page'
             ? css`
-                  @media (min-width: 992px) and (max-width: 1231px) {
+                  @media (min-width: 992px) {
                       max-width: 960px;
                   }
                   @media (min-width: 663px) and (max-width: 991px) {
