@@ -14,9 +14,9 @@
     & .mypage-header {
         font-size: 1.18rem;
         font-weight: 500;
-        padding-bottom: 9px;
+        padding-bottom: 12px;
         width: 100%;
-        border-bottom: 1px solid #707070;
+        border-bottom: 1.6px solid #707070;
 
         display: flex;
         align-items: center;
@@ -28,7 +28,7 @@
             }
         }
         & > li + li {
-            margin-left: 20px;
+            margin-left: 26px;
         }
     }
     & .mypage-contents {
@@ -166,6 +166,92 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        & .payment-info-root {
+            display: flex;
+            flex-direction: column;
+            & .card-info {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+
+                & .card-info-top {
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 50px;
+
+                    & .card-info-left {
+                        & h5 {
+                            color: #575555;
+                            font-size: 1.25rem;
+                            font-weight: 600;
+                            margin: 0 0 0 9px;
+                        }
+                        & p {
+                            color: rgba(87, 85, 85, 0.62);
+                            font-size: 0.9rem;
+                            margin: 0;
+                        }
+                    }
+                }
+                & .card-info-bottom {
+                    width: 100%;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+                    & .card-col-header {
+                        font-size: 0.95rem;
+                        font-weight: 500;
+                    }
+                    & .card-col-desc {
+                        font-size: 0.95rem;
+                        font-weight: 400;
+                    }
+                }
+            }
+            & .pay-info {
+                display: flex;
+                flex-direction: column;
+
+                & .pay-info-header {
+                    display: flex;
+                    align-items: center;
+
+                    & h5 {
+                        color: #575555;
+                        font-size: 1.25rem;
+                        font-weight: 600;
+                        margin: 0 0 0 9px;
+                    }
+                }
+                & .pay-info-table {
+                    margin-top: 30px;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+                    & .table-title {
+                        font-size: 0.95rem;
+                        font-weight: 500;
+                        color: gray;
+                    }
+                    & .table-desc {
+                        font-size: 0.95rem;
+                        font-weight: 400;
+
+                        & span {
+                            display: block;
+                            color: gray;
+                        }
+                    }
+                    & .table-desc.date {
+                        color: blue;
+                    }
+                }
+                & .pay-info-table + .pay-info-table {
+                    margin-top: 10px;
+                }
+            }
         }
     }
     & .delete-root {
