@@ -253,6 +253,36 @@
                 }
             }
         }
+        & .coupon-info-root {
+            display: flex;
+            flex-direction: column;
+
+            & .coupon-info {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                & .coupon-info-header {
+                    text-align: right;
+                }
+                & .coupon-info-table {
+                    margin-top: 30px;
+                    display: grid;
+                    grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+                    & .table-title {
+                        font-size: 0.95rem;
+                        font-weight: 500;
+                        color: gray;
+                    }
+                    & .table-desc {
+                        font-size: 0.95rem;
+                        font-weight: 400;
+                    }
+                }
+                & .coupon-info-table + .coupon-info-table {
+                    margin-top: 10px;
+                }
+            }
+        }
     }
     & .delete-root {
         width: 100%;
