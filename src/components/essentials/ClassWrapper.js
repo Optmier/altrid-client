@@ -17,7 +17,7 @@ const StyleWrapper = styled.div`
                       max-width: 960px;
                   }
                   @media (min-width: 663px) and (max-width: 991px) {
-                      max-width: 632px;
+                      max-width: 650px;
                   }
               `
             : css`

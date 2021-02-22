@@ -37,6 +37,7 @@ import MyPage from './pages/MyPage';
 import Price from './pages/Price';
 import PriceDetails from './components/Price/PriceDetails';
 import Payment from './pages/Payment';
+import Plan from './components/MyPage/Plans';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -201,6 +202,7 @@ function App({ history }) {
                         <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
                         <Route path="/mypage/:menu" component={MyPage} />
+
                         <Route path="/pricing" component={Price} exact />
                         <Route path="/pricing/details" component={PriceDetails} exact />
                         <Route path="/payment" component={Payment} exact />

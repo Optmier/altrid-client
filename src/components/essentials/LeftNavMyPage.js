@@ -86,7 +86,7 @@ function LeftNavMyPage({ history, leftNavState, handleLeftNav, setLeftNavState }
                     </div>
                     {sessions.userType === 'teachers' ? (
                         <div className="a-wrapper">
-                            <LeftNavItem linkTo={`/mypage/manage-plan`}>
+                            <LeftNavItem linkTo={`/mypage/manage-plan/now-plan`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13.11" viewBox="0 0 12 13.11">
                                     <path
                                         id="mdi_file_copy"
@@ -95,7 +95,7 @@ function LeftNavMyPage({ history, leftNavState, handleLeftNav, setLeftNavState }
                                         fill="#fff"
                                     />
                                 </svg>
-                                <p>플랜 관리</p>
+                                <p>서비스 구독</p>
                             </LeftNavItem>
                         </div>
                     ) : null}
