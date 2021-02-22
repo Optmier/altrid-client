@@ -23,7 +23,9 @@
 
         & > li {
             list-style: none;
-            padding: 4px;
+            & > a {
+                color: #80808094;
+            }
         }
         & > li + li {
             margin-left: 20px;
