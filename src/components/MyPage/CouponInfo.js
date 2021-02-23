@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function CouponInfo() {
+    const [couponState, setCouponState] = useState('');
+
+    const handleChange = (e) => {
+        setCouponState(e.target.value);
+    };
     return (
         <div className="coupon-info-root">
             <div className="mypage-contents white-box">
                 <div className="coupon-info">
                     <div className="coupon-info-header">
+                        <input placeholder="쿠폰 번호 입력" value={couponState} onChange={handleChange} />
                         <button className="btn-purple">쿠폰 추가</button>
                     </div>
                     <div className="coupon-info-table">

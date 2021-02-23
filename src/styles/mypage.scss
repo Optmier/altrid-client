@@ -263,9 +263,25 @@
                 width: 100%;
                 & .coupon-info-header {
                     text-align: right;
+
+                    & > input {
+                        box-sizing: border-box;
+                        font-size: 1.001rem;
+                        padding: 10px;
+                        border-radius: 6px;
+                        border: 1.5px solid #8080805e;
+                        margin-right: 10px;
+                    }
+                    & > input::placeholder {
+                        font-size: 1.001rem;
+                        color: gray;
+                    }
+                    & > input:focus {
+                        border: 2px solid #3b168aad;
+                    }
                 }
                 & .coupon-info-table {
-                    margin-top: 30px;
+                    margin-top: 50px;
                     display: grid;
                     grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
                     & .table-title {
