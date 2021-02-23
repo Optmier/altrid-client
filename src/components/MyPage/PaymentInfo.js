@@ -34,11 +34,11 @@ function PaymentInfo() {
                                 <div className="card-col-desc">-</div>
                             </div>
                             <div className="card-col">
-                                <div className="card-col-header">카드</div>
+                                <div className="card-col-header">카드사</div>
                                 <div className="card-col-desc">-</div>
                             </div>
                             <div className="card-col">
-                                <div className="card-col-header">유효기간</div>
+                                <div className="card-col-header">카드번호</div>
                                 <div className="card-col-desc">-</div>
                             </div>
                             <div className="card-col">

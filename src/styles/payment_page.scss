@@ -102,6 +102,90 @@
             }
         }
     }
+    & .payment-total {
+        & .payment-total-table {
+            display: flex;
+            flex-direction: column;
+
+            & .row {
+                display: grid;
+                grid-template-columns: 3fr 1fr;
+
+                & .total-left {
+                    display: flex;
+                    padding: 14px;
+                    background-color: white;
+                    font-size: 1rem;
+
+                    & .total-title {
+                        font-weight: 600;
+                        width: 130px;
+                        display: block;
+                    }
+                    & > select {
+                        cursor: pointer;
+                        background: url('/bg_images/Vector.png') no-repeat 95% 50%;
+                        width: 180px; /* 원하는 너비설정 */
+                        padding: 0.5rem 2rem 0.5rem 0.5rem; /* 여백으로 높이 설정 */
+                        font-family: inherit; /* 폰트 상속 */
+                        font-size: 0.9rem;
+                        font-weight: 400;
+                        border: none;
+                        border-bottom: 1px solid rgba(0, 0, 0, 0.87);
+                        border-radius: 0px; /* iOS 둥근모서리 제거 */
+                        -webkit-appearance: none; /* 네이티브 외형 감추기 */
+                        -moz-appearance: none;
+                        appearance: none;
+                        outline: none;
+
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
+                    }
+                }
+                & .total-right {
+                    padding: 14px;
+                    background-color: #5c5cb90f;
+                    text-align: right;
+                }
+            }
+            & .row + .row {
+                margin-top: 6px;
+            }
+            & .total-footer {
+                display: flex;
+                flex-direction: column;
+                margin-top: 40px;
+
+                & .total-footer-top {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 7px 7px 0 60%;
+                    font-size: 0.9rem;
+                    font-weight: 400;
+
+                    & .title {
+                    }
+                    & .num {
+                    }
+                }
+                & .total-footer-bottom {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 7px 7px 0 60%;
+
+                    font-size: 1.25rem;
+                    font-weight: 500;
+
+                    & .title {
+                    }
+
+                    & .num {
+                    }
+                }
+            }
+        }
+    }
     & .payment-select {
         & .payment-selects {
             display: flex;

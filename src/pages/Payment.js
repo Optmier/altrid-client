@@ -1,26 +1,45 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import '../styles/payment_page.scss';
 import HeaderBar from '../components/essentials/HeaderBar';
 import queryString from 'query-string';
-import PriceData from '../datas/PriceData.json';
 import MenuData from '../datas/MenuData.json';
+import { useSelector } from 'react-redux';
+import Axios from 'axios';
+import { apiUrl } from '../configs/configs';
 
 function Payment({ location }) {
-    useEffect(() => {
-        //axios 쿠폰 검사...
-    }, []);
+    const sessions = useSelector((state) => state.RdxSessions);
+    const selectBoxRef = useRef();
+
+    const [studentNum, setStudentNum] = useState(1);
 
     const handlePayment = () => {};
+
+    const handleSelectChange = (e) => {
+        const { value } = e.target;
+
+        selectBoxRef.current.dataset.content = value;
+        setStudentNum(value);
+    };
+
+    useEffect(() => {
+        //베타서비스 쿠폰 조회
+        if (sessions.userType === 'teachers') {
+            Axios.get(`${apiUrl}/my-page/profile`, { withCredentials: true })
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+    }, []);
 
     return (
         <>
             <HeaderBar defaultColor="white" />
             <div className="payment-root">
-                <section className="payment-coupon">
-                    <div className="payment-header">쿠폰 확인</div>
-                </section>
-
                 <section className="payment-confirm">
                     <div className="payment-header">결제 상품 확인</div>
                     <div className="payment-confirm-box">
@@ -47,6 +66,50 @@ function Payment({ location }) {
                         </div>
                     </div>
                 </section>
+
+                <section className="payment-total">
+                    <div className="payment-header">합계</div>
+                    <div className="payment-total-table">
+                        <div className="row">
+                            <div className="total-left">
+                                <span className="total-title">결제 상품</span>
+                                <span>7,900원</span>
+                            </div>
+                            <div className="total-right">7,900</div>
+                        </div>
+                        <div className="row">
+                            <div className="total-left">
+                                <span className="total-title">학생 인원</span>
+                                <select ref={selectBoxRef} onChange={handleSelectChange} data-content="">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div className="total-right student-num">x {studentNum}</div>
+                        </div>
+                        <div className="row">
+                            <div className="total-left">
+                                <span className="total-title">쿠폰 선택</span>
+                                <select ref={selectBoxRef} onChange={handleSelectChange} data-content="">
+                                    <option value="">적용 쿠폰이 없습니다.</option>
+                                </select>
+                            </div>
+                            <div className="total-right">- 0</div>
+                        </div>
+                        <div className="total-footer">
+                            <div className="total-footer-top">
+                                <div className="title">부가세(10%)</div>
+                                <div className="num">₩ 790원</div>
+                            </div>
+                            <div className="total-footer-bottom">
+                                <div className="title">최종 금액</div>
+                                <div className="num">₩ 99,999원</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <section className="payment-select">
                     <div className="payment-header">결제 수단 선택</div>
                     <div className="payment-selects">
