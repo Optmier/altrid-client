@@ -2,7 +2,7 @@
     min-height: 80vh;
     max-width: 584px;
     min-width: 320px;
-    padding: 120px 16px 0 16px;
+    padding: 120px 16px 100px 16px;
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -31,6 +31,12 @@
         font-size: 11px;
         font-weight: 400;
     }
+    & #strike-through {
+        width: fit-content;
+        border-bottom: 1px solid #707070;
+        height: 15px;
+        margin-bottom: 10px;
+    }
 
     & section + section {
         margin-top: 56px;
@@ -56,48 +62,52 @@
             width: 100%;
             box-sizing: border-box;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
 
-            & .left {
+            & .confirm-top {
                 display: flex;
-                align-items: center;
-                & .left-title {
+                flex-direction: column;
+
+                & .top-title {
                     font-weight: 600;
                     font-size: 1.75rem;
-                    margin-right: 28px;
                 }
-                & .left-contents {
+                & .top-contents {
+                    text-align: left;
                     color: rgba(87, 85, 85, 1);
                     font-weight: 400;
                     font-size: 1rem;
-                    width: 200px;
                 }
             }
-
-            & .right {
+            & .confirm-bottom {
+                margin-top: 36px;
                 display: flex;
                 flex-direction: column;
+                justify-content: flex-end;
                 align-items: flex-end;
-
-                & .right-top {
+                & .bottom-top {
+                    display: flex;
                     font-size: 1.25rem;
                     font-weight: 500;
                     color: rgba(112, 112, 112, 1);
+                    margin-bottom: 8px;
 
-                    width: fit-content;
-                    border-bottom: 1px solid #707070;
-                    height: 15px;
-                    margin-bottom: 10px;
+                    & .gray {
+                        color: rgba(130, 130, 130, 1);
+                        margin: 8px 10px 0 0;
+                    }
                 }
-                & .right-bottom {
+                & .bottom-bottom {
                     font-size: 1.5rem;
                     font-weight: 500;
                     display: flex;
                     align-items: center;
-                }
-                & .gray {
-                    color: rgba(130, 130, 130, 1);
-                    margin-right: 10px;
+
+                    & .coupon-ment {
+                        font-size: 1.15rem;
+                        font-weight: 400;
+                        margin-right: 1rem;
+                    }
                 }
             }
         }
@@ -120,7 +130,8 @@
                     & .total-title {
                         font-weight: 600;
                         width: 130px;
-                        display: block;
+                        display: flex;
+                        align-items: center;
                     }
                     & > select {
                         cursor: pointer;
@@ -147,6 +158,9 @@
                     padding: 14px;
                     background-color: #5c5cb90f;
                     text-align: right;
+
+                    font-size: 1.15rem;
+                    font-weight: 600;
                 }
             }
             & .row + .row {
@@ -155,7 +169,7 @@
             & .total-footer {
                 display: flex;
                 flex-direction: column;
-                margin-top: 40px;
+                margin-top: 25px;
 
                 & .total-footer-top {
                     display: flex;
@@ -192,6 +206,7 @@
             justify-content: space-between;
             align-items: flex-start;
             & .payment-select-box {
+                cursor: pointer;
                 background-color: white;
                 padding: 30px 34px;
                 border-radius: 11px;
@@ -203,14 +218,10 @@
                 font-weight: 400;
                 color: #575555;
 
+                border: 1.4px solid #0c7cef;
                 & svg {
                     margin-right: 16px;
                 }
-            }
-            & .payment-select-box:hover {
-                cursor: pointer;
-                box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.09);
-                transition: all 0.6s;
             }
         }
     }
@@ -230,6 +241,11 @@
         }
     }
 
+    & .payment-warn {
+        color: gray;
+        font-weight: 300;
+    }
+
     @media (min-width: 0px) and (max-width: 768px) {
         & {
             & .payment-header {
@@ -240,31 +256,27 @@
                     padding: 24px;
                     display: flex;
                     flex-direction: column;
-                    align-items: flex-start;
-                    justify-content: flex-start;
-
-                    & .left {
+                    & .confirm-top {
                         display: flex;
-                        flex-direction: column;
-                        align-items: flex-start;
-                        justify-content: flex-start;
 
-                        & .left-title {
+                        align-items: flex-start;
+                        justify-content: space-between;
+
+                        & .top-title {
                             font-size: 1.5rem;
                         }
-                        & .left-contents {
+                        & .top-contents {
                             width: 100%;
                         }
                     }
-
-                    & .right {
+                    & .confirm-bottom {
                         display: flex;
                         flex-direction: column;
                         align-items: flex-start;
                         justify-content: flex-start;
                         margin-top: 20px;
 
-                        & .right-bottom {
+                        & .bottom-bottom {
                             flex-direction: row-reverse;
                         }
                         & .gray {

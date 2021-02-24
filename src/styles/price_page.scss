@@ -143,9 +143,9 @@ $secondColor: #3b168a;
                             pointer-events: none;
                         }
                     }
-                    & a {
-                        display: none;
-                    }
+                }
+                & .menu-box-title-mobile {
+                    display: none;
                 }
                 & .menu-box-price {
                     display: flex;
@@ -278,10 +278,18 @@ $secondColor: #3b168a;
                     }
                     & .col-box {
                         & .menu-box-title {
-                            & > button {
-                                display: none;
-                            }
+                            display: none;
+                        }
+                        & .menu-box-title-mobile {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 28px;
 
+                            & .header {
+                                font-size: 1.75rem;
+                                font-weight: 600;
+                            }
                             & > a {
                                 display: block;
                                 & .mobile-header-more {

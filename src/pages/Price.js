@@ -195,15 +195,28 @@ function Price({ history }) {
                                             {i}
                                         </div>
 
-                                        <button onClick={goToPayments} name={i}>
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M8.59009 16.59L13.1701 12L8.59009 7.41L10.0001 6L16.0001 12L10.0001 18L8.59009 16.59Z"
-                                                    fill="#707070"
-                                                />
-                                            </svg>
-                                        </button>
+                                        {i !== 'Free' ? (
+                                            <button name={i} onClick={goToPayments}>
+                                                <svg
+                                                    width="24"
+                                                    height="24"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        d="M8.59009 16.59L13.1701 12L8.59009 7.41L10.0001 6L16.0001 12L10.0001 18L8.59009 16.59Z"
+                                                        fill="#707070"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        ) : null}
+                                    </div>
 
+                                    <div className="menu-box-title-mobile">
+                                        <div className="header" id={'color-' + i}>
+                                            {i}
+                                        </div>
                                         <Link to={`/pricing/details?plan=${i}`}>
                                             <div className="mobile-header-more">
                                                 결제 및 자세히 보기
@@ -222,6 +235,7 @@ function Price({ history }) {
                                             </div>
                                         </Link>
                                     </div>
+
                                     <div className="menu-box-price">
                                         <div className="pre-price">
                                             <span className="text">{MenuData[i]['price']}</span> <span>원</span>
