@@ -106,9 +106,15 @@ function App({ history }) {
                 Axios.get(`${apiUrl}/academies/current/name`, { withCredentials: true })
                     .then((res2) => {
                         const academyName = res2.data.name;
+                        const academyApproved = res2.data.approved;
+                        const academyPlanId = res2.data.plan_id;
 
                         if (academyName) {
-                            updateSessions({ academyName: academyName });
+                            updateSessions({
+                                academyName: academyName,
+                                academyApproved: academyApproved,
+                                academyPlanId: academyPlanId,
+                            });
                         }
                         try {
                             window.Android.ShowWebView();

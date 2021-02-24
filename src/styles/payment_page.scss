@@ -116,7 +116,18 @@
         & .payment-total-table {
             display: flex;
             flex-direction: column;
+            & .total-warn {
+                color: #504e4e;
+                font-size: 0.95rem;
+                margin-bottom: 35px;
 
+                & li + li {
+                    margin-top: 4px;
+                }
+                & b {
+                    font-weight: 600;
+                }
+            }
             & .row {
                 display: grid;
                 grid-template-columns: 3fr 1fr;
@@ -166,6 +177,7 @@
             & .row + .row {
                 margin-top: 6px;
             }
+
             & .total-footer {
                 display: flex;
                 flex-direction: column;

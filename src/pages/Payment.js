@@ -7,6 +7,7 @@ import MenuData from '../datas/MenuData.json';
 import { useSelector } from 'react-redux';
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
+import AddCard from '../components/essentials/AddCard';
 
 function Payment({ location }) {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -20,6 +21,8 @@ function Payment({ location }) {
     const [payPrice, setPayPrice] = useState(productPice * studentNum - discountPrice);
     const [tax, setTax] = useState(payPrice * 0.1);
     const [totalPrice, setTotalPrice] = useState(payPrice + tax);
+    const [academyApproved, setAcademyApproved] = useState(0);
+    const [nowPlan, setNowPlan] = useState('Free');
 
     const handleCalculator = (num, discount) => {
         setPayPrice(productPice * num);
@@ -41,24 +44,37 @@ function Payment({ location }) {
     };
 
     useEffect(() => {
-        //베타서비스 쿠폰 조회
+        //학원 소비자 쿠폰 조회
         if (sessions.userType === 'teachers') {
-            Axios.get(`${apiUrl}/my-page/profile`, { withCredentials: true })
+            Axios.get(`${apiUrl}/academies/${sessions.academyCode}`, { withCredentials: true })
                 .then((res) => {
-                    console.log(res.data);
+                    setAcademyApproved(res.data.approved);
+                    console.log(sessions);
+                    setNowPlan(sessions.academyPlanId === 1 ? 'Free' : sessions.academyPlanId === 2 ? 'Standard' : 'Premium');
                 })
                 .catch((err) => {
                     console.error(err);
                 });
         }
-    }, []);
+    }, [sessions]);
 
     return (
         <>
             <HeaderBar defaultColor="white" />
             <div className="payment-root">
                 <section className="payment-confirm">
-                    <div className="payment-header">결제 상품 확인</div>
+                    <div className="payment-header">현재 플랜 확인</div>
+                    <div className="payment-confirm-box">
+                        <div className="confirm-top">
+                            <div className="top-title" id={`color-${nowPlan}`}>
+                                {nowPlan}
+                            </div>
+                            <div className="top-contents"> {MenuData[nowPlan]['desc']}</div>
+                        </div>
+                    </div>
+                </section>
+                <section className="payment-confirm">
+                    <div className="payment-header">플랜 변경 상품</div>
                     <div className="payment-confirm-box">
                         <div className="confirm-top">
                             <div className="top-title" id={`color-${queryString.parse(location.search).type}`}>
@@ -87,8 +103,20 @@ function Payment({ location }) {
                     </div>
                 </section>
                 <section className="payment-total">
-                    <div className="payment-header">합계</div>
+                    <div className="payment-header">견적 미리보기</div>
                     <div className="payment-total-table">
+                        <div className="total-warn">
+                            <li>
+                                * 정확한 가격은 매달 정기 결제일 전날까지의 <b>학생 수</b>를 토대로 산출됩니다.
+                            </li>
+                            <li>
+                                * 학생수는 학원 코드를 공유하는 <b>모든 클래스들에 초대된 학생 수</b>를 더한 값입니다.
+                            </li>
+                            <li>
+                                * 한명의 학생이 여러 클래스에 초대가 되어도 <b>한명</b>으로 산출 됩니다.
+                            </li>
+                        </div>
+
                         <div className="row">
                             <div className="total-left">
                                 <span className="total-title">결제 상품</span>
@@ -100,7 +128,7 @@ function Payment({ location }) {
                             <div className="total-left">
                                 <span className="total-title">학생 인원</span>
                                 <select ref={selectBoxRef} onChange={handleSelectChange} data-content="">
-                                    {Array.from({ length: 64 }, (v, i) => (
+                                    {Array.from({ length: 63 }, (v, i) => (
                                         <option key={i} value={i + 1}>
                                             {i + 1}
                                         </option>
@@ -118,6 +146,7 @@ function Payment({ location }) {
                             </div>
                             <div className="total-right">- {discountPrice}</div>
                         </div>
+
                         <div className="total-footer">
                             <div className="total-footer-top">
                                 <div className="title">부가세(10%)</div>
@@ -136,21 +165,11 @@ function Payment({ location }) {
                 </section>
                 <section className="payment-select">
                     <div className="payment-header">결제 수단 선택</div>
-                    <div className="payment-selects">
-                        <div className="payment-select-box">
-                            <svg width="18" height="24" viewBox="0 0 18 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M15 4H3C2.1675 4 1.5075 4.89 1.5075 6L1.5 18C1.5 19.11 2.1675 20 3 20H15C15.8325 20 16.5 19.11 16.5 18V6C16.5 4.89 15.8325 4 15 4ZM15 18H3V12H15V18ZM15 8H3V6H15V8Z"
-                                    fill="#575555"
-                                />
-                            </svg>
-                            토스 페이먼츠
-                        </div>
-                    </div>
+                    <AddCard />
                 </section>
                 <section className="payment-footer">
                     <button id={`back-color-${queryString.parse(location.search).type}`} onClick={handlePayment}>
-                        {convertPriceString(totalPrice)}원 결제하기
+                        플랜 변겅하기
                     </button>
                 </section>
 
