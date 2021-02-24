@@ -23,11 +23,12 @@ function Payment({ location }) {
     const [totalPrice, setTotalPrice] = useState(payPrice + tax);
     const [academyApproved, setAcademyApproved] = useState(0);
     const [nowPlan, setNowPlan] = useState('Free');
+    const [couponSelectVlue, setCouponSelectVlue] = useState('');
 
     const handleCalculator = (num, discount) => {
-        setPayPrice(productPice * num);
-        setTax(productPice * num * 0.1);
-        setTotalPrice(productPice * num + productPice * num * 0.1);
+        setPayPrice(productPice * num - discount);
+        setTax((productPice * num - discount) * 0.1);
+        setTotalPrice((productPice * num - discount) * 1 + (productPice * num - discount) * 0.1);
     };
     const handlePayment = () => {};
 
@@ -36,7 +37,21 @@ function Payment({ location }) {
 
         selectBoxRef.current.dataset.content = value;
         setStudentNum(value);
+        setDiscountPrice(0);
+        setCouponSelectVlue('');
         handleCalculator(value, 0);
+    };
+    const handleSelectCoupon = (e) => {
+        const { value } = e.target;
+
+        setCouponSelectVlue(value);
+        if (value === '1') {
+            setDiscountPrice(studentNum * 1000);
+            handleCalculator(studentNum, studentNum * 1000);
+        } else {
+            setDiscountPrice(0);
+            handleCalculator(studentNum, 0);
+        }
     };
 
     const convertPriceString = (x) => {
@@ -121,7 +136,7 @@ function Payment({ location }) {
                                         * 학생수는 학원 코드를 공유하는 <b>모든 클래스들에 초대된 학생 수</b>를 더한 값입니다.
                                     </li>
                                     <li>
-                                        * 한명의 학생이 여러 클래스에 초대가 되어도 <b>한명</b>으로 산출 됩니다.
+                                        * 한명의 학생이 여러 클래스에 초대가 되어도 <b>한 명</b>으로 산출 됩니다.
                                     </li>
                                 </div>
 
@@ -134,11 +149,11 @@ function Payment({ location }) {
                                 </div>
                                 <div className="row">
                                     <div className="total-left">
-                                        <span className="total-title">학생 인원</span>
+                                        <span className="total-title">예상 학생수</span>
                                         <select ref={selectBoxRef} onChange={handleSelectChange} data-content="">
                                             {Array.from({ length: 63 }, (v, i) => (
                                                 <option key={i} value={i + 1}>
-                                                    {i + 1}
+                                                    {i + 1} 명
                                                 </option>
                                             ))}
                                         </select>
@@ -148,11 +163,16 @@ function Payment({ location }) {
                                 <div className="row">
                                     <div className="total-left">
                                         <span className="total-title">쿠폰 선택</span>
-                                        <select ref={selectBoxRef} onChange={handleSelectChange} data-content="">
-                                            <option value="">적용 쿠폰이 없습니다.</option>
+                                        <select ref={selectBoxRef} onChange={handleSelectCoupon} value={couponSelectVlue} data-content="">
+                                            <option value="">적용 쿠폰</option>
+                                            {academyApproved ? (
+                                                <option value="1">[학원소비자한정]학생당 1천원 할인 쿠폰</option>
+                                            ) : (
+                                                <option value="0">적용 쿠폰이 없습니다.</option>
+                                            )}
                                         </select>
                                     </div>
-                                    <div className="total-right">- {discountPrice}</div>
+                                    <div className="total-right">- {convertPriceString(discountPrice)}</div>
                                 </div>
 
                                 <div className="total-footer">
