@@ -8,7 +8,13 @@ import { Link, withRouter } from 'react-router-dom';
 import ClassWrapper from '../components/essentials/ClassWrapper';
 import HeaderBar from '../components/essentials/HeaderBar';
 import { useSelector } from 'react-redux';
+import Dialog from '@material-ui/core/Dialog';
 
+const StyleDialog = styled.div`
+    background-color: white;
+    width: 700px;
+    height: 500px;
+`;
 const BadgeButton = styled.a`
     background-color: ${(props) => (props.type === 'group' ? '#3b168a' : 'white')};
     color: ${(props) => (props.type === 'group' ? 'white' : '#1d3853')};
@@ -70,17 +76,30 @@ function Price({ history }) {
     const sessions = useSelector((state) => state.RdxSessions);
 
     const [priceState, setPriceState] = useState('personal');
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const handleChange = (event) => {
         setPriceState(event.target.value);
     };
 
     const goToPayments = (e) => {
-        history.push(`/payment?type=${e.target.name}`);
+        handleDialogOpen();
+        //history.push(`/payment?type=${e.target.name}`);
+    };
+
+    const handleDialogOpen = () => {
+        setDialogOpen(true);
+    };
+
+    const handleDialogClose = (value) => {
+        setDialogOpen(false);
     };
 
     return (
         <>
+            <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" open={dialogOpen}>
+                <StyleDialog>asdfasdfasdfasdfasdf</StyleDialog>
+            </Dialog>
             <HeaderBar />
             <div className="price-root">
                 <div className="price_section_header">
