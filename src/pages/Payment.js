@@ -13,9 +13,7 @@ function Payment({ location }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const selectBoxRef = useRef();
 
-    const [productPice, setProductPrice] = useState(
-        parseInt(MenuData[queryString.parse(location.search).type]['discount_' + 'personal'].replace(',', '')),
-    );
+    const [productPice, setProductPrice] = useState(0);
     const [studentNum, setStudentNum] = useState(1);
     const [discountPrice, setDiscountPrice] = useState(0);
     const [payPrice, setPayPrice] = useState(productPice * studentNum - discountPrice);
@@ -65,6 +63,14 @@ function Payment({ location }) {
                 .then((res) => {
                     setAcademyApproved(res.data.approved);
 
+                    //console.log();
+                    setProductPrice(
+                        parseInt(
+                            MenuData[sessions.academyPlanId === 1 ? 'Free' : sessions.academyPlanId === 2 ? 'Standard' : 'Premium'][
+                                'discount_personal'
+                            ].replace(',', ''),
+                        ),
+                    );
                     setNowPlan(sessions.academyPlanId === 1 ? 'Free' : sessions.academyPlanId === 2 ? 'Standard' : 'Premium');
                 })
                 .catch((err) => {
@@ -114,7 +120,7 @@ function Payment({ location }) {
                                     <div className="bottom-bottom" id={`color-${queryString.parse(location.search).type}`}>
                                         <div className="coupon-ment">베타 서비스 할인가</div>
                                         <div>
-                                            {MenuData[queryString.parse(location.search).type]['discount_' + 'personal']}
+                                            {MenuData[queryString.parse(location.search).type]['discount_personal']}
                                             <span id="small-text">원</span>
                                         </div>
                                     </div>
@@ -137,6 +143,9 @@ function Payment({ location }) {
                                     </li>
                                     <li>
                                         * 한명의 학생이 여러 클래스에 초대가 되어도 <b>한 명</b>으로 산출 됩니다.
+                                    </li>
+                                    <li>
+                                        * 쿠폰 추가는 <b>마이페이지</b>에서 가능합니다.
                                     </li>
                                 </div>
 

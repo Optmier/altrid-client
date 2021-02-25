@@ -7,6 +7,7 @@ import Radio from '@material-ui/core/Radio';
 import { Link, withRouter } from 'react-router-dom';
 import ClassWrapper from '../components/essentials/ClassWrapper';
 import HeaderBar from '../components/essentials/HeaderBar';
+import { useSelector } from 'react-redux';
 
 const BadgeButton = styled.a`
     background-color: ${(props) => (props.type === 'group' ? '#3b168a' : 'white')};
@@ -66,6 +67,8 @@ const BadgeButton = styled.a`
 `;
 
 function Price({ history }) {
+    const sessions = useSelector((state) => state.RdxSessions);
+
     const [priceState, setPriceState] = useState('personal');
 
     const handleChange = (event) => {
@@ -73,15 +76,8 @@ function Price({ history }) {
     };
 
     const goToPayments = (e) => {
-        console.log(e.target, e.target.name);
         history.push(`/payment?type=${e.target.name}`);
     };
-
-    useEffect(() => {
-        //axios 학원 검사...
-        // 학원 = pop up x
-        // 개인 = pop up O
-    }, []);
 
     return (
         <>
@@ -99,11 +95,11 @@ function Price({ history }) {
                                 베타 기간 한정, 모든 기능에 대하여 <br />
                                 할인된 가격으로 제공해드립니다.
                             </div>
-                            <div className="header-btn">
+                            {/* <div className="header-btn">
                                 <button name="Free" onClick={goToPayments}>
                                     무료 체험하기
                                 </button>
-                            </div>
+                            </div> */}
                         </div>
                     </ClassWrapper>
                 </div>
