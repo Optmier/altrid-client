@@ -12,134 +12,116 @@ import Dialog from '@material-ui/core/Dialog';
 import classNames from 'classnames';
 
 const StyleDialog = styled.div`
-    background-color: white;
+    background-color: #6d2afa;
     padding: 40px 32px;
     display: flex;
     flex-direction: column;
+    align-items: center;
 
     & .header {
         margin-bottom: 16px;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
+        align-items: center;
 
         & .header-text {
             font-size: 28px;
             font-weight: 600;
-            color: #13e2a1;
+            color: #00ffaf;
             & svg {
                 margin-right: 16px;
             }
         }
-
-        & .personal-button {
-            background-color: #ff7373;
+        & .header2 {
+            font-size: 22px;
+            font-weight: 500;
             color: white;
-            font-size: 1rem;
-            padding: 1rem 1.2rem;
-            border-radius: 11px;
-            box-shadow: 0px 4px 4px #0000001c;
-            display: flex;
-            align-items: center;
-            & svg {
-                margin-left: 8px;
+            margin-left: 16px;
+
+            & span {
+                color: #00ffaf;
             }
         }
     }
-    & .header2 {
-        font-size: 22px;
-        font-weight: 500;
-        color: #6a6868;
-        margin-bottom: 10px;
 
-        & span {
-            color: #13e2a1;
-        }
-    }
     & .desc {
         font-size: 16px;
         font-weight: 400;
-        color: #6a6969;
+        color: white;
+        display: flex;
+        justify-content: center;
         margin-bottom: 45px;
     }
-
     & .cards {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
+        margin-bottom: 50px;
 
         & .card {
             border-radius: 11px;
             display: flex;
             flex-direction: column;
             padding: 24px;
-            width: 31.5%;
+            width: 32.5%;
             box-sizing: border-box;
-            min-height: 220px;
-
+            min-height: 255px;
+            background-color: white;
+            box-shadow: #cdcdcd70 0px 12px 46px 0px;
+            & .card-header.Step1 {
+                background-color: #20e3a4;
+            }
+            & .card-header.Step2 {
+                background-color: #3c1888;
+            }
+            & .card-header.Step3 {
+                background-color: #32715d;
+            }
             & .card-header {
                 font-size: 18px;
                 font-weight: 600;
                 color: white;
                 border-radius: 18px;
-                margin-bottom: 23px;
+                margin-bottom: 28px;
                 padding: 8px 23px;
                 width: fit-content;
             }
             & .card-title {
-                font-size: 16.5px;
+                font-size: 18px;
                 font-weight: 500;
-                margin-bottom: 5px;
+                margin-bottom: 20px;
+                color: #908c8c;
             }
             & .card-desc {
                 font-size: 16px;
-                font-weight: 300;
+                font-weight: 500;
+                color: black;
+                margin-bottom: 20px;
             }
             & .card-footer {
-                margin-top: 15px;
-                font-size: 13px;
+                font-size: 14px;
                 font-weight: 600;
-                color: #f75454;
+                color: #20e3a4;
                 text-align: right;
                 & svg {
                     margin-left: 8px;
                 }
             }
         }
-        & .card.Step1 {
-            background-color: #a7f5de;
-            & .card-header {
-                background-color: #3c1888;
-            }
-            & .card-title {
-                color: black;
-            }
-            & .card-desc {
-                color: black;
-            }
-        }
-        & .card.Step2 {
-            background-color: #00e09c;
-            & .card-header {
-                background-color: #3c1888;
-            }
-            & .card-title {
-                color: white;
-            }
-            & .card-desc {
-                color: white;
-            }
-        }
-        & .card.Step3 {
-            background-color: #3c1888;
-            & .card-header {
-                background-color: #00e2a4;
-            }
-            & .card-title {
-                color: white;
-            }
-            & .card-desc {
-                color: white;
-            }
+    }
+    & .personal-button {
+        width: 240px;
+        justify-content: center;
+        background-color: #3c1888;
+        color: white;
+        font-size: 1rem;
+        padding: 1rem 1.2rem;
+        border-radius: 11px;
+        box-shadow: #cdcdcd21 0px 12px 46px 0px;
+        display: flex;
+        align-items: center;
+        & svg {
+            margin-left: 8px;
         }
     }
 `;
@@ -210,7 +192,7 @@ const groupStepDatas = {
     },
     'Step 3': {
         title: '할인 진행',
-        desc: '견전서 발행 및 계약 진행  후, 서비스 플랜 별 할인 진행',
+        desc: '견적서 발행 및 계약 진행  후, 서비스 플랜 별 할인 진행',
     },
 };
 
@@ -251,25 +233,16 @@ function Price({ history }) {
                             </svg>
                             잠깐 !
                         </div>
-                        <button className="personal-button">
-                            개인 소비자 이용하기
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M8.59009 16.59L13.1701 12L8.59009 7.41L10.0001 6L16.0001 12L10.0001 18L8.59009 16.59Z"
-                                    fill="white"
-                                ></path>
-                            </svg>
-                        </button>
+                        <div className="header2">
+                            혹시, <span>학원 소비자</span>이신가요?
+                        </div>
                     </div>
-                    <div className="header2">
-                        혹시, <span>학원 소비자</span>이신가요?
-                    </div>
-                    <div className="desc">학원 소비자의 경우, 할인된 가격으로 서비스 구독이 가능합니다.</div>
 
+                    <div className="desc">학원 소비자의 경우, 할인된 가격으로 서비스 구독이 가능합니다.</div>
                     <div className="cards">
                         {Object.keys(groupStepDatas).map((i) => (
-                            <div key={i} className={classNames('card', i.replace(/(\s*)/g, ''))}>
-                                <div className="card-header">{i}</div>
+                            <div key={i} className="card">
+                                <div className={classNames('card-header', i.replace(/(\s*)/g, ''))}>{i}</div>
                                 <div className="card-title">{groupStepDatas[i]['title']}</div>
                                 <div className="card-desc">{groupStepDatas[i]['desc']}</div>
                                 {i === 'Step 1' ? (
@@ -278,7 +251,7 @@ function Price({ history }) {
                                         <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path
                                                 d="M0 8.5749L3.7085 4.8583L0 1.1417L1.1417 0L6 4.8583L1.1417 9.7166L0 8.5749Z"
-                                                fill="#f75454"
+                                                fill="#20e3a4"
                                             />
                                         </svg>
                                     </div>
@@ -286,6 +259,15 @@ function Price({ history }) {
                             </div>
                         ))}
                     </div>
+                    <button className="personal-button">
+                        개인 소비자 이용하기
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M8.59009 16.59L13.1701 12L8.59009 7.41L10.0001 6L16.0001 12L10.0001 18L8.59009 16.59Z"
+                                fill="white"
+                            ></path>
+                        </svg>
+                    </button>
                 </StyleDialog>
             </Dialog>
             <HeaderBar />
