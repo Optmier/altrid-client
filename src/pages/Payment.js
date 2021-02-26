@@ -13,15 +13,21 @@ function Payment({ location }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const selectBoxRef = useRef();
 
-    const [productPice, setProductPrice] = useState(0);
+    //선택 플랜, 선택 플랜 가격
+    const [productPlan, setProductPlan] = useState(queryString.parse(location.search).type);
+    const [productPice, setProductPrice] = useState(MenuData[queryString.parse(location.search).type]['discount_personal']);
+
+    //현재 플랜
+    const [nowPlan, setNowPlan] = useState('Free');
+
+    //견적 미리보기
     const [studentNum, setStudentNum] = useState(1);
+    const [couponSelectVlue, setCouponSelectVlue] = useState('');
     const [discountPrice, setDiscountPrice] = useState(0);
+    const [academyApproved, setAcademyApproved] = useState(0);
     const [payPrice, setPayPrice] = useState(productPice * studentNum - discountPrice);
     const [tax, setTax] = useState(payPrice * 0.1);
     const [totalPrice, setTotalPrice] = useState(payPrice + tax);
-    const [academyApproved, setAcademyApproved] = useState(0);
-    const [nowPlan, setNowPlan] = useState('Free');
-    const [couponSelectVlue, setCouponSelectVlue] = useState('');
 
     const handleCalculator = (num, discount) => {
         setPayPrice(productPice * num - discount);
@@ -62,15 +68,6 @@ function Payment({ location }) {
             Axios.get(`${apiUrl}/academies/${sessions.academyCode}`, { withCredentials: true })
                 .then((res) => {
                     setAcademyApproved(res.data.approved);
-
-                    //console.log();
-                    setProductPrice(
-                        parseInt(
-                            MenuData[sessions.academyPlanId === 1 ? 'Free' : sessions.academyPlanId === 2 ? 'Standard' : 'Premium'][
-                                'discount_personal'
-                            ].replace(',', ''),
-                        ),
-                    );
                     setNowPlan(sessions.academyPlanId === 1 ? 'Free' : sessions.academyPlanId === 2 ? 'Standard' : 'Premium');
                 })
                 .catch((err) => {
@@ -97,15 +94,15 @@ function Payment({ location }) {
                 <section className="payment-confirm">
                     <div className="payment-header">플랜 변경 상품</div>
                     <div className="payment-confirm-box">
-                        {nowPlan === queryString.parse(location.search).type ? (
+                        {nowPlan === productPlan ? (
                             <h5>현재 플랜과 동일 플랜 상품을 선택하셨습니다.</h5>
                         ) : (
                             <>
                                 <div className="confirm-top">
-                                    <div className="top-title" id={`color-${queryString.parse(location.search).type}`}>
-                                        {queryString.parse(location.search).type}
+                                    <div className="top-title" id={`color-${productPlan}`}>
+                                        {productPlan}
                                     </div>
-                                    <div className="top-contents"> {MenuData[queryString.parse(location.search).type]['desc']}</div>
+                                    <div className="top-contents"> {MenuData[productPlan]['desc']}</div>
                                 </div>
                                 <div className="confirm-bottom">
                                     <div className="bottom-top">
@@ -113,14 +110,14 @@ function Payment({ location }) {
                                             (학생당/월)
                                         </div>
                                         <div id="strike-through">
-                                            {MenuData[queryString.parse(location.search).type]['price']}
+                                            {convertPriceString(MenuData[productPlan]['price'])}
                                             <span id="small-text">원</span>
                                         </div>
                                     </div>
-                                    <div className="bottom-bottom" id={`color-${queryString.parse(location.search).type}`}>
+                                    <div className="bottom-bottom" id={`color-${productPlan}`}>
                                         <div className="coupon-ment">베타 서비스 할인가</div>
                                         <div>
-                                            {MenuData[queryString.parse(location.search).type]['discount_personal']}
+                                            {convertPriceString(productPice)}
                                             <span id="small-text">원</span>
                                         </div>
                                     </div>
@@ -129,7 +126,7 @@ function Payment({ location }) {
                         )}
                     </div>
                 </section>
-                {nowPlan === queryString.parse(location.search).type ? null : (
+                {nowPlan === productPlan ? null : (
                     <>
                         <section className="payment-total">
                             <div className="payment-header">견적 미리보기</div>
@@ -205,7 +202,7 @@ function Payment({ location }) {
                             <AddCard />
                         </section>
                         <section className="payment-footer">
-                            <button id={`back-color-${queryString.parse(location.search).type}`} onClick={handlePayment}>
+                            <button id={`back-color-${productPlan}`} onClick={handlePayment}>
                                 플랜 변겅하기
                             </button>
                         </section>

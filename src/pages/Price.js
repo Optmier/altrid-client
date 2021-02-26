@@ -25,7 +25,7 @@ const StyleDialog = styled.div`
         align-items: center;
 
         & .header-text {
-            font-size: 28px;
+            font-size: 29px;
             font-weight: 600;
             color: #00ffaf;
             & svg {
@@ -33,7 +33,7 @@ const StyleDialog = styled.div`
             }
         }
         & .header2 {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 500;
             color: white;
             margin-left: 16px;
@@ -45,7 +45,7 @@ const StyleDialog = styled.div`
     }
 
     & .desc {
-        font-size: 16px;
+        font-size: 17px;
         font-weight: 400;
         color: white;
         display: flex;
@@ -67,7 +67,7 @@ const StyleDialog = styled.div`
             box-sizing: border-box;
             min-height: 255px;
             background-color: white;
-            box-shadow: #cdcdcd70 0px 12px 46px 0px;
+            box-shadow: #cdcdcd55 0px 12px 46px 0px;
             & .card-header.Step1 {
                 background-color: #20e3a4;
             }
@@ -201,27 +201,41 @@ function Price({ history }) {
 
     const [priceState, setPriceState] = useState('personal');
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogPlan, setDialogPlan] = useState();
+    const [academyApproved, setAcademyApproved] = useState(false);
 
     const handleChange = (event) => {
         setPriceState(event.target.value);
     };
 
     const goToPayments = (e) => {
-        handleDialogOpen();
-        //history.push(`/payment?type=${e.target.name}`);
+        if (academyApproved) {
+            history.push(`/payment?type=${e.target.name}`);
+        } else {
+            handleDialogOpen(e.target.name);
+        }
     };
 
-    const handleDialogOpen = () => {
+    const handleDialogOpen = (plan) => {
         setDialogOpen(true);
+        setDialogPlan(plan);
     };
 
     const handleDialogClose = (value) => {
         setDialogOpen(false);
     };
 
+    const convertPriceString = (x) => {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+
+    useEffect(() => {
+        sessions.academyApproved ? setAcademyApproved(true) : setAcademyApproved(false);
+    }, [sessions]);
+
     return (
         <>
-            <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" fullWidth="true" maxWidth="md" open={dialogOpen}>
+            <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" fullWidth={true} maxWidth="md" open={dialogOpen}>
                 <StyleDialog>
                     <div className="header">
                         <div className="header-text">
@@ -259,7 +273,7 @@ function Price({ history }) {
                             </div>
                         ))}
                     </div>
-                    <button className="personal-button">
+                    <button className="personal-button" onClick={() => history.push(`/payment?type=${dialogPlan}`)}>
                         개인 소비자 이용하기
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -423,10 +437,10 @@ function Price({ history }) {
 
                                     <div className="menu-box-price">
                                         <div className="pre-price">
-                                            <span className="text">{MenuData[i]['price']}</span> <span>원</span>
+                                            <span className="text">{convertPriceString(MenuData[i]['price'])}</span> <span>원</span>
                                         </div>
                                         <div className="current-price" id={'color-' + i}>
-                                            {MenuData[i]['discount_' + priceState]}
+                                            {convertPriceString(MenuData[i]['discount_' + priceState])}
                                             <span>원</span>
                                             <span style={{ color: '#828282', paddingLeft: '10px' }}>(학생당/월)</span>
                                         </div>

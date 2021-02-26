@@ -6,15 +6,15 @@
         "desc": "기본 적용된 클래스 초대 기능을 사용 할 수 있습니다."
     },
     "Standard": {
-        "price": "9,900",
-        "discount_personal": "7,900",
-        "discount_group": "6,900",
+        "price": 9900,
+        "discount_personal": 7900,
+        "discount_group": 6900,
         "desc": "클래스 및 과제 생성 기능을 제약 없이 사용 할 수 있습니다."
     },
     "Premium": {
-        "price": "26,900",
-        "discount_personal": "16,900",
-        "discount_group": "15,900",
+        "price": 26900,
+        "discount_personal": 16900,
+        "discount_group": 15900,
         "desc": "화상 강의 기능을 사용 할 수 있습니다."
     }
 }
