@@ -9,11 +9,139 @@ import ClassWrapper from '../components/essentials/ClassWrapper';
 import HeaderBar from '../components/essentials/HeaderBar';
 import { useSelector } from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
+import classNames from 'classnames';
 
 const StyleDialog = styled.div`
     background-color: white;
-    width: 700px;
-    height: 500px;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+
+    & .header {
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+
+        & .header-text {
+            font-size: 28px;
+            font-weight: 600;
+            color: #13e2a1;
+            & svg {
+                margin-right: 16px;
+            }
+        }
+
+        & .personal-button {
+            background-color: #ff7373;
+            color: white;
+            font-size: 1rem;
+            padding: 1rem 1.2rem;
+            border-radius: 11px;
+            box-shadow: 0px 4px 4px #0000001c;
+            display: flex;
+            align-items: center;
+            & svg {
+                margin-left: 8px;
+            }
+        }
+    }
+    & .header2 {
+        font-size: 22px;
+        font-weight: 500;
+        color: #6a6868;
+        margin-bottom: 10px;
+
+        & span {
+            color: #13e2a1;
+        }
+    }
+    & .desc {
+        font-size: 16px;
+        font-weight: 400;
+        color: #6a6969;
+        margin-bottom: 45px;
+    }
+
+    & .cards {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        & .card {
+            border-radius: 11px;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            width: 31.5%;
+            box-sizing: border-box;
+            min-height: 220px;
+
+            & .card-header {
+                font-size: 18px;
+                font-weight: 600;
+                color: white;
+                border-radius: 18px;
+                margin-bottom: 23px;
+                padding: 8px 23px;
+                width: fit-content;
+            }
+            & .card-title {
+                font-size: 16.5px;
+                font-weight: 500;
+                margin-bottom: 5px;
+            }
+            & .card-desc {
+                font-size: 16px;
+                font-weight: 300;
+            }
+            & .card-footer {
+                margin-top: 15px;
+                font-size: 13px;
+                font-weight: 600;
+                color: #f75454;
+                text-align: right;
+                & svg {
+                    margin-left: 8px;
+                }
+            }
+        }
+        & .card.Step1 {
+            background-color: #a7f5de;
+            & .card-header {
+                background-color: #3c1888;
+            }
+            & .card-title {
+                color: black;
+            }
+            & .card-desc {
+                color: black;
+            }
+        }
+        & .card.Step2 {
+            background-color: #00e09c;
+            & .card-header {
+                background-color: #3c1888;
+            }
+            & .card-title {
+                color: white;
+            }
+            & .card-desc {
+                color: white;
+            }
+        }
+        & .card.Step3 {
+            background-color: #3c1888;
+            & .card-header {
+                background-color: #00e2a4;
+            }
+            & .card-title {
+                color: white;
+            }
+            & .card-desc {
+                color: white;
+            }
+        }
+    }
 `;
 const BadgeButton = styled.a`
     background-color: ${(props) => (props.type === 'group' ? '#3b168a' : 'white')};
@@ -71,6 +199,20 @@ const BadgeButton = styled.a`
         }
     }
 `;
+const groupStepDatas = {
+    'Step 1': {
+        title: '학원 소비자 신청',
+        desc: '카카오톡 1대1 상담을 통해 교습소, 학원, 기관 사업자 등록증 전달',
+    },
+    'Step 2': {
+        title: '학원 소비자 확인',
+        desc: '사업자 등록증에 명시된 학원업, 온라인 학원업 등 교육관련 업종 확인',
+    },
+    'Step 3': {
+        title: '할인 진행',
+        desc: '견전서 발행 및 계약 진행  후, 서비스 플랜 별 할인 진행',
+    },
+};
 
 function Price({ history }) {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -97,8 +239,54 @@ function Price({ history }) {
 
     return (
         <>
-            <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" open={dialogOpen}>
-                <StyleDialog>asdfasdfasdfasdfasdf</StyleDialog>
+            <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" fullWidth="true" maxWidth="md" open={dialogOpen}>
+                <StyleDialog>
+                    <div className="header">
+                        <div className="header-text">
+                            <svg width="24" height="19" viewBox="0 0 24 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7.63636 14.4545L1.90909 8.72727L0 10.6364L7.63636 18.2727L24 1.90909L22.0909 0L7.63636 14.4545Z"
+                                    fill="#00E09C"
+                                />
+                            </svg>
+                            잠깐 !
+                        </div>
+                        <button className="personal-button">
+                            개인 소비자 이용하기
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M8.59009 16.59L13.1701 12L8.59009 7.41L10.0001 6L16.0001 12L10.0001 18L8.59009 16.59Z"
+                                    fill="white"
+                                ></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div className="header2">
+                        혹시, <span>학원 소비자</span>이신가요?
+                    </div>
+                    <div className="desc">학원 소비자의 경우, 할인된 가격으로 서비스 구독이 가능합니다.</div>
+
+                    <div className="cards">
+                        {Object.keys(groupStepDatas).map((i) => (
+                            <div key={i} className={classNames('card', i.replace(/(\s*)/g, ''))}>
+                                <div className="card-header">{i}</div>
+                                <div className="card-title">{groupStepDatas[i]['title']}</div>
+                                <div className="card-desc">{groupStepDatas[i]['desc']}</div>
+                                {i === 'Step 1' ? (
+                                    <div className="card-footer">
+                                        학원 소비자 신청
+                                        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M0 8.5749L3.7085 4.8583L0 1.1417L1.1417 0L6 4.8583L1.1417 9.7166L0 8.5749Z"
+                                                fill="#f75454"
+                                            />
+                                        </svg>
+                                    </div>
+                                ) : null}
+                            </div>
+                        ))}
+                    </div>
+                </StyleDialog>
             </Dialog>
             <HeaderBar />
             <div className="price-root">
