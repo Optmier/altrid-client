@@ -133,7 +133,7 @@ function Confirm({ location }) {
                             <div className="payment-total-table">
                                 <div className="total-warn">
                                     <li>
-                                        * 정확한 가격은 매달 정기 결제일 전날까지의 <b>학생 수</b>를 토대로 산출됩니다.
+                                        * 정확한 가격은 매달 정기 결제일 전날까지의 <b>최대 학생 수</b>를 토대로 산출됩니다.
                                     </li>
                                     <li>
                                         * 학생수는 학원 코드를 공유하는 <b>모든 클래스들에 초대된 학생 수</b>를 더한 값입니다.
@@ -191,7 +191,7 @@ function Confirm({ location }) {
                                         <div className="num">₩ {convertPriceString(payPrice)}원</div>
                                     </div>
                                     <div className="total-footer-bottom">
-                                        <div className="title">최종 금액</div>
+                                        <div className="title">예상 금액</div>
                                         <div className="num">₩ {convertPriceString(totalPrice)}원</div>
                                     </div>
                                 </div>

@@ -110,7 +110,7 @@ const StyleDialog = styled.div`
         }
     }
     & .personal-button {
-        width: 240px;
+        width: 280px;
         justify-content: center;
         background-color: #3c1888;
         color: white;
@@ -274,7 +274,7 @@ function Price({ history }) {
                         ))}
                     </div>
                     <button className="personal-button" onClick={() => history.push(`/payment?type=${dialogPlan}`)}>
-                        개인 소비자 이용하기
+                        아니요, 개인소비자 이용하기
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M8.59009 16.59L13.1701 12L8.59009 7.41L10.0001 6L16.0001 12L10.0001 18L8.59009 16.59Z"
