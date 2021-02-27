@@ -7,7 +7,7 @@ import MenuData from '../datas/MenuData.json';
 import { useSelector } from 'react-redux';
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
-import AddCard from '../components/essentials/AddCard';
+import AddCard from '../components/TossPayments/AddCard';
 
 function Payment({ location }) {
     const sessions = useSelector((state) => state.RdxSessions);
