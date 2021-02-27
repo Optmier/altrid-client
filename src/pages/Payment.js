@@ -7,9 +7,9 @@ import MenuData from '../datas/MenuData.json';
 import { useSelector } from 'react-redux';
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
-import AddCard from '../components/TossPayments/AddCard';
+import handleCallPayments from '../components/TossPayment/handleCallPayments.js';
 
-function Payment({ location }) {
+function Confirm({ location }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const selectBoxRef = useRef();
 
@@ -197,12 +197,12 @@ function Payment({ location }) {
                                 </div>
                             </div>
                         </section>
-                        <section className="payment-select">
+                        {/* <section className="payment-select">
                             <div className="payment-header">결제 수단 선택</div>
-                            <AddCard />
-                        </section>
+                            <TossAddCard />
+                        </section> */}
                         <section className="payment-footer">
-                            <button id={`back-color-${productPlan}`} onClick={handlePayment}>
+                            <button id={`back-color-${productPlan}`} onClick={handleCallPayments}>
                                 플랜 변겅하기
                             </button>
                         </section>
@@ -221,4 +221,4 @@ function Payment({ location }) {
     );
 }
 
-export default React.memo(withRouter(Payment));
+export default React.memo(withRouter(Confirm));

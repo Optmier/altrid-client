@@ -38,6 +38,7 @@ import Price from './pages/Price';
 import PriceDetails from './components/Price/PriceDetails';
 import Payment from './pages/Payment';
 import Plan from './components/MyPage/Plans';
+import PayState from './pages/PayState';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -212,6 +213,7 @@ function App({ history }) {
                         <Route path="/pricing" component={Price} exact />
                         <Route path="/pricing/details" component={PriceDetails} exact />
                         <Route path="/payment" component={Payment} exact />
+                        <Route path="/pay-state/:state" component={PayState} exact />
 
                         {navigator.userAgent.toLowerCase().includes('isnativeapp') ? (
                             <Route path="/login-mobile-app-redirect" component={LoginMobileAppRedirect} exact />

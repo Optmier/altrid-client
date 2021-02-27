@@ -20,8 +20,7 @@ const StyleDiv = styled.div`
         pointer-events: none;
     }
 `;
-
-function AddCard() {
+function TossAddCard() {
     const [clicked, setClicked] = useState(false);
 
     const handleClicked = () => {
@@ -40,4 +39,4 @@ function AddCard() {
     );
 }
 
-export default AddCard;
+export default TossAddCard;
