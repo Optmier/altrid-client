@@ -10,6 +10,7 @@ import HeaderBar from '../components/essentials/HeaderBar';
 import { useSelector } from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
 import classNames from 'classnames';
+import ChannelService from '../components/ChannelIO/ChannelService';
 
 const StyleDialog = styled.div`
     background-color: #6d2afa;
@@ -99,6 +100,7 @@ const StyleDialog = styled.div`
                 margin-bottom: 20px;
             }
             & .card-footer {
+                cursor: pointer;
                 font-size: 14px;
                 font-weight: 600;
                 color: #20e3a4;
@@ -260,7 +262,12 @@ function Price({ history }) {
                                 <div className="card-title">{groupStepDatas[i]['title']}</div>
                                 <div className="card-desc">{groupStepDatas[i]['desc']}</div>
                                 {i === 'Step 1' ? (
-                                    <div className="card-footer">
+                                    <div
+                                        className="card-footer"
+                                        onClick={() => {
+                                            ChannelService.showMessenger();
+                                        }}
+                                    >
                                         학원 소비자 신청
                                         <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path

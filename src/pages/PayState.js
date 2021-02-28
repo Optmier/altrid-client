@@ -4,6 +4,7 @@ import PayFail from '../components/Payment/PayFail';
 import Error from './Error';
 import HeaderBar from '../components/essentials/HeaderBar';
 import PaymentWarn from '../components/Payment/PaymentWarn';
+import queryString from 'query-string';
 
 //쿼리 스트링 뽑기
 //없으면 error 페이지
