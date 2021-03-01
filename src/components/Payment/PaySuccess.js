@@ -12,9 +12,10 @@ function PaySuccess() {
 
     //카드 정보 및 회원 정보 setState
     useEffect(() => {
-        Axios.get(`${apiUrl}/payments`, { withCredentials: true })
+        Axios.get(`${apiUrl}/payments/payment-info`, { withCredentials: true })
             .then((res) => {
                 console.log(res.data);
+                //setNowPlan()
             })
             .catch((err) => {
                 console.error(err);
