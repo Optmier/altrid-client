@@ -1,7 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/pay_state.scss';
+import { apiUrl } from '../../configs/configs';
+import Axios from 'axios';
+import MenuData from '../../datas/MenuData.json';
+import { useSelector } from 'react-redux';
 
 function PaySuccess() {
+    const sessions = useSelector((state) => state.RdxSessions);
+
+    const [nowPlan, setNowPlan] = useState();
+
+    //카드 정보 및 회원 정보 setState
+    useEffect(() => {
+        Axios.get(`${apiUrl}/payments`, { withCredentials: true })
+            .then((res) => {
+                console.log(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
+    //플랜 종류 setState
+    useEffect(() => {
+        if (sessions.academyPlanId) {
+            setNowPlan(sessions.academyPlanId === 1 ? 'Free' : sessions.academyPlanId === 2 ? 'Standard' : 'Premium');
+        }
+    }, [sessions]);
+
     return (
         <>
             <div className="header-text">

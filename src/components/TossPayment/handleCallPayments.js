@@ -1,7 +1,5 @@
 import { loadTossPayments } from '@tosspayments/sdk';
-
-//임시 발급 키
-const clientKey = 'test_ck_Z0RnYX2w532N9QLWa9M3NeyqApQE';
+import { clientKey } from '../../configs/configs';
 
 async function handleCallPayments() {
     const tossPayments = await loadTossPayments(clientKey);
