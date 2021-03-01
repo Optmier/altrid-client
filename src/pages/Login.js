@@ -312,7 +312,7 @@ function Login({ history }) {
                         code: academyCode,
                         name: academyName,
                         address: null,
-                        email: null,
+                        email: email,
                         phone: phone,
                         numOfStudents: 5,
                         numOfTeachers: 1,
