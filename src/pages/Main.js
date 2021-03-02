@@ -12,7 +12,7 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import Footer from '../components/essentials/Footer';
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import AddClass from '../components/MainPage/AddClass';
 import classNames from 'classnames';
 import { $_classDefault } from '../configs/front_urls';
@@ -22,6 +22,7 @@ import ClassWrapper from '../components/essentials/ClassWrapper';
 import { IoIosArrowForward } from 'react-icons/io';
 import isMobile from '../controllers/isMobile';
 import { makeStyles } from '@material-ui/core/styles';
+import { getClassLists } from '../redux_modules/classLists';
 
 const useStyles = makeStyles((theme) => ({
     drawerPaper: {
@@ -33,10 +34,14 @@ const useStyles = makeStyles((theme) => ({
 
 function Main({ history }) {
     const classes = useStyles();
+    const dispatch = useDispatch();
+
     const sessions = useSelector((state) => state.RdxSessions);
+
     const [backdropOpen, setBackdropOpen] = useState(false);
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const [openAddTeacher, setOpenAddTeacher] = useState(false);
+
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -55,6 +60,7 @@ function Main({ history }) {
         Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
             .then((res) => {
                 setCardDatas(res.data);
+                dispatch(getClassLists(res.data));
             })
             .catch((err) => {
                 console.error(err);
