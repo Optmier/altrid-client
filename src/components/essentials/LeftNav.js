@@ -12,21 +12,60 @@ import Error from '../../pages/Error';
 import styled from 'styled-components';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import Popover from '@material-ui/core/Popover';
+import { LeftPopOverNavigator, LeftPopOverCheck } from './LeftNavLogo';
 
 window.liveCountsInterval = {};
 const StylePopOver = styled.div`
-    padding: 1rem 0;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #8b8989;
+    display: flex;
+    flex-direction: column;
+    & .header {
+        font-size: 0.76rem;
+        font-weight: 600;
+        color: #8b8989;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 0.6rem 2rem;
+    }
 
+    & .left-a-active {
+        & .row {
+            & .check {
+                display: block;
+                margin-left: 1.3rem;
+            }
+        }
+    }
     & .row {
-        padding: 0.8rem 2rem;
+        padding: 0.7rem 1.6rem;
         display: flex;
         align-items: center;
 
-        & svg {
-            margin-right: 12px;
+        & .check {
+            display: none;
+        }
+        & > svg {
+            margin-right: 28px;
+        }
+
+        & .contents {
+            display: flex;
+            flex-direction: column;
+
+            & .name {
+                font-size: 1rem;
+                font-weight: 600;
+                color: black;
+            }
+            & .desc {
+                font-size: 0.85rem;
+                font-weight: 400;
+                color: #8b8989;
+
+                max-width: 150px;
+                min-width: 100px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
         }
     }
     & .row:hover {
@@ -63,6 +102,9 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
     const sessions = useSelector((state) => state.RdxSessions);
     const serverdate = useSelector((state) => state.RdxServerDate);
+    const classLists = useSelector((state) => state.classLists);
+    window.classLists = classLists;
+
     const setStudentsNumber = useCallback((studentsNumber) => dispatch(setStudentsNum(studentsNumber)));
     const setVideoLectures = useCallback((videoLecture) => dispatch(setCurrentVideoLectures(videoLecture)));
     const updateVideoLiveCounts = useCallback((roomId, liveCounts) => dispatch(updateLiveCounts(roomId, liveCounts)));
@@ -209,34 +251,21 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                 }}
             >
                 <StylePopOver>
-                    <div className="row">
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 1.2 10.8)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 1.2 5.99995)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 1.2 1.19991)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 6.00005 10.8)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 6.00005 5.99995)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 6.00005 1.19991)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 10.8001 10.8)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 10.8001 5.99995)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 10.8001 1.19991)" fill="#8B8989" />
-                        </svg>
-                        class 01
-                    </div>
-                    <div className="row">
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 1.2 10.8)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 1.2 5.99995)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 1.2 1.19991)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 6.00005 10.8)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 6.00005 5.99995)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 6.00005 1.19991)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 10.8001 10.8)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 10.8001 5.99995)" fill="#8B8989" />
-                            <ellipse rx="1.2" ry="1.2" transform="matrix(1 0 0 -1 10.8001 1.19991)" fill="#8B8989" />
-                        </svg>
-                        class 02
-                    </div>
+                    <div className="header">클래스 바로가기</div>
+                    {classLists.map((i) => (
+                        <LeftNavItem key={i.idx} linkTo={`/class/${i.idx}/share`}>
+                            <div className="row">
+                                <LeftPopOverNavigator />
+                                <div className="contents">
+                                    <div className="name"> {i.name}</div>
+                                    <div className="desc"> {i.description}</div>
+                                </div>
+                                <div className="check">
+                                    <LeftPopOverCheck />
+                                </div>
+                            </div>
+                        </LeftNavItem>
+                    ))}
                 </StylePopOver>
             </Popover>
 
@@ -289,7 +318,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                             </>
                         </div>
 
-                        {sessions.userType === 'students' ? null : ( // ) : null //     </div> //         </LeftNavItem> //             </svg> //                 /> //                     d="M15,12V20H5V12H15M16,10H4A1,1 0 0,0 3,11V21A1,1 0 0,0 4,22H16A1,1 0 0,0 17,21V17.5L21,21.5V10.5L17,14.5V11A1,1 0 0,0 16,10M3,3.86L4.4,5.24C7.5,2.19 12.5,2.19 15.6,5.24L17,3.86C13.14,0.05 6.87,0.05 3,3.86M5.8,6.63L7.2,8C8.75,6.5 11.25,6.5 12.8,8L14.2,6.63C11.88,4.34 8.12,4.34 5.8,6.63Z" //                     fill="white" //                 <path //             <svg width="18" height="18" viewBox="0 0 24 24"> //             <div className="draft-ment">화상 강의 진행중</div> //         <LeftNavItem linkTo={`/class/${num}/vid-lecture`}> //     <div className="a-wrapper"> // hasVideoLecture ? (
+                        {sessions.userType === 'students' ? null : (
                             <div className="a-wrapper">
                                 <LeftNavItem linkTo={`/main-draft`}>
                                     <div className="draft-button">
