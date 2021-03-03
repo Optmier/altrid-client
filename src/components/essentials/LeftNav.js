@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import Popover from '@material-ui/core/Popover';
 import { LeftPopOverNavigator, LeftPopOverCheck } from './LeftNavLogo';
+import { getClassLists } from '../../redux_modules/classLists';
 
 window.liveCountsInterval = {};
 const StylePopOver = styled.div`
@@ -123,11 +124,19 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const fetchClassLists = () => {
+        Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
+            .then((res) => {
+                dispatch(getClassLists(res.data));
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName || !serverdate.datetime) return;
 
-        // if (sessions.userType === 'teachers') {
         Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
             .then((res) => {
                 setStudentData(res.data);
@@ -136,7 +145,6 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
             .catch((err) => {
                 console.error(err);
             });
-        // }
 
         Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
             .then((res) => {
@@ -145,6 +153,8 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
             .catch((err) => {
                 console.error(err);
             });
+
+        fetchClassLists();
 
         if (id === 'vid-lecture') {
             Axios.get(`${apiUrl}/meeting-room`, {

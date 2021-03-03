@@ -41,6 +41,7 @@ function Main({ history }) {
     const [backdropOpen, setBackdropOpen] = useState(false);
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const [openAddTeacher, setOpenAddTeacher] = useState(false);
+    const [cardDatas, setCardDatas] = useState([]);
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -54,8 +55,6 @@ function Main({ history }) {
         }
         setOpenAddTeacher(open);
     };
-    const [cardDatas, setCardDatas] = useState([]);
-
     const fetchCardData = () => {
         Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
             .then((res) => {
