@@ -89,7 +89,7 @@ function StudentManage({ match, history }) {
         let arr = [];
         Object.keys(checkstate)
             .filter((i) => checkstate[i] === true)
-            .map((i) => arr.push(i));
+            .map((i) => arr.push(`'${i}'`));
 
         Axios.delete(`${apiUrl}/students-in-class/students/${num}`, {
             data: {

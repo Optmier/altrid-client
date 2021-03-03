@@ -458,6 +458,7 @@ function ReportStudent({ history, match }) {
                     _o[cat].category = cat;
                     _o[cat].count += 1;
                 });
+
             setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
         }
         if (currentStudent.user_data) {
@@ -795,97 +796,101 @@ function ReportStudent({ history, match }) {
                         ) : null}
                     </section>
 
-                    <section className="student-report-type-analysis">
-                        <div className="class-report-title graph-title">
-                            유형별 분석
-                            <div className="title-graph-right">
-                                <TypeBanner
-                                    situation={achievesForTypes.value < 100 ? 'warning' : 'success'}
-                                    value={achievesForTypes.value}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="white-box">
-                            <div className="ment-ai">
-                                <div className="ment-ai-col">
-                                    <div>
-                                        <TooltipCard title={stdName}>
-                                            <b className="ment-ai-name">{stdName} </b>
-                                        </TooltipCard>
-                                        학생의 취약 영역은
+                    {sessions.userType === 'students' && achievesForTypes.value < 100 ? null : (
+                        <section className="student-report-type-analysis">
+                            <div className="class-report-title graph-title">
+                                유형별 분석
+                                {sessions.userType === 'students' ? null : (
+                                    <div className="title-graph-right">
+                                        <TypeBanner
+                                            situation={achievesForTypes.value < 100 ? 'warning' : 'success'}
+                                            value={achievesForTypes.value}
+                                        />
                                     </div>
-                                    <div>
-                                        {achievesForTypes.value < 100 ? (
-                                            <span className="ment-ai-nounderline">-</span>
-                                        ) : (
-                                            <span className="ment-ai-underline">
-                                                {top3Weaks.length && top3Weaks[0] ? (
-                                                    <TooltipCard
-                                                        title={
-                                                            problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0]
-                                                                .name
-                                                        }
-                                                    >
-                                                        <>
-                                                            {
+                                )}
+                            </div>
+                            <div className="white-box">
+                                <div className="ment-ai">
+                                    <div className="ment-ai-col">
+                                        <div>
+                                            <TooltipCard title={stdName}>
+                                                <b className="ment-ai-name">{stdName} </b>
+                                            </TooltipCard>
+                                            학생의 취약 영역은
+                                        </div>
+                                        <div>
+                                            {achievesForTypes.value < 100 ? (
+                                                <span className="ment-ai-nounderline">-</span>
+                                            ) : (
+                                                <span className="ment-ai-underline">
+                                                    {top3Weaks.length && top3Weaks[0] ? (
+                                                        <TooltipCard
+                                                            title={
                                                                 problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0]
                                                                     .name
                                                             }
-                                                        </>
-                                                    </TooltipCard>
-                                                ) : null}
+                                                        >
+                                                            <>
+                                                                {
+                                                                    problemCategories.filter(
+                                                                        (p) => p.id === parseInt(top3Weaks[0].category),
+                                                                    )[0].name
+                                                                }
+                                                            </>
+                                                        </TooltipCard>
+                                                    ) : null}
+                                                </span>
+                                            )}{' '}
+                                            영역입니다.
+                                        </div>
+                                    </div>
+                                    <div className="ment-ai-col">
+                                        <div className="ment-ai-row">
+                                            <span className="row-title">2번째 취약 영역</span>
+                                            <span className="row-desc">
+                                                {achievesForTypes.value < 100
+                                                    ? '-'
+                                                    : top3Weaks.length && top3Weaks[1]
+                                                    ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0].name
+                                                    : 'null'}
                                             </span>
-                                        )}{' '}
-                                        영역입니다.
-                                    </div>
-                                </div>
-                                <div className="ment-ai-col">
-                                    <div className="ment-ai-row">
-                                        <span className="row-title">2번째 취약 영역</span>
-                                        <span className="row-desc">
-                                            {achievesForTypes.value < 100
-                                                ? '-'
-                                                : top3Weaks.length && top3Weaks[1]
-                                                ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0].name
-                                                : 'null'}
-                                        </span>
-                                    </div>
-                                    <div className="ment-ai-row">
-                                        <span className="row-title">3번째 취약 영역</span>
-                                        <span className="row-desc">
-                                            {achievesForTypes.value < 100
-                                                ? '-'
-                                                : top3Weaks.length && top3Weaks[2]
-                                                ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0].name
-                                                : 'null'}
-                                        </span>
+                                        </div>
+                                        <div className="ment-ai-row">
+                                            <span className="row-title">3번째 취약 영역</span>
+                                            <span className="row-desc">
+                                                {achievesForTypes.value < 100
+                                                    ? '-'
+                                                    : top3Weaks.length && top3Weaks[2]
+                                                    ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0].name
+                                                    : 'null'}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        {achievesForTypes.value < 100 ? (
-                            <StudentTypeScore
-                                enabled={achievesForTypes.allExists}
-                                current={0}
-                                total={0}
-                                typeSelectState={typeSelectState}
-                                handleTypeSelect={handleTypeSelect}
-                                achieveValue={achievesForTypes.value}
-                                stdName={stdName}
-                            />
-                        ) : (
-                            <StudentTypeScore
-                                enabled={achievesForTypes.allExists}
-                                current={currentScoresPerType}
-                                total={averageScoresPerType}
-                                typeSelectState={typeSelectState}
-                                handleTypeSelect={handleTypeSelect}
-                                achieveValue={achievesForTypes.value}
-                                stdName={stdName}
-                            />
-                        )}
-                    </section>
+                            {achievesForTypes.value < 100 ? (
+                                <StudentTypeScore
+                                    enabled={achievesForTypes.allExists}
+                                    current={0}
+                                    total={0}
+                                    typeSelectState={typeSelectState}
+                                    handleTypeSelect={handleTypeSelect}
+                                    achieveValue={achievesForTypes.value}
+                                    stdName={stdName}
+                                />
+                            ) : (
+                                <StudentTypeScore
+                                    enabled={achievesForTypes.allExists}
+                                    current={currentScoresPerType}
+                                    total={averageScoresPerType}
+                                    typeSelectState={typeSelectState}
+                                    handleTypeSelect={handleTypeSelect}
+                                    achieveValue={achievesForTypes.value}
+                                    stdName={stdName}
+                                />
+                            )}
+                        </section>
+                    )}
 
                     <Element name="analyze_page_start"></Element>
 
@@ -929,4 +934,4 @@ function ReportStudent({ history, match }) {
     );
 }
 
-export default withRouter(React.memo(ReportStudent));
+export default React.memo(withRouter(ReportStudent));

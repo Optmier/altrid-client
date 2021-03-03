@@ -68,8 +68,8 @@ const LimitFuncWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
+    width: 95%;
+    height: 95%;
     background: #f6f7f93d;
     font-size: 1.2rem;
     font-weight: 500;

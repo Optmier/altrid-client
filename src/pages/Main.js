@@ -12,7 +12,7 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import Footer from '../components/essentials/Footer';
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import AddClass from '../components/MainPage/AddClass';
 import classNames from 'classnames';
 import { $_classDefault } from '../configs/front_urls';
@@ -33,10 +33,14 @@ const useStyles = makeStyles((theme) => ({
 
 function Main({ history }) {
     const classes = useStyles();
+
     const sessions = useSelector((state) => state.RdxSessions);
+
     const [backdropOpen, setBackdropOpen] = useState(false);
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const [openAddTeacher, setOpenAddTeacher] = useState(false);
+    const [cardDatas, setCardDatas] = useState([]);
+
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -49,8 +53,6 @@ function Main({ history }) {
         }
         setOpenAddTeacher(open);
     };
-    const [cardDatas, setCardDatas] = useState([]);
-
     const fetchCardData = () => {
         Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
             .then((res) => {
@@ -190,12 +192,16 @@ function Main({ history }) {
                                         자세히 알아보기 <IoIosArrowForward style={{ marginRight: '5px' }} />
                                     </a>
                                 </div>
-                                <div className="bottom-right" onClick={() => alert('준비중입니다 !')}>
+
+                                {
+                                    // 데모클래스 생성되면 추가할 것 !! (20.03.03)
+                                    /* <div className="bottom-right" onClick={() => alert('준비중입니다 !')}>
                                     <h4>
                                         데모 클래스 <IoIosArrowForward style={{ marginLeft: '10px' }} />
                                     </h4>
                                     <h5>클래스에서 데모버전의 과제를 확인해보세요.</h5>
-                                </div>
+                                </div> */
+                                }
                             </div>
                         </ClassWrapper>
                     </section>

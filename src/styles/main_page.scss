@@ -55,7 +55,8 @@
         width: 100%;
         padding: 80px 0;
         display: grid;
-        grid-template-columns: 2fr 1fr;
+        //grid-template-columns: 2fr 1fr;
+        grid-template-columns: 1fr;
 
         & .bottom-left {
             padding: 2rem 1rem;

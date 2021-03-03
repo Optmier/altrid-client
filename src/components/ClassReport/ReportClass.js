@@ -25,6 +25,7 @@ import { getServerDate } from '../../redux_modules/serverdate';
 import BackdropComponent from '../essentials/BackdropComponent';
 import Error from '../../pages/Error';
 import { changePramas } from '../../redux_modules/params';
+import { withRouter } from 'react-router-dom';
 
 const pad = (n, width) => {
     n = n + '';
@@ -68,8 +69,8 @@ const LimitFuncWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 97%;
-    height: 97%;
+    width: 95%;
+    height: 95%;
     background: #f6f7f93d;
     font-size: 1.2rem;
     font-weight: 500;
@@ -644,12 +645,14 @@ function ReportClass({ match, history }) {
                             </div>
                         </div>
                         <div className="graph-box">
-                            {selectState === '0' ? (
-                                <ColumnChartProblem datas={avgScoresOfNumber} />
-                            ) : achievesForTypes.value >= 100 ? (
-                                <ColumnChartType
-                                    datas={achievesForTypes.allExists.map((e) => ({ ...e, score: averageScoresOfType[e.category] }))}
-                                />
+                            {achievesForTypes.value >= 100 ? (
+                                selectState === '0' ? (
+                                    <ColumnChartProblem datas={avgScoresOfNumber} />
+                                ) : (
+                                    <ColumnChartType
+                                        datas={achievesForTypes.allExists.map((e) => ({ ...e, score: averageScoresOfType[e.category] }))}
+                                    />
+                                )
                             ) : (
                                 <>
                                     <LimitFuncWrapper>
@@ -703,4 +706,4 @@ function ReportClass({ match, history }) {
     );
 }
 
-export default React.memo(ReportClass);
+export default React.memo(withRouter(ReportClass));
