@@ -68,8 +68,8 @@ const LimitFuncWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 97%;
-    height: 97%;
+    width: 95%;
+    height: 95%;
     background: #f6f7f93d;
     font-size: 1.2rem;
     font-weight: 500;
@@ -397,6 +397,7 @@ function ReportClass({ match, history }) {
 
         if (mainReportData.contents_data) {
             const contentsData = mainReportData.contents_data;
+            console.log(contentsData);
             setProblemNumbers(contentsData.flatMap((m) => m.problemDatas).length);
             const _o = {};
             contentsData
@@ -644,12 +645,14 @@ function ReportClass({ match, history }) {
                             </div>
                         </div>
                         <div className="graph-box">
-                            {selectState === '0' ? (
-                                <ColumnChartProblem datas={avgScoresOfNumber} />
-                            ) : achievesForTypes.value >= 100 ? (
-                                <ColumnChartType
-                                    datas={achievesForTypes.allExists.map((e) => ({ ...e, score: averageScoresOfType[e.category] }))}
-                                />
+                            {achievesForTypes.value >= 100 ? (
+                                selectState === '0' ? (
+                                    <ColumnChartProblem datas={avgScoresOfNumber} />
+                                ) : (
+                                    <ColumnChartType
+                                        datas={achievesForTypes.allExists.map((e) => ({ ...e, score: averageScoresOfType[e.category] }))}
+                                    />
+                                )
                             ) : (
                                 <>
                                     <LimitFuncWrapper>

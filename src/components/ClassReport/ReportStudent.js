@@ -446,6 +446,7 @@ function ReportStudent({ history, match }) {
         dispatch(changePramas(3, activedNum));
 
         if (currentStudent.contents_data) {
+            console.log(currentStudent.contents_data);
             setTotalProblems(currentStudent.contents_data.flatMap((m) => m.problemDatas).length);
             const _o = {};
             currentStudent.contents_data
@@ -458,6 +459,7 @@ function ReportStudent({ history, match }) {
                     _o[cat].category = cat;
                     _o[cat].count += 1;
                 });
+
             setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
         }
         if (currentStudent.user_data) {
@@ -805,7 +807,6 @@ function ReportStudent({ history, match }) {
                                 />
                             </div>
                         </div>
-
                         <div className="white-box">
                             <div className="ment-ai">
                                 <div className="ment-ai-col">
@@ -864,6 +865,8 @@ function ReportStudent({ history, match }) {
                                 </div>
                             </div>
                         </div>
+                        {console.log(achievesForTypes)}
+
                         {achievesForTypes.value < 100 ? (
                             <StudentTypeScore
                                 enabled={achievesForTypes.allExists}
