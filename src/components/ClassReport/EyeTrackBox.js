@@ -160,34 +160,49 @@ function EyeTrackBox({
                         <span className="ment-ai-underline">{aftChangedFaileds}문제</span>가 오답 처리되었습니다.
                     </div>
                 </div>
-                <div className="ment-ai-col">
-                    <div className="ment-ai-row">
-                        <span className="row-title">총 응시점 개수</span>
-                        <TooltipCard title={`${fixations}개 (평균 ${fixationsTotalAvg}개)`}>
-                            <span className="row-desc">
-                                {fixations}개 (평균 {fixationsTotalAvg}개)
-                            </span>
-                        </TooltipCard>
-                    </div>
-                    <div className="ment-ai-row">
-                        <span className="row-title">평균 응시 속도</span>
 
-                        <TooltipCard title={`${avgFixVels}px/s (평균 ${avgFixDurTotalAvg}px/s)`}>
-                            <span className="row-desc">
-                                {avgFixVels}px/s (평균 {avgFixDurTotalAvg}px/s)
-                            </span>
-                        </TooltipCard>
-                    </div>
-                    <div className="ment-ai-row">
-                        <span className="row-title">재응시 횟수</span>
+                {hasEyetrack && mEyetrackData ? (
+                    <div className="ment-ai-col">
+                        <div className="ment-ai-row">
+                            <span className="row-title">총 응시점 개수</span>
+                            <TooltipCard title={`${fixations}개 (평균 ${fixationsTotalAvg}개)`}>
+                                <span className="row-desc">
+                                    {fixations}개 (평균 {fixationsTotalAvg}개)
+                                </span>
+                            </TooltipCard>
+                        </div>
+                        <div className="ment-ai-row">
+                            <span className="row-title">평균 응시 속도</span>
 
-                        <TooltipCard title={`${regressions}회 (평균 ${regressionsTotalAvg}회)`}>
-                            <span className="row-desc">
-                                {regressions}회 (평균 {regressionsTotalAvg}회)
-                            </span>
-                        </TooltipCard>
+                            <TooltipCard title={`${avgFixVels}px/s (평균 ${avgFixDurTotalAvg}px/s)`}>
+                                <span className="row-desc">
+                                    {avgFixVels}px/s (평균 {avgFixDurTotalAvg}px/s)
+                                </span>
+                            </TooltipCard>
+                        </div>
+                        <div className="ment-ai-row">
+                            <span className="row-title">재응시 횟수</span>
+
+                            <TooltipCard title={`${regressions}회 (평균 ${regressionsTotalAvg}회)`}>
+                                <span className="row-desc">
+                                    {regressions}회 (평균 {regressionsTotalAvg}회)
+                                </span>
+                            </TooltipCard>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="ment-ai-col" id="no-eyetrack">
+                        <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                            <path
+                                id="패스_35"
+                                data-name="패스 35"
+                                d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
+                                fill="#605f60"
+                            />
+                        </svg>
+                        시선 추적 미포함
+                    </div>
+                )}
             </div>
 
             <div className="eyetrack-box">
