@@ -25,6 +25,7 @@ import { getServerDate } from '../../redux_modules/serverdate';
 import BackdropComponent from '../essentials/BackdropComponent';
 import Error from '../../pages/Error';
 import { changePramas } from '../../redux_modules/params';
+import { withRouter } from 'react-router-dom';
 
 const pad = (n, width) => {
     n = n + '';
@@ -397,7 +398,6 @@ function ReportClass({ match, history }) {
 
         if (mainReportData.contents_data) {
             const contentsData = mainReportData.contents_data;
-            console.log(contentsData);
             setProblemNumbers(contentsData.flatMap((m) => m.problemDatas).length);
             const _o = {};
             contentsData
@@ -706,4 +706,4 @@ function ReportClass({ match, history }) {
     );
 }
 
-export default React.memo(ReportClass);
+export default React.memo(withRouter(ReportClass));

@@ -446,7 +446,6 @@ function ReportStudent({ history, match }) {
         dispatch(changePramas(3, activedNum));
 
         if (currentStudent.contents_data) {
-            console.log(currentStudent);
             setTotalProblems(currentStudent.contents_data.flatMap((m) => m.problemDatas).length);
             const _o = {};
             currentStudent.contents_data
@@ -935,4 +934,4 @@ function ReportStudent({ history, match }) {
     );
 }
 
-export default withRouter(React.memo(ReportStudent));
+export default React.memo(withRouter(ReportStudent));
