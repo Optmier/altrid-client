@@ -22,7 +22,6 @@ import ClassWrapper from '../components/essentials/ClassWrapper';
 import { IoIosArrowForward } from 'react-icons/io';
 import isMobile from '../controllers/isMobile';
 import { makeStyles } from '@material-ui/core/styles';
-import { getClassLists } from '../redux_modules/classLists';
 
 const useStyles = makeStyles((theme) => ({
     drawerPaper: {
@@ -34,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
 
 function Main({ history }) {
     const classes = useStyles();
-    const dispatch = useDispatch();
 
     const sessions = useSelector((state) => state.RdxSessions);
 
@@ -59,7 +57,6 @@ function Main({ history }) {
         Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
             .then((res) => {
                 setCardDatas(res.data);
-                dispatch(getClassLists(res.data));
             })
             .catch((err) => {
                 console.error(err);
@@ -195,12 +192,16 @@ function Main({ history }) {
                                         자세히 알아보기 <IoIosArrowForward style={{ marginRight: '5px' }} />
                                     </a>
                                 </div>
-                                <div className="bottom-right" onClick={() => alert('준비중입니다 !')}>
+
+                                {
+                                    // 데모클래스 생성되면 추가할 것 !! (20.03.03)
+                                    /* <div className="bottom-right" onClick={() => alert('준비중입니다 !')}>
                                     <h4>
                                         데모 클래스 <IoIosArrowForward style={{ marginLeft: '10px' }} />
                                     </h4>
                                     <h5>클래스에서 데모버전의 과제를 확인해보세요.</h5>
-                                </div>
+                                </div> */
+                                }
                             </div>
                         </ClassWrapper>
                     </section>

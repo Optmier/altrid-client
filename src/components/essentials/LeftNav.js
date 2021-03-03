@@ -104,7 +104,6 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     const sessions = useSelector((state) => state.RdxSessions);
     const serverdate = useSelector((state) => state.RdxServerDate);
     const classLists = useSelector((state) => state.classLists);
-    window.classLists = classLists;
 
     const setStudentsNumber = useCallback((studentsNumber) => dispatch(setStudentsNum(studentsNumber)));
     const setVideoLectures = useCallback((videoLecture) => dispatch(setCurrentVideoLectures(videoLecture)));
