@@ -7,27 +7,32 @@ import AccountPopOver from './AccountPopOver';
 import { useSelector } from 'react-redux';
 import Avatar from '../../images/avatar.png';
 
+const useScroll = () => {
+    // state를 생성합니다.
+    const [state, setState] = useState({
+        x: 0,
+        y: 0,
+    });
+
+    // scrll의 값을 가져와 state를 갱신합니다.
+    const onScroll = () => {
+        setState({ y: window.scrollY, x: window.scrollX });
+    };
+    useEffect(() => {
+        // scroll 이벤트를 만들어줍니다. 스크롤을 움직일때 마다
+        // onScroll 함수가 실행됩니다.
+        window.addEventListener('scroll', onScroll);
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
+    return state;
+};
+
 function HeaderBar({ match }) {
     const sessions = useSelector((state) => state.RdxSessions);
-    const [isScrolled, setScrolled] = useState(false);
     const [popoverName, setPopoverName] = useState('');
     const testRef = useRef();
 
-    useEffect(() => {
-        if (window.scrollY > 16) {
-            setScrolled(true);
-        } else {
-            setScrolled(false);
-        }
-    }, [window.scrollY]);
-
-    window.onscroll = () => {
-        if (window.scrollY > 16) {
-            setScrolled(true);
-        } else {
-            setScrolled(false);
-        }
-    };
+    const { y } = useScroll();
 
     useEffect(() => {
         setPopoverName(sessions.userName);
@@ -39,7 +44,7 @@ function HeaderBar({ match }) {
             <header
                 className={classNames(
                     'header-bar',
-                    isScrolled ? 'scrolled' : '',
+                    y > 16 ? 'scrolled' : '',
                     sessions.userType === 'teachers' ? (match.path === '/' ? sessions.userType : 'teachers-draft') : sessions.userType,
                 )}
             >

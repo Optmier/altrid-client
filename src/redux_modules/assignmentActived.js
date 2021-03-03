@@ -117,7 +117,7 @@ export const postActived = (cardData, num, due_date, history) => async (dispatch
         ); // API 호출
 
         dispatch({ type: POST_ACTIVED_SUCCESS }); // 성공
-        history.replace($_root + `class/${class_number}/share`);
+        //history.replace($_root + `class/${class_number}/share`);
     } catch (e) {
         dispatch({ type: ACTIVEDES_ERROR, error: e }); //실패
     }
