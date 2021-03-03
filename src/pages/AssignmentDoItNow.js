@@ -220,9 +220,8 @@ function AssignmentDoItNow({ history, match }) {
                         console.error(e);
                     });
             }
+            window.opener.document.location.reload();
             window.close();
-            console.log('close');
-            window.location.reload();
         });
     };
 
