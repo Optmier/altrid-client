@@ -15,6 +15,7 @@ import { apiUrl } from './configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveSession, deleteSession, updateSession } from './redux_modules/sessions';
 import { getServerDate } from './redux_modules/serverdate';
+import { getPlanInfo } from './redux_modules/planInfo';
 import { $_loginAdmin, $_loginDefault, $_loginStudent, $_loginTeacher, $_root } from './configs/front_urls';
 import AdminMain from './pages/AdminMain';
 import AssignmentDoItNow from './pages/AssignmentDoItNow';
@@ -154,6 +155,7 @@ function App({ history }) {
         if (!sessions || !sessions.exp || !sessions.academyName) {
             return;
         }
+
         dispatch(getServerDate());
         !window.tokenRefresher &&
             (window.tokenRefresher = setInterval(() => {

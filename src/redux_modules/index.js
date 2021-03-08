@@ -9,6 +9,7 @@ import RdxCurrentClass from './currentClass';
 import classes from './classes';
 import params from './params';
 import classLists from './classLists';
+import planInfo from './planInfo';
 
 const rootReducer = combineReducers({
     RdxSessions,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
     classes,
     params,
     classLists,
+    planInfo,
 });
 
 export default rootReducer;
