@@ -146,7 +146,6 @@ function Profile({ history }) {
                 .then((res) => {
                     const { email, auth_with } = res.data;
 
-                    setEmail(email);
                     setEmailWith(auth_with);
                     setName(sessions.userName);
                     setAcademyName(sessions.academyName);
@@ -159,7 +158,7 @@ function Profile({ history }) {
         }
 
         return () => {};
-    }, [sessions.academyName]);
+    }, [sessions]);
 
     return (
         <>
