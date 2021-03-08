@@ -69,6 +69,8 @@ function Profile({ history }) {
             const randomStr = new ShortUniqueId();
             const randomFileName = 'profile_' + randomStr.randomUUID(16);
             const profImageForm = new FormData();
+            console.log(randomFileName, imgBlob, randomFileName);
+
             profImageForm.append(randomFileName, imgBlob, randomFileName);
 
             Axios.post(`${apiUrl}/files/profile-images`, profImageForm, { withCredentials: true })
@@ -91,7 +93,7 @@ function Profile({ history }) {
     const handleChangeFile = (e) => {
         if (!e.target.files[0]) return;
         if (e.target.files[0].size > 3 * 1024 * 1024) {
-            alert('파일당 최대 크기는 3MB입니다.');
+            alert('이미지 최대 크기는 3MB입니다.');
             return;
         }
 
@@ -131,8 +133,6 @@ function Profile({ history }) {
         textCopy.current.setSelectionRange(0, 9999);
 
         document.execCommand('copy');
-
-        console.log(clipboardState);
 
         setClipboardState(true);
         setTimeout(function () {
