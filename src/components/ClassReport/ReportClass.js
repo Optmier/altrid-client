@@ -25,6 +25,7 @@ import { getServerDate } from '../../redux_modules/serverdate';
 import BackdropComponent from '../essentials/BackdropComponent';
 import Error from '../../pages/Error';
 import { changePramas } from '../../redux_modules/params';
+import { withRouter } from 'react-router-dom';
 
 const pad = (n, width) => {
     n = n + '';
@@ -37,39 +38,13 @@ const timeValueToTimer = (seconds) => {
     else return `${pad(parseInt(secs / 60), 2)}분 ${pad(Math.floor(secs % 60), 2)}초`;
 };
 
-const StudentCardHeader = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 22px;
-
-    & .left {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        & .title {
-            color: #2e2c2c;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-        & select {
-            cursor: pointer;
-            padding: 0 0.7rem;
-            margin-left: 0.7rem;
-            border: none;
-            outline: none;
-            background-color: transparent;
-            text-align-last: right;
-        }
-    }
-`;
 const LimitFuncWrapper = styled.div`
     position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 97%;
-    height: 97%;
+    width: 95%;
+    height: 95%;
     background: #f6f7f93d;
     font-size: 1.2rem;
     font-weight: 500;
@@ -94,8 +69,14 @@ function ReportClass({ match, history }) {
     const RdxDueDate = useSelector((state) => state.assignmentActived.dueData.data);
     const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
 
+    /**전체 로딩 */
+    const [mainLoading, setMainLoading] = useState({
+        mainReportDataLoading: false,
+        reduxDataLoading: loading,
+        studentsDataLoading: false,
+    });
+    const [mainReportError, setMainReportError] = useState(null);
     /** class-dialog 메소드 */
-    // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
     const [dateDialogopen, setDateDialogopen] = useState(false);
     const [deleteDialogopen, setDeleteDialogopen] = useState(false);
     const [testDialogopen, setTestDialogopen] = useState(false);
@@ -123,10 +104,16 @@ function ReportClass({ match, history }) {
     const [avgScoresOfNumber, setAvgScoresOfNumber] = useState([]);
     /** 전체 학생 영역별 평균 점수 데이터 */
     const [averageScoresOfType, setAverageScoresOfType] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
+    window.averageScoresOfType = averageScoresOfType;
     /** 학생 별 이전 로우 데이터 */
     const [prevStudentsDataRaw, setPrevStudentsDataRaw] = useState([]);
-    /**전체 로딩 */
-    const [mainLoading, setMainLoading] = useState(true);
+    /** toggle state */
+    const [toggleState, setToggleState] = useState({
+        checked: false,
+    });
+    const [subTypeState, setSubTypeState] = useState('init');
+    /** select state */
+    const [selectState, setSelectState] = useState('0');
 
     const handleDialogOpen = (type) => {
         type === 'test' ? setTestDialogopen(true) : setDateDialogopen(true);
@@ -134,7 +121,6 @@ function ReportClass({ match, history }) {
     const handleDeleteDialogOpen = () => {
         setDeleteDialogopen(true);
     };
-
     const handleTestDialogClose = (e) => {
         const { name } = e.target;
 
@@ -194,32 +180,18 @@ function ReportClass({ match, history }) {
             setDeleteDialogopen(false);
         }
     };
-
-    /** toggle state */
-    const [toggleState, setToggleState] = useState({
-        checked: false,
-    });
-    const [subTypeState, setSubTypeState] = useState('init');
-
     const handleToggleChange = () => {
         //setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
 
         toggleState['checked'] ? setSubTypeState('init') : setSubTypeState('modify');
         handleDialogOpen('test');
     };
-
-    /** modify state */
     const handleDateChange = () => {
         handleDialogOpen('date');
     };
-
-    /** select state */
-    const [selectState, setSelectState] = useState('0');
-
     const handleSelect = (e) => {
         setSelectState(e.target.value);
     };
-
     /** 학생 카드 정렬 */
     const handleSortStudentsCard = ({ target }) => {
         const { name, value } = target;
@@ -290,13 +262,50 @@ function ReportClass({ match, history }) {
         }
     };
 
-    useEffect(() => {
-        // 메인 정보 불러오기
-        Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, { withCredentials: true })
-            .then((mainRes) => {
-                let unparsedContentsData = mainRes.data.contents_data;
+    /** 비동기 처리 */
+    // 메인 정보 불러오기
+    const fecthMainData = async () => {
+        try {
+            setMainReportError(null);
+            setMainReportData(undefined);
+            setMainLoading({
+                ...mainLoading,
+                mainReportDataLoading: true,
+            });
+            ///// 1. 메인 리포트 데이터
+            const mainRes = await Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, {
+                withCredentials: true,
+            });
+            let unparsedContentsData = mainRes.data.contents_data;
+
+            try {
+                unparsedContentsData
+                    .replace(/\\n/g, '\\n')
+                    .replace(/\\'/g, "\\'")
+                    .replace(/\\"/g, '\\"')
+                    .replace(/\\&/g, '\\&')
+                    .replace(/\\r/g, '\\r')
+                    .replace(/\\t/g, '\\t')
+                    .replace(/\\b/g, '\\b')
+                    .replace(/\\f/g, '\\f')
+                    .replace(/[\u0000-\u0019]+/g, '');
+            } catch (e) {
+                unparsedContentsData = null;
+            }
+            setMainReportData({ ...mainRes.data, contents_data: JSON.parse(unparsedContentsData) });
+
+            ///// 2. 학생별 정보 데이터
+            const studentsRes = await Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
+                params: {
+                    classNumber: num,
+                },
+                withCredentials: true,
+            });
+
+            const convertedData = studentsRes.data['curr'].map((data) => {
+                let unparsedUserData = data.user_data;
                 try {
-                    unparsedContentsData
+                    unparsedUserData
                         .replace(/\\n/g, '\\n')
                         .replace(/\\'/g, "\\'")
                         .replace(/\\"/g, '\\"')
@@ -307,85 +316,108 @@ function ReportClass({ match, history }) {
                         .replace(/\\f/g, '\\f')
                         .replace(/[\u0000-\u0019]+/g, '');
                 } catch (e) {
-                    unparsedContentsData = null;
+                    unparsedUserData = null;
                 }
-                setMainReportData({ ...mainRes.data, contents_data: JSON.parse(unparsedContentsData) });
 
-                // 학생별 정보 불러오기
-                Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
-                    params: {
-                        classNumber: num,
-                    },
-                    withCredentials: true,
-                })
-                    .then((res) => {
-                        setPrevStudentsDataRaw(res.data['prev']);
-                        const convertedData = res.data['curr'].map((data) => {
-                            let unparsedUserData = data.user_data;
-                            try {
-                                unparsedUserData
-                                    .replace(/\\n/g, '\\n')
-                                    .replace(/\\'/g, "\\'")
-                                    .replace(/\\"/g, '\\"')
-                                    .replace(/\\&/g, '\\&')
-                                    .replace(/\\r/g, '\\r')
-                                    .replace(/\\t/g, '\\t')
-                                    .replace(/\\b/g, '\\b')
-                                    .replace(/\\f/g, '\\f')
-                                    .replace(/[\u0000-\u0019]+/g, '');
-                            } catch (e) {
-                                unparsedUserData = null;
-                            }
-                            // let unparsedEyetrackData = data.eyetrack_data;
-                            // try {
-                            //     unparsedEyetrackData
-                            //         .replace(/\\n/g, '\\n')
-                            //         .replace(/\\'/g, "\\'")
-                            //         .replace(/\\"/g, '\\"')
-                            //         .replace(/\\&/g, '\\&')
-                            //         .replace(/\\r/g, '\\r')
-                            //         .replace(/\\t/g, '\\t')
-                            //         .replace(/\\b/g, '\\b')
-                            //         .replace(/\\f/g, '\\f')
-                            //         .replace(/[\u0000-\u0019]+/g, '');
-                            // } catch (e) {
-                            //     unparsedEyetrackData = null;
-                            // }
-
-                            // console.log(data);
-
-                            const _categoryScore = {};
-                            if (data.user_data) {
-                                const userSelections = JSON.parse(unparsedUserData).selections;
-                                userSelections.forEach((e) => {
-                                    !_categoryScore[e.category] && (_categoryScore[e.category] = {});
-                                    !_categoryScore[e.category].sum && (_categoryScore[e.category].sum = 0);
-                                    _categoryScore[e.category].sum += e.correct ? 1 : 0;
-                                    !_categoryScore[e.category].count && (_categoryScore[e.category].count = 0);
-                                    _categoryScore[e.category].count += 1;
-                                });
-                            }
-
-                            return {
-                                ...data,
-                                user_data: JSON.parse(unparsedUserData),
-                                eyetrack_data: null, // JSON.parse(unparsedEyetrackData),
-                                category_score: _categoryScore,
-                            };
-                        });
-                        setStudentsData(convertedData);
-                    })
-                    .catch((err) => {
-                        console.error(err);
+                const _categoryScore = {};
+                if (data.user_data) {
+                    const userSelections = JSON.parse(unparsedUserData).selections;
+                    userSelections.forEach((e) => {
+                        !_categoryScore[e.category] && (_categoryScore[e.category] = {});
+                        !_categoryScore[e.category].sum && (_categoryScore[e.category].sum = 0);
+                        _categoryScore[e.category].sum += e.correct ? 1 : 0;
+                        !_categoryScore[e.category].count && (_categoryScore[e.category].count = 0);
+                        _categoryScore[e.category].count += 1;
                     });
-            })
-            .catch((err) => {
-                console.error(err);
+                }
+
+                return {
+                    ...data,
+                    user_data: JSON.parse(unparsedUserData),
+                    eyetrack_data: null, // JSON.parse(unparsedEyetrackData),
+                    category_score: _categoryScore,
+                };
             });
+            setStudentsData(convertedData);
+            setPrevStudentsDataRaw(studentsRes.data['prev']);
+        } catch (e) {
+            setMainReportError(e);
+            console.log(e);
+        }
+
+        setMainLoading({
+            ...mainLoading,
+            mainReportDataLoading: false,
+        });
+    };
+    // 학생 데이터
+    const fecthCalculateStudentData = async () => {
+        setAvgScoresOfNumber([]);
+        setAverageScoresOfType({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 });
+        setMainLoading({
+            ...mainLoading,
+            studentsDataLoading: true,
+        });
+
+        try {
+            /** 여기에 계산함수 구현하면 됩니다. */
+            const _sumOfScoresPerNumbers = {};
+            const len = studentsData
+                .filter(({ submitted, user_data }) => submitted && user_data)
+                .map(({ user_data }) => {
+                    const curSelections = user_data.selections;
+                    curSelections.forEach((s, i) => {
+                        !_sumOfScoresPerNumbers[i] && (_sumOfScoresPerNumbers[i] = 0);
+                        _sumOfScoresPerNumbers[i] += s.correct ? 1 : 0;
+                    });
+                }).length;
+
+            const averagesOfNumber = Object.keys(_sumOfScoresPerNumbers).map((n) => (_sumOfScoresPerNumbers[n] / len) * 100.0);
+            setAvgScoresOfNumber(averagesOfNumber);
+            // console.log(averagesOfNumber);
+            const totalForWeaks = studentsData.filter((d) => d.submitted);
+            if (totalForWeaks && totalForWeaks.length) {
+                // 전체 학생 영역별 정답 합산
+                const _totals = {};
+                totalForWeaks.forEach((e) => {
+                    const categoryScores = e.category_score;
+                    Object.keys(categoryScores).map((c) => {
+                        const sum = categoryScores[c].sum;
+                        const count = categoryScores[c].count;
+                        !_totals[c] && (_totals[c] = 0);
+                        _totals[c] += (sum / count) * 1.0;
+                    });
+                });
+                // 전체 학생 영역별 합산 점수에서 평균 구하기
+                const _averages = {};
+                Object.keys(_totals).map((c) => {
+                    !_averages[c] && (_averages[c] = 0);
+                    _averages[c] = (_totals[c] / totalForWeaks.length) * 1.0;
+                });
+                setAverageScoresOfType({ ...averageScoresOfType, ..._averages });
+            }
+        } catch (e) {
+            console.error(e);
+        }
+        setMainLoading({
+            ...mainLoading,
+            studentsDataLoading: false,
+        });
+    };
+
+    useEffect(() => {
+        let abortController = new AbortController();
+
+        fecthMainData();
+
+        return () => {
+            abortController.abort();
+        };
     }, []);
 
     useEffect(() => {
         if (!mainReportData) return;
+
         setTitle(mainReportData.title);
         setDescription(mainReportData.description);
         setEyetrack(mainReportData.eyetrack);
@@ -415,6 +447,7 @@ function ReportClass({ match, history }) {
 
     useEffect(() => {
         if (!data) return;
+
         setStartDate(moment(data.created).format('MM.DD HH:mm'));
         setDueDate(moment(data.due_date).format('MM.DD HH:mm'));
 
@@ -427,50 +460,20 @@ function ReportClass({ match, history }) {
     useEffect(() => {
         if (!studentsData || studentsData.length < 1) return;
 
-        /** 여기에 계산함수 구현하면 됩니다. */
-        const _sumOfScoresPerNumbers = {};
-        const len = studentsData
-            .filter(({ submitted, user_data }) => submitted && user_data)
-            .map(({ user_data }) => {
-                const curSelections = user_data.selections;
-                curSelections.forEach((s, i) => {
-                    !_sumOfScoresPerNumbers[i] && (_sumOfScoresPerNumbers[i] = 0);
-                    _sumOfScoresPerNumbers[i] += s.correct ? 1 : 0;
-                });
-            }).length;
-        const averagesOfNumber = Object.keys(_sumOfScoresPerNumbers).map((n) => (_sumOfScoresPerNumbers[n] / len) * 100.0);
-        setAvgScoresOfNumber(averagesOfNumber);
-        // console.log(averagesOfNumber);
-        const totalForWeaks = studentsData.filter((d) => d.submitted);
-        if (totalForWeaks && totalForWeaks.length) {
-            // 전체 학생 영역별 정답 합산
-            const _totals = {};
-            totalForWeaks.forEach((e) => {
-                const categoryScores = e.category_score;
-                Object.keys(categoryScores).map((c) => {
-                    const sum = categoryScores[c].sum;
-                    const count = categoryScores[c].count;
-                    !_totals[c] && (_totals[c] = 0);
-                    _totals[c] += (sum / count) * 1.0;
-                });
-            });
-            // 전체 학생 영역별 합산 점수에서 평균 구하기
-            const _averages = {};
-            Object.keys(_totals).map((c) => {
-                !_averages[c] && (_averages[c] = 0);
-                _averages[c] = (_totals[c] / totalForWeaks.length) * 1.0;
-            });
-            setAverageScoresOfType({ ...averageScoresOfType, ..._averages });
-        }
-
-        setMainLoading(false);
+        fecthCalculateStudentData();
     }, [studentsData]);
 
     //error check 1. 우리반이 아닌 다른 반 리포트에 접근할려고 할때
     if (data && data.idx === undefined) return <Error />;
-    //error check 2. 데이터 전체가 로딩 완료될때까지는 back drop
-    if ((data === null && loading) || mainLoading) {
-        // console.log(data, loading, mainLoading);
+
+    //error check 2. 데이터 전체가 로딩 완료될때까지는 back-drop
+    if (
+        data === null ||
+        avgScoresOfNumber.length === 0 ||
+        mainLoading.mainReportData ||
+        mainLoading.reduxData ||
+        mainLoading.studentsDataLoading
+    ) {
         return <BackdropComponent open={true} />;
     }
 
@@ -644,12 +647,14 @@ function ReportClass({ match, history }) {
                             </div>
                         </div>
                         <div className="graph-box">
-                            {selectState === '0' ? (
-                                <ColumnChartProblem datas={avgScoresOfNumber} />
-                            ) : achievesForTypes.value >= 100 ? (
-                                <ColumnChartType
-                                    datas={achievesForTypes.allExists.map((e) => ({ ...e, score: averageScoresOfType[e.category] }))}
-                                />
+                            {achievesForTypes.value >= 100 ? (
+                                selectState === '0' ? (
+                                    <ColumnChartProblem datas={avgScoresOfNumber} />
+                                ) : (
+                                    <ColumnChartType
+                                        datas={achievesForTypes.allExists.map((e) => ({ ...e, score: averageScoresOfType[e.category] }))}
+                                    />
+                                )
                             ) : (
                                 <>
                                     <LimitFuncWrapper>
@@ -703,4 +708,4 @@ function ReportClass({ match, history }) {
     );
 }
 
-export default React.memo(ReportClass);
+export default React.memo(withRouter(ReportClass));

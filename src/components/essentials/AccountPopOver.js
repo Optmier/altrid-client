@@ -71,12 +71,19 @@ function AccountPopOver({ targetEl, image, userName, history }) {
             const accountPopover = $(target).closest('.MuiPaper-root.MuiPopover-paper');
             if (!accountBadge.length && !accountPopover.length) handleAccountPopoverClose();
         });
+
+        return () => {
+            setAccountPopOverAnchorEl(null);
+        };
     }, []);
 
     useEffect(() => {
         if (targetEl) {
             targetEl.current.onmouseenter = handleAccountPopoverOpen;
         }
+        return () => {
+            setAccountPopOverAnchorEl(null);
+        };
     }, [targetEl]);
 
     return (

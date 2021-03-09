@@ -414,6 +414,7 @@ function SmartTOFELRender({
         if (timeLimit === -3) {
             handleEnd();
         } else if (timeLimit !== -2 && Math.floor(timer) === 0) {
+            setIsSubmitted(1);
             handleEnd();
         }
     }, [timer, forceEnd]);
