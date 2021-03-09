@@ -157,6 +157,8 @@ function App({ history }) {
         }
 
         dispatch(getServerDate());
+        dispatch(getPlanInfo());
+
         !window.tokenRefresher &&
             (window.tokenRefresher = setInterval(() => {
                 /** Token 만료 전 재발급 */

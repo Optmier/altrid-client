@@ -10,9 +10,18 @@ const GET_PLAN_INFO_ERROR = 'planInfo/GET_PLAN_INFO_ERROR';
 export const getPlanInfo = () => async (dispatch) => {
     dispatch({ type: GET_PLAN_INFO }); // 요청이 시작됨
     try {
-        const res = await Axios.get(`${apiUrl}/assignment-draft`, { withCredentials: true }); // API 호출
+        const stdNums = await Axios.get(`${apiUrl}/plan-info/students-num`, { withCredentials: true }); // API 호출
+        const teacherNums = await Axios.get(`${apiUrl}/plan-info/teachers-num`, { withCredentials: true }); // API 호출
+        const fileCounts = await Axios.get(`${apiUrl}/plan-info/assignment-drafts`, { withCredentials: true }); // API 호출
+        const eyetrackAssigments = await Axios.get(`${apiUrl}/plan-info/assignment-actived`, { withCredentials: true }); // API 호출
 
-        dispatch({ type: GET_PLAN_INFO_SUCCESS, data: res.data }); // 성공
+        dispatch({
+            type: GET_PLAN_INFO_SUCCESS,
+            studentNums: stdNums.data[0]['studentNums'],
+            teacherNums: teacherNums.data[0]['teacherNums'],
+            fileCounts: fileCounts.data[0]['fileCounts'],
+            eyetrackAssigments: eyetrackAssigments.data[0]['eyetrackAssigments'],
+        }); // 성공
     } catch (e) {
         dispatch({ type: GET_PLAN_INFO_ERROR, error: e }); // 실패
     }
@@ -44,7 +53,12 @@ export default function planInfo(state = initialState, action) {
                 ...state,
                 planInfoDatas: {
                     loading: false,
-                    data: action.data,
+                    data: {
+                        studentNums: action.studentNums,
+                        teacherNums: action.teacherNums,
+                        fileCounts: action.fileCounts,
+                        eyetrackAssigments: action.eyetrackAssigments,
+                    },
                     error: null,
                 },
             };
