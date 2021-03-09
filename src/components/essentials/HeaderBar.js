@@ -32,7 +32,6 @@ const StyleHeader = styled.header`
     color: ${(props) => (props.defaultColor ? 'black' : '#ffffff;')};
 `;
 
-function HeaderBar({ match, defaultColor }) {
 const useScroll = () => {
     // state를 생성합니다.
     const [state, setState] = useState({
@@ -53,7 +52,7 @@ const useScroll = () => {
     return state;
 };
 
-function HeaderBar({ match }) {
+function HeaderBar({ match, defaultColor }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const [popoverName, setPopoverName] = useState('');
     const testRef = useRef();
@@ -71,8 +70,14 @@ function HeaderBar({ match }) {
                 defaultColor={defaultColor}
                 className={classNames(
                     'header-bar',
-                    y > 16 ? 'scrolled' : '',
-                    sessions.userType === 'teachers' ? (match.path === '/' ? sessions.userType : 'teachers-draft') : sessions.userType,
+                    y ? 'scrolled' : '',
+                    sessions.userType === 'teachers'
+                        ? match.path === '/'
+                            ? sessions.userType
+                            : match.path === '/main-draft' || match.path === '/pricing'
+                            ? 'teachers-draft'
+                            : 'white'
+                        : sessions.userType,
                 )}
             >
                 <div className="container left">
