@@ -106,7 +106,7 @@ function HeaderBar({ match, defaultColor }) {
                         </p>
                         <img src={sessions.image ? sessions.image : Avatar} alt="avatar" />
                     </div>
-                    {sessions.userType === 'teachers' ? (
+                    {/* {sessions.userType === 'teachers' ? (
                         <Link to="/pricing">
                             <StylePriceLink defaultColor={defaultColor}>
                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -118,7 +118,7 @@ function HeaderBar({ match, defaultColor }) {
                                 이용권 구매
                             </StylePriceLink>
                         </Link>
-                    ) : null}
+                    ) : null} */}
                 </div>
             </StyleHeader>
         </>

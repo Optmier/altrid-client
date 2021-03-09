@@ -1,9 +1,78 @@
-import React from 'react';
+import Axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react';
+import { apiUrl, tossPaymentsClientKey } from '../../configs/configs';
+import moment from 'moment-timezone';
+import { loadTossPayments } from '@tosspayments/sdk';
+import { useSelector } from 'react-redux';
 
 //카드 내역 있으면 '카드 추가'
 //카드 내역 없으면 '카드 변경'
 
 function PaymentInfo() {
+    const sessions = useSelector((state) => state.RdxSessions);
+    const [paymentsInfo, setPaymentsInfo] = useState({
+        valid: false,
+        auth_date: '-',
+        card_company: '-',
+        card_number: '-',
+        email: '-',
+        pg_name: '-',
+        phone: '-',
+    });
+    const tossPayments = useRef();
+
+    const paymentsCardActionClick = () => {
+        let successUrl = null;
+        if (paymentsInfo.valid) {
+            // 카드 변경 메소드
+            successUrl = window.location.origin + '/pay-state/billingkey-modify';
+        } else {
+            // 카드 추가 메소드
+            successUrl = window.location.origin + '/pay-state/billingkey-add';
+        }
+
+        if (!sessions.authId) return alert('사용자 인증에 실패하였습니다.');
+
+        tossPayments.current.requestBillingAuth('카드', {
+            customerKey: sessions.authId,
+            successUrl: successUrl,
+            failUrl: window.location.origin + '/pay-state/fail',
+        });
+    };
+
+    useEffect(() => {
+        if (!sessions || !sessions.authId || !sessions.userType || !sessions.academyName) return;
+        if (sessions.userType === 'teachers') {
+            Axios.get(`${apiUrl}/payments/payment-info`, { withCredentials: true })
+                .then((res) => {
+                    console.log(res.data);
+                    if (res.data && res.data.length > 0) {
+                        setPaymentsInfo({
+                            ...paymentsInfo,
+                            ...res.data[0],
+                            auth_date: moment(res.data[0].auth_date).format('YYYY년 MM월 DD일'),
+                            card_number: res.data[0].card_number
+                                .replace(/\*/gi, '•')
+                                .replace(/(.{4})/g, '$1 ')
+                                .trim(),
+                            valid: true,
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+
+            loadTossPayments(tossPaymentsClientKey)
+                .then((res) => {
+                    tossPayments.current = res;
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+    }, [sessions]);
+
     return (
         <>
             <div className="payment-info-root">
@@ -25,25 +94,27 @@ function PaymentInfo() {
                                 </div>
                             </div>
                             <div className="card-info-right">
-                                <button className="btn-purple">카드 추가</button>
+                                <button className={paymentsInfo.valid ? 'btn-green' : 'btn-purple'} onClick={paymentsCardActionClick}>
+                                    {paymentsInfo.valid ? '카드 변경' : '카드 추가'}
+                                </button>
                             </div>
                         </div>
                         <div className="card-info-bottom">
                             <div className="card-col">
                                 <div className="card-col-header">등록일</div>
-                                <div className="card-col-desc">-</div>
+                                <div className="card-col-desc">{paymentsInfo.auth_date}</div>
                             </div>
                             <div className="card-col">
                                 <div className="card-col-header">카드사</div>
-                                <div className="card-col-desc">-</div>
+                                <div className="card-col-desc">{paymentsInfo.card_company}</div>
                             </div>
                             <div className="card-col">
                                 <div className="card-col-header">카드번호</div>
-                                <div className="card-col-desc">-</div>
+                                <div className="card-col-desc">{paymentsInfo.card_number}</div>
                             </div>
                             <div className="card-col">
                                 <div className="card-col-header">결제사</div>
-                                <div className="card-col-desc">-</div>
+                                <div className="card-col-desc">{paymentsInfo.pg_name}</div>
                             </div>
                         </div>
                     </div>
