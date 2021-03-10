@@ -200,7 +200,7 @@ function EyeTrackBox({
                                 fill="#605f60"
                             />
                         </svg>
-                        시선 추적 미포함
+                        시선 추적 미포함 과제
                     </div>
                 )}
             </div>

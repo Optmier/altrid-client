@@ -6,17 +6,16 @@ const GET_PLAN_INFO = 'planInfo/GET_PLAN_INFO';
 const GET_PLAN_INFO_SUCCESS = 'planInfo/GET_PLAN_INFO_SUCCESS';
 const GET_PLAN_INFO_ERROR = 'planInfo/GET_PLAN_INFO_ERROR';
 
-/* 액션 생성함수 선언 & 미들웨어 작용 */
+/* 액션 생성함수 선언 & 미들웨어 적용 */
 export const getPlanInfo = () => async (dispatch, getState) => {
+    console.log(getState());
     const { planInfo } = getState();
-    const { planInfoDatas } = planInfo;
 
-    if (!planInfoDatas.initital) {
+    if (!planInfo.initital) {
         //최초에 app.js에서 불렀다면 이후에는 부를 필요가 없음.
         dispatch({ type: GET_PLAN_INFO }); // 요청이 시작됨
 
         try {
-            console.log('axios !');
             const arr = await Promise.all([
                 Axios.get(`${apiUrl}/plan-info/students-num`, { withCredentials: true }),
                 Axios.get(`${apiUrl}/plan-info/teachers-num`, { withCredentials: true }),
@@ -40,12 +39,25 @@ export const getPlanInfo = () => async (dispatch, getState) => {
 
 /* 초기 상태 선언 */
 const initialState = {
-    planInfoDatas: {
-        initital: false,
-        loading: false,
-        data: null,
-        error: null,
+    initital: false,
+    loading: false,
+    data: null,
+    restricted: {
+        studentInvited: false,
+        teacherInvited: false,
+        classCreation: false,
+        timeLimit: false,
+        editorCreation: false,
+        fileCreation: false,
+        eyetrack: false,
+        classReport: false,
+        studentReport: false,
+        analysisType: false,
+        analysisTime: false,
+        analysisPattern: false,
+        videoLecture: false,
     },
+    error: null,
 };
 
 /* reducer 함수 */
@@ -54,37 +66,52 @@ export default function planInfo(state = initialState, action) {
         case GET_PLAN_INFO:
             return {
                 ...state,
-                planInfoDatas: {
-                    initital: false,
-                    loading: true,
-                    data: null,
-                    error: null,
-                },
+
+                initital: false,
+                loading: true,
+                data: null,
+                restricted: null,
+                error: null,
             };
         case GET_PLAN_INFO_SUCCESS:
             return {
                 ...state,
-                planInfoDatas: {
-                    initital: true,
-                    loading: false,
-                    data: {
-                        studentNums: action.studentNums,
-                        teacherNums: action.teacherNums,
-                        fileCounts: action.fileCounts,
-                        eyetrackAssigments: action.eyetrackAssigments,
-                    },
-                    error: null,
+
+                initital: true,
+                loading: false,
+                data: {
+                    studentNums: action.studentNums,
+                    teacherNums: action.teacherNums,
+                    fileCounts: action.fileCounts,
+                    eyetrackAssigments: action.eyetrackAssigments,
                 },
+                restricted: {
+                    ...state,
+                    studentInvited: action.studentNums > 63 ? true : false,
+                    teacherInvited: false,
+                    classCreation: false,
+                    timeLimit: false,
+                    editorCreation: false,
+                    fileCreation: false,
+                    eyetrack: false,
+                    classReport: false,
+                    studentReport: false,
+                    analysisType: false,
+                    analysisTime: false,
+                    analysisPattern: false,
+                    videoLecture: false,
+                },
+                error: null,
             };
         case GET_PLAN_INFO_ERROR:
             return {
                 ...state,
-                planInfoDatas: {
-                    initital: false,
-                    loading: false,
-                    data: null,
-                    error: action.error,
-                },
+
+                initital: false,
+                loading: false,
+                data: null,
+                restricted: null,
+                error: action.error,
             };
 
         default:

@@ -12,6 +12,7 @@ import ClassDialog from '../essentials/ClassDialog';
 import { changeDueDate } from '../../redux_modules/assignmentActived';
 // import BackdropComponent from './BackdropComponent';
 import CloseIcon from '@material-ui/icons/Close';
+import RestrictWrapper from './RestrictWrapper';
 
 const StyleLabel = styled.label`
     ${(props) =>
@@ -512,15 +513,18 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                                     />
 
                                     <StyleLabel clicked={selectState} className="drawer-select" htmlFor="file-click">
-                                        <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M38.7 12.08C37.34 5.18 31.28 0 24 0C18.22 0 13.2 3.28 10.7 8.08C4.68 8.72 0 13.82 0 20C0 26.62 5.38 32 12 32H38C43.52 32 48 27.52 48 22C48 16.72 43.9 12.44 38.7 12.08ZM28 18V26H20V18H14L24 8L34 18H28Z"
-                                                fill="#969393"
-                                            />
-                                        </svg>
-                                        <h4>과제 파일 업로드하기</h4>
-                                        <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
+                                        <RestrictWrapper restricted={true}>
+                                            <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M38.7 12.08C37.34 5.18 31.28 0 24 0C18.22 0 13.2 3.28 10.7 8.08C4.68 8.72 0 13.82 0 20C0 26.62 5.38 32 12 32H38C43.52 32 48 27.52 48 22C48 16.72 43.9 12.44 38.7 12.08ZM28 18V26H20V18H14L24 8L34 18H28Z"
+                                                    fill="#969393"
+                                                />
+                                            </svg>
+                                            <h4>과제 파일 업로드하기</h4>
+                                            <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
+                                        </RestrictWrapper>
                                     </StyleLabel>
+
                                     <StyleLabel2 clicked={selectState} className="drawer-select" onClick={handleEditDialogOpen}>
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clipPath="url(#clip0)">
