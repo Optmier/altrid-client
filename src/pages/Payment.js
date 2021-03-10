@@ -117,6 +117,8 @@ function Confirm({ location }) {
         )
             .then((giveCouponResults) => {
                 console.log(giveCouponResults);
+                // 성공 결과창으로 이동
+                window.location.href = window.location.origin + '/pay-state/success';
             })
             .catch((giveCouponErr) => {
                 alert('쿠폰을 등록 오류가 발생하였습니다.\n관리자의 조치를 받으시기 바랍니다.');
