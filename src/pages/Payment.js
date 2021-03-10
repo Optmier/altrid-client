@@ -231,7 +231,7 @@ function Confirm({ location }) {
     };
 
     useEffect(() => {
-        console.log(couponMenus);
+        // console.log(couponMenus);
         // 베타기간 플랜 쿠폰 유효성 검사
         if (couponMenus.find((d) => d.coupon_id === `personal_${productPlan.toLowerCase()}`)) {
             // console.log('current plan ' + productPlan + ' coupon is exists');
@@ -303,10 +303,6 @@ function Confirm({ location }) {
             generateUid.current = new ShortUniqueId();
         }
     }, [sessions]);
-
-    useEffect(() => {
-        console.log(currentPlans);
-    }, [currentPlans]);
 
     return (
         <>

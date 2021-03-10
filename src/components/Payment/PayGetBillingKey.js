@@ -32,8 +32,8 @@ function PayGetBillingKey({ method, history }) {
         const getBillingKey = Axios.get(`${apiUrl}/payments/billing-key?customerKey=${customerKey}&authKey=${authKey}`, {
             withCredentials: true,
         }).catch((err) => {
-            console.error(err);
-            // alert('키를 발급하는 중 문제가 발생했습니다.');
+            console.error(err.response);
+            alert('키를 발급하는 중 문제가 발생했습니다.');
             // history.goBack();
         });
 
