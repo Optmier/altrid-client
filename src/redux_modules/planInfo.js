@@ -8,8 +8,8 @@ const GET_PLAN_INFO_ERROR = 'planInfo/GET_PLAN_INFO_ERROR';
 
 /* 액션 생성함수 선언 & 미들웨어 적용 */
 export const getPlanInfo = () => async (dispatch, getState) => {
-    console.log(getState());
-    const { planInfo } = getState();
+    const { planInfo, RdxSessions } = getState();
+    const planId = RdxSessions.academyPlanId;
 
     if (!planInfo.initital) {
         //최초에 app.js에서 불렀다면 이후에는 부를 필요가 없음.
@@ -25,6 +25,7 @@ export const getPlanInfo = () => async (dispatch, getState) => {
 
             dispatch({
                 type: GET_PLAN_INFO_SUCCESS,
+                planId: planId,
                 studentNums: arr[0].data[0]['studentNums'],
                 teacherNums: arr[1].data[0]['teacherNums'],
                 fileCounts: arr[2].data[0]['fileCounts'],
@@ -70,7 +71,7 @@ export default function planInfo(state = initialState, action) {
                 initital: false,
                 loading: true,
                 data: null,
-                restricted: null,
+                restricted: state.restricted,
                 error: null,
             };
         case GET_PLAN_INFO_SUCCESS:
@@ -86,20 +87,13 @@ export default function planInfo(state = initialState, action) {
                     eyetrackAssigments: action.eyetrackAssigments,
                 },
                 restricted: {
-                    ...state,
-                    studentInvited: action.studentNums > 63 ? true : false,
-                    teacherInvited: false,
-                    classCreation: false,
-                    timeLimit: false,
-                    editorCreation: false,
-                    fileCreation: false,
-                    eyetrack: false,
-                    classReport: false,
-                    studentReport: false,
-                    analysisType: false,
-                    analysisTime: false,
-                    analysisPattern: false,
-                    videoLecture: false,
+                    ...state.restricted,
+                    studentInvited: action.studentNums >= 63 ? true : false,
+                    teacherInvited: action.teacherNums >= (action.planId === 1 ? 1 : action.planId === 2 ? 5 : 10) ? true : false,
+                    fileCreation: action.planId === 1 ? true : action.fileCounts >= (action.planId === 2 ? 5 : 10) ? true : false,
+                    eyetrack: action.planId !== 1 ? false : action.eyetrackAssigments >= 2 ? true : false,
+                    analysisPattern: action.planId === 1 ? true : false,
+                    videoLecture: action.planId === 3 ? false : true,
                 },
                 error: null,
             };
@@ -110,7 +104,7 @@ export default function planInfo(state = initialState, action) {
                 initital: false,
                 loading: false,
                 data: null,
-                restricted: null,
+                restricted: state.restricted,
                 error: action.error,
             };
 
