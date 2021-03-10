@@ -6,7 +6,7 @@ import ClassWrapper from '../components/essentials/ClassWrapper';
 import LeftNavMyPage from '../components/essentials/LeftNavMyPage';
 import Error from './Error';
 import Profile from '../components/MyPage/Profile';
-import Plan from '../components/MyPage/Plan';
+import Plans from '../components/MyPage/Plans';
 import DeleteAccount from '../components/MyPage/DeleteAccount';
 import { useSelector } from 'react-redux';
 
@@ -28,7 +28,7 @@ const MyPageSwitcher = (menu, userType) => {
             return <Profile />;
         case 'manage-plan':
             if (userType === 'teachers') {
-                return <Plan />;
+                return <Plans />;
             } else {
                 return <Error />;
             }

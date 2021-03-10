@@ -222,7 +222,6 @@ body {
     }
 
     & .header-bar {
-        color: #ffffff;
         display: flex;
         position: fixed;
         width: 100%;
@@ -242,6 +241,9 @@ body {
             }
             &.teachers {
                 background-color: $secondaryColor;
+            }
+            &.white {
+                background-color: white;
             }
 
             &.admins {
@@ -478,14 +480,11 @@ body {
         & .header-bar {
             & .container {
                 &.left {
-                    margin: 0 auto 0 16px;
-
-                    & img {
-                        height: 40px;
-                    }
+                    display: none;
                 }
 
                 &.center {
+                    margin: 0 auto 0 16px;
                     & > a {
                         font-size: 0.95rem;
                     }

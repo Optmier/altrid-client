@@ -1,0 +1,102 @@
+.payState-root {
+    min-height: 50vh;
+    max-width: 584px;
+    min-width: 320px;
+    padding: 120px 16px 100px 16px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+
+    #color-Standard {
+        color: rgba(109, 42, 250, 1);
+    }
+    #color-Premium {
+        color: rgba(59, 22, 138, 1);
+    }
+    #color-gray {
+        color: #808081;
+        font-weight: 400;
+        margin-left: 8px;
+    }
+    #color-red {
+        color: #f94d4d;
+    }
+
+    & .header-text {
+        font-size: 1.75rem;
+        font-weight: 600;
+        line-height: 1.65;
+        margin-bottom: 80px;
+        color: #808080;
+    }
+
+    & .fail-text {
+        font-size: 1.2rem;
+        font-weight: 400;
+        margin-bottom: 40px;
+    }
+    & .fail-info {
+        display: flex;
+        flex-direction: column;
+        color: rgba(87, 85, 85, 0.62);
+        font-weight: 400;
+        font-size: 1rem;
+
+        & .info-header {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            margin-bottom: 6px;
+
+            & svg {
+                margin-right: 12px;
+            }
+        }
+    }
+
+    & section + section {
+        margin-top: 56px;
+    }
+    & section {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    & .payState-header {
+        font-size: 1.5rem;
+        font-weight: 600;
+        width: 100%;
+        border-bottom: 1px solid black;
+        padding-bottom: 10px;
+        margin-bottom: 27px;
+    }
+    & .payState-box {
+        background-color: white;
+        padding: 30px 34px;
+        border-radius: 11px;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+
+        & .row + .row {
+            margin-top: 14px;
+        }
+        & .row {
+            display: flex;
+            align-items: center;
+
+            & .row-title {
+                font-size: 1rem;
+                font-weight: 400;
+                width: 170px;
+            }
+            & .row-desc {
+                font-size: 1rem;
+                font-weight: 500;
+            }
+        }
+    }
+}

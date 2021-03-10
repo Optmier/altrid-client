@@ -35,6 +35,11 @@ import VideoLectureEyetrackDetectionList from './components/VideoLectures/VideoL
 import LoginMobileAppRedirect from './pages/LoginMobileAppRedirect';
 import MainDraft from './pages/MainDraft';
 import MyPage from './pages/MyPage';
+import Price from './pages/Price';
+import PriceDetails from './components/Price/PriceDetails';
+import Payment from './pages/Payment';
+import Plan from './components/MyPage/Plans';
+import PayState from './pages/PayState';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -103,9 +108,15 @@ function App({ history }) {
                 Axios.get(`${apiUrl}/academies/current/name`, { withCredentials: true })
                     .then((res2) => {
                         const academyName = res2.data.name;
+                        const academyApproved = res2.data.approved;
+                        const academyPlanId = res2.data.plan_id;
 
                         if (academyName) {
-                            updateSessions({ academyName: academyName });
+                            updateSessions({
+                                academyName: academyName,
+                                academyApproved: academyApproved,
+                                academyPlanId: academyPlanId,
+                            });
                         }
                         try {
                             window.Android.ShowWebView();
@@ -202,6 +213,11 @@ function App({ history }) {
                         <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
                         <Route path="/mypage/:menu" component={MyPage} />
+
+                        <Route path="/pricing" component={Price} exact />
+                        <Route path="/pricing/details" component={PriceDetails} exact />
+                        <Route path="/payment" component={Payment} exact />
+                        <Route path="/pay-state/:state" component={PayState} exact />
 
                         {navigator.userAgent.toLowerCase().includes('isnativeapp') ? (
                             <Route path="/login-mobile-app-redirect" component={LoginMobileAppRedirect} exact />

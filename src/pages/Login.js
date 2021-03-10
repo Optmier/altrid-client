@@ -42,6 +42,7 @@ const RequestButton = styled.button`
 
 function Login({ history }) {
     const [usertype, setUsertype] = useState('students');
+    const [payment, setPayment] = useState(false);
     const [createOrEntrance, setCreateOrEntrance] = useState('create');
     const [profileData, setProfileData] = useState({
         email: '',
@@ -83,7 +84,11 @@ function Login({ history }) {
             { withCredentials: true },
         )
             .then(() => {
-                history.replace(window.lastUrl);
+                if (payment === 'true') {
+                    history.replace('/pricing');
+                } else {
+                    history.replace('/');
+                }
             })
             .catch((err) => {
                 console.error(err);
@@ -307,7 +312,7 @@ function Login({ history }) {
                         code: academyCode,
                         name: academyName,
                         address: null,
-                        email: null,
+                        email: email,
                         phone: phone,
                         numOfStudents: 5,
                         numOfTeachers: 1,
@@ -428,11 +433,14 @@ function Login({ history }) {
     useEffect(() => {
         const urlSearchParams = new URLSearchParams(history.location.search);
         const queryUserType = urlSearchParams.get('user') || localStorage.getItem('loginFor');
+        const queryPaymetType = urlSearchParams.get('payment') || localStorage.getItem('loginFor');
+
         if (!['students', 'teachers'].includes(queryUserType)) {
             setUsertype(localStorage.getItem('loginFor'));
         } else {
             localStorage.setItem('loginFor', queryUserType);
             setUsertype(queryUserType);
+            setPayment(queryPaymetType);
         }
         // setLoginStep(0);
     }, [history.location]);
@@ -442,11 +450,15 @@ function Login({ history }) {
         if (!localStorage.getItem('loginFor')) localStorage.setItem('loginFor', 'students');
         const urlSearchParams = new URLSearchParams(history.location.search);
         const queryUserType = urlSearchParams.get('user') || localStorage.getItem('loginFor');
+        const queryPaymetType = urlSearchParams.get('payment')
+            ? urlSearchParams.get('payment') || localStorage.getItem('loginFor')
+            : 'false';
+
         if (!['students', 'teachers'].includes(queryUserType)) {
             history.replace($_loginDefault);
         } else {
             localStorage.setItem('loginFor', queryUserType);
-            history.replace(`${$_loginDefault}?user=${queryUserType}`);
+            history.replace(`${$_loginDefault}?user=${queryUserType}&payment=${queryPaymetType}`);
         }
         // assign ShortUniqueId function
         generateUid.current = new ShortUniqueId();

@@ -47,6 +47,8 @@ const initStates = {
     userType: null,
     academyCode: null,
     academyName: null,
+    academyApproved: null,
+    academyPlanId: null,
     issuer: null,
     iat: null,
     exp: null,
