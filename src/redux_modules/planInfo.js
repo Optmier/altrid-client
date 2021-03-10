@@ -6,30 +6,42 @@ const GET_PLAN_INFO = 'planInfo/GET_PLAN_INFO';
 const GET_PLAN_INFO_SUCCESS = 'planInfo/GET_PLAN_INFO_SUCCESS';
 const GET_PLAN_INFO_ERROR = 'planInfo/GET_PLAN_INFO_ERROR';
 
-/* 액션 생성함수 선언 */
-export const getPlanInfo = () => async (dispatch) => {
-    dispatch({ type: GET_PLAN_INFO }); // 요청이 시작됨
-    try {
-        const stdNums = await Axios.get(`${apiUrl}/plan-info/students-num`, { withCredentials: true }); // API 호출
-        const teacherNums = await Axios.get(`${apiUrl}/plan-info/teachers-num`, { withCredentials: true }); // API 호출
-        const fileCounts = await Axios.get(`${apiUrl}/plan-info/assignment-drafts`, { withCredentials: true }); // API 호출
-        const eyetrackAssigments = await Axios.get(`${apiUrl}/plan-info/assignment-actived`, { withCredentials: true }); // API 호출
+/* 액션 생성함수 선언 & 미들웨어 작용 */
+export const getPlanInfo = () => async (dispatch, getState) => {
+    const { planInfo } = getState();
+    const { planInfoDatas } = planInfo;
 
-        dispatch({
-            type: GET_PLAN_INFO_SUCCESS,
-            studentNums: stdNums.data[0]['studentNums'],
-            teacherNums: teacherNums.data[0]['teacherNums'],
-            fileCounts: fileCounts.data[0]['fileCounts'],
-            eyetrackAssigments: eyetrackAssigments.data[0]['eyetrackAssigments'],
-        }); // 성공
-    } catch (e) {
-        dispatch({ type: GET_PLAN_INFO_ERROR, error: e }); // 실패
+    if (!planInfoDatas.initital) {
+        //최초에 app.js에서 불렀다면 이후에는 부를 필요가 없음.
+        dispatch({ type: GET_PLAN_INFO }); // 요청이 시작됨
+
+        try {
+            console.log('axios !');
+            const arr = await Promise.all([
+                Axios.get(`${apiUrl}/plan-info/students-num`, { withCredentials: true }),
+                Axios.get(`${apiUrl}/plan-info/teachers-num`, { withCredentials: true }),
+                Axios.get(`${apiUrl}/plan-info/assignment-drafts`, { withCredentials: true }),
+                Axios.get(`${apiUrl}/plan-info/assignment-actived`, { withCredentials: true }),
+            ]);
+
+            dispatch({
+                type: GET_PLAN_INFO_SUCCESS,
+                studentNums: arr[0].data[0]['studentNums'],
+                teacherNums: arr[1].data[0]['teacherNums'],
+                fileCounts: arr[2].data[0]['fileCounts'],
+                eyetrackAssigments: arr[3].data[0]['eyetrackAssigments'],
+            }); // 성공
+        } catch (e) {
+            dispatch({ type: GET_PLAN_INFO_ERROR, error: e }); // 실패
+            console.error(e);
+        }
     }
 };
 
 /* 초기 상태 선언 */
 const initialState = {
     planInfoDatas: {
+        initital: false,
         loading: false,
         data: null,
         error: null,
@@ -43,6 +55,7 @@ export default function planInfo(state = initialState, action) {
             return {
                 ...state,
                 planInfoDatas: {
+                    initital: false,
                     loading: true,
                     data: null,
                     error: null,
@@ -52,6 +65,7 @@ export default function planInfo(state = initialState, action) {
             return {
                 ...state,
                 planInfoDatas: {
+                    initital: true,
                     loading: false,
                     data: {
                         studentNums: action.studentNums,
@@ -66,6 +80,7 @@ export default function planInfo(state = initialState, action) {
             return {
                 ...state,
                 planInfoDatas: {
+                    initital: false,
                     loading: false,
                     data: null,
                     error: action.error,
