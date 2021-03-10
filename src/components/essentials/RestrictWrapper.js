@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import styled from 'styled-components';
 
 const StyleWrapper = styled.div`
@@ -48,4 +48,4 @@ RestrictWrapper.defaultProps = {
     restricted: false,
 };
 
-export default RestrictWrapper;
+export default memo(RestrictWrapper);
