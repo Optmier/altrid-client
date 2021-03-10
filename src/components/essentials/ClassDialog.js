@@ -1,4 +1,4 @@
-import React, { useEffect, memo } from 'react';
+import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -30,17 +30,12 @@ const ModalCloseButton = styled.div`
     right: 8px;
 `;
 
-function ClassDialog({ type, subType, open, handleDialogClose, setSelectClassState }) {
-    const eyetrackAssigmnet = true;
+function ClassDialog({ type, subType, open, handleDialogClose, setSelectClassState, eyetrackAssigmnet }) {
     /** class-dialog 메소드 */
     // type 4가지 : date-init(과제 게시), date-modify(과제 기한 수정), test-init(과제 완료), test-modify(과제 재시작)
 
     const { eyetrack } = useSelector((state) => state.planInfo.restricted);
 
-    useEffect(() => {
-        console.log('i render');
-        console.log(type, subType, open, eyetrackAssigmnet);
-    });
     return (
         <Dialog open={open} onClose={handleDialogClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
             <ModalCloseButton className="close-icon" onClick={handleDialogClose}>
@@ -95,4 +90,4 @@ ClassDialog.defaultProps = {
     eyetrackAssigmnet: true,
 };
 
-export default memo(ClassDialog);
+export default ClassDialog;
