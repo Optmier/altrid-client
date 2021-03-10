@@ -72,6 +72,8 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     /** redux-state */
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
     const activedData = useSelector((state) => state.assignmentActived.dueData.data);
+    const { fileCreation } = useSelector((state) => state.planInfo.restricted);
+
     const dispatch = useDispatch();
 
     let titleArr = [];
@@ -388,6 +390,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                 open={dateDialogopen}
                 handleDialogClose={handleDateDialogClose}
                 setSelectClassState={setSelectClassState}
+                eyetrackAssigmnet={toggleState['eyetrack']}
             />
 
             <div className="class-drawer-root">
@@ -506,14 +509,18 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                                 <div className="drawer-selects">
                                     <input
                                         ref={filesInput}
-                                        id="file-click"
+                                        id={fileCreation ? null : 'file-click'}
                                         type="file"
                                         accept=".hwp,.pdf,.docx"
                                         onChange={handleChangeFile}
                                     />
 
-                                    <StyleLabel clicked={selectState} className="drawer-select" htmlFor="file-click">
-                                        <RestrictWrapper restricted={true}>
+                                    <StyleLabel
+                                        clicked={selectState}
+                                        className="drawer-select"
+                                        htmlFor={fileCreation ? null : 'file-click'}
+                                    >
+                                        <RestrictWrapper type="default" restricted={fileCreation}>
                                             <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path
                                                     d="M38.7 12.08C37.34 5.18 31.28 0 24 0C18.22 0 13.2 3.28 10.7 8.08C4.68 8.72 0 13.82 0 20C0 26.62 5.38 32 12 32H38C43.52 32 48 27.52 48 22C48 16.72 43.9 12.44 38.7 12.08ZM28 18V26H20V18H14L24 8L34 18H28Z"
@@ -645,4 +652,4 @@ ClassDrawer.defaultProps = {
     },
 };
 
-export default React.memo(withRouter(ClassDrawer));
+export default withRouter(React.memo(ClassDrawer));

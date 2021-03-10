@@ -67,7 +67,6 @@ export default function planInfo(state = initialState, action) {
         case GET_PLAN_INFO:
             return {
                 ...state,
-
                 initital: false,
                 loading: true,
                 data: null,
@@ -77,7 +76,6 @@ export default function planInfo(state = initialState, action) {
         case GET_PLAN_INFO_SUCCESS:
             return {
                 ...state,
-
                 initital: true,
                 loading: false,
                 data: {
@@ -100,7 +98,6 @@ export default function planInfo(state = initialState, action) {
         case GET_PLAN_INFO_ERROR:
             return {
                 ...state,
-
                 initital: false,
                 loading: false,
                 data: null,

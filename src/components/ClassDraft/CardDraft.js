@@ -271,6 +271,7 @@ function CardDraft({ cardData, match, history }) {
                 open={dateDialogopen}
                 handleDialogClose={handleDateDialogClose}
                 setSelectClassState={setSelectClassState}
+                eyetrackAssigmnet={cardData['eyetrack']}
             />
 
             <ClassDialogCopy
