@@ -779,6 +779,9 @@ $textGray: #706d6d;
                     display: flex;
                 }
             }
+            & .ment-ai-col#no-eyetrack {
+                display: none;
+            }
             & .ment-ai-col + .ment-ai-col {
                 padding: 0%;
                 border: none;

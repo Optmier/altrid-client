@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import DigitZeroPads from '../essentials/DigitsZeroPad';
 import * as $ from 'jquery';
 import { MdKeyboardArrowRight } from 'react-icons/md';
+import RestrictWrapper from '../essentials/RestrictWrapper';
+import { useSelector } from 'react-redux';
 
 const StylePatternBox = styled.div`
     width: 100%;
@@ -139,6 +141,8 @@ const PatternList = ({
     const [height, setHeight] = useState(0);
     const [padding, setPadding] = useState(0);
 
+    const { eyetrack } = useSelector((state) => state.planInfo.restricted);
+
     const handlePattern = (e) => {
         // console.log(heightToggle);
         const h = $(e.target).siblings()[0].scrollHeight;
@@ -160,30 +164,33 @@ const PatternList = ({
                     <path d="M1.41 0.589844L6 5.16984L10.59 0.589844L12 1.99984L6 7.99984L0 1.99984L1.41 0.589844Z" fill="#2E2C2C" />
                 </svg>
             </div>
+
             <StylePatternContent height={height} padding={padding}>
-                <div className="pattern-item">
-                    <div>선택 답/정답</div>
-                    {userAnswer ? userAnswer : '미선택'}/{correctAnswer}
-                </div>
-                <div className="pattern-item">
-                    <div>패턴 내 변경</div>
-                    <AnswerRoute route={data.map((d) => (d.action === 'changed' ? d.answerAfter : null))} />
-                </div>
-                <div className="pattern-item">
-                    <div>소요시간</div>
-                    {timeValueToTimer(time)}
-                </div>
-                {hasEyetrack ? (
-                    <div className="pattern-item pattern-click">
-                        <button
-                            onClick={() => {
-                                onEyetrackGoTo(elapsedAtStart);
-                            }}
-                        >
-                            영상 확인
-                        </button>
+                <RestrictWrapper type="default" size="small" restricted={eyetrack}>
+                    <div className="pattern-item">
+                        <div>선택 답/정답</div>
+                        {userAnswer ? userAnswer : '미선택'}/{correctAnswer}
                     </div>
-                ) : null}
+                    <div className="pattern-item">
+                        <div>패턴 내 변경</div>
+                        <AnswerRoute route={data.map((d) => (d.action === 'changed' ? d.answerAfter : null))} />
+                    </div>
+                    <div className="pattern-item">
+                        <div>소요시간</div>
+                        {timeValueToTimer(time)}
+                    </div>
+                    {hasEyetrack ? (
+                        <div className="pattern-item pattern-click">
+                            <button
+                                onClick={() => {
+                                    onEyetrackGoTo(elapsedAtStart);
+                                }}
+                            >
+                                영상 확인
+                            </button>
+                        </div>
+                    ) : null}
+                </RestrictWrapper>
             </StylePatternContent>
         </StylePatternList>
     );

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import '../../styles/class_drawer.scss';
 import ToggleSwitch from './ToggleSwitch';
 import { useSelector, useDispatch } from 'react-redux';
