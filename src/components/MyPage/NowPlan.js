@@ -71,7 +71,7 @@ function NowPlan() {
                 <div className="now-plan-left">
                     <div className="row">
                         <div className="row-title">현재 플랜</div>
-                        <div className="row-desc">FREE</div>
+                        <div className="row-desc">{nowPlan}</div>
                     </div>
                     <div className="row">
                         <div className="row-title">사용 기간</div>
@@ -91,19 +91,19 @@ function NowPlan() {
                         <div key={i} className="info-row">
                             <div className="title">
                                 <div className="title-header">{i}</div>
-                                <div className="title-info">{PlanInfo['Free'][i]['info']}</div>
+                                <div className="title-info">{PlanInfo[nowPlan][i]['info']}</div>
                             </div>
                             <div className="desc">
-                                {PlanInfo['Free'][i]['type'] !== 'bool' ? (
+                                {PlanInfo[nowPlan][i]['type'] !== 'bool' ? (
                                     <div className="desc-count">
-                                        {PlanInfo['Free'][i]['desc']}{' '}
+                                        {PlanInfo[nowPlan][i]['desc']}{' '}
                                         <span>
-                                            {PlanInfo['Free'][i]['subType'] === 'person'
-                                                ? `(현재 ${data[PlanInfo['Free'][i]['type']]}명)`
-                                                : `(현재 ${data[PlanInfo['Free'][i]['type']]}회)`}
+                                            {PlanInfo[nowPlan][i]['subType'] === 'person'
+                                                ? `(현재 ${data[PlanInfo[nowPlan][i]['type']]}명)`
+                                                : `(현재 ${data[PlanInfo[nowPlan][i]['type']]}회)`}
                                         </span>
                                     </div>
-                                ) : PlanInfo['Free'][i]['desc'] === '가능' ? (
+                                ) : PlanInfo[nowPlan][i]['desc'] === '가능' ? (
                                     <Possible able={true} />
                                 ) : (
                                     <Possible able={false} />
