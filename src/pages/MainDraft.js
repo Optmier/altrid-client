@@ -24,6 +24,7 @@ import Footer from '../components/essentials/Footer';
 import Error from './Error';
 import isMobile from '../controllers/isMobile';
 import MobileBody from '../components/essentials/MobileBody';
+import AlertSubscribe from '../components/essentials/AlertSubscribe';
 
 const InfoBanner = styled.a`
     width: 100%;

@@ -40,6 +40,7 @@ import PriceDetails from './components/Price/PriceDetails';
 import Payment from './pages/Payment';
 import Plan from './components/MyPage/Plans';
 import PayState from './pages/PayState';
+import AlertSubscribe from './components/essentials/AlertSubscribe';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -189,6 +190,8 @@ function App({ history }) {
 
     return (
         <>
+            <AlertSubscribe />
+
             <CustomChannelIOButton />
             <Element name="main_top_start" />
 
