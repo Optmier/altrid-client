@@ -17,11 +17,11 @@ import AddClass from '../components/MainPage/AddClass';
 import classNames from 'classnames';
 import { $_classDefault } from '../configs/front_urls';
 import moment from 'moment';
-import BackdropComponent from '../components/essentials/BackdropComponent';
 import ClassWrapper from '../components/essentials/ClassWrapper';
 import { IoIosArrowForward } from 'react-icons/io';
 import isMobile from '../controllers/isMobile';
 import { makeStyles } from '@material-ui/core/styles';
+import BackdropComponent2 from '../components/essentials/BackdropComponent2';
 
 const useStyles = makeStyles((theme) => ({
     drawerPaper: {
@@ -73,7 +73,7 @@ function Main({ history }) {
 
     return (
         <>
-            <BackdropComponent open={backdropOpen} blind="#f7f9f8" />
+            <BackdropComponent2 open={backdropOpen} blind="#f7f9f8" />
             <Element name="main_top_start" />
             <HeaderBar />
             <Drawer

@@ -6,13 +6,15 @@ const useStyles = makeStyles((theme) => ({
         zIndex: 9996 + 1,
         color: '#2d106b',
         backgroundColor: 'transparent',
+        marginTop: '100px',
     },
     blind: {
         width: '100%',
         height: '100%',
         position: 'absolute',
         left: 0,
-        top: 0,
+        top: '100px',
+
         zIndex: 9996,
     },
 }));

@@ -198,7 +198,7 @@ function App({ history }) {
             <ScrollTop>
                 {/* <ErrorOS os={navigator.userAgent.toLowerCase()} /> */}
                 {/* <MobileBody /> */}
-                <main>
+                <main id="main">
                     <Switch>
                         <Route path={$_root} component={Main} exact />
                         <Route path={'/main-draft'} component={MainDraft} exact />

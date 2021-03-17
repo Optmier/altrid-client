@@ -33,7 +33,7 @@ const StyleDiv = styled.div`
     background-color: #f7f9f8;
     box-shadow: 0 0 4px rgba(200, 200, 200, 0.4);
     border-bottom: 1px solid rgba(0, 0, 0, 0.098);
-    transition: all 0.4s;
+    transition: width 0.4s;
     width: ${(props) => (props.leftNavState ? 'calc(100% - 240px)' : '100%')};
 
     @media all and (max-width: 902px) {
@@ -77,7 +77,7 @@ function TopNav({ leftNavState, handleLeftNav, match }) {
         <>
             <AccountPopOver userName={popoverName} image={sessions.image} targetEl={testRef ? testRef : null} />
 
-            <StyleDiv leftNavState={leftNavState}>
+            <StyleDiv id="subpage-top-nav" leftNavState={leftNavState}>
                 <div className="top-nav-left">
                     <StyleSVG
                         onClick={handleLeftNav}

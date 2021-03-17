@@ -146,7 +146,7 @@ function MainDraft({ match }) {
     return (
         <>
             <HeaderBar />
-            <BackdropComponent2 open={loading && !data.length} />
+            <BackdropComponent2 open={loading && !data.length} blind="#f7f9f8" />
             <Drawer anchor="right" open={openCreateNewDrawer}>
                 <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>

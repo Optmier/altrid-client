@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme) => ({
         color: '#2d106b',
         backgroundColor: '#f7f9f8',
         marginLeft: '240px',
+        marginTop: '100px',
     },
     blind: {
         width: '100%',
