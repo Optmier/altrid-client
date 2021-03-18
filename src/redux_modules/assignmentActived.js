@@ -94,7 +94,7 @@ export const getActivedOnly = (idx, created, due_date) => async (dispatch) => {
         dispatch({ type: ACTIVED_ERROR, error: e }); // 실패
     }
 };
-export const postActived = (cardData, num, due_date, history) => async (dispatch) => {
+export const postActived = (cardData, num, due_date) => async (dispatch) => {
     dispatch({ type: POST_ACTIVED }); // 요청이 시작됨
 
     try {
@@ -255,6 +255,7 @@ export default function assignmentActived(state = initialState, action) {
                 ...state,
             };
         case POST_ACTIVED_SUCCESS:
+            alert('과제 게시가 완료되었습니다!');
             return {
                 ...state,
             };

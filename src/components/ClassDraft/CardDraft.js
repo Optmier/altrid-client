@@ -140,7 +140,7 @@ function CardDraft({ cardData, match, history }) {
                 //과제 게시하기 버튼 클릭
 
                 setDateDialogopen(false);
-                dispatch(postActived(cardData, selectClassState, due_date, history));
+                dispatch(postActived(cardData, selectClassState, due_date));
             } else if (!due_date) {
                 alert('과제 기한 변경은 필수사항 입니다.');
             } else if (!selectClassState) {

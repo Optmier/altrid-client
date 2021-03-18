@@ -163,15 +163,14 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
         //추가 dispatch 작업
         // 1. 생성 및 게시 버튼 클릭시,
         if (activedDirect) {
-            const { num, due_date, history } = activedDirect;
+            const { num, due_date } = activedDirect;
             const cardData = postData;
 
-            dispatch(postActived(cardData, num, due_date, history));
+            dispatch(postActived(cardData, num, due_date));
         }
         // 2. restricted 정보
         else {
-            console.log('dispatch !');
-            dispatch(getPlanInfo(true));
+            //dispatch(getPlanInfo(true));
         }
     } catch (e) {
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패

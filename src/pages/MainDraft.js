@@ -25,6 +25,7 @@ import Error from './Error';
 import isMobile from '../controllers/isMobile';
 import MobileBody from '../components/essentials/MobileBody';
 import AlertSubscribe from '../components/essentials/AlertSubscribe';
+import { getPlanInfo } from '../redux_modules/planInfo';
 
 const InfoBanner = styled.a`
     width: 100%;
@@ -101,6 +102,7 @@ const StyleHr = styled.div`
 
 function MainDraft({ match }) {
     const dispatch = useDispatch();
+
     const { data, loading, error } = useSelector((state) =>
         state.assignmentDraft.draftDatas.data ? state.assignmentDraft.draftDatas : { loading: true, data: [], error: null },
     );

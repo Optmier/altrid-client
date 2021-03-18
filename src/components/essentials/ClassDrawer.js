@@ -289,7 +289,6 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                 const activedDirect = {
                     num: selectClassState,
                     due_date: due_date,
-                    history: history,
                 };
 
                 setDateDialogopen(false);
