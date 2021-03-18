@@ -7,11 +7,13 @@ const GET_PLAN_INFO_SUCCESS = 'planInfo/GET_PLAN_INFO_SUCCESS';
 const GET_PLAN_INFO_ERROR = 'planInfo/GET_PLAN_INFO_ERROR';
 
 /* 액션 생성함수 선언 & 미들웨어 적용 */
-export const getPlanInfo = () => async (dispatch, getState) => {
+export const getPlanInfo = (update) => async (dispatch, getState) => {
     const { planInfo, RdxSessions } = getState();
     const planId = RdxSessions.academyPlanId;
 
-    if (!planInfo.initital) {
+    console.log(update);
+    console.log(!planInfo.initital || update);
+    if (!planInfo.initital || update) {
         //최초에 app.js에서 불렀다면 이후에는 부를 필요가 없음.
         dispatch({ type: GET_PLAN_INFO }); // 요청이 시작됨
 

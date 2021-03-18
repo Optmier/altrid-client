@@ -125,7 +125,6 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         const fileName = e.target.files[0].name;
 
         attachFiles.append(name, value, fileName);
-        console.log(name, value, fileName);
         setSelectName(name);
         setSelectSate('left');
     };

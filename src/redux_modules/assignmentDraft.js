@@ -2,6 +2,7 @@ import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
 import { MinutetoSecond } from '../components/essentials/TimeChange';
 import { postActived } from './assignmentActived';
+import { getPlanInfo } from './planInfo';
 import getAchieveValueForTypes from '../components/essentials/GetAchieveValueForTypes';
 
 /* 액션 타입 선언 */
@@ -159,11 +160,18 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
 
         dispatch({ type: POST_DRAFT_SUCCESS, postData }); // 성공
 
+        //추가 dispatch 작업
+        // 1. 생성 및 게시 버튼 클릭시,
         if (activedDirect) {
             const { num, due_date, history } = activedDirect;
             const cardData = postData;
 
             dispatch(postActived(cardData, num, due_date, history));
+        }
+        // 2. restricted 정보
+        else {
+            console.log('dispatch !');
+            dispatch(getPlanInfo(true));
         }
     } catch (e) {
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패
