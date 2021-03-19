@@ -6,6 +6,8 @@ import { Tooltip } from '@material-ui/core';
 import TooltipCard from '../essentials/TooltipCard';
 import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
+import RestrictWrapper from '../essentials/RestrictWrapper';
+import { useSelector } from 'react-redux';
 
 const StyleEyeTrackBox = styled.div`
     display: flex;
@@ -74,6 +76,10 @@ function EyeTrackBox({
     const [avgFixDurTotalAvg, setAvgFixDurTotalAvg] = useState('-');
     const [regressionsTotalAvg, setRegressionsTotalAvg] = useState('-');
     const [mEyetrackData, setEyetrackData] = useState(eyetrackData);
+
+    const { eyetrack } = useSelector((state) => state.planInfo.restricted);
+    const { userType } = useSelector((state) => state.RdxSessions);
+
     window.mEyetrackData = mEyetrackData;
     // window.setTrackTimeGoTo = setTrackTimeGoTo;
     const handleGoTo = (time) => {
@@ -200,7 +206,7 @@ function EyeTrackBox({
                                 fill="#605f60"
                             />
                         </svg>
-                        시선 추적 미포함
+                        시선 추적 미포함 과제
                     </div>
                 )}
             </div>
@@ -224,9 +230,11 @@ function EyeTrackBox({
                     )}
                 </div>
 
-                <div className="eyetrack-right">
-                    <EyeTrackPattern data={patternData} hasEyetrack={hasEyetrack} onEyetrackGoTo={handleGoTo} />
-                </div>
+                {eyetrack && userType === 'students' ? null : (
+                    <div className="eyetrack-right">
+                        <EyeTrackPattern data={patternData} hasEyetrack={hasEyetrack} onEyetrackGoTo={handleGoTo} />
+                    </div>
+                )}
             </div>
         </StyleEyeTrackBox>
     );

@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { all } from 'redux-saga/effects';
 import RdxSessions from './sessions';
 import assignmentDraft from './assignmentDraft';
 import assignmentActived from './assignmentActived';
@@ -9,6 +10,7 @@ import RdxCurrentClass from './currentClass';
 import classes from './classes';
 import params from './params';
 import classLists from './classLists';
+import planInfo, { watcher } from './planInfo';
 
 const rootReducer = combineReducers({
     RdxSessions,
@@ -21,6 +23,10 @@ const rootReducer = combineReducers({
     classes,
     params,
     classLists,
+    planInfo,
 });
+export function* rootSaga() {
+    yield all([watcher()]); // all 은 배열 안의 여러 사가를 동시에 실행시켜줍니다.
+}
 
 export default rootReducer;

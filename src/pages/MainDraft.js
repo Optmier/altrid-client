@@ -24,6 +24,8 @@ import Footer from '../components/essentials/Footer';
 import Error from './Error';
 import isMobile from '../controllers/isMobile';
 import MobileBody from '../components/essentials/MobileBody';
+import AlertSubscribe from '../components/essentials/AlertSubscribe';
+import { getPlanInfo } from '../redux_modules/planInfo';
 
 const InfoBanner = styled.a`
     width: 100%;
@@ -100,6 +102,7 @@ const StyleHr = styled.div`
 
 function MainDraft({ match }) {
     const dispatch = useDispatch();
+
     const { data, loading, error } = useSelector((state) =>
         state.assignmentDraft.draftDatas.data ? state.assignmentDraft.draftDatas : { loading: true, data: [], error: null },
     );
@@ -145,7 +148,7 @@ function MainDraft({ match }) {
     return (
         <>
             <HeaderBar />
-            <BackdropComponent2 open={loading && !data.length} />
+            <BackdropComponent2 open={loading && !data.length} blind="#f7f9f8" />
             <Drawer anchor="right" open={openCreateNewDrawer}>
                 <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>

@@ -15,6 +15,7 @@ import { apiUrl } from './configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveSession, deleteSession, updateSession } from './redux_modules/sessions';
 import { getServerDate } from './redux_modules/serverdate';
+import { getPlanInfo } from './redux_modules/planInfo';
 import { $_loginAdmin, $_loginDefault, $_loginStudent, $_loginTeacher, $_root } from './configs/front_urls';
 import AdminMain from './pages/AdminMain';
 import AssignmentDoItNow from './pages/AssignmentDoItNow';
@@ -39,6 +40,7 @@ import PriceDetails from './components/Price/PriceDetails';
 import Payment from './pages/Payment';
 import Plan from './components/MyPage/Plans';
 import PayState from './pages/PayState';
+import AlertSubscribe from './components/essentials/AlertSubscribe';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -165,7 +167,10 @@ function App({ history }) {
         if (!sessions || !sessions.exp || !sessions.academyName) {
             return;
         }
+
         dispatch(getServerDate());
+        dispatch(getPlanInfo());
+
         !window.tokenRefresher &&
             (window.tokenRefresher = setInterval(() => {
                 /** Token 만료 전 재발급 */
@@ -185,13 +190,15 @@ function App({ history }) {
 
     return (
         <>
+            <AlertSubscribe />
+
             <CustomChannelIOButton />
             <Element name="main_top_start" />
 
             <ScrollTop>
                 {/* <ErrorOS os={navigator.userAgent.toLowerCase()} /> */}
                 {/* <MobileBody /> */}
-                <main>
+                <main id="main">
                     <Switch>
                         <Route path={$_root} component={Main} exact />
                         <Route path={'/main-draft'} component={MainDraft} exact />

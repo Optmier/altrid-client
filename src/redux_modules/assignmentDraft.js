@@ -2,6 +2,7 @@ import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
 import { MinutetoSecond } from '../components/essentials/TimeChange';
 import { postActived } from './assignmentActived';
+import { getPlanInfo } from './planInfo';
 import getAchieveValueForTypes from '../components/essentials/GetAchieveValueForTypes';
 
 /* 액션 타입 선언 */
@@ -15,19 +16,19 @@ const GET_DRAFT_SUCCESS = 'assignmentDraft/GET_DRAFT_SUCCESS';
 
 // draft 삽입하기
 const POST_DRAFT = 'assignmentDraft/POST_DRAFT';
-const POST_DRAFT_SUCCESS = 'assignmentDraft/POST_DRAFT_SUCCESS';
+export const POST_DRAFT_SUCCESS = 'assignmentDraft/POST_DRAFT_SUCCESS';
 
 // draft 수정하기
 const PATCH_DRAFT = 'assignmentDraft/PATCH_DRAFT';
-const PATCH_DRAFT_SUCCESS = 'assignmentDraft/PATCH_DRAFT_SUCCESS';
+export const PATCH_DRAFT_SUCCESS = 'assignmentDraft/PATCH_DRAFT_SUCCESS';
 
 // draft 복사하기
 const COPY_DRAFT = 'assignmentDraft/COPY_DRAFT';
-const COPY_DRAFT_SUCCESS = 'assingmentDraft/COPY_DRAFT_SUCCESS';
+export const COPY_DRAFT_SUCCESS = 'assingmentDraft/COPY_DRAFT_SUCCESS';
 
 // draft 삭제하기
 const DELETE_DRAFT = 'assignmentDraft/DELETE_DRAFT';
-const DELETE_DRAFT_SUCCESS = 'assignmentDraft/DELETE_DRAFT_SUCCESS';
+export const DELETE_DRAFT_SUCCESS = 'assignmentDraft/DELETE_DRAFT_SUCCESS';
 
 // CRUD error
 const DRAFT_ERROR = 'assignmentDraft/DRAFT_ERROR';
@@ -159,11 +160,17 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
 
         dispatch({ type: POST_DRAFT_SUCCESS, postData }); // 성공
 
+        //추가 dispatch 작업
+        // 1. 생성 및 게시 버튼 클릭시,
         if (activedDirect) {
-            const { num, due_date, history } = activedDirect;
+            const { num, due_date } = activedDirect;
             const cardData = postData;
 
-            dispatch(postActived(cardData, num, due_date, history));
+            dispatch(postActived(cardData, num, due_date));
+        }
+        // 2. restricted 정보
+        else {
+            //dispatch(getPlanInfo(true));
         }
     } catch (e) {
         dispatch({ type: DRAFT_ERROR, error: e }); // 실패

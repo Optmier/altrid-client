@@ -15,7 +15,7 @@ const GET_ACTIVED_SUCCESS_ONLY = 'assignmentActived/GET_ACTIVED_SUCCESS_ONLY';
 
 //atived 과제 등록
 const POST_ACTIVED = 'assignmentActived/POST_ACTIVED';
-const POST_ACTIVED_SUCCESS = 'assignmentActived/POST_ACTIVED_SUCCESS';
+export const POST_ACTIVED_SUCCESS = 'assignmentActived/POST_ACTIVED_SUCCESS';
 
 //atived 과제 수정
 const PATCH_ACTIVED = 'assignmentActived/PATCH_ACTIVED';
@@ -27,7 +27,7 @@ const PATCH_ACTIVED_SUCCESS_ONLY = 'assignmentActived/PATCH_ACTIVED_SUCCESS_ONLY
 
 //atived 과제 삭제
 const DELETE_ACTIVED = 'assignmentActived/DELETE_ACTIVED';
-const DELETE_ACTIVED_SUCCESS = 'assignmentActived/DELETE_ACTIVED_SUCCESS';
+export const DELETE_ACTIVED_SUCCESS = 'assignmentActived/DELETE_ACTIVED_SUCCESS';
 
 //atived 과제 날짜 변경
 const CHANGE_DUE_DATE = 'assignmentActived/CHANGE_DUE_DATE';
@@ -94,7 +94,7 @@ export const getActivedOnly = (idx, created, due_date) => async (dispatch) => {
         dispatch({ type: ACTIVED_ERROR, error: e }); // 실패
     }
 };
-export const postActived = (cardData, num, due_date, history) => async (dispatch) => {
+export const postActived = (cardData, num, due_date) => async (dispatch) => {
     dispatch({ type: POST_ACTIVED }); // 요청이 시작됨
 
     try {
@@ -255,6 +255,7 @@ export default function assignmentActived(state = initialState, action) {
                 ...state,
             };
         case POST_ACTIVED_SUCCESS:
+            alert('과제 게시가 완료되었습니다!');
             return {
                 ...state,
             };

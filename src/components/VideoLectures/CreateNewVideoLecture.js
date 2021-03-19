@@ -13,6 +13,8 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
 import CloseIcon from '@material-ui/icons/Close';
+import { useSelector } from 'react-redux';
+import RestrictWrapper from '../essentials/RestrictWrapper';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -342,6 +344,8 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
         endDate: false,
     });
 
+    const { videoLecture } = useSelector((state) => state.planInfo.restricted);
+
     const handleFormChange = ({ target }, val2) => {
         const { name } = target;
         const value = target.value || val2;
@@ -376,54 +380,79 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
                         <CloseIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
                     </CloseIconRoot>
                 </TitleContainer>
+
                 <FormBox>
-                    <GroupBoxContents title="기본 정보">
-                        <SelectorsContainer>
-                            <SeletionInput
-                                size="small"
-                                placeholder="강의 제목"
-                                fullWidth
-                                id="title"
-                                name="title"
-                                type="text"
-                                autoFocus
-                                error={formFieldsError.title}
-                                onChange={handleFormChange}
-                            />
-                            <SeletionInput
-                                size="small"
-                                placeholder="강의 설명"
-                                fullWidth
-                                multiline
-                                rows={6}
-                                id="description"
-                                name="description"
-                                type="text"
-                                error={formFieldsError.description}
-                                onChange={handleFormChange}
-                                style={{ marginTop: 18 }}
-                            />
-                        </SelectorsContainer>
-                    </GroupBoxContents>
-                    <GroupBoxContents
-                        title="날짜 및 시간"
-                        style={{ marginTop: 28 }}
-                        rightComponent={
-                            <div style={{ alignItems: 'center', display: 'flex' }}>
-                                <p style={{ marginRight: 16 }}>시작 예약 설정</p>
-                                <DrawerSwitch checked={formFields.hasStartDate} onChange={handleFormChange} name="hasStartDate" />
-                            </div>
-                        }
-                    >
-                        <SelectorsContainer style={{ padding: '0 8px' }}>
-                            <Collapse in={formFields.hasStartDate}>
+                    <RestrictWrapper type="default" restricted={videoLecture} minWidth='300px'>
+                        <GroupBoxContents title="기본 정보">
+                            <SelectorsContainer>
+                                <SeletionInput
+                                    size="small"
+                                    placeholder="강의 제목"
+                                    fullWidth
+                                    id="title"
+                                    name="title"
+                                    type="text"
+                                    autoFocus
+                                    error={formFieldsError.title}
+                                    onChange={handleFormChange}
+                                />
+                                <SeletionInput
+                                    size="small"
+                                    placeholder="강의 설명"
+                                    fullWidth
+                                    multiline
+                                    rows={6}
+                                    id="description"
+                                    name="description"
+                                    type="text"
+                                    error={formFieldsError.description}
+                                    onChange={handleFormChange}
+                                    style={{ marginTop: 18 }}
+                                />
+                            </SelectorsContainer>
+                        </GroupBoxContents>
+                        <GroupBoxContents
+                            title="날짜 및 시간"
+                            style={{ marginTop: 28 }}
+                            rightComponent={
+                                <div style={{ alignItems: 'center', display: 'flex' }}>
+                                    <p style={{ marginRight: 16 }}>시작 예약 설정</p>
+                                    <DrawerSwitch checked={formFields.hasStartDate} onChange={handleFormChange} name="hasStartDate" />
+                                </div>
+                            }
+                        >
+                            <SelectorsContainer style={{ padding: '0 8px' }}>
+                                <Collapse in={formFields.hasStartDate}>
+                                    <div
+                                        style={{
+                                            alignItems: 'center',
+                                            color: 'rgba(112, 112, 112, 0.8)',
+                                            display: 'flex',
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        <p style={{ marginRight: 16, minWidth: '4rem' }}>시작 날짜</p>
+                                        <DateTextField
+                                            onChange={handleFormChange}
+                                            value={formFields.startDate}
+                                            id="startDate"
+                                            name="startDate"
+                                            type="datetime-local"
+                                            className={classes.textField}
+                                            fullWidth
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                        />
+                                    </div>
+                                </Collapse>
                                 <div style={{ alignItems: 'center', color: 'rgba(112, 112, 112, 0.8)', display: 'flex', fontWeight: 600 }}>
-                                    <p style={{ marginRight: 16, minWidth: '4rem' }}>시작 날짜</p>
+                                    <p style={{ marginRight: 16, minWidth: '4rem' }}>종료 날짜</p>
                                     <DateTextField
                                         onChange={handleFormChange}
-                                        value={formFields.startDate}
-                                        id="startDate"
-                                        name="startDate"
+                                        value={formFields.endDate}
+                                        id="endDate"
+                                        name="endDate"
                                         type="datetime-local"
                                         className={classes.textField}
                                         fullWidth
@@ -432,37 +461,22 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
                                         }}
                                     />
                                 </div>
-                            </Collapse>
-                            <div style={{ alignItems: 'center', color: 'rgba(112, 112, 112, 0.8)', display: 'flex', fontWeight: 600 }}>
-                                <p style={{ marginRight: 16, minWidth: '4rem' }}>종료 날짜</p>
-                                <DateTextField
-                                    onChange={handleFormChange}
-                                    value={formFields.endDate}
-                                    id="endDate"
-                                    name="endDate"
-                                    type="datetime-local"
-                                    className={classes.textField}
-                                    fullWidth
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
-                            </div>
-                        </SelectorsContainer>
-                    </GroupBoxContents>
-                    <GroupBoxContents title="강의 설정" style={{ marginTop: 28 }}>
-                        <SelectorsContainer style={{ padding: '0 8px' }}>
-                            <div style={{ alignItems: 'center', color: '#707070', display: 'flex', fontWeight: 500 }}>
-                                <p style={{ marginRight: 16 }}>시선흐름 측정</p>
-                                <DrawerSwitch checked={formFields.hasEyetrack} onChange={handleFormChange} name="hasEyetrack" />
-                            </div>
-                        </SelectorsContainer>
-                    </GroupBoxContents>
-                    <CreateButtonContainer>
-                        <CreateButton className="primary" size="large" variant="contained" onClick={handleCreate}>
-                            생성하기
-                        </CreateButton>
-                    </CreateButtonContainer>
+                            </SelectorsContainer>
+                        </GroupBoxContents>
+                        <GroupBoxContents title="강의 설정" style={{ marginTop: 28 }}>
+                            <SelectorsContainer style={{ padding: '0 8px' }}>
+                                <div style={{ alignItems: 'center', color: '#707070', display: 'flex', fontWeight: 500 }}>
+                                    <p style={{ marginRight: 16 }}>시선흐름 측정</p>
+                                    <DrawerSwitch checked={formFields.hasEyetrack} onChange={handleFormChange} name="hasEyetrack" />
+                                </div>
+                            </SelectorsContainer>
+                        </GroupBoxContents>
+                        <CreateButtonContainer>
+                            <CreateButton className="primary" size="large" variant="contained" onClick={handleCreate}>
+                                생성하기
+                            </CreateButton>
+                        </CreateButtonContainer>
+                    </RestrictWrapper>
                 </FormBox>
             </Root>
         </>

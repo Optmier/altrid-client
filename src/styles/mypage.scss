@@ -162,10 +162,73 @@
     & .plan-root {
         width: 100%;
 
-        & .now-plan {
+        .now-plan-root {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+
+            & .now-plan {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            & .plan-info {
+                display: flex;
+                flex-direction: column;
+
+                & .plan-info-header {
+                    font-size: 1.18rem;
+                    font-weight: 600;
+                    margin-bottom: 1.3rem;
+                }
+                & .plan-info-table {
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+
+                    & .info-row {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        border-top: 1px solid rgba(55, 53, 47, 0.09);
+                        padding: 0.9rem 0.5rem;
+
+                        & .title {
+                            display: flex;
+                            flex-direction: column;
+
+                            & .title-header {
+                                font-size: 1rem;
+                                font-weight: 500;
+                            }
+                            & .title-info {
+                                margin-top: 0.3rem;
+                                font-size: 0.85rem;
+                                font-weight: 500;
+                                color: rgba(55, 53, 47, 0.6);
+                            }
+                        }
+                        & .desc {
+                            display: flex;
+                            align-items: center;
+
+                            & .desc-count {
+                                font-size: 1rem;
+                                font-weight: 400;
+                                color: gray;
+
+                                & > span {
+                                    margin-left: 0.5rem;
+                                    color: black;
+                                    font-weight: 500;
+                                }
+                            }
+                        }
+                    }
+                    & .info-row:hover {
+                        background-color: #80808014;
+                    }
+                }
+            }
         }
         & .payment-info-root {
             display: flex;
