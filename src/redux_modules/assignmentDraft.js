@@ -16,19 +16,19 @@ const GET_DRAFT_SUCCESS = 'assignmentDraft/GET_DRAFT_SUCCESS';
 
 // draft 삽입하기
 const POST_DRAFT = 'assignmentDraft/POST_DRAFT';
-const POST_DRAFT_SUCCESS = 'assignmentDraft/POST_DRAFT_SUCCESS';
+export const POST_DRAFT_SUCCESS = 'assignmentDraft/POST_DRAFT_SUCCESS';
 
 // draft 수정하기
 const PATCH_DRAFT = 'assignmentDraft/PATCH_DRAFT';
-const PATCH_DRAFT_SUCCESS = 'assignmentDraft/PATCH_DRAFT_SUCCESS';
+export const PATCH_DRAFT_SUCCESS = 'assignmentDraft/PATCH_DRAFT_SUCCESS';
 
 // draft 복사하기
 const COPY_DRAFT = 'assignmentDraft/COPY_DRAFT';
-const COPY_DRAFT_SUCCESS = 'assingmentDraft/COPY_DRAFT_SUCCESS';
+export const COPY_DRAFT_SUCCESS = 'assingmentDraft/COPY_DRAFT_SUCCESS';
 
 // draft 삭제하기
 const DELETE_DRAFT = 'assignmentDraft/DELETE_DRAFT';
-const DELETE_DRAFT_SUCCESS = 'assignmentDraft/DELETE_DRAFT_SUCCESS';
+export const DELETE_DRAFT_SUCCESS = 'assignmentDraft/DELETE_DRAFT_SUCCESS';
 
 // CRUD error
 const DRAFT_ERROR = 'assignmentDraft/DRAFT_ERROR';

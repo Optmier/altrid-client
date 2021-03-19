@@ -1,5 +1,8 @@
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs'; /* 액션 타입 선언 */
+import { put, takeLatest } from 'redux-saga/effects';
+import { POST_DRAFT_SUCCESS, DELETE_DRAFT_SUCCESS, PATCH_DRAFT_SUCCESS, COPY_DRAFT_SUCCESS } from './assignmentDraft';
+import { POST_ACTIVED_SUCCESS, DELETE_ACTIVED_SUCCESS } from './assignmentActived';
 
 // 플랜별 기능제한 요소 정보 조회
 const GET_PLAN_INFO = 'planInfo/GET_PLAN_INFO';
@@ -37,6 +40,18 @@ export const getPlanInfo = (update) => async (dispatch, getState) => {
         }
     }
 };
+
+function* getPlanInfoSaga() {
+    //getPlanInfo 를 update 하고싶을 때는 true를 인자 값으로 전달해주시면 됩니다.
+    yield put(getPlanInfo(true));
+}
+
+export function* watcher() {
+    yield takeLatest(
+        [POST_DRAFT_SUCCESS, DELETE_DRAFT_SUCCESS, PATCH_DRAFT_SUCCESS, COPY_DRAFT_SUCCESS, POST_ACTIVED_SUCCESS, DELETE_ACTIVED_SUCCESS],
+        getPlanInfoSaga,
+    );
+}
 
 /* 초기 상태 선언 */
 const initialState = {

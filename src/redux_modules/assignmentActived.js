@@ -15,7 +15,7 @@ const GET_ACTIVED_SUCCESS_ONLY = 'assignmentActived/GET_ACTIVED_SUCCESS_ONLY';
 
 //atived 과제 등록
 const POST_ACTIVED = 'assignmentActived/POST_ACTIVED';
-const POST_ACTIVED_SUCCESS = 'assignmentActived/POST_ACTIVED_SUCCESS';
+export const POST_ACTIVED_SUCCESS = 'assignmentActived/POST_ACTIVED_SUCCESS';
 
 //atived 과제 수정
 const PATCH_ACTIVED = 'assignmentActived/PATCH_ACTIVED';
@@ -27,7 +27,7 @@ const PATCH_ACTIVED_SUCCESS_ONLY = 'assignmentActived/PATCH_ACTIVED_SUCCESS_ONLY
 
 //atived 과제 삭제
 const DELETE_ACTIVED = 'assignmentActived/DELETE_ACTIVED';
-const DELETE_ACTIVED_SUCCESS = 'assignmentActived/DELETE_ACTIVED_SUCCESS';
+export const DELETE_ACTIVED_SUCCESS = 'assignmentActived/DELETE_ACTIVED_SUCCESS';
 
 //atived 과제 날짜 변경
 const CHANGE_DUE_DATE = 'assignmentActived/CHANGE_DUE_DATE';
