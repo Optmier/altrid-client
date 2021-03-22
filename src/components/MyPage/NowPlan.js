@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import PlanInfo from '../../datas/PlanInfo.json';
 import { useSelector } from 'react-redux';
 import BackdropComponent from '../essentials/BackdropComponent';
+import Axios from 'axios';
+import { apiUrl } from '../../configs/configs';
+import moment from 'moment-timezone';
 
 const StylePossible = styled.div`
     display: flex;
@@ -53,6 +56,7 @@ function NowPlan() {
     const [nowPlan, setNowPlan] = useState('Free');
     const { academyPlanId } = useSelector((state) => state.RdxSessions);
     const { data } = useSelector((state) => state.planInfo);
+    const [planDurationDate, setPlanDurationDate] = useState('-');
 
     const handlePlanBtn = () => {
         alert('현재는 베타 서비스 기간으로, 플랜변경이 불가능합니다!');
@@ -61,6 +65,26 @@ function NowPlan() {
     useEffect(() => {
         if (academyPlanId && data) {
             setNowPlan(academyPlanId === 1 ? 'Free' : academyPlanId === 2 ? 'Standard' : 'Premium');
+
+            // 현재 유효한 플랜이 있는지 검사
+            Axios.get(`${apiUrl}/payments/order-history/current-valid`, {
+                params: { planId: academyPlanId },
+                withCredentials: true,
+            })
+                .then((validPlan) => {
+                    console.log(validPlan);
+                    if (validPlan.data && validPlan.data.length > 0) {
+                        console.log(validPlan.data[0]);
+                        const starts = validPlan.data[0].plan_start;
+                        const ends = validPlan.data[0].plan_end;
+                        setPlanDurationDate(`${moment(starts).format('yyyy년 MM월 DD일')} - ${moment(ends).format('yyyy년 MM월 DD일')}`);
+                    } else {
+                        setPlanDurationDate('-');
+                    }
+                })
+                .catch((validPlanError) => {
+                    console.error('현재 유효한 플랜 정보를 불러오는데 오류가 발생했습니다.', validPlanError);
+                });
         }
     }, [academyPlanId, data]);
 
@@ -75,7 +99,8 @@ function NowPlan() {
                     </div>
                     <div className="row">
                         <div className="row-title">사용 기간</div>
-                        <div className="row-desc">현재는 베타 서비스 기간입니다.</div>
+                        {/* <div className="row-desc">현재는 베타 서비스 기간입니다.</div> */}
+                        <div className="row-desc">{planDurationDate}</div>
                     </div>
                 </div>
                 <div className="now-plan-right">

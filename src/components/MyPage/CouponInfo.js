@@ -1,11 +1,34 @@
-import React, { useState } from 'react';
+import Axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { apiUrl } from '../../configs/configs';
+import moment from 'moment-timezone';
 
 function CouponInfo() {
     const [couponState, setCouponState] = useState('');
+    const [couponHistory, setCouponHistory] = useState([]);
+    const { academyPlanId } = useSelector((state) => state.RdxSessions);
 
     const handleChange = (e) => {
         setCouponState(e.target.value);
     };
+
+    const convertPriceString = (x) => {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+
+    useEffect(() => {
+        if (!academyPlanId) return;
+        Axios.get(`${apiUrl}/payments/coupon-history`, { withCredentials: true })
+            .then((resCouponHistory) => {
+                console.log(resCouponHistory.data);
+                setCouponHistory(resCouponHistory.data);
+            })
+            .catch((errCouponHistory) => {
+                console.error(errCouponHistory);
+            });
+    }, [academyPlanId]);
+
     return (
         <div className="coupon-info-root">
             <div className="mypage-contents white-box">
@@ -17,17 +40,24 @@ function CouponInfo() {
                     <div className="coupon-info-table">
                         <div className="table-title">이름</div>
                         <div className="table-title">쿠폰 코드</div>
-                        <div className="table-title">최소 플랜</div>
+                        <div className="table-title">적용 플랜</div>
                         <div className="table-title">할인 가격</div>
-                        <div className="table-title">유효 기간</div>
+                        <div className="table-title">유효 기간 (이전 까지)</div>
                     </div>
-                    <div className="coupon-info-table">
-                        <div className="table-desc">[베타기간한정]1만원 할인 쿠폰</div>
-                        <div className="table-desc">abcd</div>
-                        <div className="table-desc">Premium</div>
-                        <div className="table-desc">10,000원</div>
-                        <div className="table-desc">2021-04-30</div>
-                    </div>
+                    {couponHistory.map((data) => (
+                        <div className="coupon-info-table" key={data.coupon_id}>
+                            <div className="table-desc">{data.name}</div>
+                            <div className="table-desc">{data.coupon_id}</div>
+                            <div className="table-desc">
+                                {data.applied_plan === 2 ? 'Standard' : data.applied_plan === 3 ? 'Premium' : '-'}
+                            </div>
+                            <div className="table-desc">
+                                {convertPriceString(data.discount)}
+                                {data.type === 'absolute' ? '원' : '%'}
+                            </div>
+                            <div className="table-desc">{moment(data.expired).format('YYYY년 MM월 DD일')}</div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

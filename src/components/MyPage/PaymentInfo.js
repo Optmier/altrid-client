@@ -19,6 +19,7 @@ function PaymentInfo() {
         pg_name: '-',
         phone: '-',
     });
+    const [paymentHistory, setPaymentHistory] = useState([]);
     const tossPayments = useRef();
 
     const paymentsCardActionClick = () => {
@@ -45,7 +46,6 @@ function PaymentInfo() {
         if (sessions.userType === 'teachers') {
             Axios.get(`${apiUrl}/payments/payment-info`, { withCredentials: true })
                 .then((res) => {
-                    console.log(res.data);
                     if (res.data && res.data.length > 0) {
                         setPaymentsInfo({
                             ...paymentsInfo,
@@ -69,6 +69,17 @@ function PaymentInfo() {
                 })
                 .catch((err) => {
                     console.error(err);
+                });
+
+            // 결제 내역 불러오기
+            Axios.get(`${apiUrl}/payments/payment-history`, { withCredentials: true })
+                .then((resPaymentHistory) => {
+                    if (resPaymentHistory && resPaymentHistory.data) {
+                        setPaymentHistory(resPaymentHistory.data);
+                    }
+                })
+                .catch((errPaymentHistory) => {
+                    console.error(errPaymentHistory);
                 });
         }
     }, [sessions]);
@@ -135,19 +146,29 @@ function PaymentInfo() {
                             <div className="table-title">설명</div>
                             <div className="table-title">서비스 기간</div>
                             <div className="table-title">결제 수단</div>
-                            <div className="table-title">소계</div>
-                            <div className="table-title">총 합계</div>
+                            <div className="table-title">이용료</div>
+                            <div className="table-title">지불 금액</div>
                         </div>
-                        <div className="pay-info-table">
-                            <div className="table-desc date">2021년 2월 15일</div>
-                            <div className="table-desc">Premium</div>
-                            <div className="table-desc">2021년 2월 15일—2021년 3월 14일</div>
-                            <div className="table-desc">신용카드 •••• •••• •••• 3041</div>
-                            <div className="table-desc">
-                                7900원 <span>(+790원 부가세)</span>
+                        {paymentHistory.map((data) => (
+                            <div className="pay-info-table" key={data.payment_key}>
+                                <div className="table-desc date">{moment(data.approved_at).format('YYYY년 MM월 DD일')}</div>
+                                <div className="table-desc">{data.name}</div>
+                                <div className="table-desc">
+                                    {moment(data.plan_start).format('YYYY년 MM월 DD일')}—{moment(data.plan_end).format('YYYY년 MM월 DD일')}
+                                </div>
+                                <div className="table-desc">
+                                    {data.card_type}{' '}
+                                    {data.card_number
+                                        .replace(/\*/gi, '•')
+                                        .replace(/(.{4})/g, '$1 ')
+                                        .trim()}
+                                </div>
+                                <div className="table-desc">
+                                    {data.payment_price * 0.9}원 <span>(+{data.payment_price * 0.1}원 부가세)</span>
+                                </div>
+                                <div className="table-desc">{data.payment_price}원</div>
                             </div>
-                            <div className="table-desc">8690원</div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>
