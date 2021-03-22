@@ -13,6 +13,8 @@ import Axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import TooltipCard from '../essentials/TooltipCard';
+import { useDispatch } from 'react-redux';
+import { getPlanInfo } from '../../redux_modules/planInfo';
 
 const StyleCheckbox = withStyles({
     root: {
@@ -24,44 +26,10 @@ const StyleCheckbox = withStyles({
     checked: {},
 })((props) => <Checkbox color="default" {...props} />);
 
-const useStyles = makeStyles((theme) => ({
-    formControl: {
-        minWidth: 300,
-        margin: 0,
-
-        '& .MuiInputLabel-formControl': {
-            top: ' -15px',
-            left: '7px',
-            position: 'absolute',
-        },
-        '& .MuiInputLabel-shrink': {
-            transform: 'translate(-6px, 4px) scale(0)',
-            transformOrigin: 'top left',
-        },
-        '& label + .MuiInput-formControl': {
-            marginTop: 0,
-        },
-        '& .MuiInput-underline:after': {
-            borderBottom: '2px solid #3f198fb3',
-        },
-        '& .Mui-focused': {
-            color: '#3f198f',
-        },
-
-        '@media (min-width: 0px) and (max-width: 1231px)': {
-            '&': {
-                minWidth: 200,
-            },
-        },
-    },
-    selectEmpty: {
-        marginTop: 0,
-    },
-}));
-
 function StudentManage({ match, history }) {
+    const dispatch = useDispatch();
+
     const { num } = match.params;
-    const classes = useStyles();
 
     const [studentDatas, setStudentDatas] = useState({});
     const [selectState, setSelectState] = useState({});
@@ -135,6 +103,8 @@ function StudentManage({ match, history }) {
             .catch((err) => {
                 console.error(err);
             });
+
+        dispatch(getPlanInfo(true));
     }, []);
 
     window.selectState = selectState;
@@ -187,25 +157,6 @@ function StudentManage({ match, history }) {
                                     </div>
 
                                     <div className="list-box-right">
-                                        {/* <FormControl className={classes.formControl}>
-                                            <InputLabel id="demo-simple-select-helper-label">과제 리포트 선택</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-helper-label"
-                                                id="demo-simple-select-helper"
-                                                value={selectState[i]}
-                                                onChange={handleSelectChange}
-                                                name={i}
-                                            >
-                                                {studentDatas[i]
-                                                    .filter((item) => item['idx'] !== null)
-                                                    .map((j) => (
-                                                        <div key={j['actived_number']} value={j['title']}>
-                                                            <MenuItem value={j['title']}>{j['title']}</MenuItem>
-                                                        </div>
-                                                    ))}
-                                            </Select>
-                                        </FormControl> */}
-
                                         <button name={i} onClick={handleMoveReport}>
                                             확인하기
                                         </button>
