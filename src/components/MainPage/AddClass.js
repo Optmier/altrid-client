@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import { Button, withStyles } from '@material-ui/core';
 import classNames from 'classnames';

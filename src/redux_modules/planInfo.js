@@ -13,9 +13,12 @@ const GET_PLAN_INFO_ERROR = 'planInfo/GET_PLAN_INFO_ERROR';
 export const getPlanInfo = (update) => async (dispatch, getState) => {
     const { planInfo, RdxSessions } = getState();
     const planId = RdxSessions.academyPlanId;
+    const userType = RdxSessions.userType;
 
-    if (!planInfo.initital || update) {
+    if ((!planInfo.initital || update) && userType === 'teachers') {
         //최초에 app.js에서 불렀다면 이후에는 부를 필요가 없음.
+        //학생 페이지에서는 부를 필요가 없음.
+
         dispatch({ type: GET_PLAN_INFO }); // 요청이 시작됨
 
         try {
