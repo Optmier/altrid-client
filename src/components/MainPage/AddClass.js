@@ -35,90 +35,181 @@ function AddClass({ handleClose, history }) {
         }
     };
 
-    const handleClickAdd = () => {
+    const handleClickAdd = async () => {
         if (!inputState.trim()) {
             setInputError(true);
             return;
         } else {
             setInputError(false);
         }
-        Axios.get(`${apiUrl}/classes/class-code/${inputState}`, { withCredentials: true })
-            .then((res) => {
-                // 1. 해당 클래스 코드가 존재하는지 조회
-                if (!res.data[0]['is_exists']) {
-                    setErrorMessage('존재하지 않는 코드이거나 아직 생성되지 않은 클래스입니다.');
-                    setInputError(true);
-                }
-                // 2. 해당 클래스 코드가 다른 학원 클래스 코드인지 확인
-                else if (sessions.academyCode === '' || sessions.academyCode === res.data[0]['academy_code']) {
-                    /** acadamey code 값, token refresh */
-                    Axios.patch(
-                        `${apiUrl}/auth`,
-                        {
-                            academyCode: res.data[0]['academy_code'],
-                        },
-                        { withCredentials: true },
-                    )
-                        .then((res2) => {
-                            console.log('refresh token!');
-                        })
-                        .catch((err) => {
-                            console.log('refresh error...');
-                            console.error(err);
-                        });
 
-                    /**  특정 학원생 academy code update */
-                    Axios.put(
-                        `${apiUrl}/students/academy-code`,
-                        {
-                            academyCode: res.data[0]['academy_code'],
-                        },
-                        { withCredentials: true },
-                    )
+        try {
+            const res = await Promise.all([
+                Axios.get(`${apiUrl}/classes/class-code/${inputState}`, { withCredentials: true }),
+                Axios.get(`${apiUrl}/plan-info/students-num`, { withCredentials: true }),
+            ]);
 
-                        .then((res2) => {
-                            console.log('update academy code!');
-                        })
-                        .catch((err) => {
-                            console.log('update error...');
-                            console.error(err);
-                        });
+            console.log(res);
+            window.res = res;
 
-                    /** student-in-class table에 학생 정보 insert */
-                    Axios.post(
-                        `${apiUrl}/students-in-class`,
-                        {
-                            class_number: res.data[0]['idx'],
-                            student_id: sessions.authId,
-                            class_code: inputState,
-                            academy_code: res.data[0]['academy_code'],
-                        },
-                        { withCredentials: true },
-                    )
-                        .then((res2) => {
-                            alert('클래스에 성공적으로 입장하였습니다 :)');
+            console.log(res[0].data[0]['academy_code']);
+            // 1. 해당 클래스 코드가 존재하는지 조회
+            if (!res[0].data[0]['is_exists']) {
+                setErrorMessage('존재하지 않는 코드이거나 아직 생성되지 않은 클래스입니다.');
+                setInputError(true);
+            }
+            // 2. 해당 클래스 코드가 다른 학원 클래스 코드인지 확인
+            else if (sessions.academyCode === '' || sessions.academyCode !== res[0].data[0]['academy_code']) {
+                setErrorMessage('해당 학원의 코드값이 아닙니다.');
+                setInputError(true);
+            }
+            // 3. 해당 클래스를 소유한 선생님의 학생 수가 63명 미만인지 확인
+            else if (res[1].data[0]['studentNums'] >= 63) {
+                setErrorMessage('학생 초대 인원이 초과되었습니다. 선생님께 문의 부탁드립니다.');
+                setInputError(true);
+            } else {
+                /** acadamey code 값, token refresh */
+                Axios.patch(
+                    `${apiUrl}/auth`,
+                    {
+                        academyCode: res[0].data[0]['academy_code'],
+                    },
+                    { withCredentials: true },
+                )
+                    .then((res2) => {
+                        console.log('refresh token!');
+                    })
+                    .catch((err) => {
+                        console.log('refresh error...');
+                        console.error(err);
+                    });
 
-                            /** 클래스 페이지로 redirect  */
-                            history.push(`${$_classDefault}/${res.data[0]['idx']}/share`);
-                        })
-                        .catch((err) => {
-                            console.log('post error...');
-                            console.error(err);
-                            if (err.response.data.code === 'ER_DUP_ENTRY') {
-                                setErrorMessage('이미 추가된 클래스 입니다.');
-                                setInputError(true);
-                            }
-                        });
+                /**  특정 학원생 academy code update */
+                Axios.put(
+                    `${apiUrl}/students/academy-code`,
+                    {
+                        academyCode: res[0].data[0]['academy_code'],
+                    },
+                    { withCredentials: true },
+                )
+                    .then((res2) => {
+                        console.log('update academy code!');
+                    })
+                    .catch((err) => {
+                        console.log('update error...');
+                        console.error(err);
+                    });
 
-                    setInputError(false);
-                } else {
-                    setErrorMessage('해당 학원의 코드값이 아닙니다.');
-                    setInputError(true);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+                /** student-in-class table에 학생 정보 insert */
+                Axios.post(
+                    `${apiUrl}/students-in-class`,
+                    {
+                        class_number: res[0].data[0]['idx'],
+                        student_id: sessions.authId,
+                        class_code: inputState,
+                        academy_code: res[0].data[0]['academy_code'],
+                    },
+                    { withCredentials: true },
+                )
+                    .then((res2) => {
+                        alert('클래스에 성공적으로 입장하였습니다 :)');
+
+                        /** 클래스 페이지로 redirect  */
+                        history.push(`${$_classDefault}/${res[0].data[0]['idx']}/share`);
+                    })
+                    .catch((err) => {
+                        console.log('post error...');
+                        console.error(err);
+                        if (err.response.data.code === 'ER_DUP_ENTRY') {
+                            setErrorMessage('이미 추가된 클래스 입니다.');
+                            setInputError(true);
+                        }
+                    });
+
+                setInputError(false);
+            }
+        } catch (e) {
+            alert('서버 에러입니다:(\n아래 기술 지원으로 메일 문의 또는 고객센터로 전화 문의 부탁드리겠습니다.');
+            console.error(e);
+        }
+
+        // Axios.get(`${apiUrl}/classes/class-code/${inputState}`, { withCredentials: true })
+        //     .then((res) => {
+        //         // 1. 해당 클래스 코드가 존재하는지 조회
+        //         if (!res.data[0]['is_exists']) {
+        //             setErrorMessage('존재하지 않는 코드이거나 아직 생성되지 않은 클래스입니다.');
+        //             setInputError(true);
+        //         }
+
+        //         // 3. 해당 클래스 코드가 다른 학원 클래스 코드인지 확인
+        //         if (sessions.academyCode === '' || sessions.academyCode === res.data[0]['academy_code']) {
+        //             /** acadamey code 값, token refresh */
+        //             Axios.patch(
+        //                 `${apiUrl}/auth`,
+        //                 {
+        //                     academyCode: res.data[0]['academy_code'],
+        //                 },
+        //                 { withCredentials: true },
+        //             )
+        //                 .then((res2) => {
+        //                     console.log('refresh token!');
+        //                 })
+        //                 .catch((err) => {
+        //                     console.log('refresh error...');
+        //                     console.error(err);
+        //                 });
+
+        //             /**  특정 학원생 academy code update */
+        //             Axios.put(
+        //                 `${apiUrl}/students/academy-code`,
+        //                 {
+        //                     academyCode: res.data[0]['academy_code'],
+        //                 },
+        //                 { withCredentials: true },
+        //             )
+        //                 .then((res2) => {
+        //                     console.log('update academy code!');
+        //                 })
+        //                 .catch((err) => {
+        //                     console.log('update error...');
+        //                     console.error(err);
+        //                 });
+
+        //             /** student-in-class table에 학생 정보 insert */
+        //             Axios.post(
+        //                 `${apiUrl}/students-in-class`,
+        //                 {
+        //                     class_number: res.data[0]['idx'],
+        //                     student_id: sessions.authId,
+        //                     class_code: inputState,
+        //                     academy_code: res.data[0]['academy_code'],
+        //                 },
+        //                 { withCredentials: true },
+        //             )
+        //                 .then((res2) => {
+        //                     alert('클래스에 성공적으로 입장하였습니다 :)');
+
+        //                     /** 클래스 페이지로 redirect  */
+        //                     history.push(`${$_classDefault}/${res.data[0]['idx']}/share`);
+        //                 })
+        //                 .catch((err) => {
+        //                     console.log('post error...');
+        //                     console.error(err);
+        //                     if (err.response.data.code === 'ER_DUP_ENTRY') {
+        //                         setErrorMessage('이미 추가된 클래스 입니다.');
+        //                         setInputError(true);
+        //                     }
+        //                 });
+
+        //             setInputError(false);
+        //         } else {
+        //             setErrorMessage('해당 학원의 코드값이 아닙니다.');
+        //             setInputError(true);
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.error(err);
+        //     });
     };
 
     useEffect(() => {
