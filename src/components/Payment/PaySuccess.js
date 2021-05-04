@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import WarningIcon from '@material-ui/icons/Warning';
 import '../../styles/pay_state.scss';
 import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
@@ -44,6 +45,10 @@ function PaySuccess() {
     useEffect(() => {
         if (sessions.academyPlanId) {
             setNowPlan(sessions.academyPlanId === 1 ? 'Free' : sessions.academyPlanId === 2 ? 'Standard' : 'Premium');
+            if (sessions.academyPlanId === 1) {
+                setCurrentPlans('Free');
+                setOrderPlan('Free');
+            }
             // 현재 유효한 플랜이 있는지 검사
             Axios.get(`${apiUrl}/payments/order-history/current-valid`, {
                 params: { planId: sessions.academyPlanId },
@@ -73,7 +78,7 @@ function PaySuccess() {
     }, [sessions]);
 
     useEffect(() => {
-        if (cardCompany && currentPlans) setLoaded(true);
+        if ((cardCompany && currentPlans) || currentPlans === 'Free') setLoaded(true);
     }, [cardCompany, currentPlans]);
 
     return (
@@ -81,8 +86,23 @@ function PaySuccess() {
             {loaded ? (
                 <>
                     <div className="header-text">
-                        감사합니다 고객님! <br /> <span id={`color-${orderPlan}`}>{orderPlan}</span> 플랜 서비스 구독{' '}
-                        {isUpdate ? '변경 ' : ''}신청이 완료되었습니다 :)
+                        감사합니다! <br /> <span id={`color-${orderPlan}`}>{orderPlan}</span> 플랜 서비스 구독 {isUpdate ? '변경 ' : ''}
+                        신청이 완료되었습니다 :)
+                        {isUpdate ? (
+                            <p
+                                style={{
+                                    alignItems: 'center',
+                                    display: 'flex',
+                                    marginTop: '1.2rem',
+                                    marginBottom: '-1rem',
+                                    fontSize: '1.1rem',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                <WarningIcon fontSize="small" style={{ marginRight: '0.18rem' }} />
+                                변경된 플랜은 다음 결제일 이후 부터 적용됩니다.
+                            </p>
+                        ) : null}
                     </div>
 
                     <section>

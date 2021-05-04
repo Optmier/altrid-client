@@ -72,9 +72,8 @@ function NowPlan() {
                 withCredentials: true,
             })
                 .then((validPlan) => {
-                    console.log(validPlan);
+                    console.log(validPlan.data);
                     if (validPlan.data && validPlan.data.length > 0) {
-                        console.log(validPlan.data[0]);
                         const starts = validPlan.data[0].plan_start;
                         const ends = validPlan.data[0].plan_end;
                         setPlanDurationDate(`${moment(starts).format('yyyy년 MM월 DD일')} - ${moment(ends).format('yyyy년 MM월 DD일')}`);

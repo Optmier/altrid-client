@@ -83,6 +83,10 @@ function Confirm({ location }) {
 
     // 쿠폰 발급 메소드(현재는 기간 한정 서비스이므로 일부 데이터 고정)
     const giveCouponsFn = (isUpdate) => {
+        if (productPlan === 'Free') {
+            window.location.href = window.location.origin + '/pay-state/success';
+            return;
+        }
         // 쿠폰 아이디(하기는 플랜별 일시 할인 쿠폰 적용)
         const couponIds = [`personal_${productPlan.toLowerCase()}`];
         // 주문번호는 매월로 고정
@@ -153,7 +157,7 @@ function Confirm({ location }) {
             const conf = window.confirm('선택하신 플랜을 신청하시겠습니까?');
             if (!conf) return;
             const currentDate = new Date();
-            if (isPaymentsExists) {
+            if (isPaymentsExists || productPlan === 'Free') {
                 // 결제정보가 존재하면 쿠폰데이터 및 플랜 주문 정보 넣고 성공 페이지로 넘김
                 console.log('결제정보 존재');
                 console.log(couponSelectId);
@@ -180,6 +184,19 @@ function Confirm({ location }) {
                         });
                 } else {
                     // 유효한 플랜이 없으면 새로 주문으로 플랜을 추가함
+                    // 다만 무료 플랜을 선택한 경우에는 원래 유효한 플랜이 있는 상태에서 변경 가능하므로, 없는 경우는 에러처리함.
+                    if (productPlan === 'Free') {
+                        // alert('오류 발생으로 관리자에게 문의 바랍니다!');
+                        Axios.patch(`${apiUrl}/payments/plan-free`, {}, { withCredentials: true })
+                            .then((res) => {
+                                console.log(res);
+                                window.location.href = window.location.origin + '/pay-state/success';
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                            });
+                        return;
+                    }
                     const newOrderNo = currentDate.getTime() + '_' + generateUid.current(11);
                     Axios.post(
                         `${apiUrl}/payments/order-history`,
@@ -358,77 +375,84 @@ function Confirm({ location }) {
                 </section>
                 {nowPlan === productPlan ? null : (
                     <>
-                        <section className="payment-total">
-                            <div className="payment-header">견적 미리보기</div>
-                            <div className="payment-total-table">
-                                <div className="total-warn">
-                                    <li>
-                                        * 정확한 가격은 매달 정기 결제일 전날까지의 <b>최대 학생 수</b>를 토대로 산출됩니다.
-                                    </li>
-                                    <li>
-                                        * 학생수는 학원 코드를 공유하는 <b>모든 클래스들에 초대된 학생 수</b>를 더한 값입니다.
-                                    </li>
-                                    <li>
-                                        * 한명의 학생이 여러 클래스에 초대가 되어도 <b>한 명</b>으로 산출 됩니다.
-                                    </li>
-                                    <li>
-                                        * 쿠폰 추가는 <b>마이페이지</b>에서 가능합니다.
-                                    </li>
-                                </div>
+                        {productPlan === 'Free' ? null : (
+                            <section className="payment-total">
+                                <div className="payment-header">견적 미리보기</div>
+                                <div className="payment-total-table">
+                                    <div className="total-warn">
+                                        <li>
+                                            * 정확한 가격은 매달 정기 결제일 전날까지의 <b>최대 학생 수</b>를 토대로 산출됩니다.
+                                        </li>
+                                        <li>
+                                            * 학생수는 학원 코드를 공유하는 <b>모든 클래스들에 초대된 학생 수</b>를 더한 값입니다.
+                                        </li>
+                                        <li>
+                                            * 한명의 학생이 여러 클래스에 초대가 되어도 <b>한 명</b>으로 산출 됩니다.
+                                        </li>
+                                        <li>
+                                            * 쿠폰 추가는 <b>마이페이지</b>에서 가능합니다.
+                                        </li>
+                                    </div>
 
-                                <div className="row">
-                                    <div className="total-left">
-                                        <span className="total-title">결제 상품</span>
-                                        <span>{convertPriceString(productPice)}원</span>
+                                    <div className="row">
+                                        <div className="total-left">
+                                            <span className="total-title">결제 상품</span>
+                                            <span>{convertPriceString(productPice)}원</span>
+                                        </div>
+                                        <div className="total-right">{convertPriceString(productPice)}</div>
                                     </div>
-                                    <div className="total-right">{convertPriceString(productPice)}</div>
-                                </div>
-                                <div className="row">
-                                    <div className="total-left">
-                                        <span className="total-title">예상 학생수</span>
-                                        <select ref={selectBoxRef} onChange={handleSelectChange} data-content="">
-                                            {Array.from({ length: 63 }, (v, i) => (
-                                                <option key={i} value={i + 1}>
-                                                    {i + 1} 명
-                                                </option>
-                                            ))}
-                                        </select>
+                                    <div className="row">
+                                        <div className="total-left">
+                                            <span className="total-title">예상 학생수</span>
+                                            <select ref={selectBoxRef} onChange={handleSelectChange} data-content="">
+                                                {Array.from({ length: 63 }, (v, i) => (
+                                                    <option key={i} value={i + 1}>
+                                                        {i + 1} 명
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="total-right student-num">x {studentNum}</div>
                                     </div>
-                                    <div className="total-right student-num">x {studentNum}</div>
-                                </div>
-                                <div className="row">
-                                    <div className="total-left">
-                                        <span className="total-title">쿠폰 선택</span>
-                                        <select ref={selectBoxRef} onChange={handleSelectCoupon} value={couponSelectVlue} data-content="">
-                                            <option value="">적용 쿠폰</option>
-                                            {academyApproved && couponMenus.find((d) => d.coupon_id === `group`) ? (
-                                                <option value="1" data-id="group">
-                                                    [학원소비자한정]학생당 1천원 할인 쿠폰
-                                                </option>
-                                            ) : (
-                                                <option value="0">적용 쿠폰이 없습니다.</option>
-                                            )}
-                                        </select>
+                                    <div className="row">
+                                        <div className="total-left">
+                                            <span className="total-title">쿠폰 선택</span>
+                                            <select
+                                                ref={selectBoxRef}
+                                                onChange={handleSelectCoupon}
+                                                value={couponSelectVlue}
+                                                data-content=""
+                                            >
+                                                <option value="">적용 쿠폰</option>
+                                                {academyApproved && couponMenus.find((d) => d.coupon_id === `group`) ? (
+                                                    <option value="1" data-id="group">
+                                                        [학원소비자한정]학생당 1천원 할인 쿠폰
+                                                    </option>
+                                                ) : (
+                                                    <option value="0">적용 쿠폰이 없습니다.</option>
+                                                )}
+                                            </select>
+                                        </div>
+                                        <div className="total-right">- {convertPriceString(discountPrice)}</div>
                                     </div>
-                                    <div className="total-right">- {convertPriceString(discountPrice)}</div>
-                                </div>
 
-                                <div className="total-footer">
-                                    <div className="total-footer-top">
-                                        <div className="title">부가세(10%)</div>
-                                        <div className="num">₩ {convertPriceString(tax)}원</div>
-                                    </div>
-                                    <div className="total-footer-bottom">
-                                        <div className="title">상품 금액</div>
-                                        <div className="num">₩ {convertPriceString(payPrice)}원</div>
-                                    </div>
-                                    <div className="total-footer-bottom">
-                                        <div className="title">총 예상 금액</div>
-                                        <div className="num">₩ {convertPriceString(totalPrice)}원</div>
+                                    <div className="total-footer">
+                                        <div className="total-footer-top">
+                                            <div className="title">부가세(10%)</div>
+                                            <div className="num">₩ {convertPriceString(tax)}원</div>
+                                        </div>
+                                        <div className="total-footer-bottom">
+                                            <div className="title">상품 금액</div>
+                                            <div className="num">₩ {convertPriceString(payPrice)}원</div>
+                                        </div>
+                                        <div className="total-footer-bottom">
+                                            <div className="title">총 예상 금액</div>
+                                            <div className="num">₩ {convertPriceString(totalPrice)}원</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
+                            </section>
+                        )}
                         {/* <section className="payment-select">
                             <div className="payment-header">결제 수단 선택</div>
                             <TossAddCard />

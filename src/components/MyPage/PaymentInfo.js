@@ -164,7 +164,8 @@ function PaymentInfo() {
                                         .trim()}
                                 </div>
                                 <div className="table-desc">
-                                    {data.payment_price * 0.9}원 <span>(+{data.payment_price * 0.1}원 부가세)</span>
+                                    {Math.round(data.payment_price / 1.1)}원{' '}
+                                    <span>(+{Math.round((data.payment_price / 1.1) * 0.1)}원 부가세)</span>
                                 </div>
                                 <div className="table-desc">{data.payment_price}원</div>
                             </div>

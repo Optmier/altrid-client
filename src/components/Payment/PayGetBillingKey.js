@@ -21,7 +21,7 @@ function PayGetBillingKey({ method, history }) {
         const customerKey = urlSearchParams.get('customerKey');
         const authKey = urlSearchParams.get('authKey');
         const productPlan = urlSearchParams.get('plan');
-        const productPlanId = MenuData[productPlan].id;
+        const productPlanId = method !== 'updatePlan' ? null : MenuData[productPlan].id;
         const couponSelectId = urlSearchParams.get('coupon');
 
         const generateUid = new ShortUniqueId();
@@ -34,7 +34,7 @@ function PayGetBillingKey({ method, history }) {
         }).catch((err) => {
             console.error(err.response);
             alert('키를 발급하는 중 문제가 발생했습니다.');
-            // history.goBack();
+            history.goBack();
         });
 
         // 쿠폰 발급 메소드(현재는 기간 한정 서비스이므로 일부 데이터 고정)
@@ -163,6 +163,7 @@ function PayGetBillingKey({ method, history }) {
                                 } else {
                                     // 카드 추가만 하는 경우
                                     alert('결제 카드가 성공적으로 추가되었습니다.');
+                                    history.goBack();
                                 }
                             })
                             .catch((err) => {
@@ -175,13 +176,18 @@ function PayGetBillingKey({ method, history }) {
                 getBillingKey.then((res) => {
                     // 결제 정보 업데이트 하기
                     if (res.data) {
-                        Axios.post(`${apiUrl}/payments/payment-info`, {
-                            ...res.data,
-                            pgName: '토스페이먼츠',
-                        })
+                        Axios.patch(
+                            `${apiUrl}/payments/payment-info`,
+                            {
+                                ...res.data,
+                                pgName: '토스페이먼츠',
+                            },
+                            { withCredentials: true },
+                        )
                             .then((afterModify) => {
                                 console.log(afterModify);
                                 alert('결제 카드가 성공적으로 변경되었습니다.');
+                                history.goBack();
                             })
                             .catch((err) => {
                                 console.error(err);

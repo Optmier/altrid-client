@@ -17,11 +17,14 @@ function CouponInfo() {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     };
 
+    const tempPrepare = () => {
+        alert('현재 기능 준비 중 입니다.');
+    };
+
     useEffect(() => {
         if (!academyPlanId) return;
         Axios.get(`${apiUrl}/payments/coupon-history`, { withCredentials: true })
             .then((resCouponHistory) => {
-                console.log(resCouponHistory.data);
                 setCouponHistory(resCouponHistory.data);
             })
             .catch((errCouponHistory) => {
@@ -34,8 +37,10 @@ function CouponInfo() {
             <div className="mypage-contents white-box">
                 <div className="coupon-info">
                     <div className="coupon-info-header">
-                        <input placeholder="쿠폰 번호 입력" value={couponState} onChange={handleChange} />
-                        <button className="btn-purple">쿠폰 추가</button>
+                        <input placeholder="쿠폰 번호 입력" value={couponState} onChange={handleChange} onClick={tempPrepare} />
+                        <button className="btn-purple" onClick={tempPrepare}>
+                            쿠폰 추가
+                        </button>
                     </div>
                     <div className="coupon-info-table">
                         <div className="table-title">이름</div>
