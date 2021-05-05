@@ -326,7 +326,25 @@ function Login({ history }) {
                         console.error(errorAcademyCreation);
                     });
             } else {
-                addTeacherMethod();
+                console.log('start !', academyCode);
+                Axios.get(`${apiUrl}/plan-info/login-planId/${academyCode}`, { academyCode: academyCode }, { withCredentials: true })
+                    .then((res) => {
+                        const { teacherNums, planId } = res.data[0];
+
+                        //planId = 1 : teacherNums <= 1
+                        //planId = 2 : teacherNums <= 5
+                        //planId = 3 : teacherNums <= 10
+
+                        // 여기서는 자기 자신 미포함 수로 체크
+                        if ((planId === 1 && teacherNums < 1) || (planId === 2 && teacherNums < 5) || (planId === 3 && teacherNums < 10))
+                            addTeacherMethod();
+                        else {
+                            alert('선생님 초대인원이 초과되었습니다:(\n학원 개설자에게 문의해주세요!');
+                        }
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
             }
         }
     };
