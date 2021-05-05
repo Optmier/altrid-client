@@ -15,7 +15,7 @@ import { loadTossPayments } from '@tosspayments/sdk';
  */
 import ShortUniqueId from 'short-unique-id';
 
-function Confirm({ location }) {
+function Confirm({ location, history }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const selectBoxRef = useRef();
     const tossPayments = useRef();
@@ -84,7 +84,7 @@ function Confirm({ location }) {
     // 쿠폰 발급 메소드(현재는 기간 한정 서비스이므로 일부 데이터 고정)
     const giveCouponsFn = (isUpdate) => {
         if (productPlan === 'Free') {
-            window.location.href = window.location.origin + '/pay-state/success';
+            window.location.replace(window.location.origin + '/pay-state/success');
             return;
         }
         // 쿠폰 아이디(하기는 플랜별 일시 할인 쿠폰 적용)
@@ -122,7 +122,7 @@ function Confirm({ location }) {
             .then((giveCouponResults) => {
                 console.log(giveCouponResults);
                 // 성공 결과창으로 이동
-                window.location.href = window.location.origin + '/pay-state/success';
+                window.location.replace(window.location.origin + '/pay-state/success');
             })
             .catch((giveCouponErr) => {
                 alert('쿠폰을 등록 오류가 발생하였습니다.\n관리자의 조치를 받으시기 바랍니다.');
@@ -133,7 +133,7 @@ function Confirm({ location }) {
     const planChangeActionClick = () => {
         if (!sessions.authId) return alert('사용자 인증에 실패하였습니다.');
         if (currentPlans && currentPlans.next_plan_id === productPlanId) {
-            const conf = window.confirm('플랜 변경 신청을 취소하시겠습니까?');
+            const conf = window.confirm('플랜 변경을 취소하시겠습니까?');
             if (!conf) return;
             // 플랜 변경 신청을 취소하면 현재 플랜으로 업데이트 해서 원래 플랜으로 돌아감
             const idx = currentPlans.idx;
@@ -147,7 +147,7 @@ function Confirm({ location }) {
             )
                 .then((updatePlanResult) => {
                     console.log(updatePlanResult);
-                    window.location.reload();
+                    window.history.back();
                 })
                 .catch((updatePlanErr) => {
                     alert('플랜 변경에 오류가 발생하였습니다.\n관리자의 조치를 받으시기 바랍니다.');
