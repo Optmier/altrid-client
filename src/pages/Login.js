@@ -326,7 +326,6 @@ function Login({ history }) {
                         console.error(errorAcademyCreation);
                     });
             } else {
-                console.log('start !', academyCode);
                 Axios.get(`${apiUrl}/plan-info/login-planId/${academyCode}`, { academyCode: academyCode }, { withCredentials: true })
                     .then((res) => {
                         const { teacherNums, planId } = res.data[0];
