@@ -211,10 +211,12 @@ function Price({ history }) {
     };
 
     const goToPayments = (e) => {
-        if (academyApproved) {
-            history.push(`/payment?type=${e.target.name}`);
+        console.log(e.target);
+        const selectedPlan = e.target.dataset.name || e.target.name;
+        if (academyApproved || selectedPlan === 'Free') {
+            history.push(`/payment?type=${selectedPlan}`);
         } else {
-            handleDialogOpen(e.target.name);
+            handleDialogOpen(selectedPlan);
         }
     };
 
@@ -396,8 +398,8 @@ function Price({ history }) {
                             </div>
                             {Object.keys(MenuData).map((i, idx) => (
                                 <div key={idx} className="col-box">
-                                    <div className="menu-box-title">
-                                        <div className="header" id={'color-' + i}>
+                                    <div className="menu-box-title" data-name={i} onClick={goToPayments}>
+                                        <div className="header" id={'color-' + i} data-name={i}>
                                             {i}
                                         </div>
 

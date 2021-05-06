@@ -3,6 +3,10 @@ import styled from 'styled-components';
 import PlanInfo from '../../datas/PlanInfo.json';
 import { useSelector } from 'react-redux';
 import BackdropComponent from '../essentials/BackdropComponent';
+import Axios from 'axios';
+import { apiUrl } from '../../configs/configs';
+import moment from 'moment-timezone';
+import { withRouter } from 'react-router';
 
 const StylePossible = styled.div`
     display: flex;
@@ -14,6 +18,30 @@ const StylePossible = styled.div`
 
     & svg {
         margin-left: 10px;
+    }
+`;
+
+const StyledPlanName = styled.div`
+    display: flex;
+    align-items: center;
+
+    &.color-Free {
+        color: rgba(19, 226, 161, 1);
+    }
+    &.color-Standard {
+        color: rgba(109, 42, 250, 1);
+    }
+    &.color-Premium {
+        color: rgba(59, 22, 138, 1);
+    }
+
+    & button.inner {
+        background-color: #707070;
+        box-shadow: none;
+        border-radius: 6px;
+        color: white;
+        margin-left: 1.5rem;
+        padding: 6px 16px;
     }
 `;
 
@@ -49,18 +77,51 @@ function Possible({ able }) {
         </StylePossible>
     );
 }
-function NowPlan() {
+function NowPlan({ history }) {
     const [nowPlan, setNowPlan] = useState('Free');
+    const [nextPlan, setNextPlan] = useState('-');
     const { academyPlanId } = useSelector((state) => state.RdxSessions);
     const { data } = useSelector((state) => state.planInfo);
+    const [planDurationDate, setPlanDurationDate] = useState('-');
 
     const handlePlanBtn = () => {
-        alert('현재는 베타 서비스 기간으로, 플랜변경이 불가능합니다!');
+        // alert('현재는 베타 서비스 기간으로, 플랜변경이 불가능합니다!');
+        history.push('/pricing');
+    };
+
+    const handleUnsubscribe = () => {
+        const confirm = window.confirm('플랜 구독을 해지하시겠습니까?\n현재 플랜 이용일 이후에 해지됩니다.');
+        if (confirm) history.push('/payment?type=Free');
+    };
+
+    const handleCancelModifPlan = () => {
+        history.push(`/payment?type=${nextPlan}`);
     };
 
     useEffect(() => {
         if (academyPlanId && data) {
             setNowPlan(academyPlanId === 1 ? 'Free' : academyPlanId === 2 ? 'Standard' : 'Premium');
+
+            // 현재 유효한 플랜이 있는지 검사
+            Axios.get(`${apiUrl}/payments/order-history/current-valid`, {
+                params: { planId: academyPlanId },
+                withCredentials: true,
+            })
+                .then((validPlan) => {
+                    console.log(validPlan.data);
+                    if (validPlan.data && validPlan.data.length > 0) {
+                        const starts = validPlan.data[0].plan_start;
+                        const ends = validPlan.data[0].plan_end;
+                        const nextPlanId = validPlan.data[0].next_plan_id;
+                        setPlanDurationDate(`${moment(starts).format('yyyy년 MM월 DD일')} - ${moment(ends).format('yyyy년 MM월 DD일')}`);
+                        setNextPlan(nextPlanId === 1 ? 'Free' : nextPlanId === 2 ? 'Standard' : 'Premium');
+                    } else {
+                        setPlanDurationDate('-');
+                    }
+                })
+                .catch((validPlanError) => {
+                    console.error('현재 유효한 플랜 정보를 불러오는데 오류가 발생했습니다.', validPlanError);
+                });
         }
     }, [academyPlanId, data]);
 
@@ -71,11 +132,30 @@ function NowPlan() {
                 <div className="now-plan-left">
                     <div className="row">
                         <div className="row-title">현재 플랜</div>
-                        <div className="row-desc">{nowPlan}</div>
+                        <StyledPlanName className={`row-desc color-${nowPlan}`}>
+                            {nowPlan}{' '}
+                            {nowPlan !== 'Free' && nextPlan !== 'Free' ? (
+                                <button className="inner" onClick={handleUnsubscribe}>
+                                    플랜 구독 해지
+                                </button>
+                            ) : null}
+                        </StyledPlanName>
                     </div>
                     <div className="row">
-                        <div className="row-title">사용 기간</div>
-                        <div className="row-desc">현재는 베타 서비스 기간입니다.</div>
+                        <div className="row-title">이용 기간</div>
+                        {/* <div className="row-desc">현재는 베타 서비스 기간입니다.</div> */}
+                        <div className="row-desc">{planDurationDate}</div>
+                    </div>
+                    <div className="row">
+                        <div className="row-title">다음 플랜</div>
+                        <StyledPlanName className={`row-desc color-${nextPlan}`}>
+                            {nextPlan}{' '}
+                            {nextPlan === nowPlan ? null : (
+                                <button className="inner" onClick={handleCancelModifPlan}>
+                                    변경 취소
+                                </button>
+                            )}
+                        </StyledPlanName>
                     </div>
                 </div>
                 <div className="now-plan-right">
@@ -117,4 +197,4 @@ function NowPlan() {
     );
 }
 
-export default NowPlan;
+export default withRouter(NowPlan);
