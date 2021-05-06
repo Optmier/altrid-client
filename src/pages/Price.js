@@ -211,12 +211,18 @@ function Price({ history }) {
     };
 
     const goToPayments = (e) => {
-        console.log(e.target);
-        const selectedPlan = e.target.dataset.name || e.target.name;
-        if (academyApproved || selectedPlan === 'Free') {
-            history.push(`/payment?type=${selectedPlan}`);
-        } else {
-            handleDialogOpen(selectedPlan);
+        const { mode, name } = e.currentTarget.dataset;
+
+        if (name !== 'Free') {
+            if (mode === 'web') {
+                if (academyApproved) {
+                    history.push(`/payment?type=${name}`);
+                } else {
+                    handleDialogOpen(name);
+                }
+            } else {
+                history.push(`/pricing/details?plan=${name}`);
+            }
         }
     };
 
@@ -307,11 +313,6 @@ function Price({ history }) {
                                 베타 기간 한정, 모든 기능에 대하여 <br />
                                 할인된 가격으로 제공해드립니다.
                             </div>
-                            {/* <div className="header-btn">
-                                <button name="Free" onClick={goToPayments}>
-                                    무료 체험하기
-                                </button>
-                            </div> */}
                         </div>
                     </ClassWrapper>
                 </div>
@@ -397,14 +398,14 @@ function Price({ history }) {
                                 </button>
                             </div>
                             {Object.keys(MenuData).map((i, idx) => (
-                                <div key={idx} className="col-box">
-                                    <div className="menu-box-title" data-name={i} onClick={goToPayments}>
-                                        <div className="header" id={'color-' + i} data-name={i}>
+                                <div key={idx} className="col-box" data-mode="web" data-name={i} onClick={goToPayments}>
+                                    <div className="menu-box-title">
+                                        <div className="header" id={'color-' + i}>
                                             {i}
                                         </div>
 
                                         {i !== 'Free' ? (
-                                            <button name={i} onClick={goToPayments}>
+                                            <button name={i}>
                                                 <svg
                                                     width="24"
                                                     height="24"
@@ -420,12 +421,27 @@ function Price({ history }) {
                                             </button>
                                         ) : null}
                                     </div>
+                                    <div className="menu-box-price">
+                                        <div className="pre-price">
+                                            <span className="text">{convertPriceString(MenuData[i]['price'])}</span> <span>원</span>
+                                        </div>
+                                        <div className="current-price" id={'color-' + i}>
+                                            {convertPriceString(MenuData[i]['discount_' + priceState])}
+                                            <span>원</span>
+                                            <span style={{ color: '#828282', paddingLeft: '10px' }}>(학생당/월)</span>
+                                        </div>
+                                    </div>
+                                    <div className="menu-box-desc">{MenuData[i]['desc']}</div>
+                                </div>
+                            ))}
 
+                            {Object.keys(MenuData).map((i, idx) => (
+                                <div key={idx} className="col-box-mobile" data-mode="mobile" data-name={i} onClick={goToPayments}>
                                     <div className="menu-box-title-mobile">
                                         <div className="header" id={'color-' + i}>
                                             {i}
                                         </div>
-                                        <Link to={`/pricing/details?plan=${i}`}>
+                                        {i !== 'Free' ? (
                                             <div className="mobile-header-more">
                                                 결제 및 자세히 보기
                                                 <svg
@@ -441,7 +457,7 @@ function Price({ history }) {
                                                     />
                                                 </svg>
                                             </div>
-                                        </Link>
+                                        ) : null}
                                     </div>
 
                                     <div className="menu-box-price">

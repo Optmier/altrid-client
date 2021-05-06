@@ -36,12 +36,18 @@ const StyledPlanName = styled.div`
     }
 
     & button.inner {
-        background-color: #707070;
+        background-color: #9f9f9f;
         box-shadow: none;
         border-radius: 6px;
         color: white;
         margin-left: 1.5rem;
         padding: 6px 16px;
+    }
+    & button.inner.upgrade {
+        background-color: rgba(19, 226, 161, 1);
+    }
+    & button.inner.modify {
+        background-color: #3f1990;
     }
 `;
 
@@ -134,11 +140,11 @@ function NowPlan({ history }) {
                         <div className="row-title">현재 플랜</div>
                         <StyledPlanName className={`row-desc color-${nowPlan}`}>
                             {nowPlan}{' '}
-                            {nowPlan !== 'Free' && nextPlan !== 'Free' ? (
+                            {/* {nowPlan !== 'Free' && nextPlan !== 'Free' ? (
                                 <button className="inner" onClick={handleUnsubscribe}>
                                     플랜 구독 해지
                                 </button>
-                            ) : null}
+                            ) : null} */}
                         </StyledPlanName>
                     </div>
                     <div className="row">
@@ -150,7 +156,15 @@ function NowPlan({ history }) {
                         <div className="row-title">다음 플랜</div>
                         <StyledPlanName className={`row-desc color-${nextPlan}`}>
                             {nextPlan}{' '}
-                            {nextPlan === nowPlan ? null : (
+                            {nowPlan === 'Free' ? (
+                                <button className="inner upgrade" onClick={handlePlanBtn}>
+                                    플랜 업그레이드
+                                </button>
+                            ) : nowPlan === nextPlan ? (
+                                <button className="inner modify" onClick={handlePlanBtn}>
+                                    플랜 변경
+                                </button>
+                            ) : (
                                 <button className="inner" onClick={handleCancelModifPlan}>
                                     변경 취소
                                 </button>
@@ -159,9 +173,11 @@ function NowPlan({ history }) {
                     </div>
                 </div>
                 <div className="now-plan-right">
-                    <button className="btn-purple" onClick={handlePlanBtn}>
-                        플랜 변경
-                    </button>
+                    {nowPlan === 'Free' || nextPlan === 'Free' ? null : (
+                        <button className="btn-gray" onClick={handleUnsubscribe}>
+                            구독 해지
+                        </button>
+                    )}
                 </div>
             </div>
             <div className="mypage-contents white-box plan-info">

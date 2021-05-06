@@ -339,7 +339,11 @@ function Confirm({ location, history }) {
                     </div>
                 </section>
                 <section className="payment-confirm">
-                    <div className="payment-header">플랜 변경 상품</div>
+                    {productPlan === 'Free' ? (
+                        <div className="payment-header">서비스 구독을 해지하시겠습니까?</div>
+                    ) : (
+                        <div className="payment-header">플랜 변경 상품</div>
+                    )}
                     <div className="payment-confirm-box">
                         {nowPlan === productPlan ? (
                             <h5>현재 플랜과 동일 플랜 상품을 선택하셨습니다.</h5>
@@ -375,7 +379,7 @@ function Confirm({ location, history }) {
                 </section>
                 {nowPlan === productPlan ? null : (
                     <>
-                        {productPlan === 'Free' ? null : (
+                        {productPlan === 'Free' || (currentPlans && productPlanId === currentPlans.next_plan_id) ? null : (
                             <section className="payment-total">
                                 <div className="payment-header">견적 미리보기</div>
                                 <div className="payment-total-table">
@@ -464,19 +468,25 @@ function Confirm({ location, history }) {
                                 }`}
                                 onClick={planChangeActionClick}
                             >
-                                {currentPlans && productPlanId === currentPlans.next_plan_id ? '플랜 변경 취소' : '플랜 변경하기'}
+                                {productPlan === 'Free'
+                                    ? '구독 해지'
+                                    : currentPlans && productPlanId === currentPlans.next_plan_id
+                                    ? '플랜 변경 취소'
+                                    : '플랜 변경하기'}
                             </button>
                         </section>
                     </>
                 )}
 
-                <section className="payment-warn">
-                    <li>- 구독형 서비스로, 1개월마다 정기결제 됩니다.</li>
-                    <li>- 입력 전에 쿠폰의 유효기간을 반드시 확인해주시기 바랍니다.</li>
-                    <li>- 쿠폰 입력 시 최종 할인가격을 확인할 수 있습니다. </li>
-                    <li>- 쿠폰 오류 시, 오류문구, 사용자 계정과 쿠폰 번호를 아래 메일로 전달 부탁드립니다.</li>
-                    <li>- 문의사항은 rikjeon94@optmier.com 으로 연락 부탁드립니다.</li>
-                </section>
+                {productPlan === 'Free' ? null : (
+                    <section className="payment-warn">
+                        <li>- 구독형 서비스로, 1개월마다 정기결제 됩니다.</li>
+                        <li>- 입력 전에 쿠폰의 유효기간을 반드시 확인해주시기 바랍니다.</li>
+                        <li>- 쿠폰 입력 시 최종 할인가격을 확인할 수 있습니다. </li>
+                        <li>- 쿠폰 오류 시, 오류문구, 사용자 계정과 쿠폰 번호를 아래 메일로 전달 부탁드립니다.</li>
+                        <li>- 문의사항은 rikjeon94@optmier.com 으로 연락 부탁드립니다.</li>
+                    </section>
+                )}
             </div>
         </>
     );

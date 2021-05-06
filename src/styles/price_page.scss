@@ -144,9 +144,7 @@ $secondColor: #3b168a;
                         }
                     }
                 }
-                & .menu-box-title-mobile {
-                    display: none;
-                }
+
                 & .menu-box-price {
                     display: flex;
                     flex-direction: column;
@@ -184,6 +182,10 @@ $secondColor: #3b168a;
                     color: #575555;
                     line-height: 24px;
                 }
+            }
+
+            & .col-box-mobile {
+                display: none;
             }
         }
 
@@ -273,13 +275,19 @@ $secondColor: #3b168a;
                     & .col {
                         margin: 0 0 20px 0;
                     }
-                    & .col-box + .col-box {
-                        margin: 20px 0 0 0;
-                    }
                     & .col-box {
-                        & .menu-box-title {
-                            display: none;
-                        }
+                        display: none;
+                    }
+                    & .col-box-mobile {
+                        display: block;
+                        background-color: white;
+                        box-shadow: 7px 14px 23px rgba(23, 18, 63, 0.120028);
+                        border-radius: 11px;
+                        padding: 20px 18px;
+                        box-sizing: border-box;
+                        cursor: pointer;
+                        margin-bottom: 20px;
+
                         & .menu-box-title-mobile {
                             display: flex;
                             justify-content: space-between;
@@ -290,19 +298,54 @@ $secondColor: #3b168a;
                                 font-size: 1.75rem;
                                 font-weight: 600;
                             }
-                            & > a {
-                                display: block;
-                                & .mobile-header-more {
-                                    display: flex;
-                                    align-items: center;
-                                    font-size: 12px;
-                                    font-weight: 400;
-                                    color: #707070;
-                                    & > svg {
-                                        margin-left: 8px;
-                                    }
+
+                            & .mobile-header-more {
+                                display: flex;
+                                align-items: center;
+                                font-size: 12px;
+                                font-weight: 400;
+                                color: #707070;
+                                & > svg {
+                                    margin-left: 8px;
                                 }
                             }
+                        }
+                        & .menu-box-price {
+                            display: flex;
+                            flex-direction: column;
+                            margin-bottom: 18px;
+
+                            & .pre-price {
+                                width: fit-content;
+                                border-bottom: 1px solid #707070;
+                                height: 12px;
+                                margin-bottom: 15px;
+
+                                & .text {
+                                    color: #707070;
+                                    font-size: 1.2rem;
+                                    font-weight: 500;
+                                }
+                                & > span {
+                                    font-size: 0.75rem;
+                                    font-weight: 400;
+                                }
+                            }
+                            & .current-price {
+                                font-size: 1.5rem;
+                                font-weight: 500;
+
+                                & > span {
+                                    font-size: 0.75rem;
+                                    font-weight: 400;
+                                }
+                            }
+                        }
+                        & .menu-box-desc {
+                            font-size: 1rem;
+                            font-weight: 400;
+                            color: #575555;
+                            line-height: 24px;
                         }
                     }
                 }
