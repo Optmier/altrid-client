@@ -41,7 +41,7 @@ const StyledPlanName = styled.div`
         border-radius: 6px;
         color: white;
         margin-left: 1.5rem;
-        padding: 6px 24px;
+        padding: 6px 16px;
     }
 `;
 
