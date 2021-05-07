@@ -114,7 +114,7 @@ function NowPlan({ history }) {
                 withCredentials: true,
             })
                 .then((validPlan) => {
-                    console.log(validPlan.data);
+                    // console.log(validPlan.data);
                     if (validPlan.data && validPlan.data.length > 0) {
                         const starts = validPlan.data[0].plan_start;
                         const ends = validPlan.data[0].plan_end;
