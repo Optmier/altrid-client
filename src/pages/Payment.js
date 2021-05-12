@@ -420,13 +420,6 @@ function Confirm({ location, history }) {
                                     <div className="row">
                                         <div className="total-left">
                                             <span className="total-title">예상 학생수</span>
-                                            {/* <select ref={selectBoxRef} onChange={handleInputChange} data-content="">
-                                                {Array.from({ length: 63 }, (v, i) => (
-                                                    <option key={i} value={i + 1}>
-                                                        {i + 1} 명
-                                                    </option>
-                                                ))}
-                                            </select> */}
                                             <input type="number" value={studentNum} onChange={handleInputChange} />
                                             <span className="input-right">명</span>
                                         </div>
