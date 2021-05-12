@@ -147,6 +147,21 @@
                         display: flex;
                         align-items: center;
                     }
+                    & .input-right {
+                        margin-left: 10px;
+                    }
+                    & .input-error-msg {
+                        font-size: 0.875rem;
+                        color: red;
+                        padding: 5px 5px 0 5px;
+                    }
+                    & > input {
+                        font-size: 0.9rem;
+                        font-weight: 400;
+                        border-bottom: 1px solid rgba(0, 0, 0, 0.87);
+                        width: 45px;
+                    }
+
                     & > select {
                         cursor: pointer;
                         background: url('/bg_images/Vector.png') no-repeat 95% 50%;
@@ -189,7 +204,7 @@
                 & .total-footer-top {
                     display: flex;
                     justify-content: space-between;
-                    padding: 7px 7px 0 60%;
+                    padding: 7px 7px 0 55%;
                     font-size: 0.9rem;
                     font-weight: 400;
 
@@ -201,7 +216,7 @@
                 & .total-footer-bottom {
                     display: flex;
                     justify-content: space-between;
-                    padding: 7px 7px 0 60%;
+                    padding: 7px 7px 0 55%;
 
                     font-size: 1.25rem;
                     font-weight: 500;

@@ -38,6 +38,7 @@ function Confirm({ location, history }) {
     const [payPrice, setPayPrice] = useState(productPice * studentNum - discountPrice);
     const [tax, setTax] = useState(payPrice * 0.1);
     const [totalPrice, setTotalPrice] = useState(payPrice + tax);
+    const [inputErrorMsg, setInputErrorMsg] = useState('');
 
     // 쿠폰 메뉴
     const [couponMenus, setCouponMenus] = useState([]);
@@ -54,14 +55,25 @@ function Confirm({ location, history }) {
         setTotalPrice((productPice * num - discount) * 1 + (productPice * num - discount) * 0.1);
     };
 
-    const handleSelectChange = (e) => {
+    const handleInputChange = (e) => {
         const { value } = e.target;
 
-        selectBoxRef.current.dataset.content = value;
-        setStudentNum(value);
-        setDiscountPrice(0);
-        setCouponSelectVlue('');
-        handleCalculator(value, 0);
+        if (value < 0) {
+            setInputErrorMsg('1명 이상의 학생을 입력해주세요.');
+            handleCalculator(0, 0);
+        } else if (productPlan === 'Standard' && value > 315) {
+            setInputErrorMsg('Standard 플랜에서는 최대 315명의 학생이 이용 가능합니다.');
+            handleCalculator(0, 0);
+        } else if (productPlan === 'Premium' && value > 630) {
+            setInputErrorMsg('Premium 플랜에서는 최대 630명의 학생이 이용 가능합니다.');
+            handleCalculator(0, 0);
+        } else {
+            setInputErrorMsg('');
+            handleCalculator(value, 0);
+            setStudentNum(value);
+            setCouponSelectVlue('');
+            setDiscountPrice(0);
+        }
     };
     const handleSelectCoupon = (e) => {
         const { value, selectedOptions } = e.target;
@@ -274,7 +286,7 @@ function Confirm({ location, history }) {
 
             Axios.get(`${apiUrl}/payments/coupon-menus`, { params: { searchAll: false }, withCredentials: true })
                 .then((coupons) => {
-                    console.log(coupons.data);
+                    //console.log(coupons.data);
                     setCouponMenus(coupons.data);
                 })
                 .catch((couponsErr) => {
@@ -300,7 +312,7 @@ function Confirm({ location, history }) {
 
             Axios.get(`${apiUrl}/payments/payment-info`, { withCredentials: true })
                 .then((res) => {
-                    console.log(res.data);
+                    //console.log(res.data);
                     if (res.data && res.data.length > 0) {
                         setIsPaymentsExists(true);
                     } else {
@@ -408,13 +420,15 @@ function Confirm({ location, history }) {
                                     <div className="row">
                                         <div className="total-left">
                                             <span className="total-title">예상 학생수</span>
-                                            <select ref={selectBoxRef} onChange={handleSelectChange} data-content="">
+                                            {/* <select ref={selectBoxRef} onChange={handleInputChange} data-content="">
                                                 {Array.from({ length: 63 }, (v, i) => (
                                                     <option key={i} value={i + 1}>
                                                         {i + 1} 명
                                                     </option>
                                                 ))}
-                                            </select>
+                                            </select> */}
+                                            <input type="number" value={studentNum} onChange={handleInputChange} />
+                                            <span className="input-right">명</span>
                                         </div>
                                         <div className="total-right student-num">x {studentNum}</div>
                                     </div>
@@ -438,6 +452,9 @@ function Confirm({ location, history }) {
                                             </select>
                                         </div>
                                         <div className="total-right">- {convertPriceString(discountPrice)}</div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="input-error-msg">{inputErrorMsg}</div>
                                     </div>
 
                                     <div className="total-footer">
