@@ -190,6 +190,10 @@ function AssignmentDoItNow({ history, match }) {
         setUserAnswer(answer);
     };
 
+    const getConditionForData = (sessions, classnum) => {
+        return classnum == '14' || sessions.academyCode === 'optmier_pilot';
+    };
+
     const onEnd = (time, isSubmitted, metadata) => {
         // console.log(time, metadata);
         if (timerInterval) {
@@ -202,7 +206,7 @@ function AssignmentDoItNow({ history, match }) {
 
             const { classnum, assignmentid } = match.params;
             // 시선추적 과제인 경우만 분석용 데이터 수집
-            if (originalDatas.eyetrack && classnum == '14') {
+            if (originalDatas.eyetrack && getConditionForData(sessions, classnum)) {
                 // 여기에 분석용 데이터 보내기
                 Axios.post(
                     `${apiUrl}/data-analytics`,
