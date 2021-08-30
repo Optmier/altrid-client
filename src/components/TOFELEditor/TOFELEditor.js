@@ -1,4 +1,25 @@
-import { AppBar, Button, Dialog, Drawer, IconButton, Snackbar, TextField, Toolbar, withStyles } from '@material-ui/core';
+import {
+    AppBar,
+    Button,
+    ButtonGroup,
+    ClickAwayListener,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Drawer,
+    Grow,
+    IconButton,
+    MenuItem,
+    MenuList,
+    Paper,
+    Popper,
+    Snackbar,
+    TextField,
+    Toolbar,
+    withStyles,
+    Typography,
+} from '@material-ui/core';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 import ReactQuill from 'react-quill';
@@ -11,11 +32,11 @@ import QuillEditorToolbarOption from './QuillEditorToolbarOption';
 import ProblemCard from './ProblemCard';
 import SmartTOFELRender from '../TOFELRenderer/SmartTOFELRender';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import { apiUrl, gcvApiKey } from '../../configs/configs';
 import { withRouter } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 import { useBeforeunload } from 'react-beforeunload';
-import { ArrowBack, ArrowForward, Delete, DeleteForever, PostAdd } from '@material-ui/icons';
+import { ArrowBack, ArrowDropDown, ArrowForward, Delete, DeleteForever, PostAdd, TextFields } from '@material-ui/icons';
 import { useCallback } from 'react';
 import { updateSession } from '../../redux_modules/sessions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,6 +48,8 @@ import RefreshToken from '../essentials/Authentication';
 import ShortUniqueId from 'short-unique-id';
 import CompanyLogo from '../../images/logos/nav_logo_white.png';
 import { Helmet } from 'react-helmet';
+import GoogleCloudVisionOCR from './assets/GoogleCloudVisionOCR';
+import tip0Img from './assets/tip0.png';
 
 $.fn.changeSize = function (handleFunction) {
     let element = this;
@@ -110,6 +133,18 @@ const EdProblemAddButton = withStyles((theme) => ({
         '& + &': {
             marginLeft: 16,
         },
+    },
+}))(Button);
+
+const EdProblemAddButtonEx = withStyles((theme) => ({
+    root: {
+        borderColor: 'rgba(59, 22, 138, 0.53)',
+        borderRadius: 10,
+        borderWidth: 2,
+        color: '#5A5A5A',
+        fontFamily: 'Noto Sans CJK KR',
+        fontWeight: 500,
+        minHeight: 52,
     },
 }))(Button);
 
@@ -253,9 +288,12 @@ function useForceUpdate() {
 function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClose, onEditFinish, history, children, ...rest }) {
     const quillRef = useRef();
     const generateUid = useRef();
+    const addProblemButtonExRef = useRef();
+    const hiddenQuillRef = useRef();
+    const addProblemTextFieldRef = useRef();
 
     const [metadata, setMetadata] = useState(datas);
-    // window.contentsMeta = metadata;
+    window.contentsMeta = metadata;
     const [contentsSetData, setContentsSetData] = useState(datas[0]);
     const [contentsTitle, setContentsTitle] = useState(datas[0].title);
     const [contentsPassage, setContentsPassage] = useState({ render: datas[0].passageForRender, editor: datas[0].passageForEditor });
@@ -275,6 +313,10 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     });
     const [setNum, setSetNum] = useState(0);
     const [deleteIdxs, setDeleteIdxs] = useState([]);
+
+    const [addProblemButtonExOpen, setAddProblemButtonExOpen] = useState(false);
+    const [tipDialogOpenState, setTipDialogOpenState] = useState(false);
+    const [addProblemTextDialogOpenState, setAddProblemTextDialogOpenState] = useState(false);
 
     let forceUpdate = useForceUpdate();
 
@@ -339,7 +381,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     // window.testChangePosition = handleSwapProblemPosition;
 
     const onProblemCreate = (newData) => {
-        // console.log(newData);
+        console.log(newData);
         if (problemEditmode)
             setContentsProblemDatas(
                 contentsProblemDatas.map((origData, idx) =>
@@ -611,6 +653,173 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
 
     useBeforeunload((e) => e.preventDefault());
 
+    const addProblemExMenuItemClick = (event, index) => {
+        if(!localStorage.getItem("cv_tip_never_again")) openTipDialog();
+        else openAddProblemTextDialog();
+        setAddProblemButtonExOpen(false);
+    };
+
+    const toggleAddProblemEx = () => {
+        setAddProblemButtonExOpen((openState) => !openState);
+    };
+
+    const closeAddProblemEx = (event) => {
+        if (addProblemButtonExRef.current && addProblemButtonExRef.current.contains(event.target)) return;
+        setAddProblemButtonExOpen(false);
+    };
+
+    const getConvertedQuillContents = (text = '', hiddenEditor = hiddenQuillRef.current) => {
+        hiddenEditor.getEditor().setText(text);
+        const delta = hiddenEditor.getEditor().getContents();
+        const render = hiddenEditor.getEditor().scroll.domNode.innerHTML;
+        return { textForEditor: JSON.stringify(delta), textForRender: render };
+    };
+
+    /** @param {object[]} problems */
+    const addProblemsFromTexts = (problems) => {
+        const newDatas = [];
+        const problemsLength = problems.length;
+        for (let i = 0; i < problemsLength; i++) {
+            const basicData = {
+                category: '',
+                type: 'multiple-choice',
+                textForRender: '',
+                textForEditor: `{"ops":[{"insert":"\n"}]}`,
+                commentsForRender: '',
+                commentsForEditor: `{"ops":[{"insert":"\n"}]}`,
+                selections: {
+                    1: '',
+                    2: null,
+                    3: null,
+                    4: null,
+                    5: null,
+                },
+                answer: '',
+                score: 1,
+            };
+            const { textForEditor, textForRender } = getConvertedQuillContents(problems[i].problem);
+            basicData.textForEditor = textForEditor;
+            basicData.textForRender = textForRender;
+
+            const selectionLength = problems[i].selections.length;
+            for (let j = 0; j < selectionLength; j++) {
+                basicData.selections[j + 1] = problems[i].selections[j];
+            }
+
+            basicData.passageUid = contentsSetData.uuid;
+            basicData.uuid = generateUid.current(8);
+            newDatas.push(basicData);
+        }
+
+        setContentsProblemDatas([...contentsProblemDatas, ...newDatas]);
+    };
+    // window.addProblemsFromTexts = addProblemsFromTexts;
+    // window.quillRef = quillRef;
+
+    const applyGCV = ({ texts, problems }) => {
+        console.log(texts, problems);
+        addProblemsFromTexts(problems);
+        quillRef.current.getEditor().setText(texts);
+        setTimeout(() => {
+            setContentsPassage({
+                render: quillRef.current.getEditor().scroll.domNode.innerHTML,
+                editor: JSON.stringify(quillRef.current.getEditor().getContents()),
+            });
+        });
+    };
+
+    const openAddProblemTextDialog = () => {
+        setAddProblemTextDialogOpenState(true);
+    }
+
+    const closeAddProblemTextDialog = () => {
+        setAddProblemTextDialogOpenState(false);
+    }
+
+    const okAddProblemTextDialog = () => {
+        let problemsResult = addProblemTextFieldRef.current.value;
+        problemsResult = problemsResult.split('\n\n');
+        problemsResult = problemsResult.map((pn) => {
+            const ps = pn.split('\t');
+            return {
+                problem: ps.shift(),
+                selections: ps.map((s) => s.replace('\n', '')),
+            };
+        });
+        addProblemsFromTexts(problemsResult);
+        addProblemTextFieldRef.current.value = "";
+        closeAddProblemTextDialog();
+    }
+
+    // 팁 대화창 열기
+    const openTipDialog = () => {
+        setTipDialogOpenState(true);
+    };
+
+    // 팁 대화창 닫기
+    const closeTipDialog = () => {
+        openAddProblemTextDialog();
+        setTipDialogOpenState(false);
+    };
+
+    // 팁 대화창 확인 버튼
+    const tipDialogOkBtn = () => {
+        closeTipDialog();
+    };
+
+    // 팁 대화창 다시 보지 않기 버튼
+    const tipDialogNeverSeeAgainBtn = () => {
+        localStorage.setItem('cv_tip_never_again', true);
+        closeTipDialog();
+    };
+
+    // 팁 대화창
+    const TipDialog = (
+        <Dialog open={tipDialogOpenState} maxWidth={false} onClose={closeTipDialog}>
+            <DialogTitle onClose={closeTipDialog}>문제 만들기 팁</DialogTitle>
+            <DialogContent dividers>
+                <img src={tip0Img} width="768px" />
+                <Typography>위의 형식에 따라 문제 및 선택지가 자동으로 생성됩니다.</Typography>
+                <Typography>
+                    현재 객관식 문제만 생성이 가능하며, 생성 이후에는 문제 유형, 정답 및 해설에 대해 추가 수정이 필요합니다.
+                </Typography>
+            </DialogContent>
+            <DialogActions>
+                <Button color="secondary" onClick={tipDialogNeverSeeAgainBtn}>
+                    다시 보지 않기
+                </Button>
+                <Button color="primary" onClick={tipDialogOkBtn}>
+                    확인
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
+
+    const AddProblemFromTextDialog = (
+        <Dialog open={addProblemTextDialogOpenState} maxWidth={false}>
+            <DialogTitle>
+                텍스트로 문제 추가
+            </DialogTitle>
+            <DialogContent>
+                <TextField inputRef={addProblemTextFieldRef} multiline variant="outlined" rows={24} style={{minWidth: 480}} onKeyDown={(e) => {
+                    if(e.key === "Tab") {
+                        e.preventDefault();
+                        const start = e.target.selectionStart;
+                        const end = e.target.selectionEnd;
+                        e.target.value = e.target.value.substring(0, start) +
+                          "\t" + e.target.value.substring(end);
+                        e.target.selectionStart =
+                          e.target.selectionEnd = start + 1;
+                    }
+                }}/>
+            </DialogContent>
+            <DialogActions>
+                <Button color="secondary" onClick={closeAddProblemTextDialog}>취소</Button>
+                <Button color="primary" onClick={okAddProblemTextDialog}>확인</Button>
+            </DialogActions>
+        </Dialog>
+    )
+
     return (
         <>
             <Helmet>
@@ -645,6 +854,9 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                     }
             `}</style>
             </Helmet>
+            <ReactQuill style={{ display: 'none' }} ref={hiddenQuillRef} />
+            {TipDialog}
+            {AddProblemFromTextDialog}
             <Root className="tofel-editor-root">
                 <Snackbar open={alertBarOpen} autoHideDuration={5000} onClose={handleAlertBarClose}>
                     <Alert onClose={handleAlertBarClose} severity={alertBarOption.severity}>
@@ -688,6 +900,11 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                                     첨부파일(F)
                                 </EdToolbarButton>
                             ) : null}
+                            <GoogleCloudVisionOCR apiKey={gcvApiKey} applyButtonText="본문에 추가" onApply={applyGCV}>
+                                <EdToolbarButton className="normal" style={{ minWidth: 128, marginRight: 16, marginLeft: 16 }}>
+                                    이미지로 추가
+                                </EdToolbarButton>
+                            </GoogleCloudVisionOCR>
                             <EdToolbarButton className="normal" onClick={handlePreviewOpen} style={{ minWidth: 128 }}>
                                 미리보기(B)
                             </EdToolbarButton>
@@ -738,10 +955,62 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                     </LeftContainer>
                     <RightContainer>
                         <AddButtonContainer>
-                            <EdProblemAddButton variant="outlined" fullWidth startIcon={<PlaylistAddIcon />} onClick={handleProblemCreate}>
+                            {/* <EdProblemAddButton variant="outlined" fullWidth startIcon={<PlaylistAddIcon />} onClick={handleProblemCreate}>
                                 새 문제 추가하기
-                            </EdProblemAddButton>
-                            <EdProblemAddButton variant="outlined" fullWidth startIcon={<Delete />} onClick={onMultipleProlemsDelete}>
+                            </EdProblemAddButton> */}
+                            <ButtonGroup fullWidth ref={addProblemButtonExRef}>
+                                <EdProblemAddButtonEx
+                                    variant="outlined"
+                                    fullWidth
+                                    startIcon={<PlaylistAddIcon />}
+                                    onClick={handleProblemCreate}
+                                >
+                                    새 문제 추가하기
+                                </EdProblemAddButtonEx>
+                                <EdProblemAddButtonEx
+                                    style={{ maxWidth: 36 }}
+                                    size="small"
+                                    aria-controls={addProblemButtonExOpen ? 'split-button-menu' : undefined}
+                                    aria-expanded={addProblemButtonExOpen ? 'true' : undefined}
+                                    aria-haspopup="menu"
+                                    onClick={toggleAddProblemEx}
+                                >
+                                    <ArrowDropDown />
+                                </EdProblemAddButtonEx>
+                            </ButtonGroup>
+                            <Popper
+                                open={addProblemButtonExOpen}
+                                anchorEl={addProblemButtonExRef.current}
+                                role={undefined}
+                                transition
+                                disablePortal
+                                placement="bottom-end"
+                            >
+                                {({ TransitionProps, placement }) => (
+                                    <Grow
+                                        {...TransitionProps}
+                                        style={{ transformOrigin: placement === 'bottom' ? 'right top' : 'right top' }}
+                                    >
+                                        <Paper>
+                                            <ClickAwayListener onClickAway={closeAddProblemEx}>
+                                                <MenuList id="split-button-menu">
+                                                    <MenuItem onClick={(event) => addProblemExMenuItemClick(event, 0)}>
+                                                        <TextFields fontSize="small" style={{ marginRight: 8 }} />
+                                                        텍스트로 추가
+                                                    </MenuItem>
+                                                </MenuList>
+                                            </ClickAwayListener>
+                                        </Paper>
+                                    </Grow>
+                                )}
+                            </Popper>
+                            <EdProblemAddButton
+                                variant="outlined"
+                                fullWidth
+                                startIcon={<Delete />}
+                                style={{ marginLeft: 16 }}
+                                onClick={onMultipleProlemsDelete}
+                            >
                                 문제 삭제하기
                             </EdProblemAddButton>
                         </AddButtonContainer>
