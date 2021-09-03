@@ -80,11 +80,12 @@ function AssignmentDoItNow({ history, match }) {
             });
     };
 
-    const updateResultData = (metadata, isSubmitted, time, onSuccess) => {
-        console.log(isSubmitted);
+    const updateResultData = (metadata, vocas, isSubmitted, time, onSuccess) => {
+        // console.log(isSubmitted);
         const userData = JSON.stringify(metadata);
         const eyetrackData = JSON.stringify(window.etRes);
         const activedNumber = match.params.assignmentid;
+        const savedVocas = vocas.length ? JSON.stringify(vocas) : null;
         /** 1. Total number of fixations */
         // console.log('1. Total number of fixations : ' + window.numOfFixations);
         /** 2. Average of fixation durations */
@@ -155,6 +156,7 @@ function AssignmentDoItNow({ history, match }) {
                 numOfRegs: window.numberOfRegressions,
                 time: time,
                 isSubmitted: isSubmitted,
+                vocas: savedVocas,
             },
             { withCredentials: true },
         )
@@ -179,9 +181,9 @@ function AssignmentDoItNow({ history, match }) {
         setActiveStep(step);
     };
 
-    const onNext = (step, time, metadata) => {
+    const onNext = (step, time, metadata, vocas) => {
         // console.log(time);
-        updateResultData(metadata, 0, timerState.elapsedTime, () => {});
+        updateResultData(metadata, vocas, 0, timerState.elapsedTime, () => {});
         setActiveStep(step);
     };
 
@@ -194,12 +196,12 @@ function AssignmentDoItNow({ history, match }) {
         return classnum == '14' || sessions.academyCode === 'optmier_pilot';
     };
 
-    const onEnd = (time, isSubmitted, metadata) => {
+    const onEnd = (time, isSubmitted, metadata, vocas) => {
         // console.log(time, metadata);
         if (timerInterval) {
             clearInterval(timerInterval);
         }
-        updateResultData(metadata, isSubmitted, timerState.elapsedTime, () => {
+        updateResultData(metadata, vocas, isSubmitted, timerState.elapsedTime, () => {
             setEnableBeforeUnload(false);
             if (originalDatas.time_limit === -3) alert('과제 기한이 종료되었습니다.\n지금까지 진행 사항은 저장됩니다.');
             else alert('종료되었습니다.');
@@ -322,7 +324,12 @@ function AssignmentDoItNow({ history, match }) {
                                 } catch (e) {
                                     eyetrackData = null;
                                 }
-                                setSavedData({ ...data, user_data: userData, eyetrack_data: eyetrackData });
+                                setSavedData({
+                                    ...data,
+                                    user_data: userData,
+                                    eyetrack_data: eyetrackData,
+                                    vocas: JSON.parse(data.vocas),
+                                });
                                 if (!res.data.eyetrack) {
                                     upCountTries();
                                 }
@@ -414,6 +421,7 @@ function AssignmentDoItNow({ history, match }) {
     }, [savedData]);
 
     useBeforeunload((e) => (enableBeforeUnload ? e.preventDefault() : null));
+    window.originalDatas = originalDatas;
 
     return (
         <>
@@ -428,8 +436,7 @@ function AssignmentDoItNow({ history, match }) {
                     relative={true}
                 />
             ) : null}
-
-            {console.log(originalDatas.contents_data, remainTime, savedData, timerState)}
+            {/* {console.log(originalDatas.contents_data, remainTime, savedData, timerState)} */}
             {originalDatas.contents_data && remainTime !== null && savedData !== undefined && timerState.isPlaying ? (
                 <ActivityRoot className="activity-root" ref={rootRef}>
                     <SmartTOFELRender
@@ -440,6 +447,7 @@ function AssignmentDoItNow({ history, match }) {
                         passageForRender={originalDatas.contents_data.map((m) => m.passageForRender)}
                         problemDatas={originalDatas.contents_data.flatMap((m) => m.problemDatas)}
                         userDatas={savedData && savedData.user_data ? savedData.user_data : undefined}
+                        savedVocas={savedData && savedData.vocas ? savedData.vocas : []}
                         onPrev={onPrev}
                         onNext={onNext}
                         onEnd={onEnd}

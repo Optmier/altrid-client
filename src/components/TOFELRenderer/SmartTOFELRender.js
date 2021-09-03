@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import HtmlParser from 'react-html-parser';
 import styled from 'styled-components';
 import TimerIcon from '@material-ui/icons/Timer';
@@ -58,6 +58,10 @@ const ContentsContainer = styled.div`
         font-family: 'Times New Roman';
         font-size: 1.125rem;
         line-height: 1.75rem;
+    }
+
+    & span.voca-highlighted {
+        background-color: #dfdf0034;
     }
 `;
 const PassageContainer = styled.div`
@@ -145,6 +149,7 @@ function SmartTOFELRender({
     userAnswerDirect,
     timer,
     timeLimit,
+    savedVocas,
     onPrev,
     onNext,
     onEnd,
@@ -166,6 +171,11 @@ function SmartTOFELRender({
     const [triggerExit, setTriggerExit] = useState(false);
     const [forceEnd, setForceEnd] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(0);
+    const [vocas, setVocas] = useState(savedVocas);
+
+    const contentsContainerRef = useRef();
+    const passagesRef = useRef();
+    const problemsRef = useRef();
 
     const handlePrev = () => {
         setCurrentLog((currentLog) => {
@@ -354,9 +364,9 @@ function SmartTOFELRender({
             });
         }
         // 지문
-        const $passage = $('.passages');
+        const $passage = $('div.passages');
         // 문제
-        const $problems = $('.problems');
+        const $problems = $('div.problems');
         /** 세트 번호 다를시 지문 영역 스크롤 초기화 */
         if (
             pUUIDs.findIndex((d) => d === problemDatas[lastProblemIdx].passageUid) !==
@@ -372,6 +382,13 @@ function SmartTOFELRender({
             ...metadata,
             lastProblem: currentProblemIdx,
         });
+
+        for (let w of vocas) {
+            unmarkWords(w, document.querySelector('div.problems'));
+            setTimeout(() => {
+                markWords(w, document.querySelector('div.problems'));
+            });
+        }
     }, [currentProblemIdx]);
 
     useEffect(() => {
@@ -395,15 +412,15 @@ function SmartTOFELRender({
         if (lastProblemIdx > currentProblemIdx) {
             onPrev(currentProblemIdx, timer, metadata);
         } else if (lastProblemIdx < currentProblemIdx) {
-            onNext(currentProblemIdx, timer, metadata);
+            onNext(currentProblemIdx, timer, metadata, vocas);
         }
         if (triggerExit) {
             // console.log(timer, metadata);
-            onEnd(timer, isSubmitted, metadata);
+            onEnd(timer, isSubmitted, metadata, vocas);
             setTriggerExit(false);
         }
         setLastProblemIdx(currentProblemIdx);
-    }, [metadata, isSubmitted]);
+    }, [metadata, isSubmitted, vocas]);
 
     useEffect(() => {
         setCurrentProblemIdx(userDatas.lastProblem);
@@ -418,6 +435,77 @@ function SmartTOFELRender({
             handleEnd();
         }
     }, [timer, forceEnd]);
+
+    useEffect(() => {
+        const contents = contentsContainerRef.current;
+        contents.ondblclick = () => {
+            const selectedWord = window.getSelection().toString().toLowerCase();
+            // 영문 한 단어만 단어로 취급함
+            if (selectedWord.match(/^[a-zA-Z]*$/) && selectedWord.split(' ').length === 1 && selectedWord.length > 1) {
+                // console.log(selectedWord);
+                if (!vocas.find((v) => v === selectedWord)) {
+                    addVocas(selectedWord);
+                    markWords(selectedWord, document.querySelector('div.passages'));
+                    markWords(selectedWord, document.querySelector('div.problems'));
+                } else {
+                    removeVocas(selectedWord);
+                    unmarkWords(selectedWord, document.querySelector('div.passages'));
+                    unmarkWords(selectedWord, document.querySelector('div.problems'));
+                }
+            }
+        };
+    }, [vocas]);
+
+    const addVocas = (word) => {
+        setVocas([...vocas, word]);
+    };
+
+    const removeVocas = (word) => {
+        setVocas(vocas.filter((v) => v !== word));
+    };
+
+    /**
+     * @param {string} word
+     * @param {Element} ref
+     */
+    const markWords = (word, ref) => {
+        const contents = ref;
+        const wordCases = [word.toLowerCase(), word.toUpperCase(), word.charAt(0).toUpperCase() + word.slice(1)];
+        for (let wc of wordCases) {
+            const replacement = new RegExp(`(?<!<[^>]*)\\b${wc}\\b`, 'g');
+            if (ref.classList.contains('passages'))
+                contents.innerHTML = contents.innerHTML.replace(replacement, `<span class="voca-highlighted">${wc}</span>`);
+            else if (ref.classList.contains('problems')) {
+                const praghps = $(ref).children().find('p');
+                for (let p of praghps) {
+                    p.innerHTML = p.innerHTML.replace(replacement, `<span class="voca-highlighted">${wc}</span>`);
+                }
+            }
+        }
+    };
+
+    const unmarkWords = (word, ref) => {
+        const contents = ref;
+        const highlightedWords = $(contents)
+            .find('span.voca-highlighted')
+            .filter((i, node) => new RegExp(`\\b${word}\\b`, 'gi').test(node.textContent));
+        highlightedWords.contents().unwrap();
+    };
+
+    useEffect(() => {
+        const uid = problemDatas[currentProblemIdx].passageUid;
+        if (uid && passagesRef.current) {
+            document.querySelector('div.passages').innerHTML = passageForRender[pUUIDs.findIndex((d) => d === uid)];
+            for (let w of vocas) {
+                setTimeout(() => {
+                    unmarkWords(w, document.querySelector('div.passages'));
+                }, 1);
+                setTimeout(() => {
+                    markWords(w, document.querySelector('div.passages'));
+                }, 50);
+            }
+        }
+    }, [problemDatas[currentProblemIdx].passageUid]);
 
     return (
         <RenderRoot>
@@ -469,11 +557,11 @@ function SmartTOFELRender({
                     </HeaderMasterSWs>
                 </HeaderPageController>
             </HeaderToolbar>
-            <ContentsContainer>
-                <PassageContainer className="passages">
-                    {HtmlParser(passageForRender[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)])}
+            <ContentsContainer className="set-container" ref={contentsContainerRef}>
+                <PassageContainer className="passages" ref={passagesRef}>
+                    {/* {HtmlParser(passageForRender[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)])} */}
                 </PassageContainer>
-                <ProblemsContainer className="problems">
+                <ProblemsContainer className="problems" ref={problemsRef}>
                     {problemDatas.length > 0 ? (
                         <ProblemComponent
                             problemNumber={currentProblemIdx + 1}
@@ -513,6 +601,7 @@ SmartTOFELRender.defaultProps = {
     },
     userAnswerDirect: null,
     timer: 90,
+    savedVocas: [],
     onPrev() {},
     onNext() {},
     onEnd() {},
