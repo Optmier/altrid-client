@@ -257,6 +257,7 @@ function Login({ history }) {
                     academyCode: '',
                     approved: approved,
                     image: image,
+                    phone: phone,
                 },
                 { withCredentials: true },
             )
@@ -293,6 +294,7 @@ function Login({ history }) {
                         academyCode: academyCode,
                         approved: approved,
                         image: image,
+                        phone: phone,
                     },
                     { withCredentials: true },
                 )
