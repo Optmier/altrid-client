@@ -1,5 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+# Altrid(알트리드) 서비스 플랫폼 프론트엔드 소스
+> [@Sain-Tech](https://github.com/Sain-Tech) 의 [altrid-client](https://github.com/Sain-Tech/altrid-client) 에서 추가됨.
+
 ## Available Scripts
 
 In the project directory, you can run:
