@@ -1,6 +1,6 @@
 const CHANGE_PARAMS = 'params/CHANGE_PARAMS';
 
-export const changePramas = (params, data) => ({ type: CHANGE_PARAMS, params, data });
+export const changeParams = (params, data) => ({ type: CHANGE_PARAMS, params, data });
 
 const initialState = {
     params: '',

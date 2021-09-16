@@ -7,7 +7,7 @@ import ClassDrawer from '../essentials/ClassDrawer';
 // import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector, useDispatch } from 'react-redux';
 import { getActived } from '../../redux_modules/assignmentActived';
-import { changePramas } from '../../redux_modules/params';
+import { changeParams } from '../../redux_modules/params';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import Error from '../../pages/Error';
@@ -131,7 +131,7 @@ function Share({ match, history }) {
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
         dispatch(getActived(num));
-        dispatch(changePramas(1, num));
+        dispatch(changeParams(1, num));
 
         if (sessions.userType === 'students') {
             Axios.get(`${apiUrl}/others/assignment-tries/${num}`, { withCredentials: true })

@@ -22,15 +22,13 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
-
-import { Element, Link as AnimScrollTo } from 'react-scroll';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Element } from 'react-scroll';
 import { useSelector, useDispatch } from 'react-redux';
 import BackdropComponent from '../essentials/BackdropComponent';
 import TooltipCard from '../essentials/TooltipCard';
 import TypeBanner from '../essentials/TypeBanner';
-import TotalProgress from './TotalProgress';
-import { changePramas } from '../../redux_modules/params';
+import { changeParams } from '../../redux_modules/params';
+import { deleteHandsUpProblems, getHandsUpProblems, getSelectedHandsUpProblems, handsUpProblems } from './QnA/HandsUpInterface';
 
 const pad = (n, width) => {
     n = n + '';
@@ -215,6 +213,7 @@ const HTMLTooltip = withStyles((theme) => ({
 }))(Tooltip);
 
 function ReportStudent({ history, match }) {
+    // console.log(history, match);
     const dispatch = useDispatch();
     const sessions = useSelector((state) => state.RdxSessions);
     const urlSearchParams = new URLSearchParams(history.location.search);
@@ -222,6 +221,7 @@ function ReportStudent({ history, match }) {
     let { activedNum, num } = match.params;
     /** 전체 학생 리포트 데이터 저장 */
     const [studentsData, setStudentsData] = useState([]);
+    window.studentData = studentsData;
     /** 이름 */
     const [stdName, setStdName] = useState('-');
     /** 제출 날짜 */
@@ -275,6 +275,7 @@ function ReportStudent({ history, match }) {
     const [mainLoading, setMainLoading] = useState(true);
     /** 유형별 분석 select state */
     const [typeSelectState, setTypeSelectState] = useState('0');
+    //const [handsUpList, setHandsUpList] = useState([]);
 
     const handleTypeSelect = (e) => {
         setTypeSelectState(e.target.value);
@@ -443,7 +444,7 @@ function ReportStudent({ history, match }) {
         setDurTimes(currentStudent.time);
         setTries(currentStudent.tries);
         setTitle(currentStudent.title);
-        dispatch(changePramas(3, activedNum));
+        dispatch(changeParams(3, activedNum));
 
         if (currentStudent.contents_data) {
             setTotalProblems(currentStudent.contents_data.flatMap((m) => m.problemDatas).length);
@@ -460,6 +461,28 @@ function ReportStudent({ history, match }) {
                 });
 
             setAchievesForTypes(getAchieveValueForTypes(Object.keys(_o).map((k) => _o[k])), 3);
+
+            // 손들기 데이터 불러오기!!
+            getHandsUpProblems(currentStudent.student_id, currentStudent.actived_number, {
+                onSuccess(res) {
+                    const idxs = [];
+                    for (let id in res.data) {
+                        idxs.push(res.data[id][0].problemAbsIdx);
+                    }
+                    setHandsUpList([...handsUpList, ...idxs]);
+                },
+                onFailure(error) {},
+            });
+            getSelectedHandsUpProblems(currentStudent.actived_number, {
+                onSuccess(res) {
+                    const idxs = [];
+                    for (let id in res.data) {
+                        idxs.push(res.data[id][0].problemAbsIdx);
+                    }
+                    setTeacherSelectedList([...teacherSelectedList, ...idxs]);
+                },
+                onFailure(error) {},
+            });
         }
         if (currentStudent.user_data) {
             setCorrectProblems(currentStudent.user_data.selections.filter((d) => d.correct).length);
@@ -608,8 +631,59 @@ function ReportStudent({ history, match }) {
         setMainLoading(false);
     }, [patternDatas]);
 
-    if (mainLoading) return <BackdropComponent open={true} />;
+    const [handsUpList, setHandsUpList] = useState([]);
+    const [teacherSelectedList, setTeacherSelectedList] = useState([]);
+    window.handsuplist = handsUpList;
+    window.teacherselectedlist = teacherSelectedList;
 
+    const progressDoubleClick = (index, qUUID, handsUp, teacherSelected) => {
+        if (sessions.userType !== 'students') return;
+        const confirm = window.confirm(
+            !handsUp
+                ? '정말로 이 문제에 대해 손들기를 하시겠습니까?'
+                : teacherSelected
+                ? '손들기를 취소하시겠습니까?\n다른 학생이 손을 들지 않은 경우 선생님 선택 목록에도 삭제됩니다!'
+                : '손들기를 취소하시겠습니까?',
+        );
+        if (!confirm) return;
+
+        let count = 0;
+        let result = {};
+        for (let c of currentStudentData.contents_data) {
+            const length = c.problemDatas.length;
+            if (index < count + length) {
+                const problemData = c.problemDatas[index - count];
+                result.assignmentNo = currentStudentData.actived_number;
+                try {
+                    result.studentAnswer = currentStudentData.user_data.selections[index].answerUser;
+                } catch (error) {
+                    result.studentAnswer = null;
+                }
+                result.correctAnswer = problemData.answer;
+                result.studentId = currentStudentData.student_id;
+                result.questionId = problemData.uuid;
+                break;
+            }
+            count += length;
+        }
+        if (handsUp) {
+            deleteHandsUpProblems([result.questionId], {
+                onSuccess() {
+                    setHandsUpList(handsUpList.filter((idx) => idx !== index));
+                },
+                onFailure() {},
+            });
+        } else {
+            handsUpProblems([result], {
+                onSuccess() {
+                    setHandsUpList([...handsUpList, index]);
+                },
+                onFailure() {},
+            });
+        }
+    };
+
+    if (mainLoading) return <BackdropComponent open={true} />;
     return (
         <>
             {/* <StyleArrowButton>
@@ -759,7 +833,18 @@ function ReportStudent({ history, match }) {
                                       currentStudentData.user_data.selections,
                                       currentStudentData.contents_data.flatMap((m) => m.problemDatas),
                                       15,
-                                  ).map((arr, idx) => <Progress mode key={idx} idx={idx} selections={arr} problemNumbers={999} />)
+                                  ).map((arr, idx) => (
+                                      <Progress
+                                          mode
+                                          key={idx}
+                                          idx={idx}
+                                          selections={arr}
+                                          problemNumbers={999}
+                                          handsUp={handsUpList}
+                                          teacherSelected={teacherSelectedList}
+                                          onDoubleClick={progressDoubleClick}
+                                      />
+                                  ))
                                 : null}
                         </div>
                     </section>

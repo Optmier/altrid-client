@@ -24,7 +24,7 @@ import { patchActivedOnly, changeDueDate, deleteActived, getActivedOnly, patchAc
 import { getServerDate } from '../../redux_modules/serverdate';
 import BackdropComponent from '../essentials/BackdropComponent';
 import Error from '../../pages/Error';
-import { changePramas } from '../../redux_modules/params';
+import { changeParams } from '../../redux_modules/params';
 import { withRouter } from 'react-router-dom';
 
 const pad = (n, width) => {
@@ -425,7 +425,7 @@ function ReportClass({ match, history }) {
         setStartDate(moment(mainReportData.created).format('MM.DD HH:mm'));
         setDueDate(moment(mainReportData.due_date).format('MM.DD HH:mm'));
         dispatch(getActivedOnly(mainReportData.idx, mainReportData.created, mainReportData.due_date));
-        dispatch(changePramas(2, activedNum));
+        dispatch(changeParams(2, activedNum));
 
         if (mainReportData.contents_data) {
             const contentsData = mainReportData.contents_data;

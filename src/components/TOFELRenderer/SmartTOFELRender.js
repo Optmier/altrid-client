@@ -177,42 +177,48 @@ function SmartTOFELRender({
     const passagesRef = useRef();
     const problemsRef = useRef();
 
+    window.problemGoto = setCurrentProblemIdx;
+
     const handlePrev = () => {
-        setCurrentLog((currentLog) => {
-            const state = {
-                ...currentLog,
-                action: 'end',
-                time: timeLimit === -2 ? timer : timeLimit - timer,
-                answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
-                correct: userSelectionDatas[currentProblemIdx].correct,
-                setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
-            };
-            // console.log(state);
-            // onPrev(currentProblemIdx - 1);
-            return state;
-        });
+        if (!preview) {
+            setCurrentLog((currentLog) => {
+                const state = {
+                    ...currentLog,
+                    action: 'end',
+                    time: timeLimit === -2 ? timer : timeLimit - timer,
+                    answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
+                    correct: userSelectionDatas[currentProblemIdx].correct,
+                    setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
+                };
+                // console.log(state);
+                // onPrev(currentProblemIdx - 1);
+                return state;
+            });
+        }
         setCurrentProblemIdx(currentProblemIdx - 1);
     };
 
     const handleNext = () => {
-        setCurrentLog((currentLog) => {
-            const state = {
-                ...currentLog,
-                action: 'end',
-                time: timeLimit === -2 ? timer : timeLimit - timer,
-                answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
-                correct: userSelectionDatas[currentProblemIdx].correct,
-                setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
-            };
-            // console.log(state);
-            if (currentProblemIdx < problemDatas.length - 1) {
-                // onNext(currentProblemIdx + 1);
+        if (!preview) {
+            setCurrentLog((currentLog) => {
+                const state = {
+                    ...currentLog,
+                    action: 'end',
+                    time: timeLimit === -2 ? timer : timeLimit - timer,
+                    answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
+                    correct: userSelectionDatas[currentProblemIdx].correct,
+                    setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
+                };
+                // console.log(state);
+                if (currentProblemIdx < problemDatas.length - 1) {
+                    // onNext(currentProblemIdx + 1);
+                }
+                return state;
+            });
+            if (currentProblemIdx >= problemDatas.length - 1) {
+                onEnd();
+                return;
             }
-            return state;
-        });
-        if (currentProblemIdx >= problemDatas.length - 1) {
-            onEnd();
-            return;
         }
         setCurrentProblemIdx(currentProblemIdx + 1);
     };
@@ -222,6 +228,7 @@ function SmartTOFELRender({
         // if (preview && isCorrect) {
         //     alert('정답입니다.');
         // }
+        if (preview) return;
         setCurrentLog((currentLog) => {
             const state = {
                 ...currentLog,
@@ -299,69 +306,77 @@ function SmartTOFELRender({
 
     useEffect(() => {
         if (!problemDatas.length) return;
-        if (!userSelectionDatas[currentProblemIdx]) {
-            if (preview) {
-                setUserSelectionDatas([
-                    ...userSelectionDatas,
-                    {
-                        setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
-                        qUUID: problemDatas[currentProblemIdx].uuid,
-                        pUUID: pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
-                            ? pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
-                            : undefined,
-                        type: problemDatas[currentProblemIdx].type,
-                        category: problemDatas[currentProblemIdx].category,
-                        answerUser: problemDatas[currentProblemIdx].answer,
-                        answerCorrect: problemDatas[currentProblemIdx].answer,
+        if (!preview) {
+            if (!userSelectionDatas[currentProblemIdx]) {
+                if (preview) {
+                    setUserSelectionDatas([
+                        ...userSelectionDatas,
+                        {
+                            setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
+                            qUUID: problemDatas[currentProblemIdx].uuid,
+                            pUUID: pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
+                                ? pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
+                                : undefined,
+                            type: problemDatas[currentProblemIdx].type,
+                            category: problemDatas[currentProblemIdx].category,
+                            answerUser: problemDatas[currentProblemIdx].answer,
+                            answerCorrect: problemDatas[currentProblemIdx].answer,
+                            correct: false,
+                            score: 0,
+                        },
+                    ]);
+                } else {
+                    setUserSelectionDatas([
+                        ...userSelectionDatas,
+                        {
+                            setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
+                            qUUID: problemDatas[currentProblemIdx].uuid,
+                            pUUID: pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
+                                ? pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
+                                : undefined,
+                            type: problemDatas[currentProblemIdx].type,
+                            category: problemDatas[currentProblemIdx].category,
+                            answerUser: problemDatas[currentProblemIdx].type === 'short-answer' ? '' : 0,
+                            answerCorrect: problemDatas[currentProblemIdx].answer,
+                            correct: false,
+                            score: 0,
+                        },
+                    ]);
+                }
+                setCurrentLog((currentLog) => {
+                    const state = {
+                        pid: currentProblemIdx,
+                        action: 'begin',
+                        time: timeLimit === -2 ? timer : timeLimit - timer,
+                        answerBefore: 0,
+                        answerAfter: 0,
                         correct: false,
-                        score: 0,
-                    },
-                ]);
+                        setNum: -99,
+                    };
+                    // console.log(state);
+                    return state;
+                });
             } else {
-                setUserSelectionDatas([
-                    ...userSelectionDatas,
-                    {
+                setCurrentLog((currentLog) => {
+                    const state = {
+                        pid: currentProblemIdx,
+                        action: 'begin',
+                        time: timeLimit === -2 ? timer : timeLimit - timer,
+                        answerBefore: userSelectionDatas[currentProblemIdx].answerUser,
+                        answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
+                        correct: userSelectionDatas[currentProblemIdx].correct,
                         setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
-                        qUUID: problemDatas[currentProblemIdx].uuid,
-                        pUUID: pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
-                            ? pUUIDs[pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid)]
-                            : undefined,
-                        type: problemDatas[currentProblemIdx].type,
-                        category: problemDatas[currentProblemIdx].category,
-                        answerUser: problemDatas[currentProblemIdx].type === 'short-answer' ? '' : 0,
-                        answerCorrect: problemDatas[currentProblemIdx].answer,
-                        correct: false,
-                        score: 0,
-                    },
-                ]);
+                    };
+                    // console.log(state);
+                    return state;
+                });
             }
-            setCurrentLog((currentLog) => {
-                const state = {
-                    pid: currentProblemIdx,
-                    action: 'begin',
-                    time: timeLimit === -2 ? timer : timeLimit - timer,
-                    answerBefore: 0,
-                    answerAfter: 0,
-                    correct: false,
-                    setNum: -99,
-                };
-                // console.log(state);
-                return state;
-            });
         } else {
-            setCurrentLog((currentLog) => {
-                const state = {
-                    pid: currentProblemIdx,
-                    action: 'begin',
-                    time: timeLimit === -2 ? timer : timeLimit - timer,
-                    answerBefore: userSelectionDatas[currentProblemIdx].answerUser,
-                    answerAfter: userSelectionDatas[currentProblemIdx].answerUser,
-                    correct: userSelectionDatas[currentProblemIdx].correct,
-                    setNum: pUUIDs.findIndex((d) => d === problemDatas[currentProblemIdx].passageUid),
-                };
-                // console.log(state);
-                return state;
-            });
+            const arr = [];
+            for (let i = 0; i < problemDatas.length; i++) {
+                arr.push({ answerCorrect: problemDatas[i].answer, answerUser: problemDatas[i].answer });
+            }
+            setUserSelectionDatas(arr);
         }
         // 지문
         const $passage = $('div.passages');
