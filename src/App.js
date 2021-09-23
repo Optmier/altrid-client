@@ -41,6 +41,7 @@ import Payment from './pages/Payment';
 import Plan from './components/MyPage/Plans';
 import PayState from './pages/PayState';
 import AlertSubscribe from './components/essentials/AlertSubscribe';
+import TimerTest from './pages/_TempPages/TimerTest';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -225,6 +226,8 @@ function App({ history }) {
                         {navigator.userAgent.toLowerCase().includes('isnativeapp') ? (
                             <Route path="/login-mobile-app-redirect" component={LoginMobileAppRedirect} exact />
                         ) : null}
+
+                        <Route path="/timertest" component={TimerTest} exact />
 
                         <Route>
                             <Error />
