@@ -39,28 +39,40 @@ const StyleBranchItem = styled.div`
     }
 `;
 
-function BranchNav({ match }) {
+function BranchNav({ match, history }) {
     const { num } = match.params;
     const { params, data } = useSelector((state) => state.params);
     const sessions = useSelector((state) => state.RdxSessions);
 
     const [deps, setDeps] = useState(1);
+    const [currentParams, setCurrentParams] = useState([]);
 
-    const shareArr = ['과제 게시판', '과제별 리포트', '학생별 리포트'];
-    const urlArr = [`/class/${num}/share`, `/class/${num}/share/${data}`, `/class/${num}/share/${data}/details?user=${sessions.authId}`];
+    const shareArr = ['과제 게시판', '과제별 리포트', '학생별 리포트', '손을 든 문제'];
+    const urlArr = [
+        { idx: 0, url: `/class/${num}/share` },
+        { idx: 1, url: `/class/${num}/share/${data}` },
+        { idx: 2, url: `/class/${num}/share/${data}/details?user=${sessions.authId}` },
+        { idx: 3, url: `/class/${num}/share/${data}/hands-up` },
+    ];
 
     useEffect(() => {
         setDeps(params);
+        setCurrentParams(history.location.pathname.split('/').filter((e) => e !== ''));
     }, [params]);
     return (
         <StyleBranch>
-            {shareArr
-                .filter((item, idx) => {
-                    return idx < deps;
+            {urlArr
+                .filter(({ url }) => {
+                    const p = url.split('/').filter((e) => e !== '');
+                    const eLen = p.length;
+                    for (let i = 0; i < eLen; i++) {
+                        if (!p[i].includes(currentParams[i])) return false;
+                    }
+                    return true;
                 })
-                .map((depsName, idx) => (
+                .map(({ idx, url }) => (
                     <StyleBranchItem key={idx}>
-                        <Link to={urlArr[idx]}>{depsName} </Link>
+                        <Link to={url}>{shareArr[idx]} </Link>
                     </StyleBranchItem>
                 ))}
         </StyleBranch>
