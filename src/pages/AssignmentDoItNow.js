@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Axios from 'axios';
 import SmartTOFELRender from '../components/TOFELRenderer/SmartTOFELRender';
 import { variance } from 'mathjs';
-import { apiUrl } from '../configs/configs';
+import { apiUrl, buildMode } from '../configs/configs';
 import EyetrackerCore from '../components/essentials/EyetrackerCore';
 import { useSelector, useDispatch } from 'react-redux';
 import { startTimer, addSecond } from '../redux_modules/timer';
@@ -193,7 +193,7 @@ function AssignmentDoItNow({ history, match }) {
     };
 
     const getConditionForData = (sessions, classnum) => {
-        return classnum == '14' || sessions.academyCode === 'optmier_pilot';
+        return classnum == '14' || sessions.academyCode === 'optmier_pilot' || buildMode === 'dev';
     };
 
     const onEnd = (time, isSubmitted, metadata, vocas) => {

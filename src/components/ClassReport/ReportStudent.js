@@ -633,8 +633,6 @@ function ReportStudent({ history, match }) {
 
     const [handsUpList, setHandsUpList] = useState([]);
     const [teacherSelectedList, setTeacherSelectedList] = useState([]);
-    window.handsuplist = handsUpList;
-    window.teacherselectedlist = teacherSelectedList;
 
     const progressDoubleClick = (index, qUUID, handsUp, teacherSelected) => {
         if (sessions.userType !== 'students') return;
@@ -670,6 +668,19 @@ function ReportStudent({ history, match }) {
             deleteHandsUpProblems([result.questionId], {
                 onSuccess() {
                     setHandsUpList(handsUpList.filter((idx) => idx !== index));
+                    Axios.patch(
+                        `${apiUrl}/data-analytics`,
+                        {
+                            assignmentNo: result.assignmentNo,
+                            questionIds: [result.questionId],
+                            isHandsUp: false,
+                        },
+                        { withCredentials: true },
+                    )
+                        .then((res) => {})
+                        .catch((err) => {
+                            console.error(err);
+                        });
                 },
                 onFailure() {},
             });
@@ -677,6 +688,19 @@ function ReportStudent({ history, match }) {
             handsUpProblems([result], {
                 onSuccess() {
                     setHandsUpList([...handsUpList, index]);
+                    Axios.patch(
+                        `${apiUrl}/data-analytics`,
+                        {
+                            assignmentNo: result.assignmentNo,
+                            questionIds: [result.questionId],
+                            isHandsUp: true,
+                        },
+                        { withCredentials: true },
+                    )
+                        .then((res) => {})
+                        .catch((err) => {
+                            console.error(err);
+                        });
                 },
                 onFailure() {},
             });

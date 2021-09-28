@@ -304,6 +304,12 @@ function SmartTOFELRender({
         });
     };
 
+    const actionProblemNumberDoubleClick = () => {
+        setUserSelectionDatas(
+            userSelectionDatas.map((data, idx) => (idx === currentProblemIdx ? { ...data, starred: !data.starred } : data)),
+        );
+    };
+
     useEffect(() => {
         if (!problemDatas.length) return;
         if (!preview) {
@@ -340,6 +346,7 @@ function SmartTOFELRender({
                             answerCorrect: problemDatas[currentProblemIdx].answer,
                             correct: false,
                             score: 0,
+                            starred: false,
                         },
                     ]);
                 }
@@ -370,6 +377,7 @@ function SmartTOFELRender({
                     // console.log(state);
                     return state;
                 });
+                console.log(userSelectionDatas[currentProblemIdx].starred);
             }
         } else {
             const arr = [];
@@ -594,7 +602,9 @@ function SmartTOFELRender({
                                         : 0
                                     : userAnswerDirect
                             }
+                            starred={userSelectionDatas[currentProblemIdx] ? userSelectionDatas[currentProblemIdx].starred : false}
                             onSelect={onSelectionSelected}
+                            onProblemNumberDoubleClick={actionProblemNumberDoubleClick}
                         />
                     ) : null}
                 </ProblemsContainer>

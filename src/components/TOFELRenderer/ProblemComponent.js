@@ -4,9 +4,36 @@ import styled from 'styled-components';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { OutlinedInput, TextField, withStyles } from '@material-ui/core';
+import StarredImage from '../../images/starred.png';
 
 const Root = styled.div``;
-const TextsContainer = styled.div``;
+const TextsContainer = styled.div`
+    display: inline-flex;
+
+    & span.problem-number {
+        cursor: pointer;
+        font-family: 'Times New Roman';
+        font-size: 1rem;
+        line-height: 1.5rem;
+        font-weight: 600;
+        margin-right: 0.3rem;
+        margin-left: 0.5rem;
+        user-select: none;
+
+        & div.starred-mark {
+            background: url(${StarredImage});
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            position: absolute;
+            height: 2.2rem;
+            width: 2.2rem;
+            margin-top: -0.3rem;
+            margin-left: -0.75em;
+            opacity: 0.9;
+        }
+    }
+`;
 const SelectionsContainer = styled.div`
     margin-top: 20px;
     margin-left: 4px;
@@ -30,7 +57,19 @@ const UCOutlinedInput = withStyles((theme) => ({
     },
 }))(OutlinedInput);
 
-function ProblemComponent({ problemNumber, category, type, textForRender, selections, answer, score, currentSelection, onSelect }) {
+function ProblemComponent({
+    problemNumber,
+    category,
+    type,
+    textForRender,
+    selections,
+    answer,
+    score,
+    currentSelection,
+    onSelect,
+    starred,
+    onProblemNumberDoubleClick,
+}) {
     const shortAnswerFieldRef = useRef();
     const textContainerRef = useRef();
     const handleSelection = (id) => () => {
@@ -42,15 +81,19 @@ function ProblemComponent({ problemNumber, category, type, textForRender, select
         onSelect(value.toUpperCase(), answer === value.toUpperCase());
     };
 
+    const actionProblemNumberDoubleClick = () => {
+        onProblemNumberDoubleClick();
+    };
+
     useEffect(() => {
-        const firstP = textContainerRef.current.getElementsByTagName('p')[0];
-        const exists = firstP.getElementsByClassName('problem-number');
-        exists.length && firstP.removeChild(exists[0]);
-        const nums = document.createElement('span');
-        nums.className = 'problem-number';
-        nums.style.fontWeight = 600;
-        nums.innerHTML = problemNumber + '. ';
-        firstP.prepend(nums);
+        // const firstP = textContainerRef.current.getElementsByTagName('p')[0];
+        // const exists = firstP.getElementsByClassName('problem-number');
+        // exists.length && firstP.removeChild(exists[0]);
+        // const nums = document.createElement('span');
+        // nums.className = 'problem-number';
+        // nums.style.fontWeight = 600;
+        // nums.innerHTML = problemNumber + '. ';
+        // firstP.prepend(nums);
     }, [problemNumber]);
 
     useEffect(() => {
@@ -60,7 +103,17 @@ function ProblemComponent({ problemNumber, category, type, textForRender, select
 
     return (
         <Root>
-            <TextsContainer ref={textContainerRef}>{HtmlParser(textForRender)}</TextsContainer>
+            <TextsContainer ref={textContainerRef}>
+                <span
+                    className="problem-number"
+                    // style={{ background: `url(${StarredImage})` }}
+                    onDoubleClick={actionProblemNumberDoubleClick}
+                >
+                    {starred ? <div className="starred-mark"></div> : null}
+                    {problemNumber}.
+                </span>
+                {HtmlParser(textForRender)}
+            </TextsContainer>
             {type === 'short-answer' ? (
                 <SelectionsContainer>
                     <UCOutlinedInput
@@ -145,7 +198,9 @@ ProblemComponent.defaultProps = {
     answer: '',
     score: 0,
     currentSelection: 0,
+    starred: false,
     onSelect() {},
+    onProblemNumberDoubleClick() {},
 };
 
 export default React.memo(ProblemComponent);
