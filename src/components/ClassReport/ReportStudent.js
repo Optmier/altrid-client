@@ -50,6 +50,22 @@ const timeValueToTimer = (seconds) => {
     else return `${pad(parseInt(secs / 60), 1)}분 ${pad(Math.floor(secs % 60), 1)}초`;
 };
 
+const Feedback = styled.div`
+       
+
+    & input{
+    width:100%;
+    font-size:20px;
+    height:100%;
+    }
+`;
+const F_button = styled.div`
+    margin-top:20px;
+    
+    `;
+
+
+
 const StyleItems = styled.div`
     display: flex;
     align-items: center;
@@ -221,6 +237,11 @@ const HTMLTooltip = withStyles((theme) => ({
     },
 }))(Tooltip);
 
+
+
+
+
+
 function ReportStudent({ history, match }) {
     const dispatch = useDispatch();
     const sessions = useSelector((state) => state.RdxSessions);
@@ -282,6 +303,11 @@ function ReportStudent({ history, match }) {
     const [mainLoading, setMainLoading] = useState(true);
     /** 유형별 분석 select state */
     const [typeSelectState, setTypeSelectState] = useState('0');
+    
+    
+    const[feed,setfeed] = useState('');
+    const[t_feed,settfee]= useState('');
+
 
     const handleTypeSelect = (e) => {
         setTypeSelectState(e.target.value);
@@ -616,6 +642,16 @@ function ReportStudent({ history, match }) {
     }, [patternDatas]);
 
     if (mainLoading) return <BackdropComponent open={true} />;
+
+// feedback 기능 
+
+
+
+    const ChnageFeed = (e) =>{
+        setfeed(e.target.value);
+        console.log(feed);
+    }
+
 
     return (
         <>
@@ -967,9 +1003,31 @@ function ReportStudent({ history, match }) {
                                 Feedback
                             </div>
                         </div>    
-                        <div className="white-box">
-                            <h5>선생님 피드백 영역</h5>     
-                        </div>
+                      
+                        {sessions.userType === 'students'
+                        ?(
+                            <div className="white-box">
+                            <Feedback>
+                                {feed}
+                            </Feedback>
+                            </div>
+                        ):(
+                            <>
+                            <div className="white-box">
+                            <Feedback>
+                            <input value={feed} onChange={ChnageFeed} placeholder="시선흐름 분석을 통한 결과를 바탕으로 학생에게 피드백을 남겨주세요!" type="text"></input>     
+                            </Feedback>
+                            </div>
+                            <F_button>
+                            <Button variant="outlined" onClick={()=>{
+                                settfee(feed);
+                                alert("피드백이 저장되었습니다.");
+                                setfeed(''); // input 값 초기화 
+                                console.log(t_feed);
+                            }} fullWidth size="large">저장하기</Button>
+                            </F_button>
+                            </>
+                        )}                        
                     </section>
                 </div>
             </ClassWrapper>
