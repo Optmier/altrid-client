@@ -5,6 +5,7 @@ import Progress from './Progress';
 import styled from 'styled-components';
 import StudentTypeScore from './StudentTypeScore';
 import EyeTrackBox from './EyeTrackBox';
+import EyeTrackPattern from './EyeTrackPattern';
 import {
     Button,
     Dialog,
@@ -31,6 +32,12 @@ import TooltipCard from '../essentials/TooltipCard';
 import TypeBanner from '../essentials/TypeBanner';
 import TotalProgress from './TotalProgress';
 import { changePramas } from '../../redux_modules/params';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import Typography from '@material-ui/core/Typography';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Chart from './CommChart';
+import CommChart from './CommChart';
 
 const pad = (n, width) => {
     n = n + '';
@@ -893,7 +900,6 @@ function ReportStudent({ history, match }) {
                     )}
 
                     <Element name="analyze_page_start"></Element>
-
                     <section className="student-report-observe">
                         <div className="class-report-title graph-title">
                             <div className="observe-header">
@@ -911,22 +917,59 @@ function ReportStudent({ history, match }) {
                                 <TypeBanner situation={'info'} value={achievesForTypes.value} />
                             </div>
                         </div>
-
                         {currentStudentData && patternDatas.length ? (
-                            <EyeTrackBox
-                                hasEyetrack={currentStudentData.eyetrack}
-                                eyetrackData={currentStudentData.eyetrack_data}
-                                contentsData={currentStudentData.contents_data}
-                                patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
-                                totalStudentsDatas={studentsData.filter((d) => d.submitted)}
-                                currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
-                                userId={queryUserId}
-                                activedNum={activedNum}
-                                stdName={stdName}
-                                answerChangedProblems={answerChangedProblems}
-                                aftChangedFaileds={aftChangedFaileds}
-                            />
+                                <EyeTrackBox
+                                    hasEyetrack={currentStudentData.eyetrack}
+                                    eyetrackData={currentStudentData.eyetrack_data}
+                                    contentsData={currentStudentData.contents_data}
+                                    patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
+                                    totalStudentsDatas={studentsData.filter((d) => d.submitted)}
+                                    currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
+                                    userId={queryUserId}
+                                    activedNum={activedNum}
+                                    stdName={stdName}
+                                    answerChangedProblems={answerChangedProblems}
+                                    aftChangedFaileds={aftChangedFaileds}
+                                />
+                                // </Typography>
+                                // </AccordionDetails>
+                                // </Accordion>
                         ) : null}
+                    
+                    </section>
+
+
+
+                    <section className="AI-comment">
+                        <div className="class-report-title">
+                            <div className="observe-header">
+                                    AI-Comment
+                            </div>
+                        </div>
+                        <div className="white-box ment-ai">
+                            <div className="ment-ai-col">
+                            {currentStudentData && patternDatas.length ?(
+                                <CommChart/>
+                            ):
+                                <p>시선추적이 포함되지 않은 과제입니다.</p>
+                            }
+                           
+                            </div>
+                            <div className="ment-ai-col" id="no-eyetrack">
+                            <h5>AI comment 영역<br/></h5>    
+                            </div>
+                            
+                        </div>
+                    </section>
+                    <section className="feedback">
+                        <div className="class-report-title">
+                            <div className="observe-header">
+                                Feedback
+                            </div>
+                        </div>    
+                        <div className="white-box">
+                            <h5>선생님 피드백 영역</h5>     
+                        </div>
                     </section>
                 </div>
             </ClassWrapper>

@@ -114,9 +114,6 @@ function StudentManage({ match, history }) {
     return (
         <ClassWrapper col="col">
             <div className="class-student-manage-root">
-                <div className="manage-header">
-                    <h2 className="manage-title">수강생 관리</h2>
-                </div>
                 <div className="manage-inputs">
                     <div className="manage-inputs-header">
                         <div className="header-left">
