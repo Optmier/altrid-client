@@ -20,7 +20,6 @@ import  ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MuiAccordion from '@material-ui/core/Accordion';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import {pink} from '@material-ui/core/colors';
 
 
 window.liveCountsInterval = {};
@@ -144,6 +143,9 @@ const Accordion = styled((props) => (
     border: 'none',
     background: 'transparent',
     color:'white',
+    // '&:hover':{
+    //     background:'RGB(73, 52, 143)',
+    //   },
   }));
 
 
