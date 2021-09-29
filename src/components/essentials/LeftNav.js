@@ -15,10 +15,31 @@ import Popover from '@material-ui/core/Popover';
 import { LeftPopOverNavigator, LeftPopOverCheck } from './LeftNavLogo';
 import { getClassLists } from '../../redux_modules/classLists';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import SchoolIcon from '@material-ui/icons/School';
+import { AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
+import  ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import MuiAccordion from '@material-ui/core/Accordion';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import {pink} from '@material-ui/core/colors';
 
 
 window.liveCountsInterval = {};
+const GoClass = styled.div `
+    background-color: #6d2afa;
+    border-radius: 11px;
+    box-shadow: 0px 3px 6px #84848412;
+    width: 100%;
+    height: 45px;
+    font-size: 14.4px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    `;
+
+
+
+
 const StylePopOver = styled.div`
     display: flex;
     flex-direction: column;
@@ -54,10 +75,12 @@ const StylePopOver = styled.div`
             display: flex;
             flex-direction: column;
 
+
             & .name {
                 font-size: 1rem;
                 font-weight: 600;
                 color: black;
+                display:flex;
             }
             & .desc {
                 font-size: 0.85rem;
@@ -90,6 +113,20 @@ const StyleLeftNav = styled.div`
         left: ${(props) => (props.leftNavState ? '0' : '-100%')};
     }
 `;
+const GotoClass = styled.div`
+    padding: 0 5px;
+    display:flex;
+    font-size:14px;
+    align-item:center;
+    justify-content: flex-start;
+    font-weight: 500;
+    font-family: 'Noto Sans CJK KR', 'Montserrat';
+`;
+const Item = styled.div`
+    display:flex;
+    `;
+
+
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -98,6 +135,17 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
         </NavLink>
     );
 });
+
+
+
+const Accordion = styled((props) => (
+    <MuiAccordion disableGutters elevation={0} square {...props} />
+  ))(({ theme }) => ({
+    border: 'none',
+    background: 'transparent',
+    color:'white',
+  }));
+
 
 function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState }) {
     const { num, id } = match.params;
@@ -264,39 +312,6 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
 
     return (
         <>
-            <Popover
-                id={popoverId}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-            >
-                <StylePopOver>
-                    <div className="header">클래스 바로가기</div>
-                    {classLists.map((i) => (
-                        <LeftNavItem key={i.idx} linkTo={`/class/${i.idx}/share`}>
-                            <div className="row">
-                                <LeftPopOverNavigator />
-                                <div className="contents">
-                                    <div className="name"> {i.name}</div>
-                                    <div className="desc"> {i.description}</div>
-                                </div>
-                                <div className="check">
-                                    <LeftPopOverCheck />
-                                </div>
-                            </div>
-                        </LeftNavItem>
-                    ))}
-                </StylePopOver>
-            </Popover>
-
             <StyleLeftNav leftNavState={leftNavState} className="left-nav-root">
                 <div className="left-nav">
                     <div className="left-nav-box">
@@ -377,28 +392,38 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                         </div>
                                     </LeftNavItem>
                                 </div>
-                                <div className="a-wrapper">
-                                <LeftNavItem linkTo={`/main`}>
-
-                                    <div className="draft-button">
-                                            <svg id="Folder" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                                                <path
-                                                    id="패스_178"
-                                                    data-name="패스 178"
-                                                    d="M0,10.926V.984A1.022,1.022,0,0,1,.311.259.984.984,0,0,1,.984,0H6.731a.588.588,0,0,1,.414.155.7.7,0,0,1,.311.362l.518,1.45h6.99a1.022,1.022,0,0,1,.725.311A.94.94,0,0,1,16,3v7.974a1.022,1.022,0,0,1-.311.725.94.94,0,0,1-.725.311H.984A1.022,1.022,0,0,1,.259,11.7,1.4,1.4,0,0,1,0,10.926Z"
-                                                    transform="translate(0 2)"
-                                                    fill="#fff"
-                                                />
-                                                <rect id="사각형_1447" data-name="사각형 1447" width="16" height="16" fill="none" />
-                                            </svg>
-                                        클래스 선택하기
-                                    </div>
-                                    </LeftNavItem>
-                                </div>
+                                <Accordion>
+                                    <AccordionSummary
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                    >
+                                    <Typography>
+                                        <GotoClass>
+                                        <ExitToAppIcon fontSize="small"/>
+                                        &nbsp; &nbsp; 클래스 바로가기
+                                        </GotoClass>
+                                    </Typography>
+                                       
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                    <Typography>
+                                        {classLists.map((i) => (
+                                            <LeftNavItem key={i.idx} linkTo={`/class/${i.idx}/share`}>
+                                            <div className="name">
+                                                <Item>
+                                                    <ChevronRightIcon/> {i.name}
+                                                </Item>
+                                            </div>
+                                            <br/>
+                                            </LeftNavItem>
+                                        ))}     
+                                        
+                                    </Typography>
+                                    </AccordionDetails>
+                                    </Accordion>                        
                             </>
                         )}
                     </div>
-
                     <div className="left-nav-box">
                         <div className="a-wrapper">
                             <LeftNavItem linkTo={`/class/${num}/share`}>
@@ -460,3 +485,6 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
 }
 
 export default React.memo(withRouter(LeftNav));
+
+
+            
