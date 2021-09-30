@@ -685,7 +685,7 @@ function ReportStudent({ history, match }) {
                 onSuccess() {
                     setHandsUpList(handsUpList.filter((idx) => idx !== index));
                     Axios.patch(
-                        `${apiUrl}/data-analytics`,
+                        `${apiUrl}/data-analytics/hands-up`,
                         {
                             assignmentNo: result.assignmentNo,
                             questionIds: [result.questionId],
@@ -705,7 +705,7 @@ function ReportStudent({ history, match }) {
                 onSuccess() {
                     setHandsUpList([...handsUpList, index]);
                     Axios.patch(
-                        `${apiUrl}/data-analytics`,
+                        `${apiUrl}/data-analytics/hands-up`,
                         {
                             assignmentNo: result.assignmentNo,
                             questionIds: [result.questionId],
