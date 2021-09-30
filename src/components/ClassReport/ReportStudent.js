@@ -29,6 +29,12 @@ import TooltipCard from '../essentials/TooltipCard';
 import TypeBanner from '../essentials/TypeBanner';
 import { changeParams } from '../../redux_modules/params';
 import { deleteHandsUpProblems, getHandsUpProblems, getSelectedHandsUpProblems, handsUpProblems } from './QnA/HandsUpInterface';
+import {
+    getTeacherFeedbackInterface,
+    TeacherFeedbackViewer,
+    TeacherFeedbackWriter,
+    updateTeacherFeedbackInterface,
+} from './ReportStudent/TeacherFeedback';
 
 const pad = (n, width) => {
     n = n + '';
@@ -276,6 +282,7 @@ function ReportStudent({ history, match }) {
     /** 유형별 분석 select state */
     const [typeSelectState, setTypeSelectState] = useState('0');
     //const [handsUpList, setHandsUpList] = useState([]);
+    const [teacherFeedbackContents, setTeacherFeedbackContents] = useState({ renderContents: null, deltaContents: null });
 
     const handleTypeSelect = (e) => {
         setTypeSelectState(e.target.value);
@@ -429,6 +436,15 @@ function ReportStudent({ history, match }) {
             .catch((err) => {
                 console.error(err);
             });
+
+        getTeacherFeedbackInterface(activedNum, queryUserId, {
+            onSuccess(res) {
+                setTeacherFeedbackContents(res);
+            },
+            onFailure(err) {
+                console.error(err);
+            },
+        });
     }, []);
 
     useEffect(() => {
@@ -705,6 +721,18 @@ function ReportStudent({ history, match }) {
                 onFailure() {},
             });
         }
+    };
+
+    const actionUpdateTeacherFeedback = (contentsData) => {
+        updateTeacherFeedbackInterface(activedNum, queryUserId, contentsData, {
+            onSuccess(res) {
+                alert('성공적으로 업데이트 되었습니다!');
+            },
+            onFailure(err) {
+                console.error(err);
+                alert('업데이트에 실패했습니다.');
+            },
+        });
     };
 
     if (mainLoading) return <BackdropComponent open={true} />;
@@ -1036,6 +1064,34 @@ function ReportStudent({ history, match }) {
                                 aftChangedFaileds={aftChangedFaileds}
                             />
                         ) : null}
+                    </section>
+
+                    <section className="student-report-observe">
+                        <div className="class-report-title graph-title">
+                            <div className="observe-header">
+                                선생님 피드백
+                                {/* <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
+                                            fill="#A9ACAF"
+                                        />
+                                    </svg>
+                                </HTMLTooltip> */}
+                            </div>
+                            <div className="title-graph-right">
+                                {/* <TypeBanner situation={'info'} value={achievesForTypes.value} /> */}
+                            </div>
+                        </div>
+
+                        {sessions.userType === 'students' ? (
+                            <TeacherFeedbackViewer contents={teacherFeedbackContents.renderContents} />
+                        ) : (
+                            <TeacherFeedbackWriter
+                                deltaContents={teacherFeedbackContents.deltaContents}
+                                actionUpdateClick={actionUpdateTeacherFeedback}
+                            />
+                        )}
                     </section>
                 </div>
             </ClassWrapper>
