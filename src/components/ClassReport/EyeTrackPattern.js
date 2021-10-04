@@ -8,10 +8,13 @@ import RestrictWrapper from '../essentials/RestrictWrapper';
 import { useSelector } from 'react-redux';
 
 const StylePatternBox = styled.div`
-    width: 100%;
+    width: 100%; 
+    height:230px;
+    overflow:scroll;
 `;
 
 const StylePatternList = styled.div`
+   
     border-bottom: 1px solid #e5e8eb;
     padding: 20px 0;
     display: flex;

@@ -14,8 +14,31 @@ import VideocamIcon from '@material-ui/icons/Videocam';
 import Popover from '@material-ui/core/Popover';
 import { LeftPopOverNavigator, LeftPopOverCheck } from './LeftNavLogo';
 import { getClassLists } from '../../redux_modules/classLists';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import { AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
+import  ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import MuiAccordion from '@material-ui/core/Accordion';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+
 
 window.liveCountsInterval = {};
+const GoClass = styled.div `
+    background-color: #6d2afa;
+    border-radius: 11px;
+    box-shadow: 0px 3px 6px #84848412;
+    width: 100%;
+    height: 45px;
+    font-size: 14.4px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    `;
+
+
+
+
 const StylePopOver = styled.div`
     display: flex;
     flex-direction: column;
@@ -51,10 +74,12 @@ const StylePopOver = styled.div`
             display: flex;
             flex-direction: column;
 
+
             & .name {
                 font-size: 1rem;
                 font-weight: 600;
                 color: black;
+                display:flex;
             }
             & .desc {
                 font-size: 0.85rem;
@@ -87,6 +112,20 @@ const StyleLeftNav = styled.div`
         left: ${(props) => (props.leftNavState ? '0' : '-100%')};
     }
 `;
+const GotoClass = styled.div`
+    padding: 0 5px;
+    display:flex;
+    font-size:14px;
+    align-item:center;
+    justify-content: flex-start;
+    font-weight: 500;
+    font-family: 'Noto Sans CJK KR', 'Montserrat';
+`;
+const Item = styled.div`
+    display:flex;
+    `;
+
+
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -95,6 +134,20 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
         </NavLink>
     );
 });
+
+
+
+const Accordion = styled((props) => (
+    <MuiAccordion disableGutters elevation={0} square {...props} />
+  ))(({ theme }) => ({
+    border: 'none',
+    background: 'transparent',
+    color:'white',
+    // '&:hover':{
+    //     background:'RGB(73, 52, 143)',
+    //   },
+  }));
+
 
 function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState }) {
     const { num, id } = match.params;
@@ -113,6 +166,8 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     const [teacherData, setTeacherData] = useState({});
     const [hasVideoLecture, setHasVideoLecture] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [codestate,setCodeState] = useState('');
+
 
     const open = Boolean(anchorEl);
     const popoverId = open ? 'simple-popover' : undefined;
@@ -243,41 +298,22 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
         }
     }
 
+
+    useEffect(()=>{
+        Axios.get(`${apiUrl}/classes/class/${num}`,{withCredentials:true})
+        .then((res1)=>{
+            setCodeState(res1.data[0].class_code);
+        })
+        .catch((err)=>{
+            console.error(err);
+        })
+    })
+
+
+
+
     return (
         <>
-            <Popover
-                id={popoverId}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-            >
-                <StylePopOver>
-                    <div className="header">클래스 바로가기</div>
-                    {classLists.map((i) => (
-                        <LeftNavItem key={i.idx} linkTo={`/class/${i.idx}/share`}>
-                            <div className="row">
-                                <LeftPopOverNavigator />
-                                <div className="contents">
-                                    <div className="name"> {i.name}</div>
-                                    <div className="desc"> {i.description}</div>
-                                </div>
-                                <div className="check">
-                                    <LeftPopOverCheck />
-                                </div>
-                            </div>
-                        </LeftNavItem>
-                    ))}
-                </StylePopOver>
-            </Popover>
-
             <StyleLeftNav leftNavState={leftNavState} className="left-nav-root">
                 <div className="left-nav">
                     <div className="left-nav-box">
@@ -319,35 +355,77 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                     <p className="p-desc">{teacherData ? teacherData['description'] : ''}</p>
                                 </TooltipCard>
                                 {sessions.userType === 'students' ? null : (
+                                    <>
                                     <div className="info-num">
                                         <img alt="student_num" src={People} />
                                         <p>학생 수 {studentData.length}명</p>
                                     </div>
+                                    <div className="info-num">
+
+                                        <FileCopyIcon fontSize="small"/> 
+                                        <p> &nbsp; &nbsp; {codestate} </p>
+                              
+                                    </div>
+                                    </>
                                 )}
                             </>
                         </div>
 
-                        {sessions.userType === 'students' ? null : (
-                            <div className="a-wrapper">
-                                <LeftNavItem linkTo={`/main-draft`}>
-                                    <div className="draft-button">
-                                        <svg id="Folder" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                                            <path
-                                                id="패스_178"
-                                                data-name="패스 178"
-                                                d="M0,10.926V.984A1.022,1.022,0,0,1,.311.259.984.984,0,0,1,.984,0H6.731a.588.588,0,0,1,.414.155.7.7,0,0,1,.311.362l.518,1.45h6.99a1.022,1.022,0,0,1,.725.311A.94.94,0,0,1,16,3v7.974a1.022,1.022,0,0,1-.311.725.94.94,0,0,1-.725.311H.984A1.022,1.022,0,0,1,.259,11.7,1.4,1.4,0,0,1,0,10.926Z"
-                                                transform="translate(0 2)"
-                                                fill="#fff"
-                                            />
-                                            <rect id="사각형_1447" data-name="사각형 1447" width="16" height="16" fill="none" />
-                                        </svg>
-                                        과제 생성 및 게시
-                                    </div>
-                                </LeftNavItem>
-                            </div>
+                        {sessions.userType === 'students' ? 
+                        (
+                            null
+                           
+                        ) : (
+                            <>   
+                                <div className="a-wrapper">
+                                    <LeftNavItem linkTo={`/main-draft`}>
+                                        <div className="draft-button">
+                                            <svg id="Folder" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                                <path
+                                                    id="패스_178"
+                                                    data-name="패스 178"
+                                                    d="M0,10.926V.984A1.022,1.022,0,0,1,.311.259.984.984,0,0,1,.984,0H6.731a.588.588,0,0,1,.414.155.7.7,0,0,1,.311.362l.518,1.45h6.99a1.022,1.022,0,0,1,.725.311A.94.94,0,0,1,16,3v7.974a1.022,1.022,0,0,1-.311.725.94.94,0,0,1-.725.311H.984A1.022,1.022,0,0,1,.259,11.7,1.4,1.4,0,0,1,0,10.926Z"
+                                                    transform="translate(0 2)"
+                                                    fill="#fff"
+                                                />
+                                                <rect id="사각형_1447" data-name="사각형 1447" width="16" height="16" fill="none" />
+                                            </svg>
+                                            과제 생성 및 게시
+                                        </div>
+                                    </LeftNavItem>
+                                </div>
+                                <Accordion>
+                                    <AccordionSummary
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                    >
+                                    <Typography>
+                                        <GotoClass>
+                                        <ExitToAppIcon fontSize="small"/>
+                                        &nbsp; &nbsp; 클래스 바로가기
+                                        </GotoClass>
+                                    </Typography>
+                                       
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                    <Typography>
+                                        {classLists.map((i) => (
+                                            <LeftNavItem key={i.idx} linkTo={`/class/${i.idx}/share`}>
+                                            <div className="name">
+                                                <Item>
+                                                    <ChevronRightIcon/> {i.name}
+                                                </Item>
+                                            </div>
+                                            <br/>
+                                            </LeftNavItem>
+                                        ))}     
+                                        
+                                    </Typography>
+                                    </AccordionDetails>
+                                    </Accordion>                        
+                            </>
                         )}
                     </div>
-
                     <div className="left-nav-box">
                         <div className="a-wrapper">
                             <LeftNavItem linkTo={`/class/${num}/share`}>
@@ -360,6 +438,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                     />
                                 </svg>
                                 <p>과제 게시판</p>
+                               
                             </LeftNavItem>
                         </div>
                         <div className="a-wrapper">
@@ -371,18 +450,6 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                         </div>
                         {sessions.userType === 'students' ? null : (
                             <>
-                                <div className="a-wrapper">
-                                    <LeftNavItem linkTo={`/class/${num}/student-manage`}>
-                                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M14.5455 0V10.1818H16V0H14.5455ZM11.6364 10.1818H13.0909V0H11.6364V10.1818ZM9.45455 0H0.727273C0.327273 0 0 0.327273 0 0.727273V9.45454C0 9.85454 0.327273 10.1818 0.727273 10.1818H9.45455C9.85455 10.1818 10.1818 9.85454 10.1818 9.45454V0.727273C10.1818 0.327273 9.85455 0 9.45455 0ZM5.09091 2C5.99273 2 6.72727 2.73455 6.72727 3.63636C6.72727 4.53818 5.99273 5.27273 5.09091 5.27273C4.18909 5.27273 3.45455 4.53818 3.45455 3.63636C3.45455 2.73455 4.18909 2 5.09091 2ZM8.36364 8.72727H1.81818V8.18182C1.81818 7.09091 4 6.54545 5.09091 6.54545C6.18182 6.54545 8.36364 7.09091 8.36364 8.18182V8.72727Z"
-                                                fill="white"
-                                            />
-                                        </svg>
-                                        <p>수강생 관리</p>
-                                    </LeftNavItem>
-                                </div>
-
                                 <div className="a-wrapper">
                                     <LeftNavItem linkTo={`/class/${num}/manage`}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13">
@@ -406,12 +473,13 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                             </g>
                                         </svg>
 
-                                        <p>클래스 초대/관리</p>
+                                        <p>학생 및 클래스 관리</p>
                                     </LeftNavItem>
                                 </div>
                             </>
                         )}
                     </div>
+                        
                 </div>
             </StyleLeftNav>
         </>
@@ -419,3 +487,6 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
 }
 
 export default React.memo(withRouter(LeftNav));
+
+
+            

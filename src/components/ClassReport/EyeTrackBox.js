@@ -2,30 +2,76 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EyeTrackPattern from './EyeTrackPattern';
 import EyetrackingPlayer from '../TOFELRenderer/EyetrackingPlayer';
-import { Tooltip } from '@material-ui/core';
+import {AccordionDetails, AccordionSummary, Tooltip, Typography } from '@material-ui/core';
 import TooltipCard from '../essentials/TooltipCard';
 import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
 import RestrictWrapper from '../essentials/RestrictWrapper';
 import { useSelector } from 'react-redux';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MuiAccordion from '@material-ui/core/Accordion';
+import Chart from 'react-apexcharts';
+
+const StyleChartWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+
+const Dataset = styled.div`
+    text-align:center;
+    margin-right:15px;
+
+    & span {
+        margin-right:20px;
+    }
+        & .row-desc{
+            color:red;
+            font-weight: bold;
+        }
+    `;
+const AIcomment = styled.div`
+    margin-top:100px;
+`;
+
+const Sentece = styled.div`
+    
+    `;
+
+
+
+const Playerset= styled.div`
+        width: 950px;
+        box-sizing: border-box;
+        padding: 0px 100px 0px 0px;
+`;
+
+const Accordion = styled((props) => (
+    <MuiAccordion disableGutters elevation={0} square {...props} />
+  ))(({ theme }) => ({
+    border: `none`,
+
+    
+  }));
+
 
 const StyleEyeTrackBox = styled.div`
     display: flex;
     flex-direction: column;
 
     & .eyetrack-box {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 18px;
+        margin-bottom: 18px;
+        font-weight:bold;
 
         & .eyetrack-left {
-            width: 72%;
-            height: 470px;
+            width: 100%;
+            height: 490px;
             box-sizing: border-box;
             background-color: white;
             border-radius: 11px;
-            padding: 0 32px;
+            padding: 0 130px;
             display: flex;
             align-items: center;
 
@@ -152,49 +198,80 @@ function EyeTrackBox({
         setRegressionsTotalAvg(totalEyeStatsAvg.num_of_regs.toFixed(0));
     }, [totalStudentsDatas]);
 
+    let state = {};
+
     return (
-        <StyleEyeTrackBox>
-            <div className="white-box ment-ai">
-                <div className="ment-ai-col">
-                    <div>
-                        <span className="ment-ai-name">{stdName}</span> 학생은 풀이 중 <br />
-                    </div>
-                    <div>
-                        <span className="ment-ai-underline">총 {answerChangedProblems}문제</span>에서 답 변경 후, <br />
-                    </div>
-                    <div>
-                        <span className="ment-ai-underline">{aftChangedFaileds}문제</span>가 오답 처리되었습니다.
-                    </div>
-                </div>
 
-                {hasEyetrack && mEyetrackData ? (
-                    <div className="ment-ai-col">
-                        <div className="ment-ai-row">
-                            <span className="row-title">총 응시점 개수</span>
-                            <TooltipCard title={`${fixations}개 (평균 ${fixationsTotalAvg}개)`}>
-                                <span className="row-desc">
-                                    {fixations}개 (평균 {fixationsTotalAvg}개)
-                                </span>
-                            </TooltipCard>
+        // 시선 추적 영상 
+       
+        <StyleEyeTrackBox> 
+            <div className="white-box">
+      
+            <Accordion>
+           
+                    <AccordionSummary 
+                        square={true}
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                        >
+                        <Typography>시선 흐름 분석 영상</Typography>
+                        </AccordionSummary>
+          
+                        <AccordionDetails>
+                            <Typography>
+                        <Playerset>
+                            {hasEyetrack && mEyetrackData ? (
+                                 
+                        <EyetrackingPlayer data={mEyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
+                     
+                    ) : (
+                       
+                        <div className="no-eyetrack">
+                            <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path
+                                    id="패스_35"
+                                    data-name="패스 35"
+                                    d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
+                                    fill="#605f60"
+                                />
+                            </svg>
+                            시선 추적이 포함되지 않은 과제입니다.
                         </div>
-                        <div className="ment-ai-row">
+                     
+                    )}
+                    </Playerset>
+                        </Typography>
+                        </AccordionDetails>
+            </Accordion>
+           
+            </div>
+
+            {/* 자신의 데이터 결과 */}
+
+            <div className="white-box">
+            {hasEyetrack && mEyetrackData ? (
+                    <div className="ment-ai-col">          
+                    <Dataset>      
+                            <span className="row-title">총 응시점 개수 </span>
+                            <TooltipCard title={`${fixations}개`}>
+                                <span className="row-desc">
+                                     {fixations}개
+                                </span>
+                            </TooltipCard>                                    
                             <span className="row-title">평균 응시 속도</span>
-
-                            <TooltipCard title={`${avgFixVels}px/s (평균 ${avgFixDurTotalAvg}px/s)`}>
+                            <TooltipCard title={`${avgFixVels}px/s`}>
                                 <span className="row-desc">
-                                    {avgFixVels}px/s (평균 {avgFixDurTotalAvg}px/s)
+                                    {avgFixVels}px/s
                                 </span>
                             </TooltipCard>
-                        </div>
-                        <div className="ment-ai-row">
                             <span className="row-title">재응시 횟수</span>
-
-                            <TooltipCard title={`${regressions}회 (평균 ${regressionsTotalAvg}회)`}>
+                            <TooltipCard title={`${regressions}회`}>
                                 <span className="row-desc">
-                                    {regressions}회 (평균 {regressionsTotalAvg}회)
+                                    {regressions}회
                                 </span>
                             </TooltipCard>
-                        </div>
+                    </Dataset>    
                     </div>
                 ) : (
                     <div className="ment-ai-col" id="no-eyetrack">
@@ -209,32 +286,30 @@ function EyeTrackBox({
                         시선 추적 미포함 과제
                     </div>
                 )}
-            </div>
 
-            <div className="eyetrack-box">
-                <div className="eyetrack-left">
-                    {hasEyetrack && mEyetrackData ? (
-                        <EyetrackingPlayer data={mEyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
-                    ) : (
-                        <div className="no-eyetrack">
-                            <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                                <path
-                                    id="패스_35"
-                                    data-name="패스 35"
-                                    d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
-                                    fill="#605f60"
-                                />
-                            </svg>
-                            시선 추적이 포함되지 않은 과제입니다.
-                        </div>
-                    )}
+            </div>        
+
+            {/* 변경 문제             */}
+
+            <div className="white-box ment-ai">
+                <div className="ment-ai-col">
+                    <div>
+                        <span className="ment-ai-name">{stdName}</span> 학생은 풀이 중 <br />
+                    </div>
+                    <div>
+                        <span className="ment-ai-underline">총 {answerChangedProblems}문제</span>에서 답 변경 후, <br />
+                    </div>
+                    <div>
+                        <span className="ment-ai-underline">{aftChangedFaileds}문제</span>가 오답 처리되었습니다.
+                    </div>
                 </div>
-
+                <div className="ment-ai-col">
                 {eyetrack && userType === 'students' ? null : (
                     <div className="eyetrack-right">
                         <EyeTrackPattern data={patternData} hasEyetrack={hasEyetrack} onEyetrackGoTo={handleGoTo} />
                     </div>
                 )}
+                </div>       
             </div>
         </StyleEyeTrackBox>
     );
