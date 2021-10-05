@@ -125,6 +125,13 @@ const Item = styled.div`
     display:flex;
     `;
 
+const ClassList = styled.div`
+    overflow:scroll;
+    height:100px;
+    width:130%;
+    `;
+
+
 
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
@@ -408,6 +415,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                        
                                     </AccordionSummary>
                                     <AccordionDetails>
+                                    <ClassList>
                                     <Typography>
                                         {classLists.map((i) => (
                                             <LeftNavItem key={i.idx} linkTo={`/class/${i.idx}/share`}>
@@ -419,8 +427,9 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                             <br/>
                                             </LeftNavItem>
                                         ))}     
-                                        
                                     </Typography>
+                                    </ClassList>
+
                                     </AccordionDetails>
                                     </Accordion>                        
                             </>
