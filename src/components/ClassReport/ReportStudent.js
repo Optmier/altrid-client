@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import ClassWrapper from '../essentials/ClassWrapper';
 import Progress from './Progress';
@@ -267,11 +267,13 @@ function ReportStudent({ history, match }) {
     const [top3Weaks, setTop3Weaks] = useState([]);
     /** 리포트 초기화 확인 다이얼로그 오픈 여부 */
     const [eraseConfirmOpen, setEraseConfirmOpen] = useState(false);
-    /** 리포트 초기화 확인 다이얼로그 텍스트 필드 */
-    const [eraseConfirmFields, setEraseConfirmFields] = useState({
-        student_name: '',
-        teacher_email: '',
-    });
+    /** 리포트 초기화 확인 다이얼로그 텍스트 필드 (ref) */
+    // const [eraseConfirmFields, setEraseConfirmFields] = useState({
+    //     student_name: '',
+    //     teacher_email: '',
+    // });
+    const eraseConfirmStudentNameField = useRef();
+    const eraseConfirmTeacherEmailField = useRef();
     /** 리포트 초기화 확인 다이얼로그 텍스트 필드 에러 여부 */
     const [eraseConfirmFieldsError, setEraseConfirmFieldsError] = useState({
         student_name: false,
@@ -292,14 +294,14 @@ function ReportStudent({ history, match }) {
     };
 
     const handleEraseConfirm = () => {
-        if (stdName !== eraseConfirmFields.student_name) {
+        if (stdName !== eraseConfirmStudentNameField.current.value) {
             setEraseConfirmFieldsError({
                 ...eraseConfirmFieldsError,
                 student_name: true,
             });
             return;
         }
-        Axios.post(`${apiUrl}/auth/check-email-self`, { email: eraseConfirmFields.teacher_email }, { withCredentials: true })
+        Axios.post(`${apiUrl}/auth/check-email-self`, { email: eraseConfirmTeacherEmailField.current.value }, { withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 if (res.data.ok) {
@@ -332,14 +334,12 @@ function ReportStudent({ history, match }) {
     };
     const handleEraseConfirmFieldsChange = ({ target }) => {
         const { name, value } = target;
-        setEraseConfirmFields({
-            ...eraseConfirmFields,
-            [name]: value,
-        });
-        setEraseConfirmFieldsError({
-            ...eraseConfirmFieldsError,
-            [name]: false,
-        });
+        if (eraseConfirmFieldsError[name]) {
+            setEraseConfirmFieldsError({
+                ...eraseConfirmFieldsError,
+                [name]: false,
+            });
+        }
     };
 
     useEffect(() => {
@@ -768,7 +768,7 @@ function ReportStudent({ history, match }) {
                         label="학생 성명"
                         type="text"
                         fullWidth
-                        value={eraseConfirmFields.student_name}
+                        inputRef={eraseConfirmStudentNameField}
                         helperText={eraseConfirmFieldsError.student_name ? '리포트와 동일한 학생 성명을 입력해 주세요.' : ''}
                         onChange={handleEraseConfirmFieldsChange}
                     />
@@ -781,7 +781,7 @@ function ReportStudent({ history, match }) {
                         label="본인 이메일"
                         type="email"
                         fullWidth
-                        value={eraseConfirmFields.teacher_email}
+                        inputRef={eraseConfirmTeacherEmailField}
                         helperText={eraseConfirmFieldsError.teacher_email ? '본인 이메일 주소를 입력해 주세요.' : ''}
                         onChange={handleEraseConfirmFieldsChange}
                     />
