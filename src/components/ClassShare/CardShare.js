@@ -9,7 +9,7 @@ import ToggleSwitch from '../essentials/ToggleSwitch';
 import ClassDialog from '../essentials/ClassDialog';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
-import { SecondtoMinute } from '../essentials/TimeChange';
+import { SecondsToHoursAndMinutes, SecondtoMinute } from '../essentials/TimeChange';
 import { useSelector, useDispatch } from 'react-redux';
 import { patchActived, changeDueDate, deleteActived } from '../../redux_modules/assignmentActived';
 import { getServerDate } from '../../redux_modules/serverdate';
@@ -41,8 +41,11 @@ const InfoItems = ({ title, contents }) => {
 };
 const TimeItems = ({ title, time_limit }) => {
     /** 제한시간 분할(분,초) 메소드 */
-    let mm = SecondtoMinute(time_limit)[0];
-    let ss = SecondtoMinute(time_limit)[1];
+    // let mm = SecondtoMinute(time_limit)[0];
+    // let ss = SecondtoMinute(time_limit)[1];
+    /** 시간, 분으로 분할 */
+    const hh = SecondsToHoursAndMinutes(time_limit)[0];
+    const mm = SecondsToHoursAndMinutes(time_limit)[1];
 
     return (
         <div className="card-item">
@@ -53,12 +56,14 @@ const TimeItems = ({ title, time_limit }) => {
             {time_limit === -2 ? (
                 <div className="card-content-p">없음</div>
             ) : (
-                <TooltipCard title={mm + '분 ' + ss + '초'}>
+                <TooltipCard title={hh + '시간 ' + mm + '분'}>
                     <div className="card-content-time">
-                        <div className="card-content-p" style={{ marginRight: '0.4rem' }}>
-                            {mm}분
-                        </div>
-                        <div className="card-content-p">{ss}초</div>
+                        {hh > 0 ? (
+                            <div className="card-content-p" style={{ marginRight: '0.4rem' }}>
+                                {hh}시간
+                            </div>
+                        ) : null}
+                        <div className="card-content-p">{mm}분</div>
                     </div>
                 </TooltipCard>
             )}

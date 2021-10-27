@@ -381,7 +381,6 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     // window.testChangePosition = handleSwapProblemPosition;
 
     const onProblemCreate = (newData) => {
-        console.log(newData);
         if (problemEditmode)
             setContentsProblemDatas(
                 contentsProblemDatas.map((origData, idx) =>
@@ -654,7 +653,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
     useBeforeunload((e) => e.preventDefault());
 
     const addProblemExMenuItemClick = (event, index) => {
-        if(!localStorage.getItem("cv_tip_never_again")) openTipDialog();
+        if (!localStorage.getItem('cv_tip_never_again')) openTipDialog();
         else openAddProblemTextDialog();
         setAddProblemButtonExOpen(false);
     };
@@ -730,11 +729,11 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
 
     const openAddProblemTextDialog = () => {
         setAddProblemTextDialogOpenState(true);
-    }
+    };
 
     const closeAddProblemTextDialog = () => {
         setAddProblemTextDialogOpenState(false);
-    }
+    };
 
     const okAddProblemTextDialog = () => {
         let problemsResult = addProblemTextFieldRef.current.value;
@@ -747,9 +746,9 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
             };
         });
         addProblemsFromTexts(problemsResult);
-        addProblemTextFieldRef.current.value = "";
+        addProblemTextFieldRef.current.value = '';
         closeAddProblemTextDialog();
-    }
+    };
 
     // 팁 대화창 열기
     const openTipDialog = () => {
@@ -797,28 +796,35 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
 
     const AddProblemFromTextDialog = (
         <Dialog open={addProblemTextDialogOpenState} maxWidth={false}>
-            <DialogTitle>
-                텍스트로 문제 추가
-            </DialogTitle>
+            <DialogTitle>텍스트로 문제 추가</DialogTitle>
             <DialogContent>
-                <TextField inputRef={addProblemTextFieldRef} multiline variant="outlined" rows={24} style={{minWidth: 480}} onKeyDown={(e) => {
-                    if(e.key === "Tab") {
-                        e.preventDefault();
-                        const start = e.target.selectionStart;
-                        const end = e.target.selectionEnd;
-                        e.target.value = e.target.value.substring(0, start) +
-                          "\t" + e.target.value.substring(end);
-                        e.target.selectionStart =
-                          e.target.selectionEnd = start + 1;
-                    }
-                }}/>
+                <TextField
+                    inputRef={addProblemTextFieldRef}
+                    multiline
+                    variant="outlined"
+                    rows={24}
+                    style={{ minWidth: 480 }}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Tab') {
+                            e.preventDefault();
+                            const start = e.target.selectionStart;
+                            const end = e.target.selectionEnd;
+                            e.target.value = e.target.value.substring(0, start) + '\t' + e.target.value.substring(end);
+                            e.target.selectionStart = e.target.selectionEnd = start + 1;
+                        }
+                    }}
+                />
             </DialogContent>
             <DialogActions>
-                <Button color="secondary" onClick={closeAddProblemTextDialog}>취소</Button>
-                <Button color="primary" onClick={okAddProblemTextDialog}>확인</Button>
+                <Button color="secondary" onClick={closeAddProblemTextDialog}>
+                    취소
+                </Button>
+                <Button color="primary" onClick={okAddProblemTextDialog}>
+                    확인
+                </Button>
             </DialogActions>
         </Dialog>
-    )
+    );
 
     return (
         <>

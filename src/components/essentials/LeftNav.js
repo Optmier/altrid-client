@@ -16,14 +16,13 @@ import { LeftPopOverNavigator, LeftPopOverCheck } from './LeftNavLogo';
 import { getClassLists } from '../../redux_modules/classLists';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
-import  ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MuiAccordion from '@material-ui/core/Accordion';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
-
 window.liveCountsInterval = {};
-const GoClass = styled.div `
+const GoClass = styled.div`
     background-color: #6d2afa;
     border-radius: 11px;
     box-shadow: 0px 3px 6px #84848412;
@@ -34,10 +33,7 @@ const GoClass = styled.div `
     display: flex;
     align-items: center;
     justify-content: center;
-    `;
-
-
-
+`;
 
 const StylePopOver = styled.div`
     display: flex;
@@ -74,12 +70,11 @@ const StylePopOver = styled.div`
             display: flex;
             flex-direction: column;
 
-
             & .name {
                 font-size: 1rem;
                 font-weight: 600;
                 color: black;
-                display:flex;
+                display: flex;
             }
             & .desc {
                 font-size: 0.85rem;
@@ -114,18 +109,16 @@ const StyleLeftNav = styled.div`
 `;
 const GotoClass = styled.div`
     padding: 0 5px;
-    display:flex;
-    font-size:14px;
-    align-item:center;
+    display: flex;
+    font-size: 14px;
+    align-items: center;
     justify-content: flex-start;
     font-weight: 500;
     font-family: 'Noto Sans CJK KR', 'Montserrat';
 `;
 const Item = styled.div`
-    display:flex;
-    `;
-
-
+    display: flex;
+`;
 
 const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     return (
@@ -135,19 +128,14 @@ const LeftNavItem = React.memo(function LeftNavItem({ linkTo, children }) {
     );
 });
 
-
-
-const Accordion = styled((props) => (
-    <MuiAccordion disableGutters elevation={0} square {...props} />
-  ))(({ theme }) => ({
+const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
     border: 'none',
     background: 'transparent',
-    color:'white',
+    color: 'white',
     // '&:hover':{
     //     background:'RGB(73, 52, 143)',
     //   },
-  }));
-
+}));
 
 function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState }) {
     const { num, id } = match.params;
@@ -166,8 +154,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     const [teacherData, setTeacherData] = useState({});
     const [hasVideoLecture, setHasVideoLecture] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [codestate,setCodeState] = useState('');
-
+    const [codestate, setCodeState] = useState('');
 
     const open = Boolean(anchorEl);
     const popoverId = open ? 'simple-popover' : undefined;
@@ -298,19 +285,15 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
         }
     }
 
-
-    useEffect(()=>{
-        Axios.get(`${apiUrl}/classes/class/${num}`,{withCredentials:true})
-        .then((res1)=>{
-            setCodeState(res1.data[0].class_code);
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
-    })
-
-
-
+    useEffect(() => {
+        Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
+            .then((res1) => {
+                setCodeState(res1.data[0].class_code);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    });
 
     return (
         <>
@@ -356,27 +339,21 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                 </TooltipCard>
                                 {sessions.userType === 'students' ? null : (
                                     <>
-                                    <div className="info-num">
-                                        <img alt="student_num" src={People} />
-                                        <p>학생 수 {studentData.length}명</p>
-                                    </div>
-                                    <div className="info-num">
-
-                                        <FileCopyIcon fontSize="small"/> 
-                                        <p> &nbsp; &nbsp; {codestate} </p>
-                              
-                                    </div>
+                                        <div className="info-num">
+                                            <img alt="student_num" src={People} />
+                                            <p>학생 수 {studentData.length}명</p>
+                                        </div>
+                                        <div className="info-num">
+                                            <FileCopyIcon fontSize="small" />
+                                            <p> &nbsp; &nbsp; {codestate} </p>
+                                        </div>
                                     </>
                                 )}
                             </>
                         </div>
 
-                        {sessions.userType === 'students' ? 
-                        (
-                            null
-                           
-                        ) : (
-                            <>   
+                        {sessions.userType === 'students' ? null : (
+                            <>
                                 <div className="a-wrapper">
                                     <LeftNavItem linkTo={`/main-draft`}>
                                         <div className="draft-button">
@@ -395,34 +372,29 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                     </LeftNavItem>
                                 </div>
                                 <Accordion>
-                                    <AccordionSummary
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                    >
-                                    <Typography>
-                                        <GotoClass>
-                                        <ExitToAppIcon fontSize="small"/>
-                                        &nbsp; &nbsp; 클래스 바로가기
-                                        </GotoClass>
-                                    </Typography>
-                                       
+                                    <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+                                        <Typography>
+                                            <GotoClass>
+                                                <ExitToAppIcon fontSize="small" />
+                                                &nbsp; &nbsp; 클래스 바로가기
+                                            </GotoClass>
+                                        </Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                    <Typography>
-                                        {classLists.map((i) => (
-                                            <LeftNavItem key={i.idx} linkTo={`/class/${i.idx}/share`}>
-                                            <div className="name">
-                                                <Item>
-                                                    <ChevronRightIcon/> {i.name}
-                                                </Item>
-                                            </div>
-                                            <br/>
-                                            </LeftNavItem>
-                                        ))}     
-                                        
-                                    </Typography>
+                                        <Typography>
+                                            {classLists.map((i) => (
+                                                <LeftNavItem key={i.idx} linkTo={`/class/${i.idx}/share`}>
+                                                    <div className="name">
+                                                        <Item>
+                                                            <ChevronRightIcon /> {i.name}
+                                                        </Item>
+                                                    </div>
+                                                    <br />
+                                                </LeftNavItem>
+                                            ))}
+                                        </Typography>
                                     </AccordionDetails>
-                                    </Accordion>                        
+                                </Accordion>
                             </>
                         )}
                     </div>
@@ -438,7 +410,6 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                     />
                                 </svg>
                                 <p>과제 게시판</p>
-                               
                             </LeftNavItem>
                         </div>
                         <div className="a-wrapper">
@@ -479,7 +450,6 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                             </>
                         )}
                     </div>
-                        
                 </div>
             </StyleLeftNav>
         </>
@@ -487,6 +457,3 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
 }
 
 export default React.memo(withRouter(LeftNav));
-
-
-            

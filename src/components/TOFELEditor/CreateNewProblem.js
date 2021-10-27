@@ -207,7 +207,16 @@ GroupBoxContents.defaultProps = {
     onClick: undefined,
 };
 
-const SelectionBox = React.memo(function ({ displayNumberType, number, contents, answer, onTextFieldChange, onSelectAsAnswer, onDelete }) {
+const SelectionBox = React.memo(function ({
+    key,
+    displayNumberType,
+    number,
+    contents,
+    answer,
+    onTextFieldChange,
+    onSelectAsAnswer,
+    onDelete,
+}) {
     const alphabets = ['a', 'b', 'c', 'd', 'e'];
     const [itemHovered, setItemHovered] = useState(false);
     const handleOnTextFieldChange = ({ target }) => {
@@ -222,6 +231,7 @@ const SelectionBox = React.memo(function ({ displayNumberType, number, contents,
     };
     return (
         <AutomaticFragment
+            key={key}
             className="select-box"
             onMouseOver={() => {
                 setItemHovered(true);
@@ -240,7 +250,7 @@ const SelectionBox = React.memo(function ({ displayNumberType, number, contents,
                 placeholder="보기를 입력해주세요."
                 fullWidth
                 name={'selection_' + number}
-                defaultValue={contents}
+                value={contents}
                 onChange={handleOnTextFieldChange}
                 startAdornment={
                     <span style={{ marginRight: 24 }}>{(displayNumberType === 'number' ? number : alphabets[number]) + '.'}</span>
@@ -379,12 +389,13 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
     const handleAddSelection = () => {
         const limit = 5;
         if (selectionsArr.length >= limit) return;
-        setSelectionsArr([...selectionsArr, '']);
+        setSelectionsArr([...selectionsArr, String.fromCharCode(65 + selectionsArr.length)]);
     };
 
     const handleDeleteSelection = (idx) => {
         const limit = 1;
         if (selectionsArr.length <= limit) return;
+        console.log(selectionsArr.filter((d, i) => i !== idx));
         setSelectionsArr(selectionsArr.filter((d, i) => i !== idx));
     };
 
@@ -674,7 +685,7 @@ CreateNewProblem.defaultProps = {
         commentsForRender: '',
         commentsForEditor: `{"ops":[{"insert":"\n"}]}`,
         selections: {
-            1: '',
+            1: 'A',
             2: null,
             3: null,
             4: null,
