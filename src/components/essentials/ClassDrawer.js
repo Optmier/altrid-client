@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { Button, Dialog, withStyles } from '@material-ui/core';
 import TOFELEditor from '../TOFELEditor/TOFELEditor';
 import styled, { css } from 'styled-components';
-import { SecondtoMinute } from './TimeChange';
+import { SecondsToHoursAndMinutes } from './TimeChange';
 import ClassDialog from '../essentials/ClassDialog';
 import { changeDueDate } from '../../redux_modules/assignmentActived';
 // import BackdropComponent from './BackdropComponent';
@@ -194,25 +194,25 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     };
 
     //2. time-input
-    let mmm, sss, time_limit;
+    let hhh, mmm, time_limit;
     if (ver === 'modify') {
         if (cardData['time_limit'] === -2) {
+            hhh = '--';
             mmm = '--';
-            sss = '--';
             time_limit = false;
         } else {
-            mmm = SecondtoMinute(cardData['time_limit'])[0];
-            sss = SecondtoMinute(cardData['time_limit'])[1];
+            hhh = SecondsToHoursAndMinutes(cardData['time_limit'])[0];
+            mmm = SecondsToHoursAndMinutes(cardData['time_limit'])[1];
             time_limit = true;
         }
     }
 
     const [timeInputs, setTimeInputs] = useState({
+        hh: ver === 'draft' ? '--' : hhh,
         mm: ver === 'draft' ? '--' : mmm,
-        ss: ver === 'draft' ? '--' : sss,
     });
 
-    const { mm, ss } = timeInputs;
+    const { hh, mm } = timeInputs;
 
     const onTimeChange = (e) => {
         setInputsError({
@@ -244,8 +244,8 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         if (name === 'eyetrack' && checked === true) {
             setToggleState({ ...toggleState, eyetrack: true, timeAttack: true });
             setTimeInputs({
+                hh: '',
                 mm: '',
-                ss: '',
             });
         } else if (name === 'eyetrack' && checked === false) {
             setToggleState({ ...toggleState, [name]: checked });
@@ -253,16 +253,16 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
             setToggleState({ ...toggleState, [name]: checked });
 
             setTimeInputs({
+                hh: '',
                 mm: '',
-                ss: '',
             });
         } else if (name === 'timeAttack' && checked === false) {
             if (toggleState['eyetrack'] === false) {
                 setToggleState({ ...toggleState, [name]: checked });
 
                 setTimeInputs({
+                    hh: '--',
                     mm: '--',
-                    ss: '--',
                 });
 
                 setInputsError({
@@ -311,13 +311,13 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
 
         //1. 제한시간 설정
         if (toggleState['timeAttack'] === true) {
-            if ((timeInputs['mm'] === '' && timeInputs['ss'] === '') || (timeInputs['mm'] <= 0 && timeInputs['ss'] <= 0)) {
+            if ((timeInputs['hh'] === '' && timeInputs['mm'] === '') || (timeInputs['hh'] <= 0 && timeInputs['mm'] <= 0)) {
                 return setInputsError({
                     ...inputsError,
                     time_error: '제한시간을 입력해주세요!',
                 });
             }
-            if (isNaN(timeInputs['mm']) || isNaN(timeInputs['ss'])) {
+            if (isNaN(timeInputs['hh']) || isNaN(timeInputs['mm'])) {
                 return setInputsError({
                     ...inputsError,
                     time_error: '올바른 값을 입력해주세요!',
@@ -437,7 +437,16 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
 
                                 <div className="time-inputs">
                                     <input
-                                        type="text"
+                                        type="number"
+                                        name="hh"
+                                        value={hh}
+                                        readOnly={hh === '--' ? true : false}
+                                        onChange={onTimeChange}
+                                        placeholder="00"
+                                    />
+                                    <p>시간</p>
+                                    <input
+                                        type="number"
                                         name="mm"
                                         value={mm}
                                         readOnly={mm === '--' ? true : false}
@@ -445,15 +454,6 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                                         placeholder="00"
                                     />
                                     <p>분</p>
-                                    <input
-                                        type="text"
-                                        name="ss"
-                                        value={ss}
-                                        readOnly={ss === '--' ? true : false}
-                                        onChange={onTimeChange}
-                                        placeholder="00"
-                                    />
-                                    <p>초</p>
                                 </div>
 
                                 <ToggleSwitch

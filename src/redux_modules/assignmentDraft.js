@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
-import { MinutetoSecond } from '../components/essentials/TimeChange';
+import { HoursAndMinutesToSecond } from '../components/essentials/TimeChange';
 import { postActived } from './assignmentActived';
 import { getPlanInfo } from './planInfo';
 import getAchieveValueForTypes from '../components/essentials/GetAchieveValueForTypes';
@@ -102,13 +102,13 @@ export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFi
 
     try {
         const { title, description } = inputs;
-        const { mm, ss } = timeInputs;
+        const { hh, mm } = timeInputs;
 
         let { eyetrack, timeAttack } = toggleState;
         let time_limit = -2;
 
         if (timeAttack) {
-            time_limit = MinutetoSecond(mm, ss);
+            time_limit = HoursAndMinutesToSecond(hh, mm);
         }
 
         if (eyetrack) {
@@ -183,11 +183,11 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsDa
         const { idx } = cardData;
         const { title, description } = inputs;
         let { eyetrack, timeAttack } = toggleState;
-        const { mm, ss } = timeInputs;
+        const { hh, mm } = timeInputs;
 
         let time_limit = -2;
         if (timeAttack) {
-            time_limit = MinutetoSecond(mm, ss);
+            time_limit = HoursAndMinutesToSecond(hh, mm);
         }
 
         if (eyetrack) {

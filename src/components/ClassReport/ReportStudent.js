@@ -5,6 +5,7 @@ import Progress from './Progress';
 import styled from 'styled-components';
 import StudentTypeScore from './StudentTypeScore';
 import EyeTrackBox from './EyeTrackBox';
+import EyeTrackPattern from './EyeTrackPattern';
 import {
     Button,
     Dialog,
@@ -35,6 +36,7 @@ import {
     TeacherFeedbackWriter,
     updateTeacherFeedbackInterface,
 } from './ReportStudent/TeacherFeedback';
+import CommChart from './CommChart';
 
 const pad = (n, width) => {
     n = n + '';
@@ -46,6 +48,22 @@ const timeValueToTimer = (seconds) => {
     if (seconds === -2) return '제한 없음';
     else return `${pad(parseInt(secs / 60), 1)}분 ${pad(Math.floor(secs % 60), 1)}초`;
 };
+
+const Feedback = styled.div`
+       
+
+    & input{
+    width:100%;
+    font-size:20px;
+    height:100%;
+    }
+`;
+const F_button = styled.div`
+    margin-top:20px;
+    
+    `;
+
+
 
 const StyleItems = styled.div`
     display: flex;
@@ -218,6 +236,11 @@ const HTMLTooltip = withStyles((theme) => ({
     },
 }))(Tooltip);
 
+
+
+
+
+
 function ReportStudent({ history, match }) {
     // console.log(history, match);
     const dispatch = useDispatch();
@@ -283,8 +306,10 @@ function ReportStudent({ history, match }) {
     const [mainLoading, setMainLoading] = useState(true);
     /** 유형별 분석 select state */
     const [typeSelectState, setTypeSelectState] = useState('0');
+
     //const [handsUpList, setHandsUpList] = useState([]);
     const [teacherFeedbackContents, setTeacherFeedbackContents] = useState({ renderContents: null, deltaContents: null });
+
 
     const handleTypeSelect = (e) => {
         setTypeSelectState(e.target.value);
@@ -660,7 +685,6 @@ function ReportStudent({ history, match }) {
                 : '손들기를 취소하시겠습니까?',
         );
         if (!confirm) return;
-
         let count = 0;
         let result = {};
         for (let c of currentStudentData.contents_data) {
@@ -1030,7 +1054,6 @@ function ReportStudent({ history, match }) {
                     )}
 
                     <Element name="analyze_page_start"></Element>
-
                     <section className="student-report-observe">
                         <div className="class-report-title graph-title">
                             <div className="observe-header">
@@ -1048,22 +1071,49 @@ function ReportStudent({ history, match }) {
                                 <TypeBanner situation={'info'} value={achievesForTypes.value} />
                             </div>
                         </div>
-
                         {currentStudentData && patternDatas.length ? (
-                            <EyeTrackBox
-                                hasEyetrack={currentStudentData.eyetrack}
-                                eyetrackData={currentStudentData.eyetrack_data}
-                                contentsData={currentStudentData.contents_data}
-                                patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
-                                totalStudentsDatas={studentsData.filter((d) => d.submitted)}
-                                currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
-                                userId={queryUserId}
-                                activedNum={activedNum}
-                                stdName={stdName}
-                                answerChangedProblems={answerChangedProblems}
-                                aftChangedFaileds={aftChangedFaileds}
-                            />
+                                <EyeTrackBox
+                                    hasEyetrack={currentStudentData.eyetrack}
+                                    eyetrackData={currentStudentData.eyetrack_data}
+                                    contentsData={currentStudentData.contents_data}
+                                    patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
+                                    totalStudentsDatas={studentsData.filter((d) => d.submitted)}
+                                    currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
+                                    userId={queryUserId}
+                                    activedNum={activedNum}
+                                    stdName={stdName}
+                                    answerChangedProblems={answerChangedProblems}
+                                    aftChangedFaileds={aftChangedFaileds}
+                                />
+                                // </Typography>
+                                // </AccordionDetails>
+                                // </Accordion>
                         ) : null}
+                    
+                    </section>
+
+
+
+                    <section className="AI-comment">
+                        <div className="class-report-title">
+                            <div className="observe-header">
+                                    AI-Comment
+                            </div>
+                        </div>
+                        <div className="white-box ment-ai">
+                            <div className="ment-ai-col">
+                            {currentStudentData && patternDatas.length ?(
+                                <CommChart/>
+                            ):
+                                <p>시선추적이 포함되지 않은 과제입니다.</p>
+                            }
+                           
+                            </div>
+                            <div className="ment-ai-col" id="no-eyetrack">
+                            <h5>AI comment 영역<br/></h5>    
+                            </div>
+                            
+                        </div>
                     </section>
 
                     <section className="student-report-observe">

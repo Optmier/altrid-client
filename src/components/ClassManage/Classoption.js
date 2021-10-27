@@ -1,5 +1,127 @@
-   
-import React, { useState, useEffect, useRef,useCallback } from 'react';
+// import React, { useState, useEffect, useRef, useCallback } from 'react';
+// import ClassWrapper from '../essentials/ClassWrapper';
+// import '../../styles/manage_page.scss';
+// import classNames from 'classnames';
+// import MultipleAutocomplete from '../essentials/MultipleAutocomplete';
+// import * as $ from 'jquery';
+// import Axios from 'axios';
+// import { apiUrl } from '../../configs/configs';
+// import { withRouter } from 'react-router-dom';
+// import ClassDialogDelete from '../essentials/ClassDialogDelete';
+// import { Button, withStyles } from '@material-ui/core';
+// import styled from 'styled-components';
+// import PopOverClipboard from '../essentials/PopOverClipboard';
+// import StudentManage from '../ClassStudentManage/StudentManage';
+// import Manage from './Manage';
+
+
+// const CopyButton = styled.div`
+//     pointer-events: ${(props) => (props.state ? 'none' : 'all')};
+// `;
+// const FormButton = styled.button`
+//     background-color: ${(props) => (props.able ? '#43138b' : '#f6f7f9')};
+//     color: ${(props) => (props.able ? 'white' : '#707070')};
+//     border: ${(props) => (props.able ? 'none' : '1px solid #707070')};
+
+//     border-radius: 11px;
+//     font-size: 1rem;
+//     font-weight: 500;
+//     width: 52px;
+//     height: 43px;
+
+//     & + & {
+//         margin-left: 11px;
+//     }
+// `;
+
+// const ButtonAble = styled.button`
+//     color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
+//     border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
+// `;
+
+// const CreateButton = withStyles((theme) => ({
+//     root: {
+//         borderRadius: '10px',
+//         backgroundColor: '#13E2A1',
+//         color: '#fff',
+//         fontFamily: 'inherit',
+//         fontSize: '0.9rem',
+//         width: '150px',
+//         height: '56px',
+
+//         '&.critical': {
+//             backgroundColor: '#a6a6a6',
+//         },
+//     },
+// }))(Button);
+
+// function Manage2({ match, history }) {
+
+//     const handleShareCardList = useCallback(
+//         (e)=>{
+//             const {name,value} = e.target;
+
+//             setablestate({
+//                 leaderboard:false,
+//                 classmanage:false,
+//                 studentmanage:false,
+//             });
+//             setablestate((prevState)=>({
+//                 ...prevState,
+//                 [name]: !(value === 'true'),
+//             }));
+//         },
+//         [ablestate],
+//     );
+
+
+//     const [ablestate,setablestate] = useState({
+//         leaderboard:true,
+//         classmanage:false,
+//         studentmanage:false,
+//     })
+    
+//     return (
+//         <>
+//         <ClassWrapper>        
+//                 <div className="class-section-root">
+//                     <div className="class-share-header">
+//                         <div className="header-title">학생 및 클래스 </div>
+//                         <div className="header-menu">
+//                             <ButtonAble name="leaderboard" able={ablestate['leaderboard']} value={ablestate['leaderboard']} onClick={handleShareCardList}>
+//                                 리더 보드
+//                             </ButtonAble>
+//                             <ButtonAble name="classmanage" able={ablestate['classmanage']} value={ablestate['classmanage']} onClick={handleShareCardList}>
+//                                 클래스 관리
+//                             </ButtonAble>
+//                             <ButtonAble name="studentmanage" able={ablestate['studentmanage']} value={ablestate['studentmanage']} onClick={handleShareCardList}>
+//                                 학생 관리
+//                             </ButtonAble>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </ClassWrapper>
+//             {
+//                 ablestate['studentmanage']
+//                 ? 
+//                 <div className="test">
+//                     <StudentManage/>
+//                 </div>
+//                 : ablestate['classmanage']
+//                 ?
+//                 <div className="test">
+//                     <Manage/>
+//                 </div>
+//                 : null
+//             }
+
+//         </>
+//     );
+// }
+
+// export default withRouter(Manage2);
+
+import React, { useState, useEffect, useRef } from 'react';
 import ClassWrapper from '../essentials/ClassWrapper';
 import '../../styles/manage_page.scss';
 import classNames from 'classnames';
@@ -12,8 +134,6 @@ import ClassDialogDelete from '../essentials/ClassDialogDelete';
 import { Button, withStyles } from '@material-ui/core';
 import styled from 'styled-components';
 import PopOverClipboard from '../essentials/PopOverClipboard';
-import StudentManage from '../ClassStudentManage/StudentManage';
-import Leaderboard from '../ClassStudentManage/Leaderboard';
 
 const CopyButton = styled.div`
     pointer-events: ${(props) => (props.state ? 'none' : 'all')};
@@ -30,10 +150,6 @@ const FormButton = styled.button`
     & + & {
         margin-left: 11px;
     }
-`;
-const ButtonAble = styled.button`
-    color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
-    border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
 `;
 
 const CreateButton = withStyles((theme) => ({
@@ -52,9 +168,7 @@ const CreateButton = withStyles((theme) => ({
     },
 }))(Button);
 
-
-
-function Manage({ match, history }) {
+function Classoption({ match, history }) {
     const textCopy = useRef();
 
     const { num } = match.params;
@@ -78,11 +192,6 @@ function Manage({ match, history }) {
         토: false,
         일: false,
     });
-    const [ablestate,setAblesate] = useState({
-        leaderboard:true,
-        studentmanage:false,
-        classmanage:false,
-    })
 
     const handleInputChange = (e, value) => {
         if ($(e.target).hasClass('default')) {
@@ -97,22 +206,6 @@ function Manage({ match, history }) {
             });
         }
     };
-    const handleShareCardList = useCallback(
-        (e) => {
-            const { name, value } = e.target;
-    
-            setAblesate({
-                leaderboard: false,
-                studentmanage: false,
-                classmanage: false,
-            });
-            setAblesate((prevState) => ({
-                ...prevState,
-                [name]: !(value === 'true'),
-            }));
-        },
-        [ablestate],
-    );
 
     const fetchStudents = () => {
         Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
@@ -328,7 +421,7 @@ function Manage({ match, history }) {
 
     return (
         <>
-            {/* <PopOverClipboard state={clipboardState} />
+            <PopOverClipboard state={clipboardState} />
             <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
             <ClassWrapper col="col">
                 <div className="class-manage-root">
@@ -422,132 +515,9 @@ function Manage({ match, history }) {
                         </CreateButton>
                     </div>
                 </div>
-            </ClassWrapper> */}
-            <>
-            <ClassWrapper>        
-                <div className="class-section-root">
-                    <div className="class-share-header">
-                        <div className="header-title">학생 및 클래스 </div>
-                        <div className="header-menu">
-                            <ButtonAble name="leaderboard" able={ablestate['leaderboard']} value={ablestate['leaderboard']} onClick={handleShareCardList}>
-                                리더보드
-                            </ButtonAble>
-                            <ButtonAble name="classmanage" able={ablestate['classmanage']} value={ablestate['classmanage']} onClick={handleShareCardList}>
-                                클래스 관리
-                            </ButtonAble>
-                            <ButtonAble name="studentmanage" able={ablestate['studentmanage']} value={ablestate['studentmanage']} onClick={handleShareCardList}>
-                                학생 관리
-                            </ButtonAble>
-                        </div>
-                    </div>
-                </div>
             </ClassWrapper>
-            {
-                ablestate['studentmanage']
-                ? 
-                <div className="test">
-                    <StudentManage/>
-                </div>
-                : ablestate['classmanage']
-                ?
-                <div className="test">
-                   <PopOverClipboard state={clipboardState} />
-            <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
-            <ClassWrapper col="col">
-                <div className="class-manage-root">
-                    <div>
-                        <div className="manage-inputs">
-                            <div className="manage-inputs-header">클래스 소개</div>
-
-                            <input
-                                className={classNames('default', inputError ? 'error' : '')}
-                                type="text"
-                                name="entry_new_name"
-                                id="entry_new_name"
-                                placeholder="클래스 이름"
-                                onChange={handleInputChange}
-                                value={inputState['entry_new_name']}
-                            />
-                            <textarea
-                                className="default"
-                                type="text"
-                                name="entry_new_description"
-                                id="entry_new_description"
-                                placeholder="클래스 한줄 설명"
-                                onChange={handleInputChange}
-                                value={inputState['entry_new_description']}
-                            />
-                        </div>
-                        <div className="manage-inputs">
-                            <div className="manage-inputs-header">
-                                <div>
-                                    수업 요일<span>(선택)</span>
-                                </div>
-                                <span className="form-info">* 수업 요일을 모두 선택해주세요.</span>
-                            </div>
-                            <div className="form-buttons">
-                                <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
-                                    월
-                                </FormButton>
-                                <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
-                                    화
-                                </FormButton>
-                                <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
-                                    수
-                                </FormButton>
-                                <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
-                                    목
-                                </FormButton>
-                                <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
-                                    금
-                                </FormButton>
-                                <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
-                                    토
-                                </FormButton>
-                                <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
-                                    일
-                                </FormButton>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="manage-footer">
-                        <CreateButton
-                            className="button-delete critical"
-                            size="large"
-                            variant="contained"
-                            disabled={!createButtonEnabled}
-                            name="delete"
-                            onClick={handleButton}
-                        >
-                            삭제하기
-                        </CreateButton>
-                        <CreateButton
-                            className="button-modify"
-                            size="large"
-                            variant="contained"
-                            disabled={!createButtonEnabled}
-                            name="modify"
-                            onClick={handleButton}
-                        >
-                            수정하기
-                        </CreateButton>
-                    </div>
-                </div>
-            </ClassWrapper>
-                </div>
-                : ablestate['leaderboard']
-                ? 
-                <div className="test">
-                   <Leaderboard/>
-                </div>
-                :null
-            }
-
-        </>
-
         </>
     );
 }
 
-export default withRouter(Manage);
+export default Classoption;

@@ -7,32 +7,33 @@ import { OutlinedInput, TextField, withStyles } from '@material-ui/core';
 import StarredImage from '../../images/starred.png';
 
 const Root = styled.div``;
+const ProblemNumber = styled.span`
+    cursor: pointer;
+    font-family: 'Times New Roman';
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    margin-right: 0.4rem;
+    margin-left: 0.3rem;
+    position: relative;
+    user-select: none;
+
+    & div.starred-mark {
+        background: url(${StarredImage});
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        position: absolute;
+        height: 2.2rem;
+        width: 2.2rem;
+        margin-top: -0.3rem;
+        margin-left: -0.4rem;
+        opacity: 0.9;
+    }
+`;
 const TextsContainer = styled.div`
     display: inline-flex;
-
-    & span.problem-number {
-        cursor: pointer;
-        font-family: 'Times New Roman';
-        font-size: 1rem;
-        line-height: 1.5rem;
-        font-weight: 600;
-        margin-right: 0.3rem;
-        margin-left: 0.5rem;
-        user-select: none;
-
-        & div.starred-mark {
-            background: url(${StarredImage});
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;
-            position: absolute;
-            height: 2.2rem;
-            width: 2.2rem;
-            margin-top: -0.3rem;
-            margin-left: -0.75em;
-            opacity: 0.9;
-        }
-    }
+    flex-direction: column;
 `;
 const SelectionsContainer = styled.div`
     margin-top: 20px;
@@ -103,17 +104,11 @@ function ProblemComponent({
 
     return (
         <Root>
-            <TextsContainer ref={textContainerRef}>
-                <span
-                    className="problem-number"
-                    // style={{ background: `url(${StarredImage})` }}
-                    onDoubleClick={actionProblemNumberDoubleClick}
-                >
-                    {starred ? <div className="starred-mark"></div> : null}
-                    {problemNumber}.
-                </span>
-                {HtmlParser(textForRender)}
-            </TextsContainer>
+            <ProblemNumber className="problem-number" onDoubleClick={actionProblemNumberDoubleClick}>
+                {starred ? <div className="starred-mark"></div> : null}
+                {problemNumber}.
+            </ProblemNumber>
+            <TextsContainer ref={textContainerRef}>{HtmlParser(textForRender)}</TextsContainer>
             {type === 'short-answer' ? (
                 <SelectionsContainer>
                     <UCOutlinedInput
