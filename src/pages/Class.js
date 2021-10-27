@@ -16,6 +16,9 @@ import VideoLecturesManage from '../components/VideoLectures/VideoLecturesManage
 import styled from 'styled-components';
 import TopNav from '../components/essentials/TopNav';
 import * as $ from 'jquery';
+import VocaLearningMain from '../components/LearningVocas/VocaLearningMain';
+import RestrictRoute from '../components/essentials/RestrictRoute';
+import LearningVocas from '../components/LearningVocas/LearningVocas';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -48,6 +51,13 @@ const ClassPageSwitcher = (match, sessions) => {
             );
         case 'vid-lecture':
             return <VideoLecturesManage />;
+        case 'learning-vocas':
+            return (
+                <>
+                    <Route path={path} exact component={VocaLearningMain} />
+                    <Route path={`${path}/learning`} component={LearningVocas} />
+                </>
+            );
         default:
             return <Error />;
     }
