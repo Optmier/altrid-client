@@ -1,8 +1,9 @@
 import { Button } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import BackdropComponent from '../../components/essentials/BackdropComponent';
+import { updateVocaDatas } from '../../redux_modules/vocaLearnings';
 
 /** https://codingbroker.tistory.com/86 */
 Array.prototype.shuffle = function () {
@@ -64,25 +65,30 @@ const ActionButtonsContainer = styled.div`
 `;
 
 function LearningVocas({ history, children }) {
-    const { vocaDatasOriginal, isLoading, error } = useSelector((state) => state.RdxVocaLearnings);
+    const { vocaDatasOriginal, isPending, error } = useSelector((state) => state.RdxVocaLearnings);
     const sessions = useSelector((state) => state.RdxSessions);
-    const [learningDatas, setLearningDatas] = useState(null);
+    const [learningDatas, setLearningDatas] = useState([]);
+    window.learningDatas = learningDatas;
     const [currentIdx, setCurrentIdx] = useState(0);
+    const [rotation, setRotation] = useState(0);
     const [flipped, setFlipped] = useState(false);
     const [currentMeans, setCurrentMeans] = useState('여기에 단어 뜻이 보여집니다.');
     const [finished, setFinished] = useState(false);
 
+    const dispatch = useDispatch();
+
     // 단어 섞고 우선순위 구분
-    const makeLearningData = (flag) => {
-        const shuffleVocaData = learningDatas
+    const makeLearningData = (flag, rt) => {
+        const shuffleVocaData = rt
             ? learningDatas
-                  .map((d, idx) => (idx === currentIdx ? { ...d, dist: flag } : d))
+                  .map((d, idx) => (idx === currentIdx ? { ...d, counts: d.counts + 1, dist: flag } : d))
                   .filter(({ dist }) => dist !== 2)
                   .shuffle()
             : vocaDatasOriginal.filter(({ dist }) => dist !== 2).shuffle();
         const part0 = shuffleVocaData.filter(({ dist }) => dist === 0);
         const part1 = shuffleVocaData.filter(({ dist }) => dist === 1);
         const merged = [...part1, ...part0];
+        if (merged.length < 1) setFinished(true);
         setLearningDatas(merged);
     };
 
@@ -95,12 +101,21 @@ function LearningVocas({ history, children }) {
 
     // 다음으로 또는 로테이션
     const nextAndRotation = (flag) => {
+        const { idx, counts, completed } = learningDatas[currentIdx];
+        dispatch(updateVocaDatas(idx, { means: flag === 2 ? currentMeans : null, dist: flag, counts: counts + 1, completed: completed }));
+        // Rotate
         if (learningDatas.length - 1 <= currentIdx) {
-            makeLearningData(flag);
             setCurrentIdx(0);
-        } else {
+            setRotation((rt) => {
+                const added = rt + 1;
+                makeLearningData(flag, added);
+                return added;
+            });
+        }
+        // Only to next
+        else {
             setCurrentIdx(currentIdx + 1);
-            setLearningDatas(learningDatas.map((d, idx) => (idx === currentIdx ? { ...d, dist: flag } : d)));
+            setLearningDatas(learningDatas.map((d, idx) => (idx === currentIdx ? { ...d, counts: d.counts + 1, dist: flag } : d)));
         }
     };
 
@@ -123,18 +138,12 @@ function LearningVocas({ history, children }) {
     };
 
     useEffect(() => {
-        console.log(learningDatas);
-        if (!isLoading && !vocaDatasOriginal) {
+        if (!isPending && !vocaDatasOriginal) {
             alert('잘못된 접근 또는 학습 데이터가 없습니다!');
             history.goBack();
         }
-        if (learningDatas && !learningDatas.length) {
-            alert('학습이 완료되었습니다.');
-            setFinished(true);
-            // history.goBack();
-        }
         const unblock = history.block((location, action) => {
-            if ((!isLoading && !vocaDatasOriginal) || !learningDatas.length) return true;
+            if ((!isPending && !vocaDatasOriginal) || !learningDatas.length) return true;
             return window.confirm('정말로 학습을 종료하시겠습니까?');
         });
         return () => {
@@ -142,7 +151,13 @@ function LearningVocas({ history, children }) {
             // 단어 데이터 비우기?
             unblock();
         };
-    }, [history, learningDatas]);
+    }, [history, learningDatas, isPending, vocaDatasOriginal]);
+
+    useEffect(() => {
+        if (finished) {
+            alert('학습이 완료되었습니다.');
+        }
+    }, [finished]);
 
     useEffect(() => {
         if (!vocaDatasOriginal) return;
@@ -151,32 +166,46 @@ function LearningVocas({ history, children }) {
 
     return (
         <>
-            <BackdropComponent open={isLoading} blind={true} />
-            {learningDatas && learningDatas.length ? (
-                <ScriptRoot>
-                    <ProgressCount>
-                        {currentIdx + 1}/{learningDatas.length}
-                    </ProgressCount>
-                    <VocaCardContainer>
-                        <VocaCard onClick={actionFlipCard}>
-                            {!flipped ? <CardWord>{learningDatas[currentIdx].word}</CardWord> : <CardMeans>{currentMeans}</CardMeans>}
-                        </VocaCard>
-                    </VocaCardContainer>
-                    {flipped ? (
-                        <ActionButtonsContainer>
-                            <Button color="primary" variant="outlined" onClick={actionClickReplyConfirm}>
-                                아는 단어입니다.
-                            </Button>
-                            <Button color="default" variant="outlined" onClick={actionClickReplyLearnMore}>
-                                좀 더 학습이 필요합니다.
-                            </Button>
-                            <Button color="secondary" variant="outlined" onClick={actionClickReplyNegative}>
-                                모르는 단어입니다.
-                            </Button>
-                        </ActionButtonsContainer>
-                    ) : null}
-                </ScriptRoot>
-            ) : null}
+            <BackdropComponent open={isPending} blind={true} />
+            <ScriptRoot>
+                {!finished ? (
+                    learningDatas && learningDatas.length ? (
+                        <>
+                            <ProgressCount>
+                                {currentIdx + 1}/{learningDatas.length}
+                            </ProgressCount>
+                            <VocaCardContainer>
+                                <VocaCard onClick={actionFlipCard}>
+                                    {!flipped ? (
+                                        <CardWord>{learningDatas[currentIdx].word}</CardWord>
+                                    ) : (
+                                        <CardMeans>{currentMeans}</CardMeans>
+                                    )}
+                                </VocaCard>
+                            </VocaCardContainer>
+                            {flipped ? (
+                                <ActionButtonsContainer>
+                                    <Button color="primary" variant="outlined" onClick={actionClickReplyConfirm}>
+                                        {rotation > 0 || learningDatas[currentIdx].dist === 1
+                                            ? '이제 확실히 알겠습니다!'
+                                            : '아는 단어입니다.'}
+                                    </Button>
+                                    <Button color="default" variant="outlined" onClick={actionClickReplyLearnMore}>
+                                        좀 더 학습이 필요합니다.
+                                    </Button>
+                                    {rotation === 0 && learningDatas[currentIdx].dist === 0 ? (
+                                        <Button color="secondary" variant="outlined" onClick={actionClickReplyNegative}>
+                                            모르는 단어입니다.
+                                        </Button>
+                                    ) : null}
+                                </ActionButtonsContainer>
+                            ) : null}
+                        </>
+                    ) : null
+                ) : (
+                    <h1>학습이 종료되었습니다 :)</h1>
+                )}
+            </ScriptRoot>
         </>
     );
 }

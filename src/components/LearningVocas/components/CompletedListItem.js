@@ -20,7 +20,7 @@ const LabelColor = styled.div`
             ? '#cbcbcb'
             : props['label-color'] === 2
             ? '#ffcf70'
-            : props['label-color'] === 3
+            : props['label-color'] >= 3
             ? '#e85c4a'
             : '#ffffff'};
     height: 48px;

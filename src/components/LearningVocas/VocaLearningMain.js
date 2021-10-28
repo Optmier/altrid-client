@@ -59,6 +59,11 @@ const LearningProgressPercentage = styled.div`
     font-size: 1.8rem;
     margin: 8px 0;
 `;
+const CompletedListDivider = styled.div`
+    border-top: 2px solid #cbcbcb;
+    margin: 12px auto;
+    max-width: 128px;
+`;
 const useStyles = makeStyles((theme) => ({
     selectBox: {
         minWidth: 240,
@@ -117,7 +122,9 @@ function VocaLearningMain({ history, match }) {
     const [completedList, setCompletedList] = useState([]);
     const [completedListOrig, setCompletedListOrig] = useState([]);
     const [completedListPage, setCompletedListPage] = useState(0);
-    const [completedListLimit, setCompletedListLimit] = useState(10);
+    const [completedListLimit, setCompletedListLimit] = useState(20);
+    const [totalCompletedList, setTotalCompletedList] = useState(0);
+    const [isCompletedListSearching, setIsCompletedListSearching] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -142,7 +149,39 @@ function VocaLearningMain({ history, match }) {
     };
 
     const actionChangeCompletedSearchbox = ({ target }) => {
-        setCompletedList(completedListOrig.filter((d) => d.word.includes(target.value)));
+        setIsCompletedListSearching(Boolean(target.value));
+        if (Boolean(target.value)) {
+            Axios.get(`${apiUrl}/vocas/completed/search`, { params: { q: target.value }, withCredentials: true })
+                .then((res) => {
+                    if (res.data) {
+                        setCompletedList(res.data);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        } else {
+            setCompletedList(completedListOrig);
+        }
+        // setCompletedList(completedListOrig.filter((d) => d.word.includes(target.value)));
+    };
+
+    const actionScrollBottomEdge = () => {
+        if (!isCompletedListSearching) {
+            Axios.get(`${apiUrl}/vocas/completed`, {
+                params: {
+                    limit: completedListLimit,
+                    page: completedListPage,
+                },
+                withCredentials: true,
+            }).then((res) => {
+                if (res.data && res.data.length > 0) {
+                    setCompletedList([...completedList, ...res.data]);
+                    setCompletedListOrig([...completedListOrig, ...res.data]);
+                    setCompletedListPage((page) => page + 1);
+                }
+            });
+        }
     };
 
     useEffect(() => {
@@ -160,7 +199,7 @@ function VocaLearningMain({ history, match }) {
                 console.error(err);
             });
 
-        // 완료된 목록 가져오기
+        // 완료된 목록 가져오기 (초기 구성)
         Axios.get(`${apiUrl}/vocas/completed`, {
             params: {
                 limit: completedListLimit,
@@ -171,6 +210,7 @@ function VocaLearningMain({ history, match }) {
             if (res.data && res.data.length > 0) {
                 setCompletedList(res.data);
                 setCompletedListOrig(res.data);
+                setCompletedListPage((page) => page + 1);
             }
         });
     }, []);
@@ -233,16 +273,20 @@ function VocaLearningMain({ history, match }) {
                         rightComponent={<CompletedListSearchbox onSearchboxChange={actionChangeCompletedSearchbox} />}
                         limited
                         maxHeightCss="calc(100vh - 720px)"
+                        onScrollBottomEdge={actionScrollBottomEdge}
                     >
-                        {completedList.map((d) => (
-                            <CompletedListItem
-                                key={d.idx}
-                                word={d.word}
-                                means={d.means}
-                                notes={d.assignment_title}
-                                label={d.counts}
-                                verified={d.completed}
-                            />
+                        {completedList.map((d, i) => (
+                            <React.Fragment key={d.idx + '_F'}>
+                                {i >= 10 && i % 10 === 0 ? <CompletedListDivider key={d.idx + '_hr'} /> : null}
+                                <CompletedListItem
+                                    key={d.idx}
+                                    word={d.word}
+                                    means={d.means}
+                                    notes={d.assignment_title}
+                                    label={d.counts}
+                                    verified={d.completed}
+                                />
+                            </React.Fragment>
                         ))}
                     </Groupbox>
                 </Contents>

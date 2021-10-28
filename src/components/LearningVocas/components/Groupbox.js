@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 const GropboxRoot = styled.div`
@@ -33,17 +33,61 @@ const HeaderBox = styled.header`
 
 const LimitedContainer = styled.main`
     height: ${(props) => props['max-height-css']};
+    min-height: 128px;
     overflow: scroll;
 `;
 
-const GroupBox = React.memo(function ({ title, rightComponent, limited, maxHeightCss, onClick, children, ...rest }) {
+const GroupBox = React.memo(function ({ title, rightComponent, limited, maxHeightCss, onClick, onScrollBottomEdge, children, ...rest }) {
+    const containerRef = useRef();
+    const [scrollTop, setScrollTop] = useState(null);
+    const [isScrollBottomEdge, setIsScrollBottomEdge] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    const actionScrollEnd = () => {
+        onScrollBottomEdge();
+    };
+
+    useEffect(() => {
+        if (!containerRef || !containerRef.current) return;
+        let mounted = true;
+        containerRef.current.addEventListener('scroll', () => {
+            if (mounted) {
+                setScrollTop(containerRef.current.scrollTop);
+                setLoading(false);
+            }
+        });
+        return () => {
+            mounted = false;
+        };
+    }, [containerRef]);
+
+    useEffect(() => {
+        if (!containerRef || !containerRef.current || scrollTop === null) return;
+        const { clientHeight, scrollHeight } = containerRef.current;
+        if (clientHeight === scrollHeight - scrollTop) {
+            setIsScrollBottomEdge(true);
+        } else {
+            setIsScrollBottomEdge(false);
+        }
+    }, [scrollTop, containerRef]);
+
+    useEffect(() => {
+        if (isScrollBottomEdge) actionScrollEnd();
+    }, [isScrollBottomEdge]);
+
     return (
         <GropboxRoot {...rest}>
             <HeaderBox onClick={onClick}>
                 <h5 className="title">{title}</h5>
                 <div className="right-comp">{rightComponent}</div>
             </HeaderBox>
-            {limited ? <LimitedContainer max-height-css={maxHeightCss}>{children}</LimitedContainer> : children}
+            {limited ? (
+                <LimitedContainer ref={containerRef} max-height-css={maxHeightCss}>
+                    {children}
+                </LimitedContainer>
+            ) : (
+                children
+            )}
         </GropboxRoot>
     );
 });
@@ -52,7 +96,10 @@ GroupBox.defaultProps = {
     title: '제목',
     rightComponent: <></>,
     limited: false,
-    onClick: undefined,
+    onClick() {},
+    onScrollBottomEdge() {},
 };
+
+// clientHeight === (scrollHeight - scrollTop)
 
 export default React.memo(GroupBox);
