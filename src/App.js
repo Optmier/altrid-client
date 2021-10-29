@@ -42,6 +42,8 @@ import Plan from './components/MyPage/Plans';
 import PayState from './pages/PayState';
 import AlertSubscribe from './components/essentials/AlertSubscribe';
 import TimerTest from './pages/_TempPages/TimerTest';
+import Dashboard from './pages/Dashboard';
+import Dashassign from './pages/Dashassign';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -217,7 +219,7 @@ function App({ history }) {
                         <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
                         <Route path="/mypage/:menu" component={MyPage} />
-
+                   
                         <Route path="/pricing" component={Price} exact />
                         <Route path="/pricing/details" component={PriceDetails} exact />
                         <Route path="/payment" component={Payment} exact />

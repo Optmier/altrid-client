@@ -20,6 +20,7 @@ import  ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MuiAccordion from '@material-ui/core/Accordion';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 
 window.liveCountsInterval = {};
@@ -314,7 +315,8 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
         .catch((err)=>{
             console.error(err);
         })
-    })
+    },[])
+
 
 
 
@@ -436,6 +438,20 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                         )}
                     </div>
                     <div className="left-nav-box">
+                        {sessions.userType === 'students' ? (
+                            <>
+                              <div className="a-wrapper">
+                                  <LeftNavItem  linkTo={`dashboard`}>
+                                  <CalendarTodayIcon fontSize="small"/>
+                                   <p>대시보드</p>
+                                  </LeftNavItem>
+                              </div>
+                            </>
+                        ):(
+                            null
+                        )
+                        }
+                        
                         <div className="a-wrapper">
                             <LeftNavItem linkTo={`/class/${num}/share`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="13.11" viewBox="0 0 12 13.11">
@@ -450,6 +466,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                
                             </LeftNavItem>
                         </div>
+
                         <div className="a-wrapper">
                             <LeftNavItem linkTo={`/class/${num}/vid-lecture`}>
                                 <VideocamIcon fontSize="small" style={{ marginLeft: -3 }} />
@@ -457,7 +474,24 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                 {hasVideoLecture ? <div className="live-streaming-mark">LIVE</div> : null}
                             </LeftNavItem>
                         </div>
-                        {sessions.userType === 'students' ? null : (
+                    
+                        {sessions.userType === 'students' ? (
+                            <>
+                           
+                               {/* <div className="a-wrapper">
+                               <LeftNavItem linkTo={'calendar'}>
+                                   <CalendarTodayIcon fontSize="small"/>
+                                   <p>캘린더</p>
+                               </LeftNavItem>
+                              </div> */}
+                              {/* <div className="a-wrapper">
+                                  <LeftNavItem linkTo={'dashboard'}>
+                                  <CalendarTodayIcon fontSize="small"/>
+                                   <p>대시보드</p>
+                                  </LeftNavItem>
+                              </div> */}
+                            </>
+                        ) : (
                             <>
                                 <div className="a-wrapper">
                                     <LeftNavItem linkTo={`/class/${num}/manage`}>
@@ -486,6 +520,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                     </LeftNavItem>
                                 </div>
                             </>
+                        
                         )}
                     </div>
                         

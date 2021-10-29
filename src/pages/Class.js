@@ -16,6 +16,9 @@ import VideoLecturesManage from '../components/VideoLectures/VideoLecturesManage
 import styled from 'styled-components';
 import TopNav from '../components/essentials/TopNav';
 import * as $ from 'jquery';
+import Calendar from './Calendar';
+import Dashboard from './Dashboard';
+
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -48,12 +51,25 @@ const ClassPageSwitcher = (match, sessions) => {
             );
         case 'vid-lecture':
             return <VideoLecturesManage />;
+         
+        case 'calendar':
+            if
+            (sessions.userType === 'teachers') return <ErrorRestricted/>;
+            return <Calendar/>;
+        case 'dashboard':
+            if
+            (sessions.userType === 'teachers') return <ErrorRestricted/>
+            return (
+                <Route path={`${path}`} component={Dashboard} />
+            )
+           
         default:
             return <Error />;
     }
 };
 
 function Class({ match }) {
+
     const dispatch = useDispatch();
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
         loading: false,
