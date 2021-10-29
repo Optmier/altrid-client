@@ -111,7 +111,9 @@ function ClassDialoglDate({ subType, setSelectClassState }) {
     const selectBoxRef = useRef();
 
     const { classDatas, error } = useSelector((state) => state.classes);
-    const [dateState, setDateState] = useState(moment().add('minutes', 1).format('YYYY-MM-DDTHH:mm'));
+    const [dateState, setDateState] = useState(
+        moment().add('day', 1).set('hours', 0).set('minutes', 0).set('seconds', 0).format('YYYY-MM-DDTHH:mm'),
+    );
 
     const onChange = (e) => {
         let { value } = e.target;

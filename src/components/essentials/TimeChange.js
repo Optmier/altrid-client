@@ -1,3 +1,15 @@
+function HoursAndMinutesToSecond(hh, mm) {
+    let seconds;
+    if (!hh) {
+        hh = 0;
+    }
+    if (!mm) {
+        mm = 0;
+    }
+    seconds = parseInt(hh) * 3600 + parseInt(mm) * 60;
+    return seconds;
+}
+
 function MinutetoSecond(mm, ss) {
     let second;
     if (!mm) {
@@ -21,4 +33,12 @@ function SecondtoMinute(time) {
     return arr;
 }
 
-export { MinutetoSecond, SecondtoMinute };
+function SecondsToHoursAndMinutes(time) {
+    const hh = Math.floor(time / 3600);
+    const mm = Math.floor(time / 60) % 60;
+    const arr = [];
+    arr.push(hh, mm);
+    return arr;
+}
+
+export { MinutetoSecond, SecondtoMinute, HoursAndMinutesToSecond, SecondsToHoursAndMinutes };

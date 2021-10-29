@@ -26,6 +26,7 @@ import BackdropComponent from '../essentials/BackdropComponent';
 import Error from '../../pages/Error';
 import { changeParams } from '../../redux_modules/params';
 import { withRouter } from 'react-router-dom';
+import { SecondsToHoursAndMinutes } from '../essentials/TimeChange';
 
 const pad = (n, width) => {
     n = n + '';
@@ -531,7 +532,17 @@ function ReportClass({ match, history }) {
                                     </svg>
                                     제한 시간
                                 </span>
-                                <span className="left-content">{timeLimit === -2 ? '없음' : timeValueToTimer(timeLimit)}</span>
+                                <span className="left-content">
+                                    {timeLimit === -2
+                                        ? '없음'
+                                        : ((timeLimit) => {
+                                              const parted = SecondsToHoursAndMinutes(timeLimit);
+                                              let str = '';
+                                              if (parted[0] > 0) str += parted[0] + '시간 ';
+                                              str += parted[1] + '분';
+                                              return str;
+                                          })(timeLimit)}
+                                </span>
                             </div>
                             <div className="report-row">
                                 <span className="left-desc">

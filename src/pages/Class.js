@@ -18,7 +18,9 @@ import TopNav from '../components/essentials/TopNav';
 import * as $ from 'jquery';
 import Calendar from './Calendar';
 import Dashboard from './Dashboard';
-
+import VocaLearningMain from '../components/LearningVocas/VocaLearningMain';
+import RestrictRoute from '../components/essentials/RestrictRoute';
+import LearningVocas from '../components/LearningVocas/LearningVocas';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -51,25 +53,27 @@ const ClassPageSwitcher = (match, sessions) => {
             );
         case 'vid-lecture':
             return <VideoLecturesManage />;
-         
+
         case 'calendar':
-            if
-            (sessions.userType === 'teachers') return <ErrorRestricted/>;
-            return <Calendar/>;
+            if (sessions.userType === 'teachers') return <ErrorRestricted />;
+            return <Calendar />;
         case 'dashboard':
-            if
-            (sessions.userType === 'teachers') return <ErrorRestricted/>
+            if (sessions.userType === 'teachers') return <ErrorRestricted />;
+            return <Route path={`${path}`} component={Dashboard} />;
+
+        case 'learning-vocas':
             return (
-                <Route path={`${path}`} component={Dashboard} />
-            )
-           
+                <>
+                    <Route path={path} exact component={VocaLearningMain} />
+                    <Route path={`${path}/learning`} component={LearningVocas} />
+                </>
+            );
         default:
             return <Error />;
     }
 };
 
 function Class({ match }) {
-
     const dispatch = useDispatch();
     const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
         loading: false,
