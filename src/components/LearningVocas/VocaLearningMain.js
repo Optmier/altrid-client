@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ClassWrapper from '../essentials/ClassWrapper';
-import HeaderMenu from './components/HeaderMenu';
-import Groupbox from './components/Groupbox';
+import HeaderMenu from '../../_tempComponents/HeaderMenu';
+import Groupbox from '../../_tempComponents/Groupbox';
 import {
     Button,
     FormControl,

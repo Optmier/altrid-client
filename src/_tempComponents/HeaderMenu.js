@@ -26,11 +26,10 @@ const MenuItem = styled.button`
     }
 `;
 
-function HeaderMenu({ title, menuDatas, defaultMenuItemId, children }) {
-    const [selectedMenuItem, setSelectedMenuItem] = useState(defaultMenuItemId);
+function HeaderMenu({ title, menuDatas, defaultMenuItemId, selectedMenuId, onItemClick, children }) {
     const onMenuItemClick = (mId, onClickFn) => () => {
-        setSelectedMenuItem(mId);
-        onClickFn();
+        onItemClick(mId);
+        if (onClickFn) onClickFn();
     };
 
     return (
@@ -44,7 +43,7 @@ function HeaderMenu({ title, menuDatas, defaultMenuItemId, children }) {
                           <MenuItem
                               key={data.mId}
                               title={!data.mDesc ? null : data.mDesc}
-                              m-selected={data.mId === selectedMenuItem}
+                              m-selected={data.mId === selectedMenuId}
                               onClick={onMenuItemClick(data.mId, data.onClick)}
                           >
                               {data.mName}
@@ -89,6 +88,7 @@ HeaderMenu.defaultProps = {
             },
         },
     ],
+    onItemClick() {},
 };
 
 export default HeaderMenu;

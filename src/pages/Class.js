@@ -21,6 +21,7 @@ import Dashboard from './Dashboard';
 import VocaLearningMain from '../components/LearningVocas/VocaLearningMain';
 import RestrictRoute from '../components/essentials/RestrictRoute';
 import LearningVocas from '../components/LearningVocas/LearningVocas';
+import CamStudyMainLists from '../components/Camstudy/CamStudyMainLists';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -66,6 +67,12 @@ const ClassPageSwitcher = (match, sessions) => {
                 <>
                     <Route path={path} exact component={VocaLearningMain} />
                     <Route path={`${path}/learning`} component={LearningVocas} />
+                </>
+            );
+        case 'cam-study':
+            return (
+                <>
+                    <Route path={path} exact component={CamStudyMainLists} />
                 </>
             );
         default:
