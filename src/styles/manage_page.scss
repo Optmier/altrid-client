@@ -7,7 +7,10 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
+    & .class-discription {
+        margin-bottom: 16px;
+        margin-top: 4px;
+    }
     & .manage-header {
         margin-bottom: 3.2rem;
 
@@ -25,6 +28,7 @@
     }
     & .manage-inputs {
         width: 100%;
+
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -38,7 +42,7 @@
             font-size: 1rem;
             color: #707070;
             font-weight: 500;
-            border-bottom: 1px solid #707070;
+
             padding-bottom: 1rem;
             margin-bottom: 1rem;
             display: flex;
@@ -80,10 +84,10 @@
         & > input + input {
             margin-top: 1rem;
         }
+
         & input.default {
-            background-color: white;
             border: none;
-            border-radius: 11px;
+            border-radius: 16px;
             box-sizing: border-box;
             color: #707070;
             font-family: inherit;
@@ -94,6 +98,7 @@
             height: 60px;
             outline: none;
             padding: 0px 30px;
+            background-color: #f6f8f9;
 
             &.error {
                 color: #ff4646;
@@ -121,19 +126,20 @@
             margin-top: 24px;
             background-color: white;
             border: none;
-            border-radius: 11px;
+            border-radius: 16px;
             box-sizing: border-box;
             color: #707070;
             font-family: inherit;
             font-size: 1rem;
             resize: vertical;
-
+            background-color: #f6f8f9;
             font-weight: 400;
             line-height: 1.25;
             width: 100%;
-            height: 150px;
+            height: 264px;
             outline: none;
             padding: 20px 30px;
+            resize: none;
 
             &.error {
                 color: #ff4646;

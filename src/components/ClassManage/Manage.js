@@ -1,5 +1,4 @@
-   
-import React, { useState, useEffect, useRef,useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ClassWrapper from '../essentials/ClassWrapper';
 import '../../styles/manage_page.scss';
 import classNames from 'classnames';
@@ -19,16 +18,16 @@ const CopyButton = styled.div`
     pointer-events: ${(props) => (props.state ? 'none' : 'all')};
 `;
 const FormButton = styled.button`
-    background-color: ${(props) => (props.able ? '#43138b' : '#f6f7f9')};
-    color: ${(props) => (props.able ? 'white' : '#707070')};
-    border: ${(props) => (props.able ? 'none' : '1px solid #707070')};
+    background-color: ${(props) => (props.able ? '#FFFFFF' : '#F4F1FA')};
+    color: ${(props) => (props.able ? '#3B1689' : '#3B1689')};
+    border: ${(props) => (props.able ? '2px solid #3B1689' : 'none')};
     border-radius: 11px;
     font-size: 1rem;
     font-weight: 500;
-    width: 52px;
-    height: 43px;
+    width: 129px;
+    height: 54px;
     & + & {
-        margin-left: 11px;
+        margin-left: 8px;
     }
 `;
 const ButtonAble = styled.button`
@@ -38,21 +37,21 @@ const ButtonAble = styled.button`
 
 const CreateButton = withStyles((theme) => ({
     root: {
-        borderRadius: '10px',
-        backgroundColor: '#13E2A1',
-        color: '#fff',
+        borderRadius: '104px',
+        backgroundColor: '#3B1689',
+        color: '#FFFFFF',
         fontFamily: 'inherit',
         fontSize: '0.9rem',
         width: '150px',
         height: '56px',
 
         '&.critical': {
-            backgroundColor: '#a6a6a6',
+            backgroundColor: '#FFFFFF',
+            color: '#11171C',
+            border: ' 1.5px solid #9AA5AF',
         },
     },
 }))(Button);
-
-
 
 function Manage({ match, history }) {
     const textCopy = useRef();
@@ -78,11 +77,11 @@ function Manage({ match, history }) {
         토: false,
         일: false,
     });
-    const [ablestate,setAblesate] = useState({
-        leaderboard:true,
-        studentmanage:false,
-        classmanage:false,
-    })
+    const [ablestate, setAblesate] = useState({
+        leaderboard: true,
+        studentmanage: false,
+        classmanage: false,
+    });
 
     const handleInputChange = (e, value) => {
         if ($(e.target).hasClass('default')) {
@@ -100,7 +99,7 @@ function Manage({ match, history }) {
     const handleShareCardList = useCallback(
         (e) => {
             const { name, value } = e.target;
-    
+
             setAblesate({
                 leaderboard: false,
                 studentmanage: false,
@@ -328,224 +327,151 @@ function Manage({ match, history }) {
 
     return (
         <>
-            {/* <PopOverClipboard state={clipboardState} />
-            <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
-            <ClassWrapper col="col">
-                <div className="class-manage-root">
-                    <div>
-                        <div className="manage-header">
-                            <h2 className="manage-title">클래스 초대 및 관리</h2>
-                        </div>
-                        <div className="manage-inputs">
-                            <div className="manage-inputs-header">클래스 초대 코드</div>
-                            <div className="manage-invite">
-                                <input readOnly type="text" defaultValue={codeState} ref={textCopy} />
-                                <button onClick={handleCopy}>복사하기</button>
-                            </div>
-                        </div>
-
-                        <div className="manage-inputs">
-                            <div className="manage-inputs-header">클래스 소개</div>
-
-                            <input
-                                className={classNames('default', inputError ? 'error' : '')}
-                                type="text"
-                                name="entry_new_name"
-                                id="entry_new_name"
-                                placeholder="클래스 이름"
-                                onChange={handleInputChange}
-                                value={inputState['entry_new_name']}
-                            />
-                            <textarea
-                                className="default"
-                                type="text"
-                                name="entry_new_description"
-                                id="entry_new_description"
-                                placeholder="클래스 한줄 설명"
-                                onChange={handleInputChange}
-                                value={inputState['entry_new_description']}
-                            />
-                        </div>
-                        <div className="manage-inputs">
-                            <div className="manage-inputs-header">
-                                <div>
-                                    수업 요일<span>(선택)</span>
-                                </div>
-                                <span className="form-info">*수업 요일을 모두 선택해주세요.</span>
-                            </div>
-                            <div className="form-buttons">
-                                <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
-                                    월
-                                </FormButton>
-                                <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
-                                    화
-                                </FormButton>
-                                <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
-                                    수
-                                </FormButton>
-                                <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
-                                    목
-                                </FormButton>
-                                <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
-                                    금
-                                </FormButton>
-                                <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
-                                    토
-                                </FormButton>
-                                <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
-                                    일
-                                </FormButton>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="manage-footer">
-                        <CreateButton
-                            className="button-delete critical"
-                            size="large"
-                            variant="contained"
-                            disabled={!createButtonEnabled}
-                            name="delete"
-                            onClick={handleButton}
-                        >
-                            삭제하기
-                        </CreateButton>
-                        <CreateButton
-                            className="button-modify"
-                            size="large"
-                            variant="contained"
-                            disabled={!createButtonEnabled}
-                            name="modify"
-                            onClick={handleButton}
-                        >
-                            수정하기
-                        </CreateButton>
-                    </div>
-                </div>
-            </ClassWrapper> */}
             <>
-            <ClassWrapper>        
-                <div className="class-section-root">
-                    <div className="class-share-header">
-                        <div className="header-title">학생 및 클래스 </div>
-                        <div className="header-menu">
-                            <ButtonAble name="leaderboard" able={ablestate['leaderboard']} value={ablestate['leaderboard']} onClick={handleShareCardList}>
-                                리더보드
-                            </ButtonAble>
-                            <ButtonAble name="classmanage" able={ablestate['classmanage']} value={ablestate['classmanage']} onClick={handleShareCardList}>
-                                클래스 관리
-                            </ButtonAble>
-                            <ButtonAble name="studentmanage" able={ablestate['studentmanage']} value={ablestate['studentmanage']} onClick={handleShareCardList}>
-                                학생 관리
-                            </ButtonAble>
+                <ClassWrapper>
+                    <div className="class-section-root">
+                        <div className="class-share-header">
+                            <div className="header-title">학생 및 클래스 </div>
+                            <div className="header-menu">
+                                <ButtonAble
+                                    name="leaderboard"
+                                    able={ablestate['leaderboard']}
+                                    value={ablestate['leaderboard']}
+                                    onClick={handleShareCardList}
+                                >
+                                    리더보드
+                                </ButtonAble>
+                                <ButtonAble
+                                    name="classmanage"
+                                    able={ablestate['classmanage']}
+                                    value={ablestate['classmanage']}
+                                    onClick={handleShareCardList}
+                                >
+                                    클래스 관리
+                                </ButtonAble>
+                                <ButtonAble
+                                    name="studentmanage"
+                                    able={ablestate['studentmanage']}
+                                    value={ablestate['studentmanage']}
+                                    onClick={handleShareCardList}
+                                >
+                                    학생 관리
+                                </ButtonAble>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </ClassWrapper>
-            {
-                ablestate['studentmanage']
-                ? 
-                <div className="test">
-                    <StudentManage/>
-                </div>
-                : ablestate['classmanage']
-                ?
-                <div className="test">
-                   <PopOverClipboard state={clipboardState} />
-            <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
-            <ClassWrapper col="col">
-                <div className="class-manage-root">
-                    <div>
-                        <div className="manage-inputs">
-                            <div className="manage-inputs-header">클래스 소개</div>
-
-                            <input
-                                className={classNames('default', inputError ? 'error' : '')}
-                                type="text"
-                                name="entry_new_name"
-                                id="entry_new_name"
-                                placeholder="클래스 이름"
-                                onChange={handleInputChange}
-                                value={inputState['entry_new_name']}
-                            />
-                            <textarea
-                                className="default"
-                                type="text"
-                                name="entry_new_description"
-                                id="entry_new_description"
-                                placeholder="클래스 한줄 설명"
-                                onChange={handleInputChange}
-                                value={inputState['entry_new_description']}
-                            />
-                        </div>
-                        <div className="manage-inputs">
-                            <div className="manage-inputs-header">
+                </ClassWrapper>
+                {ablestate['studentmanage'] ? (
+                    <div className="test">
+                        <StudentManage />
+                    </div>
+                ) : ablestate['classmanage'] ? (
+                    <div className="test">
+                        <PopOverClipboard state={clipboardState} />
+                        <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
+                        <ClassWrapper col="col">
+                            <div className="class-manage-root">
                                 <div>
-                                    수업 요일<span>(선택)</span>
+                                    <div className="manage-inputs">
+                                        <h3>클래스 소개</h3>
+
+                                        <div className="class-discription">
+                                            <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M3.29348 11C3.09548 10.1513 2.20215 9.45732 1.83549 8.99998C1.20761 8.21551 0.814117 7.26963 0.700328 6.27129C0.586539 5.27296 0.757085 4.26279 1.19232 3.35715C1.62756 2.4515 2.30977 1.68723 3.16039 1.15237C4.011 0.617512 4.99541 0.333824 6.00021 0.333984C7.005 0.334145 7.98932 0.61815 8.83976 1.15328C9.6902 1.68841 10.3722 2.4529 10.8071 3.35869C11.2421 4.26447 11.4123 5.27469 11.2982 6.27299C11.1841 7.27129 10.7903 8.21705 10.1622 9.00132C9.79548 9.45798 8.90348 10.152 8.70548 11H3.29282H3.29348ZM8.66615 12.3333V13C8.66615 13.3536 8.52568 13.6927 8.27563 13.9428C8.02558 14.1928 7.68644 14.3333 7.33282 14.3333H4.66615C4.31253 14.3333 3.97339 14.1928 3.72334 13.9428C3.47329 13.6927 3.33282 13.3536 3.33282 13V12.3333H8.66615ZM6.66615 5.66998V2.99998L3.66615 7.00332H5.33282V9.66998L8.33282 5.66998H6.66615V5.66998Z"
+                                                    fill="#FFC043"
+                                                />
+                                            </svg>
+                                            &nbsp; 클래스 소개를 입력해주세요.
+                                        </div>
+
+                                        <input
+                                            className={classNames('default', inputError ? 'error' : '')}
+                                            type="text"
+                                            name="entry_new_name"
+                                            id="entry_new_name"
+                                            placeholder="클래스 이름"
+                                            onChange={handleInputChange}
+                                            value={inputState['entry_new_name']}
+                                        />
+                                        <textarea
+                                            className="default"
+                                            type="text"
+                                            name="entry_new_description"
+                                            id="entry_new_description"
+                                            placeholder="클래스 한줄 설명"
+                                            onChange={handleInputChange}
+                                            value={inputState['entry_new_description']}
+                                        />
+                                    </div>
+                                    <div className="manage-inputs">
+                                        <h3>수업 요일</h3>
+                                        <div className="class-discription">
+                                            <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M3.29348 11C3.09548 10.1513 2.20215 9.45732 1.83549 8.99998C1.20761 8.21551 0.814117 7.26963 0.700328 6.27129C0.586539 5.27296 0.757085 4.26279 1.19232 3.35715C1.62756 2.4515 2.30977 1.68723 3.16039 1.15237C4.011 0.617512 4.99541 0.333824 6.00021 0.333984C7.005 0.334145 7.98932 0.61815 8.83976 1.15328C9.6902 1.68841 10.3722 2.4529 10.8071 3.35869C11.2421 4.26447 11.4123 5.27469 11.2982 6.27299C11.1841 7.27129 10.7903 8.21705 10.1622 9.00132C9.79548 9.45798 8.90348 10.152 8.70548 11H3.29282H3.29348ZM8.66615 12.3333V13C8.66615 13.3536 8.52568 13.6927 8.27563 13.9428C8.02558 14.1928 7.68644 14.3333 7.33282 14.3333H4.66615C4.31253 14.3333 3.97339 14.1928 3.72334 13.9428C3.47329 13.6927 3.33282 13.3536 3.33282 13V12.3333H8.66615ZM6.66615 5.66998V2.99998L3.66615 7.00332H5.33282V9.66998L8.33282 5.66998H6.66615V5.66998Z"
+                                                    fill="#FFC043"
+                                                />
+                                            </svg>
+                                            &nbsp; 수업 요일을 모두 선택해주세요. 중복선택이 가능합니다.
+                                        </div>
+                                        <div className="form-buttons">
+                                            <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
+                                                월
+                                            </FormButton>
+                                            <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
+                                                화
+                                            </FormButton>
+                                            <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
+                                                수
+                                            </FormButton>
+                                            <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
+                                                목
+                                            </FormButton>
+                                            <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
+                                                금
+                                            </FormButton>
+                                            <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
+                                                토
+                                            </FormButton>
+                                            <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
+                                                일
+                                            </FormButton>
+                                        </div>
+                                    </div>
                                 </div>
-                                <span className="form-info">* 수업 요일을 모두 선택해주세요.</span>
+
+                                <div className="manage-footer">
+                                    <CreateButton
+                                        className="button-delete critical"
+                                        size="large"
+                                        variant="contained"
+                                        disabled={!createButtonEnabled}
+                                        name="delete"
+                                        onClick={handleButton}
+                                    >
+                                        삭제하기
+                                    </CreateButton>
+                                    <CreateButton
+                                        className="button-modify"
+                                        size="large"
+                                        variant="contained"
+                                        disabled={!createButtonEnabled}
+                                        name="modify"
+                                        onClick={handleButton}
+                                    >
+                                        수정하기
+                                    </CreateButton>
+                                </div>
                             </div>
-                            <div className="form-buttons">
-                                <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
-                                    월
-                                </FormButton>
-                                <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
-                                    화
-                                </FormButton>
-                                <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
-                                    수
-                                </FormButton>
-                                <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
-                                    목
-                                </FormButton>
-                                <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
-                                    금
-                                </FormButton>
-                                <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
-                                    토
-                                </FormButton>
-                                <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
-                                    일
-                                </FormButton>
-                            </div>
-                        </div>
+                        </ClassWrapper>
                     </div>
-
-                    <div className="manage-footer">
-                        <CreateButton
-                            className="button-delete critical"
-                            size="large"
-                            variant="contained"
-                            disabled={!createButtonEnabled}
-                            name="delete"
-                            onClick={handleButton}
-                        >
-                            삭제하기
-                        </CreateButton>
-                        <CreateButton
-                            className="button-modify"
-                            size="large"
-                            variant="contained"
-                            disabled={!createButtonEnabled}
-                            name="modify"
-                            onClick={handleButton}
-                        >
-                            수정하기
-                        </CreateButton>
+                ) : ablestate['leaderboard'] ? (
+                    <div className="test">
+                        <Leaderboard />
                     </div>
-                </div>
-            </ClassWrapper>
-                </div>
-                : ablestate['leaderboard']
-                ? 
-                <div className="test">
-                   <Leaderboard/>
-                </div>
-                :null
-            }
-
-        </>
-
+                ) : null}
+            </>
         </>
     );
 }
