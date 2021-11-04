@@ -185,7 +185,7 @@ function Dashboard_1() {
                         <Dday />
                     </div>
                     <div className="right">
-                        <img src={icon_image} alt="dashboard_icons"></img>
+                        <img width="339px" height="260px" src={icon_image} alt="dashboard_icons"></img>
                     </div>
                 </div>
 

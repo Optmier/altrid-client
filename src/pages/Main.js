@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import HeaderBar from '../components/essentials/HeaderBar';
 import { Element } from 'react-scroll';
 import { Drawer, Divider, Button } from '@material-ui/core';
@@ -22,6 +22,174 @@ import { IoIosArrowForward } from 'react-icons/io';
 import isMobile from '../controllers/isMobile';
 import { makeStyles } from '@material-ui/core/styles';
 import BackdropComponent2 from '../components/essentials/BackdropComponent2';
+import icon_image from '../images/mainclass_icon.png';
+import styled from 'styled-components';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import AccountPopOver from '../components/essentials/AccountPopOver';
+
+const Item = styled.div``;
+
+const Main_header = styled.div`
+
+margin: 0 112px;
+
+
+
+& .header {
+    height:80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 27px;
+
+    & .icon {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 65px;
+        height: 36px;
+        cursor: pointer;
+
+        & p {
+            font-weight: bold;
+            color: #6c46a1;
+            font-size: 16px;
+            letter-spacing: -0.02em;
+            margin: 0px 8px;
+            padding: 8px 16px;
+            border-radius: 104px;
+            background: #f4f1fa;
+        }
+    }
+    & .plan {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 128px;
+        height: 36px;
+        background: #6c46a1;
+        border-radius: 104px;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 16px;
+        text-align: center;
+
+        & p {
+            margin: 0px 8px;
+        }
+    }
+}
+
+& .greeting {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 260px;
+    margin-bottom: 16px;
+
+    & h2 {
+        font-weight: 700;
+        font-size: 56px;
+        line-height: 60px;
+        margin-bottom: 8px;
+        margin-top: 16px;
+    }
+
+
+`;
+
+const CardSection = styled.div`
+    font-family: 'inter, -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, “Helvetica Neue”, Arial, sans-serif, “Apple Color Emoji”, “Segoe UI Emoji”, “Segoe UI Symbol”';
+    margin: 24px 112px;
+    & .card {
+        & .cards {
+            cursor: pointer;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+            min-height: 248px;
+            border-radius: 32px;
+            background: #f4f1fa;
+            color: #200656;
+            padding: 0 32px;
+            padding-top: 32px;
+            & .day {
+                font-size: 12px;
+
+                font-weight: 700;
+                height: 24px;
+            }
+            & .name {
+                font-size: 24px;
+                line-height: 28px;
+                margin-top: 20px;
+                font-weight: 700;
+            }
+            & .description {
+                height: 45px;
+                margin-top: 8px;
+                font-size: 18px;
+                line-height: 22px;
+                font-weight: 700;
+            }
+            & .card-info {
+                width: 170px;
+                align-items: center;
+                height: 24px;
+                margin-top: 50px;
+                font-size: 18px;
+                line-height: 22px;
+                font-weight: 700;
+                display: flex;
+                & .teacher {
+                    margin: 0 8px;
+                }
+                & .member {
+                    margin: 0 8px;
+                }
+                & .assignment_num {
+                    margin: 0 8px;
+                }
+            }
+        }
+    }
+`;
+
+const Info = styled.div`
+    margin: 32px 112px;
+
+    & .Info-total {
+        margin-bottom: 80px;
+        padding: 36px 40px;
+        display: flex;
+        align-items: center;
+
+        height: 124px;
+        background: #f6f8f9;
+        border: 1px solid #bfc6cd;
+        box-sizing: border-box;
+        border-radius: 32px;
+        & span {
+            margin-right: 6px;
+        }
+        & .Info-Word {
+            margin-left: 23px;
+            & .Info-Top {
+                font-weight: bold;
+                font-size: 24px;
+                line-height: 28px;
+                letter-spacing: -0.02em;
+            }
+            & .Info-Bottom {
+                font-size: 18px;
+                line-height: 22px;
+                letter-spacing: -0.02em;
+                margin-top: 8px;
+            }
+        }
+    }
+`;
 
 const useStyles = makeStyles((theme) => ({
     drawerPaper: {
@@ -33,7 +201,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Main({ history }) {
     const classes = useStyles();
-
+    const testRef = useRef();
     const sessions = useSelector((state) => state.RdxSessions);
 
     const [backdropOpen, setBackdropOpen] = useState(false);
@@ -53,6 +221,11 @@ function Main({ history }) {
         }
         setOpenAddTeacher(open);
     };
+
+    const handleLogout = () => {
+        window.logout();
+    };
+
     const fetchCardData = () => {
         Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
             .then((res) => {
@@ -73,143 +246,223 @@ function Main({ history }) {
 
     return (
         <>
-            <BackdropComponent2 open={backdropOpen} blind="#f7f9f8" />
-            <Element name="main_top_start" />
-            <HeaderBar />
-            <Drawer
-                anchor="right"
-                open={openCreateNewDrawer}
-                onClose={toggleDrawer(false)}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-            >
-                <CreateNewEntry history={history} handleClose={toggleDrawer(false)} />
-            </Drawer>
-
-            <Drawer
-                anchor="right"
-                open={openAddTeacher}
-                onClose={toggleAddTeacherDrawer(false)}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-            >
-                <AddClass handleClose={toggleAddTeacherDrawer(false)} />
-            </Drawer>
-            <main className="main-page">
-                <section className={classNames('decorator-root', sessions.userType)}></section>
-                <section className="contents-root">
-                    <CardLists
-                        upperDeck={
-                            <>
-                                <div className="introduce">
-                                    <h2>
-                                        ALTRID 클래스 관리<br></br>솔루션에 오신것을 환영합니다.
-                                    </h2>
-                                </div>
-                                <div className="academy-name">
-                                    <h4>{sessions.userName}님의 클래스</h4>
-                                </div>
-                            </>
-                        }
-                        maxColumn={3}
-                    >
-                        {sessions.userType !== 'students' ? (
-                            <CardRoot>
-                                <CardAddNew type={sessions.userType} onClick={toggleDrawer(true)}>
-                                    클래스 생성
-                                </CardAddNew>
-                            </CardRoot>
-                        ) : (
-                            <CardRoot>
-                                <CardAddNew type={sessions.userType} onClick={toggleAddTeacherDrawer(true)}>
-                                    클래스 입장
-                                </CardAddNew>
-                            </CardRoot>
-                        )}
-                        {cardDatas.map(
-                            ({ idx, name, class_count, max_due_date, description, class_day, teacher_name, num_of_students }) => (
-                                <CardRoot key={idx}>
-                                    <CardEntry
-                                        title={name}
-                                        description={description}
-                                        class_day={class_day}
-                                        assignmentOnProgress={
-                                            moment(max_due_date).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss')
-                                                ? max_due_date !== null
-                                                    ? true
-                                                    : false
-                                                : false
-                                        }
-                                        teacherName={teacher_name}
-                                        totalStudents={num_of_students}
-                                        totalAssignment={class_count}
-                                        onClick={() => {
-                                            sessions.userType === 'students' ? (
-                                            history.push(`${$_classDefault}/${idx}/dashboard`))
-                                            :(
-                                            history.push(`${$_classDefault}/${idx}/share`))
-                                        }}
-                                    />
-                                </CardRoot>
-                            ),
-                        )}
-                    </CardLists>
-                    {sessions.userType === 'students' && (!cardDatas || !cardDatas.length) ? null : <Divider className="main-divider" />}
-                </section>
-                {sessions.userType === 'students' ? (
-                    <section>
-                        <ClassWrapper col="none" type="main_page">
-                            <div className="contents-bottom-fullWidth">
-                                <div className="bottom-fullWidth-top">서비스 관련 궁금하신 점이 있으신가요?</div>
-                                <div className="bottom-fullWidth-central">
-                                    1대 1 바로 상담을 원하는 경우에는 우하단 물음표 버튼을 클릭해주세요.
-                                </div>
-                                <a
-                                    className="bottom-fullWidth-footer"
-                                    href="https://www.notion.so/ALTRID-8e6f5fe90beb42f0a10cb9b11a84f22a"
-                                    alt="more_service"
-                                    target="_blank"
+            <Main_header>
+                <div className="header">
+                    <div className="altrid">
+                        <svg width="161" height="40" viewBox="0 0 161 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M33.1277 36.0909L17.7536 11.064L2.36967 36.1488C1.98609 36.1828 1.62107 36.3257 1.31952 36.5598C1.01797 36.7939 0.793056 37.1091 0.672492 37.4665C0.551928 37.8239 0.540956 38.208 0.640942 38.5714C0.740928 38.9349 0.947511 39.2618 1.23524 39.512C1.52296 39.7622 1.87927 39.9247 2.26032 39.9795C2.64137 40.0344 3.03051 39.9791 3.37984 39.8206C3.72917 39.6621 4.02344 39.4073 4.22641 39.0874C4.42939 38.7676 4.53225 38.3967 4.52227 38.0205C4.52111 37.7056 4.43603 37.3963 4.27541 37.1233L7.48452 31.923C10.4914 33.989 14.0777 35.0977 17.7536 35.0977C21.4296 35.0977 25.0159 33.989 28.0228 31.923L31.2516 37.1812C31.0567 37.5507 30.9891 37.972 31.059 38.3821C31.1289 38.7922 31.3325 39.1694 31.6395 39.4573C31.9465 39.7452 32.3405 39.9285 32.7628 39.9799C33.185 40.0314 33.613 39.9482 33.9829 39.7427C34.3529 39.5372 34.645 39.2205 34.8158 38.8397C34.9866 38.4588 35.0269 38.0343 34.9308 37.6293C34.8347 37.2242 34.6072 36.8604 34.2823 36.5919C33.9574 36.3233 33.5525 36.1646 33.1277 36.1392V36.0909ZM2.59679 38.4643C2.46323 38.4643 2.33514 38.4125 2.2407 38.3202C2.14626 38.2279 2.0932 38.1028 2.0932 37.9723C2.07851 37.9009 2.08023 37.8272 2.09823 37.7565C2.11624 37.6858 2.15008 37.6199 2.19731 37.5635C2.24454 37.5072 2.30402 37.4618 2.37139 37.4306C2.43877 37.3994 2.51236 37.3833 2.58691 37.3833C2.66145 37.3833 2.73508 37.3994 2.80245 37.4306C2.86983 37.4618 2.92927 37.5072 2.9765 37.5635C3.02374 37.6199 3.05758 37.6858 3.07558 37.7565C3.09359 37.8272 3.09531 37.9009 3.08062 37.9723C3.08072 38.0995 3.0304 38.2218 2.94019 38.3136C2.84998 38.4053 2.7269 38.4594 2.59679 38.4643ZM17.7734 32.9457C14.4878 32.9386 11.2869 31.9265 8.62004 30.0513L17.7734 15.1547L26.9268 30.0416C24.2574 31.9276 21.0477 32.9438 17.7536 32.9457H17.7734ZM32.9994 38.4643C32.8658 38.4643 32.7377 38.4125 32.6433 38.3202C32.5488 38.2279 32.4958 38.1028 32.4958 37.9723C32.4811 37.9009 32.4828 37.8272 32.5008 37.7565C32.5188 37.6858 32.5526 37.6199 32.5999 37.5635C32.6471 37.5072 32.7066 37.4618 32.7739 37.4306C32.8413 37.3994 32.9149 37.3833 32.9895 37.3833C33.064 37.3833 33.1376 37.3994 33.205 37.4306C33.2724 37.4618 33.3318 37.5072 33.3791 37.5635C33.4263 37.6199 33.4602 37.6858 33.4782 37.7565C33.4962 37.8272 33.4979 37.9009 33.4832 37.9723C33.4832 38.1028 33.4301 38.2279 33.3357 38.3202C33.2412 38.4125 33.1132 38.4643 32.9796 38.4643H32.9994Z"
+                                fill="url(#paint0_linear_48:469)"
+                            />
+                            <path
+                                d="M2.21978 27.2047C2.17031 27.4845 2.18324 27.7715 2.25766 28.0458C2.33209 28.32 2.46621 28.5748 2.6506 28.7923C2.83498 29.0097 3.06518 29.1846 3.32502 29.3045C3.58486 29.4245 3.86804 29.4866 4.15471 29.4866C4.44137 29.4866 4.72456 29.4245 4.9844 29.3045C5.24423 29.1846 5.47443 29.0097 5.65882 28.7923C5.8432 28.5748 5.97732 28.32 6.05175 28.0458C6.12617 27.7715 6.1391 27.4845 6.08964 27.2047C6.08617 26.9243 6.01902 26.6483 5.89319 26.3971L17.7876 7.04353L29.6722 26.3777C29.5429 26.6311 29.4756 26.9111 29.4758 27.195C29.4219 27.4763 29.4314 27.7658 29.5035 28.0431C29.5756 28.3203 29.7086 28.5783 29.8929 28.7988C30.0772 29.0193 30.3084 29.1967 30.5699 29.3186C30.8314 29.4404 31.1168 29.5035 31.4058 29.5035C31.6947 29.5035 31.9802 29.4404 32.2417 29.3186C32.5032 29.1967 32.7343 29.0193 32.9187 28.7988C33.103 28.5783 33.2359 28.3203 33.308 28.0431C33.3801 27.7658 33.3896 27.4763 33.3358 27.195C33.3364 26.9299 33.2795 26.6677 33.1688 26.4263C34.7311 23.7491 35.5542 20.7116 35.5556 17.6192C35.5569 14.5269 34.7362 11.4887 33.1763 8.81019C31.6163 6.1317 29.3719 3.90732 26.6688 2.36077C23.9657 0.814214 20.8993 0 17.7778 0C14.6563 0 11.5898 0.814214 8.88675 2.36077C6.18367 3.90732 3.93929 6.1317 2.3793 8.81019C0.819309 11.4887 -0.00130671 14.5269 1.56185e-06 17.6192C0.00130984 20.7116 0.824507 23.7491 2.38676 26.4263C2.2794 26.6722 2.22262 26.9368 2.21978 27.2047ZM4.18417 27.701C4.10456 27.7003 4.02631 27.6805 3.95616 27.6432C3.886 27.6059 3.82605 27.5523 3.78147 27.4869C3.71845 27.406 3.68394 27.3069 3.68324 27.2047C3.68324 27.0731 3.73602 26.9469 3.82997 26.8538C3.92391 26.7608 4.05132 26.7085 4.18417 26.7085C4.26378 26.7092 4.34203 26.729 4.41219 26.7663C4.48234 26.8036 4.54229 26.8572 4.58688 26.9226C4.64213 26.9955 4.67557 27.0824 4.68339 27.1732C4.69122 27.2641 4.6731 27.3553 4.63112 27.4365C4.58913 27.5176 4.52496 27.5855 4.44594 27.6322C4.36691 27.679 4.27621 27.7028 4.18417 27.701ZM31.4401 27.701C31.3267 27.6784 31.2246 27.6176 31.1513 27.5289C31.078 27.4402 31.0379 27.3291 31.0379 27.2145C31.0379 27.0998 31.078 26.9887 31.1513 26.9C31.2246 26.8113 31.3267 26.7505 31.4401 26.728C31.5128 26.7135 31.5879 26.7152 31.6598 26.7329C31.7318 26.7507 31.7989 26.784 31.8562 26.8305C31.9136 26.8771 31.9598 26.9357 31.9916 27.0021C32.0233 27.0685 32.0398 27.141 32.0398 27.2145C32.0398 27.2879 32.0233 27.3605 31.9916 27.4269C31.9598 27.4932 31.9136 27.5518 31.8562 27.5984C31.7989 27.6449 31.7318 27.6783 31.6598 27.696C31.5879 27.7138 31.5128 27.7155 31.4401 27.701ZM2.15102 17.6204C2.14516 15.2513 2.6879 12.9124 3.73749 10.7836C4.78709 8.65489 6.31557 6.793 8.20537 5.34119C10.0952 3.88938 12.2959 2.88632 14.6384 2.40919C16.9808 1.93205 19.4025 1.99354 21.7172 2.58893C24.0319 3.18431 26.1779 4.29773 27.9901 5.84355C29.8024 7.38936 31.2326 9.32637 32.1707 11.5056C33.1089 13.6848 33.53 16.0482 33.4016 18.4139C33.2732 20.7796 32.5988 23.0846 31.4303 25.1516L17.7876 2.93735L4.13507 25.1516C2.83217 22.8515 2.14888 20.2579 2.15102 17.6204Z"
+                                fill="url(#paint1_linear_48:469)"
+                            />
+                            <path
+                                d="M44.9958 33.2259L47.6441 25.7845H58.2888L60.9371 33.2259H64.2796L54.612 6.9502H51.3209L41.6533 33.2259H44.9958ZM48.6469 22.9619L52.8636 11.1071H53.0693L57.286 22.9619H48.6469Z"
+                                fill="black"
+                            />
+                            <path d="M67.6566 33.2259H83.0836V30.4033H70.8448V6.9502H67.6566V33.2259Z" fill="black" />
+                            <path d="M82.3563 9.77278H90.6355V33.2259H93.8237V9.77278H102.103V6.9502H82.3563V9.77278Z" fill="black" />
+                            <path
+                                d="M105.399 33.2259H110.966V23.9113H115.029L120.017 33.2259H126.162L120.569 23.0132C123.565 21.7303 125.223 19.1258 125.223 15.5334C125.223 10.3116 121.765 6.9502 115.787 6.9502H105.399V33.2259ZM110.966 19.4465V11.492H114.72C117.934 11.492 119.489 12.9161 119.489 15.5334C119.489 18.1379 117.934 19.4465 114.746 19.4465H110.966Z"
+                                fill="black"
+                            />
+                            <path d="M134 6.9502H128.433V33.2259H134V6.9502Z" fill="black" />
+                            <path
+                                d="M147.189 33.2259C155.211 33.2259 160.07 28.2735 160.07 20.0624C160.07 11.8769 155.211 6.9502 147.266 6.9502H137.855V33.2259H147.189ZM143.422 28.466V11.7101H146.97C151.907 11.7101 154.517 14.2248 154.517 20.0624C154.517 25.9256 151.907 28.466 146.957 28.466H143.422Z"
+                                fill="black"
+                            />
+                            <defs>
+                                <linearGradient
+                                    id="paint0_linear_48:469"
+                                    x1="17.7833"
+                                    y1="0.557271"
+                                    x2="17.7833"
+                                    y2="32.8588"
+                                    gradientUnits="userSpaceOnUse"
                                 >
-                                    서비스 사용 가이드 <IoIosArrowForward style={{ marginRight: '5px' }} />
-                                </a>
-                            </div>
-                        </ClassWrapper>
-                    </section>
-                ) : (
-                    <section>
-                        <ClassWrapper col="none" type="main_page">
-                            <div className="contents-bottom-root">
-                                <div className="bottom-left">
-                                    <div className="bottom-left-top">알트리드는 문제 풀이 중 모든 것을 관찰하고 기록합니다.</div>
-                                    <div className="bottom-left-central">
-                                        시선흐름 추적 기술과 문제 패턴 데이터 수집을 통해 맞춤형 리포트를 제공합니다.
-                                    </div>
-                                    <a
-                                        className="bottom-left-footer"
-                                        href="https://www.notion.so/optmier/a4daf8676b2b4460b75613f25249abf3"
-                                        alt="more_eyetrack"
-                                        target="_blank"
-                                    >
-                                        자세히 알아보기 <IoIosArrowForward style={{ marginRight: '5px' }} />
-                                    </a>
-                                </div>
+                                    <stop stop-color="#51BA97" />
+                                    <stop offset="1" stop-color="#47278B" />
+                                </linearGradient>
+                                <linearGradient
+                                    id="paint1_linear_48:469"
+                                    x1="14625.8"
+                                    y1="3315.31"
+                                    x2="14625.8"
+                                    y2="4303.09"
+                                    gradientUnits="userSpaceOnUse"
+                                >
+                                    <stop stop-color="#51BA97" />
+                                    <stop offset="1" stop-color="#47278B" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
 
-                                {
-                                    // 데모클래스 생성되면 추가할 것 !! (20.03.03)
-                                    /* <div className="bottom-right" onClick={() => alert('준비중입니다 !')}>
-                                    <h4>
-                                        데모 클래스 <IoIosArrowForward style={{ marginLeft: '10px' }} />
-                                    </h4>
-                                    <h5>클래스에서 데모버전의 과제를 확인해보세요.</h5>
-                                </div> */
-                                }
+                    <div className="icon">
+                        <p>클래스</p>
+                        <p>관리</p>
+                        {/* <p onClick={() => history.replace('/mypage/profile')}>마이페이지</p> */}
+                    </div>
+                    <div className="profile" ref={testRef}>
+                        <p>{sessions.userName} 님 </p>
+                        <AccountPopOver userName={sessions.userName} image={sessions.image} targetEl={testRef ? testRef : null} />
+                    </div>
+
+                    {/* <p onClick={handleLogout}>로그아웃</p> */}
+                    <div className="plan">
+                        <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M7.5 3.09235e-06C7.85114 -3.86887e-05 8.19611 0.0923691 8.50021 0.267935C8.80431 0.443501 9.05683 0.696037 9.23237 1.00015C9.40792 1.30426 9.5003 1.64923 9.50024 2.00038C9.50017 2.35152 9.40766 2.69646 9.232 3.0005L11.5 3V4H10.5V9C10.5 9.13261 10.4473 9.25979 10.3536 9.35356C10.2598 9.44732 10.1326 9.5 10 9.5H2C1.86739 9.5 1.74021 9.44732 1.64645 9.35356C1.55268 9.25979 1.5 9.13261 1.5 9V4H0.5V3L2.768 3.0005C2.51993 2.57095 2.44034 2.06453 2.54469 1.57959C2.64904 1.09465 2.92987 0.665787 3.33267 0.376279C3.73546 0.0867716 4.23147 -0.0427221 4.72437 0.0129424C5.21728 0.0686069 5.67192 0.305457 6 0.677503C6.1873 0.464194 6.41803 0.29339 6.67673 0.176542C6.93544 0.0596942 7.21613 -0.000497124 7.5 3.09235e-06ZM6.5 4H5.5V9H6.5V4ZM4.5 1C4.24051 0.998842 3.99073 1.0986 3.80342 1.27819C3.61612 1.45779 3.50597 1.70316 3.49623 1.96247C3.48649 2.22178 3.57794 2.47473 3.75125 2.66786C3.92455 2.861 4.16615 2.9792 4.425 2.9975L4.5 3H5.5V2C5.50001 1.76103 5.41444 1.52996 5.2588 1.34863C5.10315 1.1673 4.88771 1.04771 4.6515 1.0115L4.5745 1.0025L4.5 1ZM7.5 1C7.24771 0.999923 7.00472 1.09521 6.81973 1.26675C6.63474 1.4383 6.52142 1.67343 6.5025 1.925L6.5 2V3H7.5C7.75229 3.00008 7.99528 2.9048 8.18027 2.73325C8.36526 2.56171 8.47858 2.32658 8.4975 2.075L8.5 2C8.5 1.73479 8.39464 1.48043 8.20711 1.2929C8.01957 1.10536 7.76522 1 7.5 1Z"
+                                fill="white"
+                            />
+                        </svg>
+
+                        <p>이용권 구매</p>
+                    </div>
+                </div>
+
+                <div className="greeting">
+                    <div className="left">
+                        <svg width="71" height="47" viewBox="0 0 71 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M23.337 0.0335945C23.9963 -0.100785 24.3918 0.167979 24.5237 0.839887C24.6555 1.37741 24.3918 1.71337 23.7326 1.84775C18.8542 2.9228 14.8329 4.66976 11.6685 7.08863C8.63603 9.37312 7.11978 11.8592 7.11978 14.5468C7.11978 16.1594 7.64717 17.436 8.70195 18.3767C9.88858 19.3174 13.3825 20.4596 19.1838 21.8034C23.2711 22.8785 26.2377 24.4239 28.0836 26.4396C30.0613 28.4553 31.0501 31.0758 31.0501 34.3009C31.0501 37.9292 29.7976 40.9528 27.2925 43.3717C24.7874 45.7906 21.5571 47 17.6017 47C12.4596 47 8.24048 45.1858 4.94429 41.5575C1.6481 37.7948 0 33.0243 0 27.2459C0 20.258 2.04364 14.4124 6.13092 9.70907C10.35 5.00572 16.0854 1.78056 23.337 0.0335945ZM63.0891 0.0335945C63.7484 -0.100785 64.1439 0.167979 64.2758 0.839887C64.5395 1.37741 64.3417 1.71337 63.6824 1.84775C58.8041 2.9228 54.7827 4.66976 51.6184 7.08863C48.5859 9.37312 47.0696 11.8592 47.0696 14.5468C47.0696 16.1594 47.597 17.436 48.6518 18.3767C49.7066 19.3174 53.1346 20.4596 58.9359 21.8034C63.1551 22.8785 66.1875 24.4239 68.0334 26.4396C70.0111 28.4553 71 31.0758 71 34.3009C71 37.9292 69.7474 40.9528 67.2423 43.3717C64.7372 45.7906 61.507 47 57.5515 47C52.4095 47 48.1903 45.1187 44.8941 41.356C41.598 37.4589 39.9499 32.554 39.9499 26.6412C39.9499 19.7877 41.9935 14.0765 46.0808 9.5075C50.1681 4.93853 55.8375 1.78056 63.0891 0.0335945Z"
+                                fill="#AEFFE0"
+                            />
+                        </svg>
+                        {sessions.userType === 'teachers' ? (
+                            <h2>반갑습니다 {sessions.userName} 선생님</h2>
+                        ) : (
+                            <h2>반갑습니다 {sessions.userName} 학생</h2>
+                        )}
+                    </div>
+                    <div className="right">
+                        <img width="339px" height="260px" src={icon_image} alt="dashboard_icons"></img>
+                    </div>
+                </div>
+                {console.log(cardDatas)}
+                <h3>{sessions.userName}님의 클래스 </h3>
+            </Main_header>
+            <CardSection>
+                <div className="card">
+                    <Box sx={{ flexGrow: 1 }}>
+                        <Grid container spacing={4}>
+                            {cardDatas.map(
+                                ({ idx, name, class_count, max_due_date, description, class_day, teacher_name, num_of_students }) => (
+                                    <Grid item xs={4}>
+                                        <Item
+                                            onClick={() => {
+                                                sessions.userType === 'students'
+                                                    ? history.push(`${$_classDefault}/${idx}/dashboard`)
+                                                    : history.push(`${$_classDefault}/${idx}/share`);
+                                            }}
+                                        >
+                                            <div className="cards" key={idx}>
+                                                <div className="day">{class_day.replace(/,/g, ' ')}</div>
+                                                <div className="name">{name}</div>
+                                                <div className="description">{description}</div>
+                                                <div className="card-info">
+                                                    <div className="teacher">{teacher_name}</div>
+
+                                                    <svg
+                                                        width="1"
+                                                        height="8"
+                                                        viewBox="0 0 1 8"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <line x1="0.5" y1="2.18557e-08" x2="0.5" y2="8" stroke="#E3DDF2" />
+                                                    </svg>
+                                                    <div className="member">
+                                                        <svg
+                                                            width="15"
+                                                            height="15"
+                                                            viewBox="0 0 15 15"
+                                                            fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path
+                                                                d="M0.333008 14.6665C0.333008 13.252 0.894911 11.8955 1.89511 10.8953C2.8953 9.89507 4.25185 9.33317 5.66634 9.33317C7.08083 9.33317 8.43738 9.89507 9.43758 10.8953C10.4378 11.8955 10.9997 13.252 10.9997 14.6665H0.333008ZM5.66634 8.6665C3.45634 8.6665 1.66634 6.8765 1.66634 4.6665C1.66634 2.4565 3.45634 0.666504 5.66634 0.666504C7.87634 0.666504 9.66634 2.4565 9.66634 4.6665C9.66634 6.8765 7.87634 8.6665 5.66634 8.6665ZM10.575 10.1552C11.5948 10.4173 12.5059 10.9944 13.1786 11.8044C13.8513 12.6144 14.2513 13.616 14.3217 14.6665H12.333C12.333 12.9265 11.6663 11.3425 10.575 10.1552ZM9.22634 8.63784C9.78501 8.13815 10.2318 7.52606 10.5374 6.84167C10.843 6.15727 11.0005 5.41603 10.9997 4.6665C11.0011 3.75548 10.7681 2.85942 10.323 2.0645C11.0781 2.21623 11.7573 2.62475 12.2453 3.22063C12.7333 3.81652 12.9998 4.56299 12.9997 5.33317C12.9999 5.80815 12.8985 6.27768 12.7024 6.71029C12.5063 7.1429 12.22 7.5286 11.8627 7.84153C11.5054 8.15447 11.0853 8.38741 10.6306 8.52475C10.1759 8.66208 9.69715 8.70064 9.22634 8.63784Z"
+                                                                fill="#200656"
+                                                            />
+                                                        </svg>
+                                                        &nbsp;{num_of_students}
+                                                    </div>
+
+                                                    <svg
+                                                        width="1"
+                                                        height="8"
+                                                        viewBox="0 0 1 8"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <line x1="0.5" y1="2.18557e-08" x2="0.5" y2="8" stroke="#E3DDF2" />
+                                                    </svg>
+                                                    <div className="assignment_num">
+                                                        <svg
+                                                            width="14"
+                                                            height="14"
+                                                            viewBox="0 0 14 14"
+                                                            fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path
+                                                                d="M2.00033 9.00016V1.00016C2.00033 0.823352 2.07056 0.653782 2.19559 0.528758C2.32061 0.403734 2.49018 0.333496 2.66699 0.333496H13.3337C13.5105 0.333496 13.68 0.403734 13.8051 0.528758C13.9301 0.653782 14.0003 0.823352 14.0003 1.00016V11.6668C14.0003 12.1973 13.7896 12.706 13.4145 13.081C13.0395 13.4561 12.5308 13.6668 12.0003 13.6668H2.66699C2.13656 13.6668 1.62785 13.4561 1.25278 13.081C0.877706 12.706 0.666992 12.1973 0.666992 11.6668V10.3335H11.3337V11.6668C11.3337 11.8436 11.4039 12.0132 11.5289 12.1382C11.6539 12.2633 11.8235 12.3335 12.0003 12.3335C12.1771 12.3335 12.3467 12.2633 12.4717 12.1382C12.5968 12.0132 12.667 11.8436 12.667 11.6668V9.00016H2.00033Z"
+                                                                fill="#200656"
+                                                            />
+                                                        </svg>
+                                                        &nbsp;{class_count}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Item>
+                                    </Grid>
+                                ),
+                            )}
+                        </Grid>
+                    </Box>
+                </div>
+            </CardSection>
+            <Info>
+                {sessions.userType === 'students' ? (
+                    <>
+                        <div className="Info-total">
+                            <div className="Info-icon">
+                                <svg width="33" height="42" viewBox="0 0 33 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M8.35941 31.9999C7.75949 29.4539 5.05278 27.3719 3.94181 25.9999C2.03942 23.6465 0.84717 20.8089 0.5024 17.8139C0.157631 14.8189 0.674369 11.7884 1.99309 9.07144C3.31181 6.35451 5.37886 4.0617 7.95614 2.45712C10.5334 0.852537 13.5161 0.00147064 16.5605 0.00195333C19.6049 0.00243602 22.5873 0.854449 25.1641 2.45984C27.7408 4.06524 29.8071 6.35871 31.125 9.07606C32.4428 11.7934 32.9586 14.8241 32.6128 17.819C32.2671 20.8139 31.0739 23.6511 29.1708 26.0039C28.0598 27.3739 25.3572 29.4559 24.7572 31.9999H8.35739H8.35941ZM24.6381 35.9999V37.9999C24.6381 39.0608 24.2124 40.0782 23.4548 40.8284C22.6972 41.5785 21.6696 41.9999 20.5982 41.9999H12.5185C11.447 41.9999 10.4195 41.5785 9.66183 40.8284C8.90421 40.0782 8.47858 39.0608 8.47858 37.9999V35.9999H24.6381ZM18.5783 16.0099V7.99995L9.48855 20.0099H14.5384V28.0099L23.6281 16.0099H18.5783Z"
+                                        fill="#2D3843"
+                                    />
+                                </svg>
                             </div>
-                        </ClassWrapper>
-                    </section>
+                            <div className="Info-Word">
+                                <div className="Info-Top">서비스 관련 궁금하신 점이 있으신가요?</div>
+                                <div className="Info-Bottom">1대 1 바로 상담을 원하는 경우에는 우하단 물음표 버튼을 클릭해주세요.</div>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="Info-total">
+                            <div className="Info-icon">
+                                <svg width="33" height="42" viewBox="0 0 33 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M8.35941 31.9999C7.75949 29.4539 5.05278 27.3719 3.94181 25.9999C2.03942 23.6465 0.84717 20.8089 0.5024 17.8139C0.157631 14.8189 0.674369 11.7884 1.99309 9.07144C3.31181 6.35451 5.37886 4.0617 7.95614 2.45712C10.5334 0.852537 13.5161 0.00147064 16.5605 0.00195333C19.6049 0.00243602 22.5873 0.854449 25.1641 2.45984C27.7408 4.06524 29.8071 6.35871 31.125 9.07606C32.4428 11.7934 32.9586 14.8241 32.6128 17.819C32.2671 20.8139 31.0739 23.6511 29.1708 26.0039C28.0598 27.3739 25.3572 29.4559 24.7572 31.9999H8.35739H8.35941ZM24.6381 35.9999V37.9999C24.6381 39.0608 24.2124 40.0782 23.4548 40.8284C22.6972 41.5785 21.6696 41.9999 20.5982 41.9999H12.5185C11.447 41.9999 10.4195 41.5785 9.66183 40.8284C8.90421 40.0782 8.47858 39.0608 8.47858 37.9999V35.9999H24.6381ZM18.5783 16.0099V7.99995L9.48855 20.0099H14.5384V28.0099L23.6281 16.0099H18.5783Z"
+                                        fill="#2D3843"
+                                    />
+                                </svg>
+                            </div>
+                            <div className="Info-Word">
+                                <div className="Info-Top">알트리드는 문제 풀이 중 모든 것을 관찰하고 기록합니다.</div>
+                                <div className="Info-Bottom">
+                                    시선흐름 추적 기술과 문제 패턴 데이터 수집을 통해 맞춤형 리포트를 제공합니다.
+                                </div>
+                            </div>
+                        </div>
+                    </>
                 )}
-            </main>
+            </Info>
 
             {isMobile ? null : <Footer />}
         </>

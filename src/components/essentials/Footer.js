@@ -3,28 +3,42 @@ import NavLogoBlack from '../../images/logos/nav_logo_white.png';
 import styled from 'styled-components';
 
 const Foot = styled.div`
+    font-family: inter, -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, “Helvetica Neue”, Arial, sans-serif, “Apple Color Emoji”,
+        “Segoe UI Emoji”, “Segoe UI Symbol”;
     display: flex;
     flex-direction: column;
     text-align: center;
-    & .menu {
-        & a {
-            margin: 16px 0;
+    & .contents {
+        padding: 48px 144px;
+        & .logo {
+            margin-bottom: 16px;
         }
-    }
-    & .info {
-        margin: 8px 0;
-        color: #4d5c6a;
-        font-weight: 400px;
-        & a {
+        & .menu {
             font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            & .menu-info {
+                margin: 0px 20px;
+            }
+        }
+        & .info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #4d5c6a;
+            font-weight: 400px;
+            & .info-more {
+                margin: 16px 20px;
+            }
         }
     }
+
     & .adress {
-        margin: 8px 0;
-        font-size: 18px;
+        font-size: 14px;
         color: #4d5c6a;
         font-weight: 400px;
-        margin-bottom: 40px;
     }
 `;
 function Footer() {
@@ -68,16 +82,59 @@ function Footer() {
                     </svg>
                 </div>
                 <div className="menu">
-                    <a href="https://altridedge.com/"> ALTRID </a> | <a href="http://optmier.com/"> Optmier 소개 </a> |
-                    <a href="https://www.altridedge.com/customer-service/faq"> 고객센터 </a>|
-                    <a href="https://www.notion.so/optmier/Optmier-Help-Center-8e6f5fe90beb42f0a10cb9b11a84f22a">
-                        {' '}
-                        이용 약관 및 개인정보 보호 정책
-                    </a>
+                    <div className="menu-info">
+                        <a href="https://altridedge.com/"> ALTRID </a>{' '}
+                    </div>
+                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
+                    </svg>
+                    <div className="menu-info">
+                        <a href="http://optmier.com/"> Optmier 소개 </a>{' '}
+                    </div>
+                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
+                    </svg>
+                    <div className="menu-info">
+                        <a href="https://www.altridedge.com/customer-service/faq"> 고객센터 </a>
+                    </div>
+
+                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
+                    </svg>
+                    <div className="menu-info">
+                        <a href="https://www.notion.so/optmier/Optmier-Help-Center-8e6f5fe90beb42f0a10cb9b11a84f22a">
+                            {' '}
+                            이용 약관 및 개인정보 보호 정책
+                        </a>
+                    </div>
                 </div>
                 <div className="info">
-                    옵트미어(Optmier) | 대표 전광휘 | 전화<a href="tel:02-469-9703"> 02-469-9703</a> | 이메일
-                    <a href="mailto:rikjeon94@optmier.com"> rikjeon94@optmier.com</a> | 사업자등록번호 309-30-62706
+                    <div className="info-more">옵트미어(Optmier)</div>
+                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
+                    </svg>
+                    <div className="info-more">대표 전광휘</div>
+                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
+                    </svg>
+
+                    <div className="info-more">
+                        전화<a href="tel:02-469-9703"> 02-469-9703</a>
+                    </div>
+
+                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
+                    </svg>
+
+                    <div className="info-more">
+                        이메일 <a href="mailto:rikjeon94@optmier.com"> rikjeon94@optmier.com</a>
+                    </div>
+
+                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
+                    </svg>
+
+                    <div className="info-more">사업자등록번호 309-30-62706</div>
                 </div>
                 <div className="adress">
                     <p>서울시 광진구 뚝섬로41길 8 2층 (옵트미어 학원)</p>
