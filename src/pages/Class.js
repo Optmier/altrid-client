@@ -22,6 +22,7 @@ import VocaLearningMain from '../components/LearningVocas/VocaLearningMain';
 import RestrictRoute from '../components/essentials/RestrictRoute';
 import LearningVocas from '../components/LearningVocas/LearningVocas';
 import CamStudyMainLists from '../components/Camstudy/CamStudyMainLists';
+import { OpTimer } from '../components/OpTimer/OpTimer';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -87,6 +88,7 @@ function Class({ match }) {
         data: null,
         error: null,
     };
+    const optimerModule = useSelector((state) => state.RdxOpTimerHelper.optimer);
     const sessions = useSelector((state) => state.RdxSessions);
     const [stMatch, setStMatch] = useState({ id: null, path: null });
     const [RenderSubPage, setRenderSubPage] = useState(null);
@@ -106,6 +108,15 @@ function Class({ match }) {
         if (!stMatch.id || !stMatch.path) return;
         setRenderSubPage(ClassPageSwitcher(stMatch, sessions));
     }, [stMatch]);
+
+    useEffect(() => {
+        if (match.params.num === null || match.params.num === undefined || !sessions.authId || !optimerModule) return;
+        // if (!window.optimerModule) {
+        //     window.optimerModule = new OpTimer(match.params.num, sessions.authId);
+        // }
+        if (optimerModule.classNum === parseInt(match.params.num)) return;
+        optimerModule.updateClassNumber(parseInt(match.params.num));
+    }, [match, sessions, optimerModule]);
 
     return (
         <>

@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -6,6 +7,10 @@ const ItemRoot = styled.div`
     border-radius: 11px;
     display: flex;
     padding: 16px;
+
+    & + & {
+        margin-top: 16px;
+    }
 `;
 const ItemLeft = styled.div`
     flex-basis: 70%;
@@ -15,9 +20,14 @@ const ItemRight = styled.div`
     align-items: center;
     border-left: 1px solid #e2e2e2;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     margin-left: 16px;
     width: 30%;
+
+    & button + button {
+        margin-top: 8px;
+    }
 `;
 const MainInfo = styled.div``;
 const SubInfo = styled.div`
@@ -51,13 +61,25 @@ function CamstudyListItem({
     liveCounts,
     maxJoinCounts,
     sessionEndDate,
-    dist,
+    publicState,
     isMine,
     onEnter,
     onModify,
     onDelete,
     children,
 }) {
+    const actionEnterStudy = () => {
+        onEnter(roomId, rules);
+    };
+
+    const actionModifyStudy = () => {
+        onModify(roomId);
+    };
+
+    const actionDeleteStudy = () => {
+        onDelete(roomId);
+    };
+
     return (
         <ItemRoot>
             <ItemLeft>
@@ -69,16 +91,16 @@ function CamstudyListItem({
                     <CreatorName>{creator}</CreatorName>
                     <LiveCounts>실시간 {liveCounts}명</LiveCounts>
                     <MaxCounts>최대 {maxJoinCounts}명 까지</MaxCounts>
-                    <Dist>{dist === 0 ? '공개됨' : dist === 1 ? '비밀번호 설정됨' : null}</Dist>
+                    <Dist>{publicState === 0 ? '공개됨' : publicState === 1 ? '비밀번호 설정됨' : null}</Dist>
                 </SubInfo>
-                <SessionEndDate>세션 종료일: {sessionEndDate.toDateString()}</SessionEndDate>
+                <SessionEndDate>자동 종료일: {moment(sessionEndDate).format('YY년 MM월 DD일 HH:mm')}</SessionEndDate>
             </ItemLeft>
             <ItemRight>
-                <button>입장하기</button>
+                <button onClick={actionEnterStudy}>입장하기</button>
                 {isMine ? (
                     <>
-                        <button>종료하기</button>
-                        <button>수정하기</button>
+                        <button onClick={actionModifyStudy}>수정하기</button>
+                        <button onClick={actionDeleteStudy}>종료하기</button>
                     </>
                 ) : null}
             </ItemRight>
@@ -98,7 +120,7 @@ CamstudyListItem.defaultProps = {
     liveCounts: 0,
     maxJoinCounts: 4,
     sessionEndDate: new Date(),
-    dist: 0, // 0: 공개됨 | 1: 비밀번호 걸려있음 | 2: 초대됨
+    publicState: 0, // 0: 공개됨 | 1: 비밀번호 걸려있음 | 2: 초대됨
     isMine: false,
     onEnter() {},
     onModify() {},

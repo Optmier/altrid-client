@@ -8,8 +8,14 @@ import ErrorIcon from '@material-ui/icons/ErrorOutline';
 import TextFieldHelperText from '../../../AltridUI/TextField/TextFieldHelperText';
 import ReactQuill from 'react-quill';
 import BulbIcon from '../../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
-import { Chip, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { Avatar, Chip, CircularProgress, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
+import Axios from 'axios';
+import { apiUrl } from '../../../configs/configs';
+import moment from 'moment-timezone';
+import Drawer from '../../../AltridUI/Drawer/Drawer';
+import DrawerActions from '../../../AltridUI/Drawer/DrawerActions';
+import { useSelector } from 'react-redux';
 
 const ContentsRoot = styled.div``;
 const TitleContainer = styled.div`
@@ -41,6 +47,26 @@ const GroupBoxContentsOtherInfoRoot = styled.div`
     flex-direction: column;
 `;
 
+function asyncTestSleep(delay = 0) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, delay);
+    });
+}
+
+const defaultData = {
+    title: '제목 편집',
+    description: '설명 편집',
+    rules: {
+        renderContents: `<p>규칙 편집<p>`,
+        deltaContents:
+            '{"ops":[{"insert":"The Two Towers"},{"insert":"\n","attributes":{"header":1}},{"insert":"Aragorn sped on up the hill.\n"}]}',
+    },
+    publicState: 2,
+    maxJoins: 3,
+    invitations: ['1511108048', '106553573902793620545'],
+    sessionEndDate: new Date(),
+};
+
 /** 데이터 받아야 할 것...
  * 1. 방 제목
  * 2. 방 설명
@@ -51,101 +77,474 @@ const GroupBoxContentsOtherInfoRoot = styled.div`
  * 7. 초대 인원 선택란
  * 8. 세션 종료일
  */
-function CreateAndEditCamstudy({ onCreate, children }) {
+function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOrModify, children }) {
+    const sessions = useSelector((state) => state.RdxSessions);
+
+    const titleFieldRef = useRef();
+    const descriptionFieldRef = useRef();
     const rulesEditorRef = useRef();
-    const [publicState, setPublicState] = useState(2);
-    // const [max]
+    const publicStateFieldRef = useRef();
+    const maxJoinsFieldRef = useRef();
+    const passwordFieldRef = useRef();
+    const sessionEndDateFieldRef = useRef();
+
+    const [publicState, setPublicState] = useState(0);
+    const [invitationOptions, setInvitationOptions] = useState([]);
+    const [invitationOptionOpen, setInvitationOptionOpen] = useState(false);
+    const [invitationsLoading, setInvitationLoading] = useState(false);
+    const [selectedInvitations, setSelectedInvitations] = useState([]);
+
+    // Default datas for edit
+    const [defaultTitle, setDefaultTitle] = useState(null);
+    const [defaultDescription, setDefaultDescription] = useState(null);
+    const [defaultRulesDeltaContents, setDefaultRulesDeltaContents] = useState(null);
+    const [defaultPublicState, setDefaultPublicState] = useState(0);
+    const [defaultMaxJoins, setDefaultMaxJoins] = useState(4);
+    const [defaultSessionEndDate, setDefaultSessionEndDate] = useState(null);
+
+    const [fieldErrorControl, setFieldErrorControl] = useState({
+        title: {
+            error: false,
+            errorText: '',
+        },
+        publicState: {
+            error: false,
+            errorText: '',
+        },
+        maxJoins: {
+            error: false,
+            errorText: '',
+        },
+        password: {
+            error: false,
+            errorText: '',
+        },
+        invitations: {
+            error: false,
+            errorText: '',
+        },
+        sessionEndDate: {
+            error: false,
+            errorText: '',
+        },
+    });
 
     const actionOnChangePublicState = ({ target }) => {
-        console.log(target);
+        if (fieldErrorControl.publicState.error)
+            setFieldErrorControl({ ...fieldErrorControl, publicState: { error: false, errorText: '' } });
         setPublicState(target.value);
     };
 
-    const handleCrate = () => {
-        const data = {};
-        const editor = rulesEditorRef.current;
-        data.rules = {
-            renderContents: editor.getEditorContents(),
-            deltaContents: editor.getEditor().getContents(),
-        };
-        onCreate();
+    const actionOnChangeInvitationSelect = (event, value) => {
+        if (fieldErrorControl.invitations.error)
+            setFieldErrorControl({ ...fieldErrorControl, invitations: { error: false, errorText: '' } });
+        if (value.length > 64) {
+            setFieldErrorControl({ ...fieldErrorControl, invitations: { error: false, errorText: '초대 인원은 최대 64명까지 입니다.' } });
+            return;
+        }
+        setSelectedInvitations(value);
     };
 
-    useEffect(() => {}, []);
+    const fieldOnChange = ({ target }) => {
+        const { name, value } = target;
+        if (fieldErrorControl[name].error) setFieldErrorControl({ ...fieldErrorControl, [name]: { error: false, errorText: '' } });
+    };
+
+    const handleCrate = () => {
+        const title = titleFieldRef.current.value;
+        const description = descriptionFieldRef.current.value;
+        const rules = {
+            renderContents: rulesEditorRef.current.getEditorContents(),
+            deltaContents: rulesEditorRef.current.getEditor().getContents(),
+        };
+        const publicState = publicStateFieldRef.current.value;
+        const invitationIds = publicState === 2 ? selectedInvitations.map(({ id }) => id) : [];
+        const maxJoins = publicState === 2 ? invitationIds.length + 1 : parseInt(maxJoinsFieldRef.current.value);
+        const password = publicState === 1 ? passwordFieldRef.current.value : null;
+        const sessionEndDate = sessionEndDateFieldRef.current.value;
+
+        setFieldErrorControl({
+            title: {
+                error: !Boolean(title.trim()),
+                errorText: !Boolean(title.trim()) ? '방 제목을 입력해 주세요.' : '',
+            },
+            publicState: {
+                error: isNaN(publicState),
+                errorText: isNaN(publicState) ? '공개 여부 설정을 해주세요.' : '',
+            },
+            maxJoins: {
+                error: maxJoins < 1 || maxJoins > 64,
+                errorText: maxJoins < 1 || maxJoins > 64 ? '최소 1, 최대 64인까지 입력해 주세요.' : '',
+            },
+            password: {
+                error: publicState === 1 && !Boolean(password.trim()),
+                errorText: publicState === 1 && !Boolean(password.trim()) ? '암호를 설정해 주세요.' : '',
+            },
+            invitations: {
+                error: publicState === 2 && invitationIds.length < 1,
+                errorText: publicState === 2 && invitationIds.length < 1 ? '최소 1명 이상 초대 인원을 선택하셔야 합니다.' : '',
+            },
+            sessionEndDate: {
+                error: !Boolean(sessionEndDate.trim()),
+                errorText: !Boolean(sessionEndDate.trim()) ? '세션 종료 날짜를 선택해 주세요.' : '',
+            },
+        });
+
+        if (!Boolean(title.trim())) return;
+        if (isNaN(publicState)) return;
+        if (maxJoins < 1 || maxJoins > 64) return;
+        if (publicState === 1 && !Boolean(password.trim())) return;
+        if (publicState === 2 && invitationIds.length < 1) return;
+        if (!Boolean(sessionEndDate.trim())) return;
+
+        Axios.post(
+            `${apiUrl}/cam-study`,
+            {
+                title: title,
+                description: description,
+                rules: JSON.stringify(rules),
+                publicState: publicState,
+                invitationIds: JSON.stringify(invitationIds),
+                maxJoins: maxJoins,
+                password: password,
+                sessionEndDate: sessionEndDate,
+            },
+            { withCredentials: true },
+        )
+            .then((res) => {
+                handleClose(true);
+                onAfterCreateOrModify();
+                alert('개설 완료되었습니다.');
+            })
+            .catch((err) => {});
+
+        // data.rules = {
+        //     renderContents: rules.getEditorContents(),
+        //     deltaContents: rules.getEditor().getContents(),
+        // };
+    };
+
+    const handleUpdate = () => {
+        const description = descriptionFieldRef.current.value;
+        const rules = {
+            renderContents: rulesEditorRef.current.getEditorContents(),
+            deltaContents: rulesEditorRef.current.getEditor().getContents(),
+        };
+
+        if (!defaultData.room_id) {
+            console.error('세션 아이디를 알 수 없습니다.');
+            return;
+        }
+
+        Axios.patch(
+            `${apiUrl}/cam-study/${defaultData.room_id}`,
+            {
+                description: description,
+                rules: JSON.stringify(rules),
+            },
+            { withCredentials: true },
+        )
+            .then((res) => {
+                handleClose(true);
+                onAfterCreateOrModify();
+                alert('수정 완료되었습니다.');
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
+    // 초대 인원 로딩
+    useEffect(() => {
+        let active = true;
+        if (!invitationOptionOpen || selectedInvitations.length || !sessions.authId) {
+            return undefined;
+        }
+        setInvitationLoading(true);
+        Axios.get(`${apiUrl}/students/current-academy`, { withCredentials: true })
+            .then((res) => {
+                setInvitationLoading(false);
+                if (!res.data || !res.data.length) return;
+                const data = res.data
+                    .map(({ auth_id, name, image }) => ({ id: auth_id, name: name, image: image }))
+                    .filter(({ id }) => id !== sessions.authId);
+                if (active) setInvitationOptions(data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+
+        return () => {
+            active = false;
+        };
+    }, [invitationOptionOpen, selectedInvitations, sessions]);
+
+    // 디폴트 데이터 셋
+    useEffect(() => {
+        let active = true;
+        if (!defaultData || !sessions.authId) return;
+
+        if (defaultData.title) setDefaultTitle(defaultData.title);
+        if (defaultData.description) setDefaultDescription(defaultData.description);
+        if (defaultData.rules.deltaContents) setDefaultRulesDeltaContents(defaultData.rules.deltaContents);
+        if (defaultData.public_state) {
+            setDefaultPublicState(defaultData.public_state);
+            setPublicState(defaultData.public_state);
+        }
+        if (defaultData.max_joins) setDefaultMaxJoins(defaultData.max_joins);
+        if (defaultData.invitation_ids) {
+            Axios.get(`${apiUrl}/students/current-academy`, { withCredentials: true })
+                .then((res) => {
+                    if (!res.data || !res.data.length) return;
+                    const data = res.data
+                        .map(({ auth_id, name, image }) => ({ id: auth_id, name: name, image: image }))
+                        .filter(({ id }) => id !== sessions.authId);
+                    if (active) setInvitationOptions(data);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+        if (defaultData.session_enddate) setDefaultSessionEndDate(moment(defaultData.session_enddate).format('yyyy-MM-DDTHH:mm'));
+
+        return () => {
+            active = false;
+        };
+    }, [defaultData, sessions]);
+
+    const convertDefaultInvitations = (invitationOptions, ids) => {
+        const defValues = [];
+        for (const id of ids) {
+            const index = invitationOptions.findIndex((data) => data.id === id);
+            defValues.push(invitationOptions[index]);
+        }
+        return defValues;
+    };
 
     return (
         <ContentsRoot>
-            <TitleContainer>
-                <Title>캠 스터디 만들기</Title>
-            </TitleContainer>
-            <DrawerGroupBox title="기본 정보" description="제목, 설명, 규칙을 설정하세요" descriptionAdornment={BulbIcon}>
-                <GroupBoxContentsBasicInfoRoot>
-                    <FormPlacer>
-                        <MuiTextField variant="filled" required fullWidth label="캠 스터디 이름" />
-                    </FormPlacer>
-                    <FormPlacer>
-                        <MuiTextField variant="filled" fullWidth label="한 줄 설명" />
-                    </FormPlacer>
-                    <FormPlacer>
-                        <ReactQuill className="camstudy-rules-editor" ref={rulesEditorRef} placeholder="캠 스터디 규칙" />
-                    </FormPlacer>
-                </GroupBoxContentsBasicInfoRoot>
-            </DrawerGroupBox>
-            <DrawerGroupBox title="세부 설정" description="인원 수, 암호 등 설정" descriptionAdornment={BulbIcon}>
-                <GroupBoxContentsOtherInfoRoot>
-                    <FormPlacer>
-                        <FormControl fullWidth variant="filled">
-                            <InputLabel id="label-select-public-state">공개 설정</InputLabel>
-                            <Select
-                                labelId="label-select-public-state"
-                                id="select-public-state"
-                                defaultValue={0}
-                                onChange={actionOnChangePublicState}
+            <Drawer anchor="right" open={open} handleClose={handleClose}>
+                <TitleContainer>
+                    <Title>캠 스터디 만들기</Title>
+                </TitleContainer>
+                <DrawerGroupBox title="기본 정보" description="제목, 설명, 규칙을 설정하세요" descriptionAdornment={BulbIcon}>
+                    <GroupBoxContentsBasicInfoRoot>
+                        <FormPlacer>
+                            <MuiTextField
+                                autoFocus
+                                variant="filled"
+                                required
+                                fullWidth
+                                label="캠 스터디 이름"
+                                defaultValue={defaultTitle}
+                                disabled={Boolean(defaultData)}
+                                inputRef={titleFieldRef}
+                                error={fieldErrorControl['title'].error}
+                                helperText={fieldErrorControl['title'].errorText}
+                                name="title"
+                                onChange={fieldOnChange}
+                            />
+                        </FormPlacer>
+                        <FormPlacer>
+                            <MuiTextField
+                                variant="filled"
+                                fullWidth
+                                label="한 줄 설명"
+                                defaultValue={defaultDescription}
+                                inputRef={descriptionFieldRef}
+                            />
+                        </FormPlacer>
+                        <FormPlacer>
+                            <ReactQuill
+                                className="camstudy-rules-editor"
+                                ref={rulesEditorRef}
+                                placeholder="캠 스터디 규칙"
+                                defaultValue={defaultRulesDeltaContents}
+                            />
+                        </FormPlacer>
+                    </GroupBoxContentsBasicInfoRoot>
+                </DrawerGroupBox>
+                <DrawerGroupBox title="세부 설정" description="인원 수, 암호 등 설정" descriptionAdornment={BulbIcon}>
+                    <GroupBoxContentsOtherInfoRoot>
+                        <FormPlacer>
+                            <FormControl
+                                required
+                                fullWidth
+                                variant="filled"
+                                disabled={Boolean(defaultData)}
+                                error={fieldErrorControl['publicState'].error}
                             >
-                                <MenuItem value={0}>오픈됨</MenuItem>
-                                <MenuItem value={1}>암호 설정</MenuItem>
-                                <MenuItem value={2}>초대된 인원만</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </FormPlacer>
-                    <FormPlacer>
+                                <InputLabel id="label-select-public-state">공개 설정</InputLabel>
+                                <Select
+                                    labelId="label-select-public-state"
+                                    id="select-public-state"
+                                    defaultValue={defaultPublicState}
+                                    inputRef={publicStateFieldRef}
+                                    onChange={actionOnChangePublicState}
+                                >
+                                    <MenuItem value={0}>오픈됨</MenuItem>
+                                    <MenuItem value={1}>암호 설정</MenuItem>
+                                    <MenuItem value={2}>초대된 인원만</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </FormPlacer>
                         {((state) => {
                             switch (state) {
                                 case 0:
-                                    return (
-                                        <MuiTextField
-                                            variant="filled"
-                                            fullWidth
-                                            type="number"
-                                            label="최대 인원 수"
-                                            inputProps={{ min: 1, max: 64 }}
-                                        />
-                                    );
                                 case 1:
-                                    return <MuiTextField variant="filled" fullWidth type="password" label="암호" />;
+                                    return (
+                                        <>
+                                            <FormPlacer>
+                                                <MuiTextField
+                                                    required
+                                                    id="input_max_joins"
+                                                    variant="filled"
+                                                    fullWidth
+                                                    type="number"
+                                                    label="최대 인원 수"
+                                                    inputProps={{ min: 1, max: 64 }}
+                                                    defaultValue={defaultData ? defaultMaxJoins : 4}
+                                                    disabled={Boolean(defaultData)}
+                                                    inputRef={maxJoinsFieldRef}
+                                                    error={fieldErrorControl['maxJoins'].error}
+                                                    helperText={fieldErrorControl['maxJoins'].errorText}
+                                                    name="maxJoins"
+                                                    onChange={fieldOnChange}
+                                                />
+                                            </FormPlacer>
+                                            {state === 1 ? (
+                                                <FormPlacer>
+                                                    <MuiTextField
+                                                        required
+                                                        id="input_password"
+                                                        variant="filled"
+                                                        fullWidth
+                                                        type="password"
+                                                        label="암호"
+                                                        defaultValue={defaultData ? '****' : null}
+                                                        disabled={Boolean(defaultData)}
+                                                        inputRef={passwordFieldRef}
+                                                        error={fieldErrorControl['password'].error}
+                                                        helperText={fieldErrorControl['password'].errorText}
+                                                        name="password"
+                                                        onChange={fieldOnChange}
+                                                    />
+                                                </FormPlacer>
+                                            ) : null}
+                                        </>
+                                    );
                                 case 2:
                                     return (
-                                        <Autocomplete
-                                            multiple
-                                            limitTags={4}
-                                            id="select-invitation"
-                                            options={invitationsDummy}
-                                            getOptionLabel={(option) => option.name}
-                                            renderTags={(value, getTagProps) =>
-                                                value.map((option, index) => (
-                                                    <Chip variant="outlined" label={option.name} {...getTagProps({ index })} />
-                                                ))
-                                            }
-                                            renderInput={(params) => <MuiTextField {...params} variant="filled" label="초대 인원 선택" />}
-                                        />
+                                        <FormPlacer>
+                                            {!Boolean(defaultData) || (Boolean(defaultData) && invitationOptions.length) ? (
+                                                <Autocomplete
+                                                    multiple
+                                                    open={invitationOptionOpen}
+                                                    loading={invitationsLoading}
+                                                    onOpen={() => {
+                                                        setInvitationOptionOpen(true);
+                                                    }}
+                                                    onClose={() => {
+                                                        setInvitationOptionOpen(false);
+                                                    }}
+                                                    onChange={actionOnChangeInvitationSelect}
+                                                    limitTags={3}
+                                                    id="select-invitations"
+                                                    options={invitationOptions}
+                                                    getOptionLabel={(option) => option.name}
+                                                    renderOption={(option) => (
+                                                        <React.Fragment>
+                                                            <Avatar
+                                                                alt={`${option.name}'s profile image'`}
+                                                                src={option.image}
+                                                                sizes="small"
+                                                            >
+                                                                {Boolean(option.image) ? null : option.name[0]}
+                                                            </Avatar>
+                                                            <span style={{ marginLeft: 10 }}>{option.name}</span>
+                                                        </React.Fragment>
+                                                    )}
+                                                    renderTags={(value, getTagProps) =>
+                                                        value.map((option, index) =>
+                                                            index < 64 ? (
+                                                                <Chip
+                                                                    variant="outlined"
+                                                                    avatar={
+                                                                        <Avatar alt={`${option.name}'s profile image'`} src={option.image}>
+                                                                            {Boolean(option.image) ? null : option.name[0]}
+                                                                        </Avatar>
+                                                                    }
+                                                                    label={option.name}
+                                                                    {...getTagProps({ index })}
+                                                                />
+                                                            ) : null,
+                                                        )
+                                                    }
+                                                    renderInput={(params) => (
+                                                        <MuiTextField
+                                                            {...params}
+                                                            required
+                                                            variant="filled"
+                                                            label="초대 인원 선택"
+                                                            InputProps={{
+                                                                ...params.InputProps,
+                                                                endAdornment: (
+                                                                    <>
+                                                                        {invitationsLoading ? (
+                                                                            <CircularProgress color="inherit" size={20} />
+                                                                        ) : null}
+                                                                        {params.InputProps.endAdornment}
+                                                                    </>
+                                                                ),
+                                                            }}
+                                                            error={fieldErrorControl['invitations'].error}
+                                                            helperText={fieldErrorControl['invitations'].errorText}
+                                                        />
+                                                    )}
+                                                    defaultValue={
+                                                        Boolean(defaultData)
+                                                            ? convertDefaultInvitations(invitationOptions, defaultData.invitation_ids)
+                                                            : []
+                                                    }
+                                                    disabled={Boolean(defaultData)}
+                                                />
+                                            ) : null}
+                                        </FormPlacer>
                                     );
                                 default:
                                     return null;
                             }
                         })(publicState)}
-                    </FormPlacer>
-                </GroupBoxContentsOtherInfoRoot>
-            </DrawerGroupBox>
+                        <FormPlacer>
+                            <MuiTextField
+                                required
+                                fullWidth
+                                variant="filled"
+                                label="세션 종료일"
+                                defaultValue={defaultData ? defaultSessionEndDate : moment().add('day', 3).format('yyyy-MM-DDTHH:mm')}
+                                id="datetime-local"
+                                type="datetime-local"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                disabled={Boolean(defaultData)}
+                                inputRef={sessionEndDateFieldRef}
+                                error={fieldErrorControl['sessionEndDate'].error}
+                                helperText={fieldErrorControl['sessionEndDate'].errorText}
+                                name="sessionEndDate"
+                                onChange={fieldOnChange}
+                            />
+                        </FormPlacer>
+                    </GroupBoxContentsOtherInfoRoot>
+                </DrawerGroupBox>
+                <DrawerActions>
+                    {Boolean(defaultData) ? (
+                        <button onClick={handleUpdate}>수정하기</button>
+                    ) : (
+                        <button onClick={handleCrate}>만들기</button>
+                    )}
+                </DrawerActions>
+            </Drawer>
         </ContentsRoot>
     );
 }
@@ -157,9 +556,14 @@ const invitationsDummy = [
 ];
 
 CreateAndEditCamstudy.defaultProps = {
+    defaultData: null,
     onCreate(data) {
         console.log(data);
     },
+    onUpdate(data) {
+        console.log(data);
+    },
+    onAfterCreateOrModify() {},
 };
 
 export default CreateAndEditCamstudy;

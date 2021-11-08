@@ -1,8 +1,11 @@
 import { Drawer as MuiDrawer } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import React from 'react';
 import styled from 'styled-components';
 
 const DrawerRoot = styled.div`
+    display: flex;
+    flex-direction: column;
     padding: 40px 48px;
     height: 100%;
     max-width: 600px;
@@ -23,9 +26,19 @@ const HelpButton = styled.button`
     margin-left: auto;
 `;
 
+const useStyles = makeStyles({
+    root: {
+        '& .MuiDrawer-paper': {
+            maxWidth: 600,
+            width: '100%',
+        },
+    },
+});
+
 function Drawer({ anchor, open, handleClose, handleHelp, children, ...rest }) {
+    const classes = useStyles();
     return (
-        <MuiDrawer anchor={anchor} open={open} {...rest}>
+        <MuiDrawer className={classes.root} anchor={anchor} open={open} {...rest}>
             <DrawerRoot>
                 <TopIconContainer>
                     {handleClose ? <CloseButton onClick={handleClose}>x</CloseButton> : null}
