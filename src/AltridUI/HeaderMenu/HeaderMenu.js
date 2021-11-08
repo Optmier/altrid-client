@@ -2,31 +2,50 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const HeaderMenuRoot = styled.div`
-    align-items: center;
-    display: flex;
-    width: 100%;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
 `;
-const ContainerTitle = styled.div``;
+const ContainerTitle = styled.div`
+    font-family: inherit;
+`;
 const ContainerMenus = styled.div`
-    margin-left: 50px;
+    align-items: center;
+    background-color: #f4f1fa;
+    border: 1px solid #e3ddf2;
+    border-radius: 32px;
+    box-sizing: border-box;
+    display: flex;
+    font-family: inherit;
+    justify-content: space-between;
+    margin-top: ${({ type }) => (type === 1 ? '32px' : '16px')};
+    padding: 1px;
+    height: 48px;
 `;
 const HeaderTitle = styled.div`
-    font-size: 1.75rem;
-    font-weight: 600;
+    font-family: inherit;
+    font-size: ${({ type }) => (type === 1 ? '3.5rem' : '3rem')};
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: ${({ type }) => (type === 1 ? '3.75rem' : '3.25rem')};
+    text-align: ${({ type }) => (type === 1 ? 'center' : null)};
 `;
 const MenuItem = styled.button`
-    color: ${(props) => (props['m-selected'] ? '#3B168A' : '#b2b2b2')};
-    border-bottom: ${(props) => (props['m-selected'] ? '2px solid #3B168A' : 'none')};
-    font-size: 1.12rem;
+    background-color: ${(props) => (props['m-selected'] ? '#3B1689' : 'transparent')};
+    border-radius: 32px;
+    color: ${(props) => (props['m-selected'] ? '#ffffff' : '#3B1689')};
+    font-family: inherit;
+    font-size: 1rem;
     font-weight: 500;
-    background-color: transparent;
-    padding: 5px;
+    line-height: 1.25rem;
+    height: 100%;
+    width: calc(100% + 32px);
+    transition: background-color 0.2s, color 0.2s;
     & + & {
-        margin-left: 25px;
+        margin-left: -32px;
     }
 `;
 
-function HeaderMenu({ title, menuDatas, defaultMenuItemId, selectedMenuId, onItemClick, children }) {
+function HeaderMenu({ title, menuDatas, defaultMenuItemId, selectedMenuId, onItemClick, type, children }) {
     const onMenuItemClick = (mId, onClickFn) => () => {
         onItemClick(mId);
         if (onClickFn) onClickFn();
@@ -35,9 +54,9 @@ function HeaderMenu({ title, menuDatas, defaultMenuItemId, selectedMenuId, onIte
     return (
         <HeaderMenuRoot>
             <ContainerTitle>
-                <HeaderTitle>{title}</HeaderTitle>
+                <HeaderTitle type={type}>{title}</HeaderTitle>
             </ContainerTitle>
-            <ContainerMenus>
+            <ContainerMenus type={type}>
                 {menuDatas
                     ? menuDatas.map((data) => (
                           <MenuItem
@@ -88,6 +107,7 @@ HeaderMenu.defaultProps = {
             },
         },
     ],
+    type: 0,
     onItemClick() {},
 };
 

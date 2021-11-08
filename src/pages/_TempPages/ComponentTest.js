@@ -14,9 +14,9 @@ import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 const Root = styled.div`
     background-color: #ffffff;
     padding: 32px;
-    & button + button {
+    /* & button + button {
         margin-top: 8px;
-    }
+    } */
 
     & .alt-checkbox + .alt-checkbox {
         margin-top: 8px;
@@ -55,6 +55,15 @@ function ComponentTest({ children }) {
     };
     return (
         <Root>
+            <Group>
+                <HeaderMenu
+                    title="프로필 설정"
+                    menuDatas={headerMenus}
+                    selectedMenuId={menuStatus}
+                    onItemClick={actionClickHeaderMenuItem}
+                    type={1}
+                />
+            </Group>
             <Group>
                 <HeaderMenu title="단어 학습" menuDatas={headerMenus} selectedMenuId={menuStatus} onItemClick={actionClickHeaderMenuItem} />
             </Group>
