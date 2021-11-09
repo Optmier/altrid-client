@@ -28,7 +28,7 @@ const StylePriceLink = styled.div`
     }
 `;
 
-const Main_header = styled.div`
+const MainHeader = styled.div`
     margin: 0 112px;
 
     & .header {
@@ -122,7 +122,7 @@ function HeaderBar({ match, defaultColor }) {
 
     return (
         <>
-            <Main_header>
+            <MainHeader>
                 <div className="header">
                     <div className="altrid">
                         <svg width="161" height="40" viewBox="0 0 161 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -192,7 +192,7 @@ function HeaderBar({ match, defaultColor }) {
 
                             <p>이용권 구매</p>
                         </div>
-                        <div className="profile" ref={testRef}>
+                        <div className="profile" ref={testRef} style={{ display: 'flex' }}>
                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect width="40" height="40" rx="16" fill="#F4F1FA" />
                                 <path
@@ -205,7 +205,7 @@ function HeaderBar({ match, defaultColor }) {
                         </div>
                     </div>
                 </div>
-            </Main_header>
+            </MainHeader>
         </>
     );
 }
