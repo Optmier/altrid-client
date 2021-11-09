@@ -53,20 +53,6 @@ function asyncTestSleep(delay = 0) {
     });
 }
 
-const defaultData = {
-    title: '제목 편집',
-    description: '설명 편집',
-    rules: {
-        renderContents: `<p>규칙 편집<p>`,
-        deltaContents:
-            '{"ops":[{"insert":"The Two Towers"},{"insert":"\n","attributes":{"header":1}},{"insert":"Aragorn sped on up the hill.\n"}]}',
-    },
-    publicState: 2,
-    maxJoins: 3,
-    invitations: ['1511108048', '106553573902793620545'],
-    sessionEndDate: new Date(),
-};
-
 /** 데이터 받아야 할 것...
  * 1. 방 제목
  * 2. 방 설명
@@ -93,11 +79,15 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
     const [invitationOptionOpen, setInvitationOptionOpen] = useState(false);
     const [invitationsLoading, setInvitationLoading] = useState(false);
     const [selectedInvitations, setSelectedInvitations] = useState([]);
+    const [rulesData, setRulesData] = useState({
+        renderContents: null,
+        deltaContents: null,
+    });
 
     // Default datas for edit
     const [defaultTitle, setDefaultTitle] = useState(null);
     const [defaultDescription, setDefaultDescription] = useState(null);
-    const [defaultRulesDeltaContents, setDefaultRulesDeltaContents] = useState(null);
+    const [defaultRulesDeltaContents, setDefaultRulesRenderContents] = useState(null);
     const [defaultPublicState, setDefaultPublicState] = useState(0);
     const [defaultMaxJoins, setDefaultMaxJoins] = useState(4);
     const [defaultSessionEndDate, setDefaultSessionEndDate] = useState(null);
@@ -150,13 +140,17 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
         if (fieldErrorControl[name].error) setFieldErrorControl({ ...fieldErrorControl, [name]: { error: false, errorText: '' } });
     };
 
+    const onRulesEditorChange = (contents, delta) => {
+        setRulesData({
+            renderContents: contents,
+            deltaContents: delta,
+        });
+    };
+
     const handleCrate = () => {
         const title = titleFieldRef.current.value;
         const description = descriptionFieldRef.current.value;
-        const rules = {
-            renderContents: rulesEditorRef.current.getEditorContents(),
-            deltaContents: rulesEditorRef.current.getEditor().getContents(),
-        };
+        const rules = rulesData;
         const publicState = publicStateFieldRef.current.value;
         const invitationIds = publicState === 2 ? selectedInvitations.map(({ id }) => id) : [];
         const maxJoins = publicState === 2 ? invitationIds.length + 1 : parseInt(maxJoinsFieldRef.current.value);
@@ -212,7 +206,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
             { withCredentials: true },
         )
             .then((res) => {
-                handleClose(true);
+                onDrawerClose();
                 onAfterCreateOrModify();
                 alert('개설 완료되었습니다.');
             })
@@ -226,10 +220,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
 
     const handleUpdate = () => {
         const description = descriptionFieldRef.current.value;
-        const rules = {
-            renderContents: rulesEditorRef.current.getEditorContents(),
-            deltaContents: rulesEditorRef.current.getEditor().getContents(),
-        };
+        const rules = rulesData;
 
         if (!defaultData.room_id) {
             console.error('세션 아이디를 알 수 없습니다.');
@@ -245,7 +236,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
             { withCredentials: true },
         )
             .then((res) => {
-                handleClose(true);
+                onDrawerClose();
                 onAfterCreateOrModify();
                 alert('수정 완료되었습니다.');
             })
@@ -282,11 +273,51 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
     // 디폴트 데이터 셋
     useEffect(() => {
         let active = true;
-        if (!defaultData || !sessions.authId) return;
+        if (!defaultData || !sessions.authId) {
+            setDefaultTitle(null);
+            setDefaultDescription(null);
+            setDefaultRulesRenderContents(null);
+            setDefaultPublicState(0);
+            setDefaultMaxJoins(4);
+            setDefaultSessionEndDate(null);
+            setFieldErrorControl({
+                title: {
+                    error: false,
+                    errorText: '',
+                },
+                publicState: {
+                    error: false,
+                    errorText: '',
+                },
+                maxJoins: {
+                    error: false,
+                    errorText: '',
+                },
+                password: {
+                    error: false,
+                    errorText: '',
+                },
+                invitations: {
+                    error: false,
+                    errorText: '',
+                },
+                sessionEndDate: {
+                    error: false,
+                    errorText: '',
+                },
+            });
+            return;
+        }
 
         if (defaultData.title) setDefaultTitle(defaultData.title);
         if (defaultData.description) setDefaultDescription(defaultData.description);
-        if (defaultData.rules.deltaContents) setDefaultRulesDeltaContents(defaultData.rules.deltaContents);
+        if (defaultData.rules.renderContents) {
+            setDefaultRulesRenderContents(defaultData.rules.renderContents);
+            setRulesData({
+                renderContents: defaultData.rules.renderContents,
+                deltaContents: defaultData.rules.deltaContents,
+            });
+        }
         if (defaultData.public_state) {
             setDefaultPublicState(defaultData.public_state);
             setPublicState(defaultData.public_state);
@@ -321,9 +352,29 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
         return defValues;
     };
 
+    const onDrawerClose = () => {
+        console.log('set to default');
+        titleFieldRef.current.value = '';
+        descriptionFieldRef.current.value = '';
+        rulesEditorRef.current.value = null;
+        setPublicState(0);
+        maxJoinsFieldRef.current && (maxJoinsFieldRef.current.value = 0);
+        passwordFieldRef.current && (passwordFieldRef.current.value = '');
+        sessionEndDateFieldRef.current && (sessionEndDateFieldRef.current.value = moment().add('day', 3).format('yyyy-MM-DDTHH:mm'));
+        setInvitationOptions([]);
+        setInvitationOptionOpen(false);
+        setInvitationLoading(false);
+        setSelectedInvitations([]);
+        setRulesData({
+            renderContents: null,
+            deltaContents: null,
+        });
+        handleClose(true);
+    };
+
     return (
         <ContentsRoot>
-            <Drawer anchor="right" open={open} handleClose={handleClose}>
+            <Drawer anchor="right" open={open} handleClose={onDrawerClose}>
                 <TitleContainer>
                     <Title>캠 스터디 만들기</Title>
                 </TitleContainer>
@@ -360,6 +411,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                 ref={rulesEditorRef}
                                 placeholder="캠 스터디 규칙"
                                 defaultValue={defaultRulesDeltaContents}
+                                onChange={onRulesEditorChange}
                             />
                         </FormPlacer>
                     </GroupBoxContentsBasicInfoRoot>

@@ -46,6 +46,7 @@ import Dashboard from './pages/Dashboard';
 import Dashassign from './pages/Dashassign';
 import { attachOptimer } from './redux_modules/optimerHelper';
 import ComponentTest from './pages/_TempPages/ComponentTest';
+import CamStudyEyetracker from './components/Camstudy/components/CamStudyEyetracker';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -224,6 +225,7 @@ function App({ history, match }) {
                         <Route path="/assignments/do-it-now/:classnum/:assignmentid" component={AssignmentDoItNow} exact></Route>
                         <Route path="/video-lecture-eyetracker/:classnum" component={VideoLectureEyetracker} exact />
                         <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
+                        <Route path="/cam-study-eyetracker/:classnum" component={CamStudyEyetracker} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
                         <Route path="/mypage/:menu" component={MyPage} />
 

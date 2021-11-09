@@ -15,6 +15,10 @@ const getColorSeries400 = (colorName) => {
             return '#FF6937';
         case 'red':
             return '#E11900';
+        case 'gray':
+            return '#77818B';
+        case 'black':
+            return '#000000';
         default:
             return '#77818B';
     }
@@ -34,6 +38,10 @@ const getColorSeries300 = (colorName) => {
             return '#FA9269';
         case 'red':
             return '#E85C4A';
+        case 'gray':
+            return '#9AA5AF';
+        case 'black':
+            return '#2D3843';
         default:
             return '#9AA5AF';
     }
@@ -53,6 +61,10 @@ const getColorSeries050 = (colorName) => {
             return '#FFF3EF';
         case 'red':
             return '#FFEFED';
+        case 'gray':
+            return '#F6F8F9';
+        case 'black':
+            return '#BFC6CD';
         default:
             return '#F6F8F9';
     }

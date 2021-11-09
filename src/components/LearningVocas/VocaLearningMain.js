@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ClassWrapper from '../essentials/ClassWrapper';
-import HeaderMenu from '../../_tempComponents/HeaderMenu';
+import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 import Groupbox from '../../_tempComponents/Groupbox';
 import {
     Button,

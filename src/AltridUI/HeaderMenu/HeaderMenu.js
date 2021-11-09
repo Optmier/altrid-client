@@ -4,9 +4,15 @@ import styled from 'styled-components';
 const HeaderMenuRoot = styled.div`
     font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
+    width: ${({ fullWidth }) => (fullWidth ? '100%' : null)};
 `;
 const ContainerTitle = styled.div`
+    display: flex;
     font-family: inherit;
+    justify-content: space-between;
+`;
+const RightComponentContainer = styled.div`
+    margin-top: auto;
 `;
 const ContainerMenus = styled.div`
     align-items: center;
@@ -45,16 +51,17 @@ const MenuItem = styled.button`
     }
 `;
 
-function HeaderMenu({ title, menuDatas, defaultMenuItemId, selectedMenuId, onItemClick, type, children }) {
+function HeaderMenu({ fullWidth, title, menuDatas, defaultMenuItemId, selectedMenuId, onItemClick, type, rightComponent, children }) {
     const onMenuItemClick = (mId, onClickFn) => () => {
         onItemClick(mId);
         if (onClickFn) onClickFn();
     };
 
     return (
-        <HeaderMenuRoot>
+        <HeaderMenuRoot fullWidth={fullWidth}>
             <ContainerTitle>
                 <HeaderTitle type={type}>{title}</HeaderTitle>
+                <RightComponentContainer>{rightComponent}</RightComponentContainer>
             </ContainerTitle>
             <ContainerMenus type={type}>
                 {menuDatas
@@ -76,6 +83,7 @@ function HeaderMenu({ title, menuDatas, defaultMenuItemId, selectedMenuId, onIte
 }
 
 HeaderMenu.defaultProps = {
+    fullWidth: true,
     title: '헤더 제목',
     defaultMenuItemId: 0,
     menuDatas: [

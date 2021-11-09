@@ -6,8 +6,7 @@ import BackdropComponent from '../../components/essentials/BackdropComponent';
 import { updateVocaDatas } from '../../redux_modules/vocaLearnings';
 
 /** https://codingbroker.tistory.com/86 */
-Array.prototype.shuffle = function () {
-    let arr = this;
+const arrShuffle = function (arr) {
     for (let i = 0; i < arr.length; i++) {
         let j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -81,11 +80,12 @@ function LearningVocas({ history, match, children }) {
     // 단어 섞고 우선순위 구분
     const makeLearningData = (flag, rt) => {
         const shuffleVocaData = rt
-            ? learningDatas
-                  .map((d, idx) => (idx === currentIdx ? { ...d, counts: d.counts + 1, dist: flag } : d))
-                  .filter(({ dist }) => dist !== 2)
-                  .shuffle()
-            : vocaDatasOriginal.filter(({ dist }) => dist !== 2).shuffle();
+            ? arrShuffle(
+                  learningDatas
+                      .map((d, idx) => (idx === currentIdx ? { ...d, counts: d.counts + 1, dist: flag } : d))
+                      .filter(({ dist }) => dist !== 2),
+              )
+            : arrShuffle(vocaDatasOriginal.filter(({ dist }) => dist !== 2));
         const part0 = shuffleVocaData.filter(({ dist }) => dist === 0);
         const part1 = shuffleVocaData.filter(({ dist }) => dist === 1);
         const merged = [...part1, ...part0];

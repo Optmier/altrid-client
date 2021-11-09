@@ -1,13 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Groupbox from '../../_tempComponents/Groupbox';
-import HeaderMenu from '../../_tempComponents/HeaderMenu';
+import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
+import Button from '../../AltridUI/Button/Button';
 import ClassWrapper from '../essentials/ClassWrapper';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CamstudyListItem from './components/CamstudyListItem';
 import CreateAndEditCamstudy from './components/CreateAndEditCamstudy';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import HtmlParser from 'react-html-parser';
 
 const CamstudyMainRoot = styled.div``;
 const HeaderContainer = styled.div`
@@ -61,7 +64,7 @@ const StyledButton = styled.button`
 const camstudyCandidatedDummy = [];
 const camstudyListsDummy = [];
 
-function CamStudyMainLists() {
+function CamStudyMainLists({ history, match }) {
     const headerMenus = [
         {
             mId: 0,
@@ -85,6 +88,11 @@ function CamStudyMainLists() {
     const dataListTotalRef = useRef();
     dataListTotalRef.current = dataListTotal;
     const [totalDataListPage, setTotalDataListPage] = useState(0);
+    const [rulesDialogOpen, setRulesDialogOpen] = useState(false);
+    const [entranceData, setEntranceData] = useState({
+        roomId: null,
+        rules: null,
+    });
 
     const actionClickHeaderMenuItem = (menuId) => {
         setMenuStatus(menuId);
@@ -94,11 +102,13 @@ function CamStudyMainLists() {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
         }
+        if (!open) setCurrentCamstudyData(null);
         setOpenCreateNewDrawer(open);
     };
 
     const actionEnterStudy = (roomId, rules) => {
-        console.log(roomId, rules);
+        setEntranceData({ roomId: roomId, rules: rules.renderContents });
+        setRulesDialogOpen(true);
     };
 
     const actionModifyStudy = (roomId) => {
@@ -360,27 +370,41 @@ function CamStudyMainLists() {
         };
     }, [menuStatus, liveCounter]);
 
-    const defaultData = {
-        title: '제목 편집',
-        description: '설명 편집',
-        rules: {
-            renderContents: `<p>규칙 편집<p>`,
-            deltaContents: {
-                ops: [
-                    { insert: 'The Two Towers' },
-                    { insert: '\n', attributes: { header: 1 } },
-                    { insert: 'Aragorn sped on up the hill.\n' },
-                ],
-            },
-        },
-        publicState: 2,
-        maxJoins: 3,
-        invitations: ['1511108048', '106553573902793620545'],
-        sessionEndDate: new Date(),
+    const actionClickEnterConfirm = () => {
+        const classNumber = match.params.num;
+        window.open(
+            `/cam-study-eyetracker/${classNumber}?roomId=${entranceData.roomId}`,
+            'Gooroomee Biz_withEyetracker',
+            `toolbar=no, scrollbars=no, resizable=no, status=no`,
+            true,
+        );
     };
+
+    const rulesDialog = (
+        <Dialog open={rulesDialogOpen}>
+            <DialogTitle>규칙을 읽어주세요!</DialogTitle>
+            <DialogContent dividers>{HtmlParser(entranceData.rules)}</DialogContent>
+            <DialogActions>
+                <Button
+                    variant="default"
+                    sizes="small"
+                    colors="black"
+                    onClick={() => {
+                        setRulesDialogOpen(false);
+                    }}
+                >
+                    취소
+                </Button>
+                <Button variant="light" sizes="small" colors="red" onClick={actionClickEnterConfirm}>
+                    확인했으며, 입장합니다.
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 
     return (
         <CamstudyMainRoot>
+            {rulesDialog}
             <CreateAndEditCamstudy
                 open={openCreateNewDrawer}
                 defaultData={currentCamstudyData}
@@ -395,11 +419,18 @@ function CamStudyMainLists() {
                         menuDatas={headerMenus}
                         selectedMenuId={menuStatus}
                         onItemClick={actionClickHeaderMenuItem}
+                        rightComponent={
+                            <Button
+                                variant="light"
+                                sizes="medium"
+                                colors="purple"
+                                leftIcon={<AddCircleOutlineIcon fontSize="small" />}
+                                onClick={actionToggleDrawer(true)}
+                            >
+                                캠스터디 만들기
+                            </Button>
+                        }
                     />
-                    <StyledButton className="video-lecture sub" onClick={actionToggleDrawer(true)}>
-                        <AddCircleOutlineIcon fontSize="small" />
-                        캠스터디 만들기
-                    </StyledButton>
                 </HeaderContainer>
 
                 <Contents>{renderContentsByMenu(menuStatus)}</Contents>

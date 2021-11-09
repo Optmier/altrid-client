@@ -6,6 +6,7 @@ export class OpTimer {
      * @param {string} studentId
      */
     constructor(studentId) {
+        console.log('init optimer');
         this.classNum = 0;
         this.studentId = studentId;
         this.timeSequenceBefore = null;
@@ -19,8 +20,9 @@ export class OpTimer {
         if (localStorage.getItem('_optimer_saved_studentId') === null) localStorage.setItem('_optimer_saved_studentId', '');
         const savedTime = parseInt(localStorage.getItem('_optimer_saved'));
         const savedClassNum = parseInt(localStorage.getItem('_optimer_saved_classNum'));
-        const savedStudentId = parseInt(localStorage.getItem('_optimer_saved_studentId'));
+        const savedStudentId = localStorage.getItem('_optimer_saved_studentId');
         // 임시로 저장된 타임과 클래스 번호가 있는 경우에만 서버에 저장
+        console.log(savedTime, savedClassNum, studentId, savedStudentId);
         if (!savedTime || !savedClassNum || studentId !== savedStudentId) return;
         Axios.get(`${apiUrl}/optimer/${savedClassNum}/${studentId}`, { withCredentials: true })
             .then((res) => {
@@ -119,7 +121,7 @@ export class OpTimer {
         const dayCode = days[new Date().getDay()];
         const savedTime = parseInt(localStorage.getItem('_optimer_saved'));
         const savedClassNum = parseInt(localStorage.getItem('_optimer_saved_classNum'));
-        const savedStudentId = parseInt(localStorage.getItem('_optimer_saved_studentId'));
+        const savedStudentId = localStorage.getItem('_optimer_saved_studentId');
         localStorage.setItem('_optimer_saved', 0);
         localStorage.setItem('_optimer_saved_classNum', 0);
         localStorage.setItem('_optimer_saved_studentId', '');
