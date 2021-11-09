@@ -10,9 +10,121 @@ import PopOverClipboard from '../essentials/PopOverClipboard';
  */
 import ShortUniqueId from 'short-unique-id';
 import { withRouter } from 'react-router-dom';
+import HeaderBar from '../essentials/HeaderBar';
+import icon from '../../images/Profile_icon.png';
+import Footer from '../essentials/Footer';
 
 const BtnAble = styled.button`
     pointer-events: ${(props) => (props.btnAbleState ? 'auto' : 'none')};
+`;
+
+const Profile_Header = styled.div`
+    margin: 0 112px;
+    & .profile-header {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: space-between;
+        height: 260px;
+        & .test {
+            width: 20%;
+        }
+        & .name {
+        }
+    }
+`;
+const Profile_Main = styled.div`
+    margin: 70px 424px;
+
+    & canvas {
+        display: none;
+    }
+
+    & input {
+        background: #f6f8f9;
+        width: 80%;
+        border-radius: 16px;
+        font-size: 18px;
+        padding-left: 16px;
+    }
+    & .Profile-option {
+        & img {
+            border-radius: 50%;
+        }
+        margin-top: 32px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+
+        & .button {
+            display: flex;
+            align-items: center;
+            margin-left: 32px;
+            & .input-upload {
+                margin-right: 8px;
+            }
+
+            & .upload {
+                color: #6c46a1;
+                border: 1.5px solid #6c46a1;
+                box-sizing: border-box;
+                border-radius: 104px;
+                width: 110px;
+                height: 24px;
+                padding: 3px 12px;
+                background: #ffffff;
+            }
+            & .image-delete {
+                background: #ffefed;
+                border-radius: 104px;
+                color: #ab1300;
+                width: 110px;
+                height: 28px;
+                & svg {
+                    margin-right: 9px;
+                }
+            }
+        }
+    }
+    & .profile-inputs {
+        & .input-box {
+            width: 100%;
+            margin-bottom: 8px;
+            height: 64px;
+            background: #f6f8f9;
+            border-radius: 16px;
+            & p {
+                color: #77818b;
+                padding: 0 16px;
+                padding-top: 12px;
+                padding-bottom: 2px;
+                font-size: 12px;
+            }
+        }
+        margin-top: 16px;
+    }
+    & .save-button {
+        margin-bottom: 220px;
+        margin-top: 32px;
+        display: flex;
+        justify-content: space-between;
+        & .delete {
+            color: #ab1300;
+            background: #ffefed;
+            width: 90px;
+            height: 28px;
+            border-radius: 104px;
+            padding: 3px 12px;
+        }
+        & .save {
+            color: #ffffff;
+            background: #3b1689;
+            border-radius: 104px;
+            width: 81px;
+            height: 46px;
+            padding: 12px 24px;
+        }
+    }
 `;
 
 function Profile({ history }) {
@@ -69,7 +181,7 @@ function Profile({ history }) {
             const randomStr = new ShortUniqueId();
             const randomFileName = 'profile_' + randomStr.randomUUID(16);
             const profImageForm = new FormData();
-            console.log(randomFileName, imgBlob, randomFileName);
+            // console.log(randomFileName, imgBlob, randomFileName);
 
             profImageForm.append(randomFileName, imgBlob, randomFileName);
 
@@ -90,6 +202,7 @@ function Profile({ history }) {
         setName(value);
         setBtnAbleState(true);
     };
+
     const handleChangeFile = (e) => {
         if (!e.target.files[0]) return;
         if (e.target.files[0].size > 3 * 1024 * 1024) {
@@ -121,6 +234,7 @@ function Profile({ history }) {
         img.src = URL.createObjectURL(e.target.files[0]);
         setImgSrc(img.src);
     };
+
     const handleDeleteImg = () => {
         setImgSrc(null);
         setBtnAbleState(true);
@@ -160,83 +274,103 @@ function Profile({ history }) {
         return () => {};
     }, [sessions]);
 
+    const handleDelete = () => {
+        Axios.delete(`${apiUrl}/my-page/profile`, { withCredentials: true })
+            .then((res) => {
+                if (window.confirm('정말 계정을 삭제하시겠습니까?\n삭제된 계정의 데이터는 복구되지 않습니다.')) {
+                    alert('회원 탈퇴가 완료되었습니다.');
+                    window.logout();
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
     return (
         <>
-            <PopOverClipboard state={clipboardState} />
-            <div className="profile-root">
-                <div className="mypage-title">프로필 설정</div>
-                <section>
-                    <div className="mypage-header">프로필 사진</div>
-                    <div className="mypage-contents profile-image">
-                        <canvas id="canvas" width="75" height="75"></canvas>
-
+            <HeaderBar />
+            <Profile_Header>
+                <div className="profile-header">
+                    <div className="test">{/* <h3>sd</h2> */}</div>
+                    <div className="name">
+                        <h1>프로필 설정</h1>
+                    </div>
+                    <div className="icon">
+                        <img width="322px" height="227px" src={icon} alt="pofile_icon" />
+                    </div>
+                </div>
+            </Profile_Header>
+            <Profile_Main>
+                <h2>프로필 사진</h2>
+                <div className="Profile-option">
+                    <canvas id="canvas" width="75px" height="75px"></canvas>
+                    <div className="profile-image">
                         {imgSrc ? (
-                            <img src={imgSrc} alt="my_profile.." />
+                            <img width="96px" height="96px" src={imgSrc} alt="my_profile.." />
                         ) : (
-                            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M16.9999 0.333984C7.79992 0.333984 0.333252 7.80065 0.333252 17.0007C0.333252 26.2007 7.79992 33.6673 16.9999 33.6673C26.1999 33.6673 33.6666 26.2007 33.6666 17.0007C33.6666 7.80065 26.1999 0.333984 16.9999 0.333984ZM16.9999 5.33398C19.7666 5.33398 21.9999 7.56732 21.9999 10.334C21.9999 13.1007 19.7666 15.334 16.9999 15.334C14.2333 15.334 11.9999 13.1007 11.9999 10.334C11.9999 7.56732 14.2333 5.33398 16.9999 5.33398ZM16.9999 29.0007C12.8333 29.0007 9.14992 26.8673 6.99992 23.634C7.04992 20.3173 13.6666 18.5007 16.9999 18.5007C20.3166 18.5007 26.9499 20.3173 26.9999 23.634C24.8499 26.8673 21.1666 29.0007 16.9999 29.0007Z"
-                                    fill="#707070"
-                                />
+                            <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="48" cy="48" r="48" fill="#F4F1FA" />
                             </svg>
                         )}
-
-                        <div className="profile-image-right">
-                            <div style={{ height: '47px', widht: '97px', display: 'flex' }}>
-                                <input id="file-click" type="file" accept="image/gif,image/jpeg,image/png" onChange={handleChangeFile} />
-                                <label htmlFor="file-click" className="btn-purple">
-                                    사진 변경
-                                </label>
-                            </div>
-
-                            <button className="btn-gray" onClick={handleDeleteImg}>
-                                삭제하기
+                    </div>
+                    <div className="button">
+                        <div className="input-upload">
+                            <input
+                                style={{ display: 'none' }}
+                                className="upload"
+                                id="file-click"
+                                type="file"
+                                accept="image/gif,image/jpeg,image/png"
+                                onChange={handleChangeFile}
+                            />
+                            <label htmlFor="file-click" className="upload">
+                                사진 변경
+                            </label>
+                        </div>
+                        <div className="change-image">
+                            <button onClick={handleDeleteImg} className="image-delete">
+                                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M7.5 1H10V2H9V9.5C9 9.63261 8.94732 9.75979 8.85355 9.85355C8.75979 9.94732 8.63261 10 8.5 10H1.5C1.36739 10 1.24021 9.94732 1.14645 9.85355C1.05268 9.75979 1 9.63261 1 9.5V2H0V1H2.5V0H7.5V1ZM3.5 3.5V7.5H4.5V3.5H3.5ZM5.5 3.5V7.5H6.5V3.5H5.5Z"
+                                        fill="#AB1300"
+                                    />
+                                </svg>
+                                선택 삭제
                             </button>
                         </div>
                     </div>
-                </section>
-                <section>
-                    <div className="mypage-header">이름 / 학원명</div>
-                    <div className="mypage-contents white-box profile-info">
-                        <div className="row">
-                            <div className="row-title">이름</div>
-                            <div className="row-desc">
-                                <input placeholder={name} type="text" onChange={handleInput} />
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="row-title">이메일</div>
-                            <div className="row-desc">
-                                {email} <span>({emailWith})</span>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="row-title">학원명</div>
-                            {/* {console.log('useState', academyName, 'session', sessions.academyName)} */}
-                            <div className="row-desc">{academyName ? academyName : '클래스에 입장하시면, 자동으로 학원이 등록됩니다.'}</div>
-                        </div>
+                </div>
+                <h2 style={{ marginBottom: '16px' }}>프로필 정보</h2>
+                <duv className="profile-inputs">
+                    <div className="input-box">
+                        <p>이름</p>
+                        <input value={name} type="text" onChange={handleInput} />
+                    </div>
 
-                        {sessions.userType === 'teachers' ? (
-                            <div className="row">
-                                <div className="row-title">학원코드</div>
-                                <div className="row-desc">
-                                    <input readOnly type="text" className="code-input" defaultValue={academyCode} ref={textCopy} />
-                                    <button className="btn-purple" onClick={handleCopy}>
-                                        복사하기
-                                    </button>
-                                </div>
-                            </div>
-                        ) : null}
+                    <div className="input-box">
+                        <p>이메일</p>
+                        <input type="text" value={emailWith} />
                     </div>
-                </section>
-                <section>
-                    <div className="mypage-footer">
-                        <BtnAble btnAbleState={btnAbleState} className="btn-green" onClick={handleSave}>
-                            저장하기
-                        </BtnAble>
+                    <div className="input-box">
+                        <p>학원명</p>
+                        <input type="text" value={academyName} />
                     </div>
-                </section>
-            </div>
+                    <div className="input-box">
+                        <p>학원코드</p>
+                        <input type="text" value={academyCode} />
+                    </div>
+                </duv>
+                <div className="save-button">
+                    <button onClick={handleDelete} className="delete">
+                        회원탈퇴
+                    </button>
+                    <button onClick={handleSave} className="save">
+                        저장
+                    </button>
+                </div>
+            </Profile_Main>
+            <Footer />
         </>
     );
 }

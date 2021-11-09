@@ -50,11 +50,10 @@ function MyPage({ match }) {
 
     return (
         <>
-            <LeftNavMyPage leftNavState={leftNavState} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} />
-            <SlideWrapper leftNavState={leftNavState} className="mypage-root">
-                <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
-                <ClassWrapper>{MyPageSwitcher(match.params.menu, sessions.userType)}</ClassWrapper>
-            </SlideWrapper>
+            {/* <LeftNavMyPage /> */}
+
+            {/* <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} /> */}
+            {MyPageSwitcher(match.params.menu, sessions.userType)}
         </>
     );
 }

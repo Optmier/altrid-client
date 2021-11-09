@@ -17,12 +17,12 @@ import styled from 'styled-components';
 import TopNav from '../components/essentials/TopNav';
 import * as $ from 'jquery';
 import Calendar from './Calendar';
-import Dashboard from './Dashboard';
+
 import VocaLearningMain from '../components/LearningVocas/VocaLearningMain';
 import RestrictRoute from '../components/essentials/RestrictRoute';
 import LearningVocas from '../components/LearningVocas/LearningVocas';
 import CamStudyMainLists from '../components/Camstudy/CamStudyMainLists';
-import { OpTimer } from '../components/OpTimer/OpTimer';
+import Dashboard_1 from '../components/essentials/Dashboard_1';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -61,7 +61,7 @@ const ClassPageSwitcher = (match, sessions) => {
             return <Calendar />;
         case 'dashboard':
             if (sessions.userType === 'teachers') return <ErrorRestricted />;
-            return <Route path={`${path}`} component={Dashboard} />;
+            return <Route path={`${path}`} component={Dashboard_1} />;
 
         case 'learning-vocas':
             return (
