@@ -226,6 +226,20 @@ function AssignmentDoItNow({ history, match }) {
                         console.error(e);
                     });
             }
+            // 단어장 목록 저장
+            if (vocas && vocas.length) {
+                Axios.post(
+                    `${apiUrl}/vocas`,
+                    { vocas: vocas, assignmentNumber: assignmentid, classNumber: classnum },
+                    { withCredentials: true },
+                )
+                    .then((res) => {
+                        console.log('단어 저장됨', res);
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+            }
             window.opener.document.location.reload();
             window.close();
         });

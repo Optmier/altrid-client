@@ -6,8 +6,7 @@ import BackdropComponent from '../../components/essentials/BackdropComponent';
 import { updateVocaDatas } from '../../redux_modules/vocaLearnings';
 
 /** https://codingbroker.tistory.com/86 */
-Array.prototype.shuffle = function () {
-    let arr = this;
+const arrShuffle = function (arr) {
     for (let i = 0; i < arr.length; i++) {
         let j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -64,11 +63,12 @@ const ActionButtonsContainer = styled.div`
     width: 100%;
 `;
 
-function LearningVocas({ history, children }) {
+function LearningVocas({ history, match, children }) {
+    const classNum = match.params.num;
     const { vocaDatasOriginal, isPending, error } = useSelector((state) => state.RdxVocaLearnings);
+    const optimerModule = useSelector((state) => state.RdxOpTimerHelper.optimer);
     const sessions = useSelector((state) => state.RdxSessions);
     const [learningDatas, setLearningDatas] = useState([]);
-    window.learningDatas = learningDatas;
     const [currentIdx, setCurrentIdx] = useState(0);
     const [rotation, setRotation] = useState(0);
     const [flipped, setFlipped] = useState(false);
@@ -80,11 +80,12 @@ function LearningVocas({ history, children }) {
     // 단어 섞고 우선순위 구분
     const makeLearningData = (flag, rt) => {
         const shuffleVocaData = rt
-            ? learningDatas
-                  .map((d, idx) => (idx === currentIdx ? { ...d, counts: d.counts + 1, dist: flag } : d))
-                  .filter(({ dist }) => dist !== 2)
-                  .shuffle()
-            : vocaDatasOriginal.filter(({ dist }) => dist !== 2).shuffle();
+            ? arrShuffle(
+                  learningDatas
+                      .map((d, idx) => (idx === currentIdx ? { ...d, counts: d.counts + 1, dist: flag } : d))
+                      .filter(({ dist }) => dist !== 2),
+              )
+            : arrShuffle(vocaDatasOriginal.filter(({ dist }) => dist !== 2));
         const part0 = shuffleVocaData.filter(({ dist }) => dist === 0);
         const part1 = shuffleVocaData.filter(({ dist }) => dist === 1);
         const merged = [...part1, ...part0];
@@ -102,7 +103,14 @@ function LearningVocas({ history, children }) {
     // 다음으로 또는 로테이션
     const nextAndRotation = (flag) => {
         const { idx, counts, completed } = learningDatas[currentIdx];
-        dispatch(updateVocaDatas(idx, { means: flag === 2 ? currentMeans : null, dist: flag, counts: counts + 1, completed: completed }));
+        dispatch(
+            updateVocaDatas(idx, classNum, {
+                means: flag === 2 ? currentMeans : null,
+                dist: flag,
+                counts: counts + 1,
+                completed: completed,
+            }),
+        );
         // Rotate
         if (learningDatas.length - 1 <= currentIdx) {
             setCurrentIdx(0);
@@ -141,22 +149,32 @@ function LearningVocas({ history, children }) {
         if (!isPending && !vocaDatasOriginal) {
             alert('잘못된 접근 또는 학습 데이터가 없습니다!');
             history.goBack();
+            return;
         }
         const unblock = history.block((location, action) => {
             if ((!isPending && !vocaDatasOriginal) || !learningDatas.length) return true;
             return window.confirm('정말로 학습을 종료하시겠습니까?');
         });
+        if (!optimerModule || !optimerModule.classNum) return;
+        if (!optimerModule.isStarted) {
+            console.warn('옵타이머를 시작합니다.');
+            optimerModule.start();
+        }
         return () => {
             // console.log('학습을 끝냅니다...');
             // 단어 데이터 비우기?
             unblock();
         };
-    }, [history, learningDatas, isPending, vocaDatasOriginal]);
+    }, [history, learningDatas, isPending, vocaDatasOriginal, optimerModule]);
 
     useEffect(() => {
         if (finished) {
             alert('학습이 완료되었습니다.');
         }
+        return () => {
+            if (finished) return;
+            optimerModule.stopAndSave();
+        };
     }, [finished]);
 
     useEffect(() => {

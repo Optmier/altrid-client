@@ -43,6 +43,9 @@ import PayState from './pages/PayState';
 import AlertSubscribe from './components/essentials/AlertSubscribe';
 import TimerTest from './pages/_TempPages/TimerTest';
 import Dashboard_1 from './components/essentials/Dashboard_1';
+import { attachOptimer } from './redux_modules/optimerHelper';
+import ComponentTest from './pages/_TempPages/ComponentTest';
+import CamStudyEyetracker from './components/Camstudy/components/CamStudyEyetracker';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -51,7 +54,7 @@ const loginUrls = [$_loginDefault, $_loginStudent, $_loginTeacher, $_loginAdmin,
 // const excludesForAdminUrls = [];
 // const excludesForTeacherUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
 // const excludesForStudentUrls = ['/admins', '/admins/members', '/admins/contents-requests'];
-function App({ history }) {
+function App({ history, match }) {
     const dispatch = useDispatch();
     const saveSessions = useCallback(
         (authId, userName, userType, academyCode, academyName, issuer, iat, exp, image) =>
@@ -61,6 +64,7 @@ function App({ history }) {
     const updateSessions = useCallback((updateStates) => dispatch(updateSession(updateStates)), [dispatch]);
     const deleteSessions = useCallback(() => dispatch(deleteSession()), [dispatch]);
     const sessions = useSelector((state) => state.RdxSessions);
+    const optimerModule = useSelector((state) => state.RdxOpTimerHelper);
 
     if (!loginUrls.includes(history.location.pathname)) window.lastUrl = history.location.pathname;
 
@@ -188,7 +192,11 @@ function App({ history }) {
                     });
                 /******************* */
             }, 10000));
-    }, [sessions]);
+
+        if (!optimerModule.optimer && sessions.userType === 'students') {
+            dispatch(attachOptimer(sessions.authId));
+        }
+    }, [sessions, optimerModule]);
 
     return (
         <>
@@ -216,9 +224,11 @@ function App({ history }) {
                         <Route path="/assignments/do-it-now/:classnum/:assignmentid" component={AssignmentDoItNow} exact></Route>
                         <Route path="/video-lecture-eyetracker/:classnum" component={VideoLectureEyetracker} exact />
                         <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
+                        <Route path="/cam-study-eyetracker/:classnum" component={CamStudyEyetracker} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
                         <Route path="/mypage/:menu" component={MyPage} />
                         <Route pat="/dashboard" component={Dashboard_1} exact />
+
                         <Route path="/pricing" component={Price} exact />
                         <Route path="/pricing/details" component={PriceDetails} exact />
                         <Route path="/payment" component={Payment} exact />
@@ -229,6 +239,7 @@ function App({ history }) {
                         ) : null}
 
                         <Route path="/timertest" component={TimerTest} exact />
+                        <Route path="/components" component={ComponentTest} exact />
 
                         <Route>
                             <Error />

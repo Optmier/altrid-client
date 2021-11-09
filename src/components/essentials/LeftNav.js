@@ -734,11 +734,17 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                 {hasVideoLecture ? <div className="live-streaming-mark">LIVE</div> : null}
                             </LeftNavItem>
                         </div>
-
                         {sessions.userType === 'students' ? (
                             <div className="a-wrapper">
                                 <LeftNavItem linkTo={`/class/${num}/learning-vocas`}>
                                     <p>단어장 (임시)</p>
+                                </LeftNavItem>
+                            </div>
+                        ) : null}
+                        {sessions.userType === 'students' ? (
+                            <div className="a-wrapper">
+                                <LeftNavItem linkTo={`/class/${num}/cam-study`}>
+                                    <p>캠스터디 (임시)</p>
                                 </LeftNavItem>
                             </div>
                         ) : null}

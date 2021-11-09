@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ClassWrapper from '../essentials/ClassWrapper';
-import HeaderMenu from './components/HeaderMenu';
-import Groupbox from './components/Groupbox';
+import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
+import Groupbox from '../../_tempComponents/Groupbox';
 import {
     Button,
     FormControl,
@@ -106,15 +106,14 @@ function VocaLearningMain({ history, match }) {
         {
             mId: 0,
             mName: '나의 단어',
-            onClick() {},
         },
         {
             mId: 1,
             mName: '시험',
-            onClick() {},
         },
     ];
-
+    const classNum = match.params.num;
+    const [menuStatus, setMenuStatus] = useState(0);
     const [learningNumbers, setLearningNumbers] = useState(10);
     const [learningNumbersSelectValue, setLearningNumbersSelectValue] = useState(10);
     const [customNumbers, setCustomNumbers] = useState(10);
@@ -127,6 +126,10 @@ function VocaLearningMain({ history, match }) {
     const [isCompletedListSearching, setIsCompletedListSearching] = useState(false);
 
     const dispatch = useDispatch();
+
+    const actionClickHeaderMenuItem = (menuId) => {
+        setMenuStatus(menuId);
+    };
 
     const actionOnChangeNumbersSelect = ({ target }) => {
         setLearningNumbersSelectValue(target.value);
@@ -144,14 +147,14 @@ function VocaLearningMain({ history, match }) {
     };
 
     const actionClickLearningStart = () => {
-        dispatch(fetchVocaDatas(learningNumbers));
+        dispatch(fetchVocaDatas(learningNumbers, classNum));
         history.push(match.url + '/learning');
     };
 
     const actionChangeCompletedSearchbox = ({ target }) => {
         setIsCompletedListSearching(Boolean(target.value));
         if (Boolean(target.value)) {
-            Axios.get(`${apiUrl}/vocas/completed/search`, { params: { q: target.value }, withCredentials: true })
+            Axios.get(`${apiUrl}/vocas/completed/search`, { params: { q: target.value, classNum: classNum }, withCredentials: true })
                 .then((res) => {
                     if (res.data) {
                         setCompletedList(res.data);
@@ -172,6 +175,7 @@ function VocaLearningMain({ history, match }) {
                 params: {
                     limit: completedListLimit,
                     page: completedListPage,
+                    classNum: classNum,
                 },
                 withCredentials: true,
             }).then((res) => {
@@ -190,9 +194,10 @@ function VocaLearningMain({ history, match }) {
 
     useEffect(() => {
         // 전체 진행도 가져오기
-        Axios.get(`${apiUrl}/vocas/progress`, { withCredentials: true })
+        Axios.get(`${apiUrl}/vocas/progress`, { params: { classNum: classNum }, withCredentials: true })
             .then((res) => {
                 const { total, progress } = res.data;
+                if (total < 1) return;
                 setTotalProgress(Math.floor((progress / total) * 100));
             })
             .catch((err) => {
@@ -204,6 +209,7 @@ function VocaLearningMain({ history, match }) {
             params: {
                 limit: completedListLimit,
                 page: completedListPage,
+                classNum: classNum,
             },
             withCredentials: true,
         }).then((res) => {
@@ -218,7 +224,7 @@ function VocaLearningMain({ history, match }) {
     return (
         <LearningRoot>
             <ClassWrapper col="col">
-                <HeaderMenu title="단어 학습" menuDatas={headerMenus} />
+                <HeaderMenu title="단어 학습" menuDatas={headerMenus} selectedMenuId={menuStatus} onItemClick={actionClickHeaderMenuItem} />
                 <Contents>
                     <Groupbox title="학습하기">
                         <LearningSection>
