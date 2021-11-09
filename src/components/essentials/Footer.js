@@ -64,8 +64,8 @@ function Footer() {
                                 y2="54.2169"
                                 gradientUnits="userSpaceOnUse"
                             >
-                                <stop stop-color="#51BA97" />
-                                <stop offset="1" stop-color="#47278B" />
+                                <stop stopColor="#51BA97" />
+                                <stop offset="1" stopColor="#47278B" />
                             </linearGradient>
                             <linearGradient
                                 id="paint1_linear_44:1431"
@@ -75,8 +75,8 @@ function Footer() {
                                 y2="7100.1"
                                 gradientUnits="userSpaceOnUse"
                             >
-                                <stop stop-color="#51BA97" />
-                                <stop offset="1" stop-color="#47278B" />
+                                <stop stopColor="#51BA97" />
+                                <stop offset="1" stopColor="#47278B" />
                             </linearGradient>
                         </defs>
                     </svg>
@@ -137,7 +137,7 @@ function Footer() {
                     <div className="info-more">사업자등록번호 309-30-62706</div>
                 </div>
                 <div className="adress">
-                    <p>서울시 광진구 뚝섬로41길 8 2층 (옵트미어 학원)</p>
+                    <a>서울시 광진구 뚝섬로41길 8 2층 (옵트미어 학원)</a>
                 </div>
             </div>
         </Foot>
