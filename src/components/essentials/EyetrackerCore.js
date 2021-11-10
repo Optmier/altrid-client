@@ -239,7 +239,7 @@ const captureChanged = (position, elapsedTime, precisionElapsedTime) => {
     _lastStep = _step;
 };
 
-function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUpdate, rootRef, timeElapsed, relative }) {
+function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUpdate, rootRef, timeElapsed, relative, skipCalib }) {
     _step = step;
     _userAnswer = userAnswer;
     _timeElapsed = timeElapsed;
@@ -253,7 +253,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     const [calibrateState, setCalibrateState] = useState(false);
 
     const [start, setStart] = useState(false);
-    const [webgazerLoded, setWebgazerLoaded] = useState(true);
+    const [webgazerLoded, setWebgazerLoaded] = useState(false);
     const [calib, setCalib] = useState(false);
     const [calibBtnText, setCalibBtnText] = useState(
         localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true' ? '이전 보정 사용' : '보정 완료',
@@ -464,7 +464,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
                                 Webgazer.removeMouseEventListeners();
                                 console.log("Webgaze cleared data because you didn't calibrate complete.");
                             }
-                            //console.log('all loaded!');
+                            console.log('all loaded!');
 
                             setWebgazerLoaded((webgazerLoaded) => true);
                             // const backCvs = backCanvas.current;
@@ -600,6 +600,17 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     };
 
     useEffect(() => {
+        if (webgazerLoded && skipCalib) {
+            setTranslateNum(translateNum - 100);
+            executeCalibration();
+        }
+        console.log(webgazerLoded);
+    }, [webgazerLoded]);
+
+    useEffect(() => {
+        if (skipCalib) {
+            cameraStart();
+        }
         return () => {
             try {
                 Webgazer.end();
@@ -613,7 +624,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         <>
             {translateNum === -700 ? null : (
                 <>
-                    <BackdropComponent2 disableShrink open={!webgazerLoded} />
+                    <BackdropComponent2 disableShrink open={start && !webgazerLoded} />
                     <div className="eyetrackerCore-root">
                         {translateNum === 200 ? (
                             <StepHome handleCalibration={handleCalibration} />

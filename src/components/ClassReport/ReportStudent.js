@@ -13,8 +13,10 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Link,
     TextField,
     Tooltip,
+    Typography,
     withStyles,
 } from '@material-ui/core';
 import problemCategories from '../TOFELEditor/ProblemCategories';
@@ -37,6 +39,7 @@ import {
     updateTeacherFeedbackInterface,
 } from './ReportStudent/TeacherFeedback';
 import CommChart from './CommChart';
+import ScoringResults from './ReportStudent/ScoringResults';
 
 const pad = (n, width) => {
     n = n + '';
@@ -50,20 +53,15 @@ const timeValueToTimer = (seconds) => {
 };
 
 const Feedback = styled.div`
-       
-
-    & input{
-    width:100%;
-    font-size:20px;
-    height:100%;
+    & input {
+        width: 100%;
+        font-size: 20px;
+        height: 100%;
     }
 `;
 const F_button = styled.div`
-    margin-top:20px;
-    
-    `;
-
-
+    margin-top: 20px;
+`;
 
 const StyleItems = styled.div`
     display: flex;
@@ -236,11 +234,6 @@ const HTMLTooltip = withStyles((theme) => ({
     },
 }))(Tooltip);
 
-
-
-
-
-
 function ReportStudent({ history, match }) {
     // console.log(history, match);
     const dispatch = useDispatch();
@@ -310,6 +303,7 @@ function ReportStudent({ history, match }) {
     //const [handsUpList, setHandsUpList] = useState([]);
     const [teacherFeedbackContents, setTeacherFeedbackContents] = useState({ renderContents: null, deltaContents: null });
 
+    const [scoringResultsOpen, setScoringResultsOpen] = useState(false);
 
     const handleTypeSelect = (e) => {
         setTypeSelectState(e.target.value);
@@ -760,6 +754,7 @@ function ReportStudent({ history, match }) {
     };
 
     if (mainLoading) return <BackdropComponent open={true} />;
+    const preventDefault = (event) => event.preventDefault();
     return (
         <>
             {/* <StyleArrowButton>
@@ -923,6 +918,29 @@ function ReportStudent({ history, match }) {
                                   ))
                                 : null}
                         </div>
+                        <ScoringResults
+                            open={scoringResultsOpen}
+                            userData={currentStudentData.user_data.selections}
+                            handsUp={handsUpList}
+                            teacherSelected={teacherSelectedList}
+                            spentTime={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
+                            contentsData={currentStudentData.contents_data}
+                            actionClickHandsUpButton={progressDoubleClick}
+                            handleClose={() => {
+                                setScoringResultsOpen(false);
+                            }}
+                        />
+                        <Typography>
+                            <Link
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setScoringResultsOpen(true);
+                                }}
+                            >
+                                자세한 채점 결과 보기
+                            </Link>
+                        </Typography>
                     </section>
 
                     <section className="student-report-timetrack">
@@ -1071,48 +1089,41 @@ function ReportStudent({ history, match }) {
                                 <TypeBanner situation={'info'} value={achievesForTypes.value} />
                             </div>
                         </div>
-                        {currentStudentData && patternDatas.length ? (
-                                <EyeTrackBox
-                                    hasEyetrack={currentStudentData.eyetrack}
-                                    eyetrackData={currentStudentData.eyetrack_data}
-                                    contentsData={currentStudentData.contents_data}
-                                    patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
-                                    totalStudentsDatas={studentsData.filter((d) => d.submitted)}
-                                    currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
-                                    userId={queryUserId}
-                                    activedNum={activedNum}
-                                    stdName={stdName}
-                                    answerChangedProblems={answerChangedProblems}
-                                    aftChangedFaileds={aftChangedFaileds}
-                                />
-                                // </Typography>
-                                // </AccordionDetails>
-                                // </Accordion>
-                        ) : null}
-                    
+                        {/* {currentStudentData && patternDatas.length ? (
+                            <EyeTrackBox
+                                hasEyetrack={currentStudentData.eyetrack}
+                                eyetrackData={currentStudentData.eyetrack_data}
+                                contentsData={currentStudentData.contents_data}
+                                patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
+                                totalStudentsDatas={studentsData.filter((d) => d.submitted)}
+                                currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
+                                userId={queryUserId}
+                                activedNum={activedNum}
+                                stdName={stdName}
+                                answerChangedProblems={answerChangedProblems}
+                                aftChangedFaileds={aftChangedFaileds}
+                            />
+                        ) : 
+                        // </Typography>
+                        // </AccordionDetails>
+                        // </Accordion>
+                        null} */}
                     </section>
-
-
 
                     <section className="AI-comment">
                         <div className="class-report-title">
-                            <div className="observe-header">
-                                    AI-Comment
-                            </div>
+                            <div className="observe-header">AI-Comment</div>
                         </div>
                         <div className="white-box ment-ai">
                             <div className="ment-ai-col">
-                            {currentStudentData && patternDatas.length ?(
-                                <CommChart/>
-                            ):
-                                <p>시선추적이 포함되지 않은 과제입니다.</p>
-                            }
-                           
+                                {currentStudentData && patternDatas.length ? <CommChart /> : <p>시선추적이 포함되지 않은 과제입니다.</p>}
                             </div>
                             <div className="ment-ai-col" id="no-eyetrack">
-                            <h5>AI comment 영역<br/></h5>    
+                                <h5>
+                                    AI comment 영역
+                                    <br />
+                                </h5>
                             </div>
-                            
                         </div>
                     </section>
 
