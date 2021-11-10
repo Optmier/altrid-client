@@ -19,7 +19,8 @@ const BtnAble = styled.button`
 `;
 
 const Profile_Header = styled.div`
-    margin: 0 112px;
+    margin: 0 auto;
+    max-width: 1216px;
     & .profile-header {
         display: flex;
         align-items: center;
@@ -34,8 +35,10 @@ const Profile_Header = styled.div`
     }
 `;
 const Profile_Main = styled.div`
-    margin: 70px 424px;
-
+    margin: 0 auto;
+    max-width: 592px;
+    margin-top: 70px;
+    margin-bottom: 70px;
     & canvas {
         display: none;
     }
