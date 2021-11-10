@@ -84,7 +84,8 @@ function CamStudyEyetracker({ history, match }) {
                 /////////////////////////////////////////////////
                 if (!data) {
                     if (precisionTime - eyetrackDetectedTime > detectionTimeLimit && !eyetrackDetectChanged) {
-                        console.log('detected!!');
+                        console.log('out of range!!');
+                        optimerModule.pause();
                         socket.current.emit('detectEyetrack', {
                             groupId: groupId,
                             data: { authId: sAuthId, code: 'out-of-range' },
@@ -93,6 +94,8 @@ function CamStudyEyetracker({ history, match }) {
                     }
                 } else {
                     if (eyetrackDetectChanged) {
+                        console.log('face detected!');
+                        optimerModule.resume();
                         socket.current.emit('detectEyetrack', { groupId: groupId, data: { authId: sAuthId } });
                         eyetrackDetectChanged = false;
                     }
@@ -150,11 +153,11 @@ function CamStudyEyetracker({ history, match }) {
                     authId: sAuthId,
                 },
             });
-            optimerModule.stopAndSave();
         };
     }, []);
 
     useBeforeunload((e) => {
+        optimerModule.stopAndSave();
         socket.current.emit('leave', {
             groupId: groupId,
             data: {

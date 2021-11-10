@@ -383,7 +383,9 @@ function CamStudyMainLists({ history, match }) {
     const rulesDialog = (
         <Dialog open={rulesDialogOpen}>
             <DialogTitle>규칙을 읽어주세요!</DialogTitle>
-            <DialogContent dividers>{HtmlParser(entranceData.rules)}</DialogContent>
+            <DialogContent dividers style={{ minWidth: 320 }}>
+                {HtmlParser(entranceData.rules)}
+            </DialogContent>
             <DialogActions>
                 <Button
                     variant="default"

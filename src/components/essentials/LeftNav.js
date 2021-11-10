@@ -598,6 +598,47 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                     </div>
                                 </LeftNavItem>
                             )}
+
+                            {sessions.userType === 'students' ? (
+                                <LeftNavItem linkTo={`/class/${num}/learning-vocas`}>
+                                    <div className="item">
+                                        <div className="content-name">
+                                            <div className="draft-button"></div>
+                                            <div className="name student-option">
+                                                <p>단어 학습(임시)</p>
+                                            </div>
+                                        </div>
+                                        <div className="arrow">
+                                            <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M3.78145 4.99999L0.481445 1.69999L1.42411 0.757324L5.66678 4.99999L1.42411 9.24266L0.481445 8.29999L3.78145 4.99999Z"
+                                                    fill="#C1B5E3"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </LeftNavItem>
+                            ) : null}
+                            {sessions.userType === 'students' ? (
+                                <LeftNavItem linkTo={`/class/${num}/cam-study`}>
+                                    <div className="item">
+                                        <div className="content-name">
+                                            <div className="draft-button"></div>
+                                            <div className="name student-option">
+                                                <p>캠 스터디(임시)</p>
+                                            </div>
+                                        </div>
+                                        <div className="arrow">
+                                            <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M3.78145 4.99999L0.481445 1.69999L1.42411 0.757324L5.66678 4.99999L1.42411 9.24266L0.481445 8.29999L3.78145 4.99999Z"
+                                                    fill="#C1B5E3"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </LeftNavItem>
+                            ) : null}
                         </div>
                     </div>
                 </div>
