@@ -1,4 +1,12 @@
-import { Accordion, AccordionDetails, AccordionSummary, Checkbox, FormControlLabel, Typography, withStyles } from '@material-ui/core';
+import {
+    Accordion as MuiAccordion,
+    AccordionDetails as MuiAccordionDetails,
+    AccordionSummary as MuiAccordionSummary,
+    Checkbox,
+    FormControlLabel,
+    Typography,
+    withStyles,
+} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMoreOutlined';
 import Axios from 'axios';
 import React, { useState } from 'react';
@@ -10,50 +18,81 @@ import { changeParams } from '../../../redux_modules/params';
 import ClassWrapper from '../../essentials/ClassWrapper';
 import CardProblemPreview from '../../TOFELRenderer/CardProblemPreview';
 import { getHandsUpFromStudents, selectHansUpProblems, unselectHandsUpProblems } from './HandsUpInterface';
+import Button from '../../../AltridUI/Button/Button';
+import AltCheckedIcon from '../../../AltridUI/Icons/AltCheckedIcon';
+import AltUncheckedIcon from '../../../AltridUI/Icons/AltUncheckedIcon';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 const HandsUpListRoot = styled.div`
     display: flex;
     flex-direction: column;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
     margin: 0 auto;
     max-width: 960px;
     padding: 0 16px;
     width: 100%;
-    & .hands-up-title {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        margin-bottom: 28px;
-        & .name {
-            font-size: 1.68rem;
-            font-weight: 600;
-            margin-bottom: 11px;
-            width: 100%;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-    }
-    & .hands-up-contents {
-        width: 100%;
-        & .problem-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            flex-basis: 33.33%;
-        }
-        & .summary-stdnames {
-            align-items: center;
-            color: rgba(0, 0, 0, 0.54);
-            display: inline-block;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-            & span {
-                font-size: 0.8rem;
-                & + span {
-                    margin-left: 6px;
-                }
-            }
-        }
+`;
+
+const HeaderTitleContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 28px;
+`;
+const HeaderTitle = styled.div`
+    font-size: 1.68rem;
+    font-weight: 700;
+    margin-bottom: 11px;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+`;
+const HandsUpListContainer = styled.div`
+    height: calc(100vh - 300px);
+    overflow-y: auto;
+    width: 100%;
+`;
+const ColorLabel = styled.div`
+    background-color: ${({ counts }) => {
+        if (counts >= 3) return '#FF6937';
+        else if (counts >= 2 && counts < 3) return '#FFC043';
+        else return '#BFC6CD';
+    }};
+    border: none;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    margin-right: 8px;
+    min-height: 52px;
+    opacity: 0.2;
+    width: 16px;
+`;
+const SummaryTitle = styled.div`
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex-basis: 33.33%;
+`;
+const SummaryStudents = styled.div`
+    align-items: center;
+    color: rgba(0, 0, 0, 0.54);
+    display: inline-block;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+`;
+const StudentNameTag = styled.span`
+    background-color: #77818b;
+    border-radius: 20px;
+    color: #ffffff;
+    font-size: 0.8rem;
+    padding: 0 6px;
+    & + span {
+        margin-left: 6px;
     }
 `;
 
@@ -120,6 +159,72 @@ const ActionButton = styled.button`
     }
     &:hover {
         box-shadow: 0px 2px 5px #0000003d;
+    }
+`;
+
+const Accordion = withStyles({
+    root: {
+        boxShadow: 'none',
+        '&:not(:first-child)': {
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
+        },
+        '&:not(:last-child)': {
+            borderBottom: 0,
+        },
+        '&:before': {
+            display: 'none',
+        },
+        '&$expanded': {
+            margin: 'auto',
+        },
+    },
+    expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+    root: {
+        backgroundColor: ({ mark }) => (mark % 2 === 1 ? '#F6F8F9' : '#ffffff'),
+        border: 'none',
+        borderRadius: 8,
+        marginBottom: -1,
+        minHeight: 52,
+        paddingLeft: 0,
+        '&$expanded': {
+            minHeight: 52,
+        },
+    },
+    content: {
+        alignItems: 'center',
+        margin: 0,
+        '&$expanded': {
+            margin: 0,
+        },
+    },
+    expanded: {},
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+    root: {
+        padding: theme.spacing(2),
+    },
+}))(MuiAccordionDetails);
+
+const WrapperRoot = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 95px);
+`;
+const BottomActions = styled.div`
+    align-items: center;
+    box-shadow: inset 0px 1px 0px #e9edef;
+    display: flex;
+    margin-top: auto;
+    min-height: 72px;
+    padding: 0 48px;
+
+    & button + button {
+        margin-left: 16px;
     }
 `;
 
@@ -266,90 +371,123 @@ function HandsUpList({ match }) {
             });
     }, []);
     return (
-        <ClassWrapper col={true}>
-            {assignmentData && assignmentData.contents_data ? (
-                <CardProblemPreview
-                    openPreview={previewOpenState}
-                    metadata={assignmentData.contents_data}
-                    timeLimit={assignmentData.time_limit}
-                    handlePreviewClose={() => {
-                        setPreviewOpenState(false);
-                    }}
-                />
-            ) : null}
-            <HandsUpListRoot>
-                <div className="hands-up-title">
-                    <div className="name">손들기 목록</div>
-                </div>
-                <div className="hands-up-contents">
-                    {assignmentData && assignmentData.contents_data && selectedIds
-                        ? handsUpList.map((data) => (
-                              <Accordion
-                                  key={data[0].questionId}
-                                  expanded={expanded === data[0].questionId}
-                                  onChange={actionExpand(data[0].questionId)}
-                              >
-                                  <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
-                                      <FormControlLabel
-                                          aria-label={'select_' + data[0].questionId}
-                                          onClick={(event) => event.stopPropagation()}
-                                          onFocus={(event) => event.stopPropagation()}
-                                          onChange={actionProblemSelectChanged(data[0].questionId)}
-                                          checked={selectedIds[data[0].questionId]}
-                                          control={<Checkbox />}
-                                      />
-                                      <div className="problem-title">문제 {data[0].problemAbsIdx + 1}</div>
-                                      <div className="summary-stdnames">
-                                          {data.map(({ studentName }, idx) => (
-                                              <span key={data[0].questionId + '-summary-' + idx}>{studentName}</span>
-                                          ))}
-                                      </div>
-                                  </AccordionSummary>
-                                  <AccordionDetails>
-                                      <DetailsRoot>
-                                          <div className="details-left">
-                                              <div className="details-correct-answer">문제 정답: {data[0].correctAnswer}</div>
-                                              <div className="details-student-answer">
-                                                  {data.map(({ studentName, studentAnswer }, idx) => (
-                                                      <p key={data[0].questionId + '-details-' + idx}>
-                                                          {studentName} 학생이 선택한 답:{' '}
-                                                          {studentAnswer === null ? '미선택' : studentAnswer}
-                                                      </p>
-                                                  ))}
+        <WrapperRoot>
+            <ClassWrapper col={true}>
+                {assignmentData && assignmentData.contents_data ? (
+                    <CardProblemPreview
+                        openPreview={previewOpenState}
+                        metadata={assignmentData.contents_data}
+                        timeLimit={assignmentData.time_limit}
+                        handlePreviewClose={() => {
+                            setPreviewOpenState(false);
+                        }}
+                    />
+                ) : null}
+                <HandsUpListRoot>
+                    <HeaderTitleContainer>
+                        <HeaderTitle>손들기 목록</HeaderTitle>
+                    </HeaderTitleContainer>
+                    <HandsUpListContainer>
+                        {assignmentData && assignmentData.contents_data && selectedIds
+                            ? handsUpList.map((data, idx) => (
+                                  <Accordion
+                                      key={data[0].questionId}
+                                      expanded={expanded === data[0].questionId}
+                                      onChange={actionExpand(data[0].questionId)}
+                                  >
+                                      <AccordionSummary
+                                          expandIcon={<ExpandMoreIcon />}
+                                          mark={idx}
+                                          aria-controls={`${data[0].questionId}bh-content`}
+                                          id={`${data[0].questionId}bh-header`}
+                                      >
+                                          <ColorLabel counts={data.length} />
+                                          <FormControlLabel
+                                              aria-label={'select_' + data[0].questionId}
+                                              onClick={(event) => event.stopPropagation()}
+                                              onFocus={(event) => event.stopPropagation()}
+                                              onChange={actionProblemSelectChanged(data[0].questionId)}
+                                              checked={selectedIds[data[0].questionId]}
+                                              control={
+                                                  <Checkbox
+                                                      disableRipple
+                                                      disableTouchRipple
+                                                      disableFocusRipple
+                                                      icon={<AltUncheckedIcon />}
+                                                      checkedIcon={<AltCheckedIcon />}
+                                                  />
+                                              }
+                                          />
+                                          <SummaryTitle>#{data[0].problemAbsIdx + 1}</SummaryTitle>
+                                          <SummaryStudents>
+                                              {data.map(({ studentName }, idx) => (
+                                                  <StudentNameTag key={data[0].questionId + '-summary-' + idx}>
+                                                      {studentName}
+                                                  </StudentNameTag>
+                                              ))}
+                                          </SummaryStudents>
+                                      </AccordionSummary>
+                                      <AccordionDetails>
+                                          <DetailsRoot>
+                                              <div className="details-left">
+                                                  <div className="details-correct-answer">문제 정답: {data[0].correctAnswer}</div>
+                                                  <div className="details-student-answer">
+                                                      {data.map(({ studentName, studentAnswer }, idx) => (
+                                                          <p key={data[0].questionId + '-details-' + idx}>
+                                                              {studentName} 학생이 선택한 답:{' '}
+                                                              {studentAnswer === null ? '미선택' : studentAnswer}
+                                                          </p>
+                                                      ))}
+                                                  </div>
                                               </div>
-                                          </div>
-                                          <div className="details-right">
-                                              <button
-                                                  className="show-problem"
-                                                  onClick={() => {
-                                                      actionShowProblem(data[0].problemAbsIdx);
-                                                  }}
-                                              >
-                                                  문제 보기
-                                              </button>
-                                          </div>
-                                      </DetailsRoot>
-                                  </AccordionDetails>
-                              </Accordion>
-                          ))
-                        : null}
-                </div>
-                <HandsUpActions>
-                    {selectedIds && Object.keys(selectedIds).filter((k) => selectedIds[k]).length === handsUpList.length ? (
-                        <ActionButton className="secondary" onClick={actionUnselectAll}>
-                            모두 해제
-                        </ActionButton>
-                    ) : (
-                        <ActionButton onClick={actionSelectAll}>모두 선택</ActionButton>
-                    )}
-                    {teacherSelectionChanged ? (
-                        <ActionButton className="primary" onClick={actionUpdateSelection}>
-                            선택 사항 업데이트
-                        </ActionButton>
-                    ) : null}
-                </HandsUpActions>
-            </HandsUpListRoot>
-        </ClassWrapper>
+                                              <div className="details-right">
+                                                  <button
+                                                      className="show-problem"
+                                                      onClick={() => {
+                                                          actionShowProblem(data[0].problemAbsIdx);
+                                                      }}
+                                                  >
+                                                      문제 보기
+                                                  </button>
+                                              </div>
+                                          </DetailsRoot>
+                                      </AccordionDetails>
+                                  </Accordion>
+                              ))
+                            : null}
+                    </HandsUpListContainer>
+                    <HandsUpActions></HandsUpActions>
+                </HandsUpListRoot>
+            </ClassWrapper>
+            <BottomActions>
+                {selectedIds && Object.keys(selectedIds).filter((k) => selectedIds[k]).length === handsUpList.length ? (
+                    <Button
+                        sizes="medium"
+                        variant="filled"
+                        colors="green"
+                        leftIcon={<CheckCircleIcon color="inherit" />}
+                        onClick={actionUnselectAll}
+                    >
+                        모두 해제
+                    </Button>
+                ) : (
+                    <Button
+                        sizes="medium"
+                        variant="default"
+                        colors="black"
+                        leftIcon={<CheckCircleIcon color="inherit" />}
+                        onClick={actionSelectAll}
+                    >
+                        모두 선택
+                    </Button>
+                )}
+                {teacherSelectionChanged ? (
+                    <Button sizes="medium" variant="filled" colors="purple" onClick={actionUpdateSelection}>
+                        선택 사항 업데이트
+                    </Button>
+                ) : null}
+            </BottomActions>
+        </WrapperRoot>
     );
 }
 

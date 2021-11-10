@@ -27,6 +27,7 @@ import Error from '../../pages/Error';
 import { changeParams } from '../../redux_modules/params';
 import { withRouter } from 'react-router-dom';
 import { SecondsToHoursAndMinutes } from '../essentials/TimeChange';
+import { Link } from '@material-ui/core';
 
 const pad = (n, width) => {
     n = n + '';
@@ -589,6 +590,7 @@ function ReportClass({ match, history }) {
                             </div>
                         </div>
                         <TotalProgress studentList={studentsData} problemNumbers={problemNumbers}></TotalProgress>
+                        <Link href={`${match.url}/hands-up`}>학생 손들기 목록 확인</Link>
                     </section>
 
                     <section className="class-report-graph">
