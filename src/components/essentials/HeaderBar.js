@@ -79,6 +79,13 @@ const MainHeader = styled.div`
                 font-size: 16px;
                 text-align: center;
             }
+            & .profile {
+                & .profileImage {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                }
+            }
             & p {
                 margin: 0px 8px;
             }
@@ -194,13 +201,27 @@ function HeaderBar({ match, defaultColor }) {
                             <p>이용권 구매</p>
                         </div>
                         <div className="profile" ref={testRef} style={{ display: 'flex' }}>
-                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="40" height="40" rx="16" fill="#F4F1FA" />
-                                <path
-                                    d="M14.6665 26.6665C14.6665 25.252 15.2284 23.8955 16.2286 22.8953C17.2288 21.8951 18.5853 21.3332 19.9998 21.3332C21.4143 21.3332 22.7709 21.8951 23.7711 22.8953C24.7713 23.8955 25.3332 25.252 25.3332 26.6665H14.6665ZM19.9998 20.6665C17.7898 20.6665 15.9998 18.8765 15.9998 16.6665C15.9998 14.4565 17.7898 12.6665 19.9998 12.6665C22.2098 12.6665 23.9998 14.4565 23.9998 16.6665C23.9998 18.8765 22.2098 20.6665 19.9998 20.6665Z"
-                                    fill="#3B1689"
-                                />
-                            </svg>
+                            {sessions.image ? (
+                                <div className="profileImage">
+                                    <img
+                                        style={{
+                                            borderRadius: '50%',
+                                            width: '40px',
+                                            height: '40px',
+                                        }}
+                                        src={sessions.image}
+                                        alt="profileimage"
+                                    />
+                                </div>
+                            ) : (
+                                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="40" height="40" rx="16" fill="#F4F1FA" />
+                                    <path
+                                        d="M14.6665 26.6665C14.6665 25.252 15.2284 23.8955 16.2286 22.8953C17.2288 21.8951 18.5853 21.3332 19.9998 21.3332C21.4143 21.3332 22.7709 21.8951 23.7711 22.8953C24.7713 23.8955 25.3332 25.252 25.3332 26.6665H14.6665ZM19.9998 20.6665C17.7898 20.6665 15.9998 18.8765 15.9998 16.6665C15.9998 14.4565 17.7898 12.6665 19.9998 12.6665C22.2098 12.6665 23.9998 14.4565 23.9998 16.6665C23.9998 18.8765 22.2098 20.6665 19.9998 20.6665Z"
+                                        fill="#3B1689"
+                                    />
+                                </svg>
+                            )}
 
                             <AccountPopOver userName={sessions.userName} image={sessions.image} targetEl={testRef ? testRef : null} />
                         </div>
