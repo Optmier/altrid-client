@@ -50,6 +50,8 @@ const HeaderTitle = styled.div`
     overflow: hidden;
 `;
 const HandsUpListContainer = styled.div`
+    height: calc(100vh - 300px);
+    overflow-y: auto;
     width: 100%;
 `;
 const ColorLabel = styled.div`
