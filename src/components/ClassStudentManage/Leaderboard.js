@@ -1,6 +1,9 @@
 import { Paper, TableHead, Table, TableBody, TableCell, TableContainer, TableRow, Tab } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@material-ui/styles';
+import { useSelector } from 'react-redux';
+import Axios from 'axios';
+import { apiUrl } from '../../configs/configs';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(even)': {
@@ -25,10 +28,22 @@ const row = [
     createData('학생6', '321', '85.3'),
 ];
 
-function Leaderboard() {
+function Leaderboard({ classNum }) {
+    const [row, setRow] = useState([]);
+    useEffect(() => {
+        Axios.get(`${apiUrl}/optimer/${classNum}`, { withCredentials: true })
+            .then((res) => {
+                if (!res.data || !res.data.length) return;
+                setRow(res.data.map((d) => createData(d.name, d.time_total)));
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
     return (
         <div className="Leaderboard">
-            <div className="class-manage-root">
+            <div className="class-manage-root" style={{ width: '100%' }}>
                 <div>
                     <div className="manage-inputs">
                         <div className="manage-inputs-header">리더 보드</div>
@@ -42,7 +57,6 @@ function Leaderboard() {
                                     <TableCell align="center">순위</TableCell>
                                     <TableCell align="center">학생 이름</TableCell>
                                     <TableCell align="center">총 학습시간</TableCell>
-                                    <TableCell align="center">성취도</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -95,7 +109,6 @@ function Leaderboard() {
                                         </TableCell>
                                         <TableCell align="center">{row.name} 님</TableCell>
                                         <TableCell align="center">{row.time} 분</TableCell>
-                                        <TableCell align="center">{row.achive} %</TableCell>
                                     </StyledTableRow>
 
                                     // map 함수 function 으로 만들고
