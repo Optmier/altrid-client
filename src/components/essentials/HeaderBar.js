@@ -29,7 +29,8 @@ const StylePriceLink = styled.div`
 `;
 
 const MainHeader = styled.div`
-    margin: 0 112px;
+    max-width: 1216px;
+    margin: 0 auto;
 
     & .header {
         height: 80px;

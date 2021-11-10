@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import CardDraft from '../components/ClassDraft/CardDraft';
+import CardDraft from '../components/ClassDraft/AssignmentDraft';
 import CardAddNew from '../components/essentials/CardAddNew';
 import CardLists from '../components/essentials/CardLists';
 import CardRoot from '../components/essentials/CardRoot';
@@ -32,10 +32,56 @@ import CardPopOver from '../../src/components/essentials/CardPopOver';
 import ClassDialogDelete from '../components/essentials/ClassDialogDelete';
 import * as $ from 'jquery';
 
-const Item = styled.div``;
+const Item = styled.div`
+    width: 384px;
+    height: 260px;
+    background: #f4f1fa;
+    border-radius: 32px;
+    margin: 10px 10px;
+    color: #3b1689;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 28px;
+    & .cards {
+        align-items: center;
+        align-content: center;
+        display: flex;
+        flex-direction: column;
+        margin-top: 95px;
+        & .new {
+            margin-top: 14px;
+        }
+    }
+    /* & .card {
+        & .cards {
+            cursor: pointer;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+            min-height: 248px;
+            border-radius: 32px;
+            background: #f4f1fa;
+            padding: 0 32px;
+            padding-top: 32px;
+            & .Add-Class {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                margin: 0 auto;
+
+                & p {
+                    color: #3b1689;
+                    font-size: 24px;
+                    font-weight: 700;
+                    margin-top: 14px;
+                }
+            }
+        }
+    } */
+`;
 
 const Main_header = styled.div`
-    margin: 0 112px;
+    max-width: 1216px;
+    margin: 0 auto;
 
     & .greeting {
         display: flex;
@@ -55,19 +101,17 @@ const Main_header = styled.div`
 `;
 const CardSection = styled.div`
     font-family: 'inter, -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, “Helvetica Neue”, Arial, sans-serif, “Apple Color Emoji”, “Segoe UI Emoji”, “Segoe UI Symbol”';
-    margin: 24px 112px;
-    & .card {
-        & .cards {
-            cursor: pointer;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
-            min-height: 248px;
-            border-radius: 32px;
-            background: #f4f1fa;
-            color: #200656;
-            padding: 0 32px;
-            padding-top: 32px;
-        }
-        & .draft-cards {
+    max-width: 1216px;
+    margin: 0 auto;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    & .newcard {
+        width: 364px;
+    }
+
+    /* & .draft-cards {
             color: black;
             min-height: 248px;
             background: #ffffff;
@@ -150,25 +194,14 @@ const CardSection = styled.div`
                 justify-content: space-between;
                 padding-bottom: 8px;
             }
-        }
-        & .Add-Class {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-
-            & p {
-                color: #3b1689;
-                font-size: 24px;
-                font-weight: 700;
-                margin-top: 14px;
-            }
-        }
-    }
+        } */
 `;
 
 const Info = styled.div`
-    margin: 32px 112px;
+    margin: 0 auto;
+    max-width: 1216px;
+    margin-top: 118px;
+    margin-bottom: 32px;
 
     & .Info-total {
         margin-bottom: 80px;
@@ -421,6 +454,30 @@ function MainDraft({ match, cardData, history }) {
                 </h3>
             </Main_header>
             <CardSection>
+                <Item>
+                    <div onClick={toggleDrawer(true)} className="cards">
+                        <div className="icon">
+                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M2 0H34C34.5304 0 35.0391 0.210714 35.4142 0.585786C35.7893 0.960859 36 1.46957 36 2V34C36 34.5304 35.7893 35.0391 35.4142 35.4142C35.0391 35.7893 34.5304 36 34 36H2C1.46957 36 0.960859 35.7893 0.585786 35.4142C0.210714 35.0391 0 34.5304 0 34V2C0 1.46957 0.210714 0.960859 0.585786 0.585786C0.960859 0.210714 1.46957 0 2 0ZM16 16H8V20H16V28H20V20H28V16H20V8H16V16Z"
+                                    fill="#957FCE"
+                                />
+                            </svg>
+                        </div>
+                        <div className="new">
+                            <p> 과제 생성 </p>
+                        </div>
+                    </div>
+                </Item>
+
+                {Object.keys(data).map((i, idx) => (
+                    <CardRoot key={idx}>
+                        <CardDraft testNum={data[i]['idx']} cardData={data[i]} />
+                    </CardRoot>
+                ))}
+            </CardSection>
+
+            {/* <CardSection>
                 <div className="card">
                     <Box sx={{ flexGrow: 1 }}>
                         <Grid container spacing={4}>
@@ -500,7 +557,7 @@ function MainDraft({ match, cardData, history }) {
                                                 <div className="description">{data.description}</div>
                                                 <div className="num">
                                                     <p>문항수</p>
-                                                    {/* <span>{data.contents_data[index].problemDatas.length} 문제 </span> */}
+                                                    <span>{data.contents_data[index].problemDatas.length} 문제 </span>
                                                 </div>
                                                 <div className="time-limit">
                                                     <p>제한 시간</p>
@@ -526,7 +583,7 @@ function MainDraft({ match, cardData, history }) {
                         </Grid>
                     </Box>
                 </div>
-            </CardSection>
+            </CardSection> */}
             <Info>
                 <div className="Info-total">
                     <div className="Info-icon">

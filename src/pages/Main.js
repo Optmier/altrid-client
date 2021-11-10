@@ -36,7 +36,10 @@ const MainSection = styled.main``;
 const FooterSection = styled.footer``;
 
 const MainHeader = styled.div`
-    margin: 0 112px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    max-width: 1216px;
+    margin: auto;
 
     & .header {
         height: 80px;
@@ -105,7 +108,12 @@ const MainHeader = styled.div`
 const CardSection = styled.div`
     font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
-    margin: 24px 112px;
+
+    max-width: 1216px;
+    margin: 0 auto;
+    margin-top: 24px;
+    margin-bottom: 24px;
+
     & .card {
         & .Add-Class {
             display: flex;
@@ -173,7 +181,9 @@ const CardSection = styled.div`
 `;
 
 const Info = styled.div`
-    margin: 32px 112px;
+    max-width: 1216px;
+    margin: 0 auto;
+    margin-top: 32px;
 
     & .Info-total {
         margin-bottom: 80px;
