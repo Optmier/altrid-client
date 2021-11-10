@@ -150,11 +150,15 @@ const Contents = styled.div`
 
                 }
                 &  .item:hover{
-                    background:#957FCE;
+                    border: 2px solid #3B1689;
                 }
-                & .item:visited{
-                    background:black;
+                & .left-a-active{
+                    & .item{
+                        border: 2px solid #3B1689;
+                    }
+               
                 }
+               
             }
         }
         

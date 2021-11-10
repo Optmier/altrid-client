@@ -41,7 +41,9 @@ const Item = styled.div`
     color: #3b1689;
     font-weight: bold;
     font-size: 24px;
+    cursor: pointer;
     line-height: 28px;
+
     & .cards {
         align-items: center;
         align-content: center;
@@ -52,31 +54,6 @@ const Item = styled.div`
             margin-top: 14px;
         }
     }
-    /* & .card {
-        & .cards {
-            cursor: pointer;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
-            min-height: 248px;
-            border-radius: 32px;
-            background: #f4f1fa;
-            padding: 0 32px;
-            padding-top: 32px;
-            & .Add-Class {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                margin: 0 auto;
-
-                & p {
-                    color: #3b1689;
-                    font-size: 24px;
-                    font-weight: 700;
-                    margin-top: 14px;
-                }
-            }
-        }
-    } */
 `;
 
 const Main_header = styled.div`
