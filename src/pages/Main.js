@@ -128,9 +128,12 @@ const CardSection = styled.div`
                 margin-top: 14px;
             }
         }
+        & .cards:hover {
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+            transition: 0.2s;
+        }
         & .cards {
             cursor: pointer;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
             min-height: 248px;
             border-radius: 32px;
             background: #f4f1fa;
@@ -316,7 +319,7 @@ function Main({ history }) {
                             <img width="339px" height="260px" src={icon_image} alt="dashboard_icons"></img>
                         </div>
                     </div>
-                    {console.log(cardDatas)}
+
                     <h3>{sessions.userName}님의 클래스 </h3>
                 </MainHeader>
 
