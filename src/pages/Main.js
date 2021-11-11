@@ -373,7 +373,7 @@ function Main({ history }) {
                                             <Item
                                                 onClick={() => {
                                                     sessions.userType === 'students'
-                                                        ? history.push(`${$_classDefault}/${idx}/dashboard`)
+                                                        ? history.push(`/${idx}/dashboard`)
                                                         : history.push(`${$_classDefault}/${idx}/share`);
                                                 }}
                                             >
