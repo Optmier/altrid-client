@@ -81,8 +81,8 @@ const SelectionsComp = ({ selections, selected }) => {
 const SummaryRoot = styled.div`
     align-items: center;
     display: flex;
-    font-family: inter, -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, “Helvetica Neue”, Arial, sans-serif, “Apple Color Emoji”,
-        “Segoe UI Emoji”, “Segoe UI Symbol”;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
     justify-content: space-between;
     width: 100%;
 `;
@@ -217,7 +217,7 @@ function ScoringResults({
                                             actionClickHandsUp(idx, d.handsUp, d.teacherSelected);
                                         }}
                                     >
-                                        {d.handsUp ? '손들기 해제' : '손들기'}
+                                        {d.handsUp ? '손 내리기' : '손 들기'}
                                     </Button>
                                 </SummaryActions>
                             </SummaryRoot>

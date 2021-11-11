@@ -23,6 +23,7 @@ import RestrictRoute from '../components/essentials/RestrictRoute';
 import LearningVocas from '../components/LearningVocas/LearningVocas';
 import CamStudyMainLists from '../components/Camstudy/CamStudyMainLists';
 import Dashboard_1 from '../components/essentials/Dashboard_1';
+import DashboardDDay from '../controllers/DashboardDDay.js';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -116,6 +117,10 @@ function Class({ match }) {
         // }
         if (optimerModule.classNum === parseInt(match.params.num)) return;
         optimerModule.updateClassNumber(parseInt(match.params.num));
+        window.DDayClass = new DashboardDDay(match.params.num, (msg, res) => {
+            console.log(msg, res);
+            //...setState(res);
+        });
     }, [match, sessions, optimerModule]);
 
     return (
