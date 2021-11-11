@@ -97,86 +97,88 @@ export const getDrafts = () => async (dispatch) => {
     }
 };
 export const getDraft = (idx) => async (dispatch) => {};
-export const postDraft = (inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, activedDirect) => async (dispatch) => {
-    dispatch({ type: POST_DRAFT }); // 요청이 시작됨
+export const postDraft =
+    (inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, activedDirect, selectedSubject) => async (dispatch) => {
+        dispatch({ type: POST_DRAFT }); // 요청이 시작됨
 
-    try {
-        const { title, description } = inputs;
-        const { mm, ss } = timeInputs;
+        try {
+            const { title, description } = inputs;
+            const { mm, ss } = timeInputs;
 
-        let { eyetrack, timeAttack } = toggleState;
-        let time_limit = -2;
+            let { eyetrack, timeAttack } = toggleState;
+            let time_limit = -2;
 
-        if (timeAttack) {
-            time_limit = MinutetoSecond(mm, ss);
-        }
+            if (timeAttack) {
+                time_limit = MinutetoSecond(mm, ss);
+            }
 
-        if (eyetrack) {
-            eyetrack = 1;
-        } else {
-            eyetrack = 0;
-        }
+            if (eyetrack) {
+                eyetrack = 1;
+            } else {
+                eyetrack = 0;
+            }
 
-        //파일 업로드 선택시,
-        if (selectState === 'left') {
-            contentsData = null;
-        }
+            //파일 업로드 선택시,
+            if (selectState === 'left') {
+                contentsData = null;
+            }
 
-        const result = await Axios.post(
-            `${apiUrl}/assignment-draft`,
-            {
+            const result = await Axios.post(
+                `${apiUrl}/assignment-draft`,
+                {
+                    title: title,
+                    description: description,
+                    subject: selectedSubject,
+                    time_limit: time_limit,
+                    eyetrack: eyetrack,
+                    contents_data: contentsData === null ? null : JSON.stringify(contentsData),
+                },
+                { withCredentials: true },
+            ); // API 호출
+
+            const idx = result['data']['results']['insertId'];
+            //const idx = result['data']['result2'][0]['LAST_INSERT_ID()'];
+            const academy_code = result['data']['academy_code'];
+            const teacher_id = result['data']['teacher_id'];
+
+            //파일 업로드 선택시,
+            let file_url = null;
+            if (selectState === 'left') {
+                const result = await Axios.post(`${apiUrl}/files/requests-contents/${idx}`, attachFiles, { withCredentials: true });
+                file_url = result.data.file_name;
+            }
+
+            let postData = {
+                idx: idx,
+                academy_code: academy_code,
+                teacher_id: teacher_id,
                 title: title,
                 description: description,
                 time_limit: time_limit,
                 eyetrack: eyetrack,
-                contents_data: contentsData === null ? null : JSON.stringify(contentsData),
-            },
-            { withCredentials: true },
-        ); // API 호출
+                contents_data: contentsData,
+                file_url: file_url,
+            };
 
-        const idx = result['data']['results']['insertId'];
-        //const idx = result['data']['result2'][0]['LAST_INSERT_ID()'];
-        const academy_code = result['data']['academy_code'];
-        const teacher_id = result['data']['teacher_id'];
+            dispatch({ type: POST_DRAFT_SUCCESS, postData }); // 성공
 
-        //파일 업로드 선택시,
-        let file_url = null;
-        if (selectState === 'left') {
-            const result = await Axios.post(`${apiUrl}/files/requests-contents/${idx}`, attachFiles, { withCredentials: true });
-            file_url = result.data.file_name;
+            //추가 dispatch 작업
+            // 1. 생성 및 게시 버튼 클릭시,
+            if (activedDirect) {
+                const { num, due_date } = activedDirect;
+                const cardData = postData;
+
+                dispatch(postActived(cardData, num, due_date));
+            }
+            // 2. restricted 정보
+            else {
+                //dispatch(getPlanInfo(true));
+            }
+        } catch (e) {
+            dispatch({ type: DRAFT_ERROR, error: e }); // 실패
         }
-
-        let postData = {
-            idx: idx,
-            academy_code: academy_code,
-            teacher_id: teacher_id,
-            title: title,
-            description: description,
-            time_limit: time_limit,
-            eyetrack: eyetrack,
-            contents_data: contentsData,
-            file_url: file_url,
-        };
-
-        dispatch({ type: POST_DRAFT_SUCCESS, postData }); // 성공
-
-        //추가 dispatch 작업
-        // 1. 생성 및 게시 버튼 클릭시,
-        if (activedDirect) {
-            const { num, due_date } = activedDirect;
-            const cardData = postData;
-
-            dispatch(postActived(cardData, num, due_date));
-        }
-        // 2. restricted 정보
-        else {
-            //dispatch(getPlanInfo(true));
-        }
-    } catch (e) {
-        dispatch({ type: DRAFT_ERROR, error: e }); // 실패
-    }
-};
-export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsData) => async (dispatch) => {
+    };
+export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsData, selectedSubject) => async (dispatch) => {
     dispatch({ type: PATCH_DRAFT }); // 요청이 시작됨
 
     try {
@@ -202,6 +204,7 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsDa
                 idx: idx,
                 title: title,
                 description: description,
+                subject: selectedSubject,
                 time_limit: time_limit,
                 eyetrack: eyetrack,
                 contents_data: contentsData ? JSON.stringify(contentsData) : null,

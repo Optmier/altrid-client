@@ -250,7 +250,7 @@ function useForceUpdate() {
     return () => setState(!value);
 }
 
-function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClose, onEditFinish, history, children, ...rest }) {
+function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChange, onClose, onEditFinish, history, children, ...rest }) {
     const quillRef = useRef();
     const generateUid = useRef();
 
@@ -666,6 +666,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, onChange, onClos
                 </PreviewDialog>
                 <Drawer anchor="right" open={openCreateNewDrawer}>
                     <CreateNewProblem
+                        subject={subject}
                         problemDatas={currentProblemData}
                         editmode={problemEditmode}
                         handleClose={toggleDrawer(false)}
