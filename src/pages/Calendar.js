@@ -366,13 +366,13 @@ function Calendar({ match }) {
                         id: result.data[0].idx,
                         title: '오프라인 수업',
                         daysOfWeek: result.data[0].class_day
-                            .replace('일', '1')
-                            .replace('월', '2')
-                            .replace('화', '3')
-                            .replace('수', '4')
-                            .replace('목', '5')
-                            .replace('금', '6')
-                            .replace('토', '7'),
+                            .replace('일', '0')
+                            .replace('월', '1')
+                            .replace('화', '2')
+                            .replace('수', '3')
+                            .replace('목', '4')
+                            .replace('금', '5')
+                            .replace('토', '6'),
                         color: 'green',
                         editable: false,
                     },
