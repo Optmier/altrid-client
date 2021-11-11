@@ -1,4 +1,5 @@
 import { Button } from '@material-ui/core';
+import Axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -72,9 +73,9 @@ function LearningVocas({ history, match, children }) {
     const [currentIdx, setCurrentIdx] = useState(0);
     const [rotation, setRotation] = useState(0);
     const [flipped, setFlipped] = useState(false);
-    const [currentMeans, setCurrentMeans] = useState('여기에 단어 뜻이 보여집니다.');
+    const [currentMeans, setCurrentMeans] = useState('');
     const [finished, setFinished] = useState(false);
-
+    const [korean, setkorean] = useState('');
     const dispatch = useDispatch();
 
     // 단어 섞고 우선순위 구분
@@ -95,14 +96,29 @@ function LearningVocas({ history, match, children }) {
 
     // 카드 클릭 시 뒤집기 이벤트
     const actionFlipCard = () => {
+        if (!flipped) {
+            Axios({
+                url: `https://dapi.kakao.com/v2/translation/translate?src_lang=en&target_lang=kr&query=${learningDatas[currentIdx].word}`,
+                type: 'GET',
+                headers: { Authorization: 'KakaoAK deff2bf52bcadf12b544be630be9846b' },
+            })
+                .then((result) => setCurrentMeans(result.data.translated_text[0]))
+                .catch((error) => console.log(error));
+            Axios({
+                url: `https://owlbot.info/api/v4/dictionary/${learningDatas[currentIdx].word}`,
+                type: 'GET',
+                headers: { Authorization: 'Token cc26601e11efc16083caf4e28a9eca286783ea8a' },
+            })
+                .then((result) => setkorean(result.data.definitions[0].example))
+                .catch((error) => console.log(error));
+        }
         setFlipped(!flipped);
-        // 단어 뜻 불러오기 API
-        setCurrentMeans(`여기에 단어 ${learningDatas[currentIdx].word} 에 대한 뜻이 보여집니다.`);
     };
 
     // 다음으로 또는 로테이션
     const nextAndRotation = (flag) => {
         const { idx, counts, completed } = learningDatas[currentIdx];
+        console.log(currentMeans);
         dispatch(
             updateVocaDatas(idx, classNum, {
                 means: flag === 2 ? currentMeans : null,
@@ -111,6 +127,7 @@ function LearningVocas({ history, match, children }) {
                 completed: completed,
             }),
         );
+
         // Rotate
         if (learningDatas.length - 1 <= currentIdx) {
             setCurrentIdx(0);
@@ -131,18 +148,24 @@ function LearningVocas({ history, match, children }) {
     const actionClickReplyConfirm = () => {
         setFlipped(false);
         nextAndRotation(2);
+        setCurrentMeans('');
+        setkorean('');
     };
 
     // 좀 더 학습이 필요하다고 답한 경우
     const actionClickReplyLearnMore = () => {
         setFlipped(false);
         nextAndRotation(1);
+        setCurrentMeans('');
+        setkorean('');
     };
 
     // 모르는 단어였다고 답한 경우
     const actionClickReplyNegative = () => {
         setFlipped(false);
         nextAndRotation(0);
+        setCurrentMeans('');
+        setkorean('');
     };
 
     useEffect(() => {
@@ -182,6 +205,15 @@ function LearningVocas({ history, match, children }) {
         makeLearningData();
     }, [vocaDatasOriginal]);
 
+    // useEffect(() => {
+    //     Axios({
+    //         url: 'https://owlbot.info/api/v4/dictionary/sweet',
+    //         type: 'GET',
+    //         headers: { Authorization: 'Token cc26601e11efc16083caf4e28a9eca286783ea8a' },
+    //     })
+    //         .then((result) => console.log(result.data.definitions[0].example))
+    //         .catch((error) => console.log(error));
+    // }, []);
     return (
         <>
             <BackdropComponent open={isPending} blind={true} />
@@ -197,7 +229,11 @@ function LearningVocas({ history, match, children }) {
                                     {!flipped ? (
                                         <CardWord>{learningDatas[currentIdx].word}</CardWord>
                                     ) : (
-                                        <CardMeans>{currentMeans}</CardMeans>
+                                        <CardMeans>
+                                            {currentMeans}
+                                            <br />
+                                            {!korean ? <p> ··· </p> : <p>exmaple : {korean} </p>}
+                                        </CardMeans>
                                     )}
                                 </VocaCard>
                             </VocaCardContainer>

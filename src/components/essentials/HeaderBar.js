@@ -188,7 +188,7 @@ function HeaderBar({ match, defaultColor }) {
 
                     <div className="icon">
                         <Link to="/">클래스</Link>
-                        <Link to="/main-draft">과제</Link>
+                        {sessions.userType === 'teachers' ? <Link to="/main-draft">과제</Link> : null}
                     </div>
 
                     <div className="plan">

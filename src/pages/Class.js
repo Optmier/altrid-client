@@ -59,9 +59,9 @@ const ClassPageSwitcher = (match, sessions) => {
         case 'calendar':
             if (sessions.userType === 'teachers') return <ErrorRestricted />;
             return <Calendar />;
-        case 'dashboard':
-            if (sessions.userType === 'teachers') return <ErrorRestricted />;
-            return <Route path={`${path}`} component={Dashboard_1} />;
+        // case 'dashboard':
+        //     if (sessions.userType === 'teachers') return <ErrorRestricted />;
+        //     return <Route path={`${path}`} component={Dashboard_1} />;
 
         case 'learning-vocas':
             return (

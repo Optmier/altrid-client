@@ -227,7 +227,7 @@ function App({ history, match }) {
                         <Route path="/cam-study-eyetracker/:classnum" component={CamStudyEyetracker} exact />
                         <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
                         <Route path="/mypage/:menu" component={MyPage} />
-                        <Route pat="/dashboard" component={Dashboard_1} exact />
+                        <Route path="/:num/dashboard" component={Dashboard_1} exact />
 
                         <Route path="/pricing" component={Price} exact />
                         <Route path="/pricing/details" component={PriceDetails} exact />

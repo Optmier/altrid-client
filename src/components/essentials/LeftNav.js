@@ -452,15 +452,29 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
             <Contents>
                 <div className="container">
                     <div className="back">
-                        <Link to="/">
-                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="48" height="48" rx="16" fill="#F6F8F9" />
-                                <path
-                                    d="M19.828 23.0002H32V25.0002H19.828L25.192 30.3642L23.778 31.7782L16 24.0002L23.778 16.2222L25.192 17.6362L19.828 23.0002Z"
-                                    fill="#4D5C6A"
-                                />
-                            </svg>
-                        </Link>
+                        {sessions.userType === 'teachers' ? (
+                            <>
+                                <Link to={`/`}>
+                                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="48" height="48" rx="16" fill="#F6F8F9" />
+                                        <path
+                                            d="M19.828 23.0002H32V25.0002H19.828L25.192 30.3642L23.778 31.7782L16 24.0002L23.778 16.2222L25.192 17.6362L19.828 23.0002Z"
+                                            fill="#4D5C6A"
+                                        />
+                                    </svg>
+                                </Link>
+                            </>
+                        ) : (
+                            <Link to={`/${num}/dashboard`}>
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="48" height="48" rx="16" fill="#F6F8F9" />
+                                    <path
+                                        d="M19.828 23.0002H32V25.0002H19.828L25.192 30.3642L23.778 31.7782L16 24.0002L23.778 16.2222L25.192 17.6362L19.828 23.0002Z"
+                                        fill="#4D5C6A"
+                                    />
+                                </svg>
+                            </Link>
+                        )}
                     </div>
                     <div className="title">
                         <h2>{teacherData.class_name}</h2>
