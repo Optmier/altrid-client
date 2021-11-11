@@ -8,11 +8,14 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { withRouter } from 'react-router-dom';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
-import { Button, withStyles } from '@material-ui/core';
+import { Button as MuiButton, withStyles } from '@material-ui/core';
 import styled from 'styled-components';
 import PopOverClipboard from '../essentials/PopOverClipboard';
 import StudentManage from '../ClassStudentManage/StudentManage';
 import Leaderboard from '../ClassStudentManage/Leaderboard';
+import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
+import Button from '../../AltridUI/Button/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const CopyButton = styled.div`
     pointer-events: ${(props) => (props.state ? 'none' : 'all')};
@@ -33,6 +36,21 @@ const FormButton = styled.button`
 const ButtonAble = styled.button`
     color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
     border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
+`;
+
+const WrapperRoot = styled.div``;
+
+const BottomActions = styled.div`
+    align-items: center;
+    box-shadow: inset 0px 1px 0px #e9edef;
+    display: flex;
+    margin-top: auto;
+    min-height: 72px;
+    padding: 0 48px;
+
+    & button + button {
+        margin-left: 16px;
+    }
 `;
 
 const CreateButton = withStyles((theme) => ({
@@ -325,154 +343,206 @@ function Manage({ match, history }) {
         }, 3000);
     };
 
+    const menuDatas = [
+        {
+            mId: 0,
+            mName: '리더보드',
+        },
+        {
+            mId: 1,
+            mName: '클래스 관리',
+        },
+        {
+            mId: 2,
+            mName: '학생 관리',
+        },
+    ];
+
+    const [selectedMenu, setSelectedMenu] = useState(0);
+    const [toDeleteStudentData, setToDeleteStudentData] = useState({});
+
+    const actionChangeStudentsSelection = (data) => {
+        setToDeleteStudentData(data);
+    };
+
+    const actionDeleteStudents = () => {
+        let arr = [];
+        Object.keys(toDeleteStudentData)
+            .filter((i) => toDeleteStudentData[i] === true)
+            .map((i) => arr.push(`'${i}'`));
+
+        Axios.delete(`${apiUrl}/students-in-class/students/${num}`, {
+            data: {
+                students: arr.join(','),
+            },
+            withCredentials: true,
+        })
+            .then((res) => {
+                alert('학생 삭제가 완료되었습니다!');
+                history.go(0);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
+    window.historyTest = history;
+
     return (
-        <>
-            <>
-                <ClassWrapper>
-                    <div className="class-section-root">
-                        <div className="class-share-header">
-                            <div className="header-title">학생 및 클래스 </div>
-                            <div className="header-menu">
-                                <ButtonAble
-                                    name="leaderboard"
-                                    able={ablestate['leaderboard']}
-                                    value={ablestate['leaderboard']}
-                                    onClick={handleShareCardList}
-                                >
-                                    리더보드
-                                </ButtonAble>
-                                <ButtonAble
-                                    name="classmanage"
-                                    able={ablestate['classmanage']}
-                                    value={ablestate['classmanage']}
-                                    onClick={handleShareCardList}
-                                >
-                                    클래스 관리
-                                </ButtonAble>
-                                <ButtonAble
-                                    name="studentmanage"
-                                    able={ablestate['studentmanage']}
-                                    value={ablestate['studentmanage']}
-                                    onClick={handleShareCardList}
-                                >
-                                    학생 관리
-                                </ButtonAble>
-                            </div>
-                        </div>
+        <WrapperRoot>
+            <ClassWrapper>
+                <div className="class-section-root" style={{ width: '100%', height: 'calc(100vh - 167px)' }}>
+                    <div className="class-share-header">
+                        <HeaderMenu
+                            fullWidth
+                            title="학생 및 클래스"
+                            menuDatas={menuDatas}
+                            selectedMenuId={selectedMenu}
+                            onItemClick={(id) => {
+                                setSelectedMenu(id);
+                            }}
+                        />
                     </div>
-                </ClassWrapper>
-                {ablestate['studentmanage'] ? (
                     <div className="test">
-                        <StudentManage />
-                    </div>
-                ) : ablestate['classmanage'] ? (
-                    <div className="test">
-                        <PopOverClipboard state={clipboardState} />
-                        <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
-                        <ClassWrapper col="col">
-                            <div className="class-manage-root">
-                                <div>
-                                    <div className="manage-inputs">
-                                        <h3>클래스 소개</h3>
+                        {selectedMenu === 2 ? (
+                            <StudentManage onChangeStudentSelection={actionChangeStudentsSelection} />
+                        ) : selectedMenu === 1 ? (
+                            <>
+                                <PopOverClipboard state={clipboardState} />
+                                <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
+                                <div className="class-manage-root" style={{ width: '100%' }}>
+                                    <div>
+                                        <div className="manage-inputs">
+                                            <h3>클래스 소개</h3>
 
-                                        <div className="class-discription">
-                                            <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M3.29348 11C3.09548 10.1513 2.20215 9.45732 1.83549 8.99998C1.20761 8.21551 0.814117 7.26963 0.700328 6.27129C0.586539 5.27296 0.757085 4.26279 1.19232 3.35715C1.62756 2.4515 2.30977 1.68723 3.16039 1.15237C4.011 0.617512 4.99541 0.333824 6.00021 0.333984C7.005 0.334145 7.98932 0.61815 8.83976 1.15328C9.6902 1.68841 10.3722 2.4529 10.8071 3.35869C11.2421 4.26447 11.4123 5.27469 11.2982 6.27299C11.1841 7.27129 10.7903 8.21705 10.1622 9.00132C9.79548 9.45798 8.90348 10.152 8.70548 11H3.29282H3.29348ZM8.66615 12.3333V13C8.66615 13.3536 8.52568 13.6927 8.27563 13.9428C8.02558 14.1928 7.68644 14.3333 7.33282 14.3333H4.66615C4.31253 14.3333 3.97339 14.1928 3.72334 13.9428C3.47329 13.6927 3.33282 13.3536 3.33282 13V12.3333H8.66615ZM6.66615 5.66998V2.99998L3.66615 7.00332H5.33282V9.66998L8.33282 5.66998H6.66615V5.66998Z"
-                                                    fill="#FFC043"
-                                                />
-                                            </svg>
-                                            &nbsp; 클래스 소개를 입력해주세요.
-                                        </div>
+                                            <div className="class-discription">
+                                                <svg
+                                                    width="12"
+                                                    height="15"
+                                                    viewBox="0 0 12 15"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        d="M3.29348 11C3.09548 10.1513 2.20215 9.45732 1.83549 8.99998C1.20761 8.21551 0.814117 7.26963 0.700328 6.27129C0.586539 5.27296 0.757085 4.26279 1.19232 3.35715C1.62756 2.4515 2.30977 1.68723 3.16039 1.15237C4.011 0.617512 4.99541 0.333824 6.00021 0.333984C7.005 0.334145 7.98932 0.61815 8.83976 1.15328C9.6902 1.68841 10.3722 2.4529 10.8071 3.35869C11.2421 4.26447 11.4123 5.27469 11.2982 6.27299C11.1841 7.27129 10.7903 8.21705 10.1622 9.00132C9.79548 9.45798 8.90348 10.152 8.70548 11H3.29282H3.29348ZM8.66615 12.3333V13C8.66615 13.3536 8.52568 13.6927 8.27563 13.9428C8.02558 14.1928 7.68644 14.3333 7.33282 14.3333H4.66615C4.31253 14.3333 3.97339 14.1928 3.72334 13.9428C3.47329 13.6927 3.33282 13.3536 3.33282 13V12.3333H8.66615ZM6.66615 5.66998V2.99998L3.66615 7.00332H5.33282V9.66998L8.33282 5.66998H6.66615V5.66998Z"
+                                                        fill="#FFC043"
+                                                    />
+                                                </svg>
+                                                &nbsp; 클래스 소개를 입력해주세요.
+                                            </div>
 
-                                        <input
-                                            className={classNames('default', inputError ? 'error' : '')}
-                                            type="text"
-                                            name="entry_new_name"
-                                            id="entry_new_name"
-                                            placeholder="클래스 이름"
-                                            onChange={handleInputChange}
-                                            value={inputState['entry_new_name']}
-                                        />
-                                        <textarea
-                                            className="default"
-                                            type="text"
-                                            name="entry_new_description"
-                                            id="entry_new_description"
-                                            placeholder="클래스 한줄 설명"
-                                            onChange={handleInputChange}
-                                            value={inputState['entry_new_description']}
-                                        />
-                                    </div>
-                                    <div className="manage-inputs">
-                                        <h3>수업 요일</h3>
-                                        <div className="class-discription">
-                                            <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M3.29348 11C3.09548 10.1513 2.20215 9.45732 1.83549 8.99998C1.20761 8.21551 0.814117 7.26963 0.700328 6.27129C0.586539 5.27296 0.757085 4.26279 1.19232 3.35715C1.62756 2.4515 2.30977 1.68723 3.16039 1.15237C4.011 0.617512 4.99541 0.333824 6.00021 0.333984C7.005 0.334145 7.98932 0.61815 8.83976 1.15328C9.6902 1.68841 10.3722 2.4529 10.8071 3.35869C11.2421 4.26447 11.4123 5.27469 11.2982 6.27299C11.1841 7.27129 10.7903 8.21705 10.1622 9.00132C9.79548 9.45798 8.90348 10.152 8.70548 11H3.29282H3.29348ZM8.66615 12.3333V13C8.66615 13.3536 8.52568 13.6927 8.27563 13.9428C8.02558 14.1928 7.68644 14.3333 7.33282 14.3333H4.66615C4.31253 14.3333 3.97339 14.1928 3.72334 13.9428C3.47329 13.6927 3.33282 13.3536 3.33282 13V12.3333H8.66615ZM6.66615 5.66998V2.99998L3.66615 7.00332H5.33282V9.66998L8.33282 5.66998H6.66615V5.66998Z"
-                                                    fill="#FFC043"
-                                                />
-                                            </svg>
-                                            &nbsp; 수업 요일을 모두 선택해주세요. 중복선택이 가능합니다.
+                                            <input
+                                                className={classNames('default', inputError ? 'error' : '')}
+                                                type="text"
+                                                name="entry_new_name"
+                                                id="entry_new_name"
+                                                placeholder="클래스 이름"
+                                                onChange={handleInputChange}
+                                                value={inputState['entry_new_name']}
+                                            />
+                                            <textarea
+                                                className="default"
+                                                type="text"
+                                                name="entry_new_description"
+                                                id="entry_new_description"
+                                                placeholder="클래스 한줄 설명"
+                                                onChange={handleInputChange}
+                                                value={inputState['entry_new_description']}
+                                            />
                                         </div>
-                                        <div className="form-buttons">
-                                            <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
-                                                월
-                                            </FormButton>
-                                            <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
-                                                화
-                                            </FormButton>
-                                            <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
-                                                수
-                                            </FormButton>
-                                            <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
-                                                목
-                                            </FormButton>
-                                            <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
-                                                금
-                                            </FormButton>
-                                            <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
-                                                토
-                                            </FormButton>
-                                            <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
-                                                일
-                                            </FormButton>
+                                        <div className="manage-inputs">
+                                            <h3>수업 요일</h3>
+                                            <div className="class-discription">
+                                                <svg
+                                                    width="12"
+                                                    height="15"
+                                                    viewBox="0 0 12 15"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        d="M3.29348 11C3.09548 10.1513 2.20215 9.45732 1.83549 8.99998C1.20761 8.21551 0.814117 7.26963 0.700328 6.27129C0.586539 5.27296 0.757085 4.26279 1.19232 3.35715C1.62756 2.4515 2.30977 1.68723 3.16039 1.15237C4.011 0.617512 4.99541 0.333824 6.00021 0.333984C7.005 0.334145 7.98932 0.61815 8.83976 1.15328C9.6902 1.68841 10.3722 2.4529 10.8071 3.35869C11.2421 4.26447 11.4123 5.27469 11.2982 6.27299C11.1841 7.27129 10.7903 8.21705 10.1622 9.00132C9.79548 9.45798 8.90348 10.152 8.70548 11H3.29282H3.29348ZM8.66615 12.3333V13C8.66615 13.3536 8.52568 13.6927 8.27563 13.9428C8.02558 14.1928 7.68644 14.3333 7.33282 14.3333H4.66615C4.31253 14.3333 3.97339 14.1928 3.72334 13.9428C3.47329 13.6927 3.33282 13.3536 3.33282 13V12.3333H8.66615ZM6.66615 5.66998V2.99998L3.66615 7.00332H5.33282V9.66998L8.33282 5.66998H6.66615V5.66998Z"
+                                                        fill="#FFC043"
+                                                    />
+                                                </svg>
+                                                &nbsp; 수업 요일을 모두 선택해주세요. 중복선택이 가능합니다.
+                                            </div>
+                                            <div className="form-buttons">
+                                                <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
+                                                    월
+                                                </FormButton>
+                                                <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
+                                                    화
+                                                </FormButton>
+                                                <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
+                                                    수
+                                                </FormButton>
+                                                <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
+                                                    목
+                                                </FormButton>
+                                                <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
+                                                    금
+                                                </FormButton>
+                                                <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
+                                                    토
+                                                </FormButton>
+                                                <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
+                                                    일
+                                                </FormButton>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="manage-footer">
-                                    <CreateButton
-                                        className="button-delete critical"
-                                        size="large"
-                                        variant="contained"
-                                        disabled={!createButtonEnabled}
-                                        name="delete"
-                                        onClick={handleButton}
-                                    >
-                                        삭제하기
-                                    </CreateButton>
-                                    <CreateButton
-                                        className="button-modify"
-                                        size="large"
-                                        variant="contained"
-                                        disabled={!createButtonEnabled}
-                                        name="modify"
-                                        onClick={handleButton}
-                                    >
-                                        수정하기
-                                    </CreateButton>
+                                    <div className="manage-footer">
+                                        <CreateButton
+                                            className="button-delete critical"
+                                            size="large"
+                                            variant="contained"
+                                            disabled={!createButtonEnabled}
+                                            name="delete"
+                                            onClick={handleButton}
+                                        >
+                                            삭제하기
+                                        </CreateButton>
+                                        <CreateButton
+                                            className="button-modify"
+                                            size="large"
+                                            variant="contained"
+                                            disabled={!createButtonEnabled}
+                                            name="modify"
+                                            onClick={handleButton}
+                                        >
+                                            수정하기
+                                        </CreateButton>
+                                    </div>
                                 </div>
-                            </div>
-                        </ClassWrapper>
+                            </>
+                        ) : selectedMenu === 0 ? (
+                            <Leaderboard classNum={num} />
+                        ) : null}
                     </div>
-                ) : ablestate['leaderboard'] ? (
-                    <div className="test">
-                        <Leaderboard />
-                    </div>
+                </div>
+            </ClassWrapper>
+            <BottomActions>
+                {selectedMenu === 2 ? (
+                    <>
+                        {Object.keys(toDeleteStudentData).filter((i) => toDeleteStudentData[i] === true).length ? (
+                            <Button
+                                sizes="medium"
+                                colors="red"
+                                variant="light"
+                                leftIcon={<DeleteIcon fontSize="inherit" color="inherit" />}
+                                onClick={actionDeleteStudents}
+                            >
+                                선택 삭제
+                            </Button>
+                        ) : null}
+                    </>
+                ) : selectedMenu === 1 ? (
+                    <></>
                 ) : null}
-            </>
-        </>
+            </BottomActions>
+        </WrapperRoot>
     );
 }
 
