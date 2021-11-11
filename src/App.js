@@ -46,6 +46,7 @@ import Dashboard_1 from './components/essentials/Dashboard_1';
 import { attachOptimer } from './redux_modules/optimerHelper';
 import ComponentTest from './pages/_TempPages/ComponentTest';
 import CamStudyEyetracker from './components/Camstudy/components/CamStudyEyetracker';
+import Calendar from './pages/Calendar';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -237,7 +238,7 @@ function App({ history, match }) {
                         {navigator.userAgent.toLowerCase().includes('isnativeapp') ? (
                             <Route path="/login-mobile-app-redirect" component={LoginMobileAppRedirect} exact />
                         ) : null}
-
+                        <Route path="/:num/calendar" component={Calendar} exact />
                         <Route path="/timertest" component={TimerTest} exact />
                         <Route path="/components" component={ComponentTest} exact />
 

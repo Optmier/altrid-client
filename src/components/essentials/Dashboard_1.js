@@ -404,7 +404,7 @@ function Dashboard_1({ match }) {
                                     </div>
                                 </Item>
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={8}>
                                 <Item>
                                     <div className="card comment">
                                         <svg width="71" height="47" viewBox="0 0 71 47" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -413,13 +413,14 @@ function Dashboard_1({ match }) {
                                                 fill="#9AA5AF"
                                             />
                                         </svg>
-                                        <p>
-                                            Hazel님은 어휘력은 뛰어나지만, 활용력이 부족합니다. 그래서 어쩌구 저저구가 더 필요합니다. 그리고
-                                            전체 평균에 비해서 점수가 높지만 왔다갔다가 심해서 앞으로 문제 풀 때 뭐뭐가 더 필요할 것
-                                            같습니다.
-                                        </p>
+                                        <p>Hazel님은 어휘력은 뛰어나지만, 활용력이 부족합니다. 그래서 어쩌구 저저구가 더 필요합니다.</p>
                                     </div>
                                 </Item>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <div className="card comment">
+                                    <Link to={`/${num}/calendar`}>캘린더 바로가기</Link>
+                                </div>
                             </Grid>
                         </Grid>
                     </Box>
