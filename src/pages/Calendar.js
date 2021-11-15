@@ -289,7 +289,7 @@ function Calendar({ match }) {
     // 이벤트 수정하기 위한 함수
     const changetitle = () => {
         for (var i = 0; i < CalEvents.length; i++) {
-            if (temp.color == 'red') {
+            if (temp.color == 'green') {
                 alert('학원 수업은 변경할 수 없습니다.');
                 setopen(false);
                 break;
@@ -320,7 +320,7 @@ function Calendar({ match }) {
     const RemoveItem = () => {
         const copy = [...CalEvents];
         for (var i = 0; i < copy.length; i++) {
-            if (temp.color === 'red') {
+            if (temp.color === 'green') {
                 alert('학원 수업 일정은 삭제 할 수 없습니다.');
                 setopen(false);
                 break;

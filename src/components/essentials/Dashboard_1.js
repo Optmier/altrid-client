@@ -135,6 +135,13 @@ const Container = styled.div`
         }
         & .word {
             background: #fff3ef;
+            & p {
+                color: #ff6937;
+                padding-top: 25px;
+                font-weight: 400;
+                font-size: 14px;
+                text-align: center;
+            }
             & h3 {
                 color: #ff6937;
                 padding-top: 32px;
@@ -306,7 +313,7 @@ function Dashboard_1({ match }) {
                             />
                         </svg>
                         <h2>반갑습니다 {sessions.userName} 님</h2>
-                        <Dday />
+                        <Dday classNum={num} />
                     </div>
                     <div className="right">
                         <img width="339px" height="260px" src={icon_image} alt="dashboard_icons"></img>
@@ -361,6 +368,9 @@ function Dashboard_1({ match }) {
                                     <div className="card word">
                                         <h3>오늘의 단어</h3>
                                         {!word ? <h4>단어가 없습니다.</h4> : <h1 onClick={ClickCard}>{flip ? korean : word}</h1>}
+                                        <Link to={`/class/${num}/learning-vocas`}>
+                                            <p>더 많은 단어 학습하기</p>
+                                        </Link>
                                     </div>
                                 </Item>
                             </Grid>
@@ -372,17 +382,26 @@ function Dashboard_1({ match }) {
                                             assignment.map((data, index) => {
                                                 return (
                                                     <div key={index} className="info">
-                                                        <p className="dday">
-                                                            D -
-                                                            {Math.ceil(
-                                                                Math.abs(today.getTime() - new Date(data.due_date).getTime()) /
-                                                                    (1000 * 3600 * 24),
-                                                            )}
-                                                        </p>
-                                                        <p>{data.title}</p>
-                                                        <p>
-                                                            <span>{data.description}</span>
-                                                        </p>
+                                                        {Math.ceil(
+                                                            (new Date(data.due_date).getTime() - today.getTime()) / (1000 * 3600 * 24),
+                                                        ) > 0 ? (
+                                                            <>
+                                                                <p className="dday">
+                                                                    D{' '}
+                                                                    {Math.ceil(
+                                                                        (today.getTime() - new Date(data.due_date).getTime()) /
+                                                                            (1000 * 3600 * 24),
+                                                                    )}
+                                                                </p>
+                                                                <Link to={`/class/${num}/share`}>
+                                                                    <p>{data.title}</p>
+                                                                </Link>
+
+                                                                <p>
+                                                                    <span>{data.description}</span>
+                                                                </p>
+                                                            </>
+                                                        ) : null}
                                                     </div>
                                                 );
                                             })
@@ -391,6 +410,25 @@ function Dashboard_1({ match }) {
                                                 <p>현재진행 중인 과제가 없습니다. </p>
                                             </>
                                         )}
+                                        <h3>마감된 과제 </h3>
+                                        {assignment.length !== 0
+                                            ? assignment.map((data, index) => {
+                                                  return (
+                                                      <div key={index} className="info">
+                                                          {Math.ceil(
+                                                              (new Date(data.due_date).getTime() - today.getTime()) / (1000 * 3600 * 24),
+                                                          ) > 0 ? null : (
+                                                              <>
+                                                                  <p>{data.title}</p>
+                                                                  <p>
+                                                                      <span>{data.description}</span>
+                                                                  </p>
+                                                              </>
+                                                          )}
+                                                      </div>
+                                                  );
+                                              })
+                                            : null}
                                     </div>
                                 </Item>
                             </Grid>

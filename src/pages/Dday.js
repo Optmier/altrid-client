@@ -1,72 +1,87 @@
 import { Box, Modal, Typography } from '@material-ui/core';
-import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React, { useEffect, useRef, useState } from 'react';
+import DatePicker from '@mui/lab/DatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import DashboardDDay from '../controllers/DashboardDDay';
+import Axios from 'axios';
+import { apiUrl } from '../configs/configs';
+import { Save } from '@material-ui/icons';
 
-function Dday() {
+function Dday(props) {
     const [today, setdate] = useState(new Date());
-    const [New_day, setNew] = useState(new Date());
+    const [New_day, setNew] = useState('');
     const [open, setopen] = useState(false);
-    const [Dday, setDday] = useState('');
-    const [title, settitle] = useState('');
+    const [title, settitle] = useState('일정');
+    const [init, setinit] = useState(0);
+    const [test, settest] = useState(new Date());
+    const classNum = props.classNum;
 
     const handleOpen = () => {
-        console.log(today);
         setopen(true);
     };
 
+    const save = new DashboardDDay(classNum, (msg, res) => {
+        // console.log(msg, res);
+    });
+
     const handleClose = () => {
-        var diff = Math.abs(New_day.getTime() - today.getTime());
-        diff = Math.ceil(diff / (1000 * 3600 * 24));
-        setDday(diff);
+        setNew(test);
         setopen(false);
-    };
-    const inputtitle = (e) => {
-        settitle(e.target.value);
+        save.save(test);
+        // save.save({
+        //     title: title,
+        //     date: test,
+        // });
     };
 
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
+    useEffect(() => {
+        new DashboardDDay(classNum, (msg, res) => {
+            console.log(res.value);
+            setNew(res.value);
+            var diff = Math.abs(new Date(New_day).getTime() - today.getTime());
+            diff = Math.ceil(diff / (1000 * 3600 * 24));
+            setinit(diff);
+        });
+    }, [New_day]);
 
     return (
         <div className="d_day">
-            {!Dday ? (
-                <p style={{ color: '#3B1689' }}>
-                    <span onClick={handleOpen}>디데이 설정하러 가기</span>
-                </p>
+            {init === null ? (
+                <span onClick={handleOpen}>디데이 설정하러 가기</span>
             ) : (
-                <>
-                    <p style={{ color: '#3B1689' }}>
-                        {title} 까지 D - {Dday} 일 남았습니다.
-                    </p>
-                </>
+                <div onClick={handleOpen}>
+                    {title} 까지 D - {init} 일 남았습니다.
+                </div>
             )}
 
-            <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal=title" aria-describedby="modal-modal-description">
-                <Box sx={style}>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        <h4 style={{ textAlign: 'center' }}>D-day 설정</h4>
-                        <h5>원하는 날짜와 일정제목을 입력해주세요.</h5>
-                        <input
-                            style={{ border: '1px solid black' }}
-                            onChange={inputtitle}
-                            placeholder="일정 이름"
-                            value={title}
-                            type="text"
+            <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+                <DialogContent>
+                    <input type="text" value={title} placeholder="일정 제목 입력하기" onChange={(e) => settitle(e.target.value)} />
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                            label="날짜를 선택해주세요"
+                            type="datetime-local"
+                            value={test}
+                            onChange={(newValue) => {
+                                settest(newValue);
+                            }}
+                            minDate={today}
+                            renderInput={(params) => <TextField {...params} />}
                         />
-                        <DatePicker dateFormat="yy년 MM월 dd일" selected={New_day} onChange={(date) => setNew(date)} />
-                    </Typography>
-                </Box>
-            </Modal>
+                    </LocalizationProvider>
+                </DialogContent>
+                <DialogActions>
+                    <button onClick={handleClose}>확인</button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }
