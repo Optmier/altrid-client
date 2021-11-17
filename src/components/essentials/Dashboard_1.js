@@ -10,6 +10,7 @@ import HeaderBar from './HeaderBar';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { Link } from 'react-router-dom';
+import ReactApexChart from 'react-apexcharts';
 
 const Container = styled.div`
     margin: 0px auto;
@@ -207,6 +208,14 @@ const Container = styled.div`
                 line-height: 36px;
                 font-weight: 400;
             }
+            & .todolist {
+                height: 170px;
+                overflow-y: hidden;
+                & li {
+                    padding-top: 10px;
+                    font-size: 20px;
+                }
+            }
         }
         & .wordprogress {
             & h3 {
@@ -216,11 +225,11 @@ const Container = styled.div`
                 color: '#000000';
             }
             & p {
-                margin-top: 34px;
+                margin-top: 20px;
                 color: #000000;
                 font-weight: bold;
-                font-size: 56px;
-                line-height: 60px;
+                font-size: 20px;
+
                 text-align: center;
             }
         }
@@ -241,6 +250,64 @@ function Dashboard_1({ match }) {
     // 현재 날짜
     const [today, setdate] = useState(new Date());
     const [room, setroom] = useState([]);
+    const [todo, settodo] = useState([]);
+    const [chart, setchart] = useState({
+        series: [0],
+        options: {
+            chart: {
+                type: 'radialBar',
+                offsetY: -20,
+                sparkline: {
+                    enabled: true,
+                },
+            },
+            plotOptions: {
+                radialBar: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    track: {
+                        background: '#e7e7e7',
+                        strokeWidth: '97%',
+                        margin: 5,
+                        dropShadow: {
+                            enabled: true,
+                            top: 2,
+                            left: 0,
+                            color: '#999',
+                            opacity: 1,
+                            blur: 2,
+                        },
+                    },
+                    dataLabels: {
+                        name: {
+                            show: false,
+                        },
+                        value: {
+                            offsetY: -2,
+                            fontSize: '22px',
+                        },
+                    },
+                },
+            },
+            grid: {
+                padding: {
+                    top: -10,
+                },
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    shadeIntensity: 0.4,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 53, 91],
+                },
+            },
+            labels: ['WordProgress'],
+        },
+    });
 
     useEffect(() => {
         Axios.get(`${apiUrl}/meeting-room/livelecture`, { withCredentials: true })
@@ -289,7 +356,14 @@ function Dashboard_1({ match }) {
 
     useEffect(() => {
         Axios.get(`${apiUrl}/vocas/progress`, { params: { classNum: classNum }, withCredentials: true })
-            .then((result) => settotal(result.data))
+            .then((result) => {
+                settotal(result.data);
+                setchart({
+                    ...chart,
+                    series: [Math.ceil((result.data.progress / result.data.total) * 100)],
+                });
+            })
+
             .catch((err) => console.log(err));
     }, []);
 
@@ -297,6 +371,16 @@ function Dashboard_1({ match }) {
         Axios.get(`${apiUrl}/cam-study/all`, { withCredentials: true })
             .then((result) => {
                 setroom(result.data);
+            })
+            .catch((err) => console.log(err));
+    }, []);
+
+    // 오늘의 TODO 가져오기
+    useEffect(() => {
+        Axios.get(`${apiUrl}/calendar-events/my/${num}/current`, { withCredentials: true })
+            .then((result) => {
+                console.log(result.data);
+                settodo(result.data);
             })
             .catch((err) => console.log(err));
     }, []);
@@ -436,6 +520,7 @@ function Dashboard_1({ match }) {
                                 <Item>
                                     <div className="card wordprogress">
                                         <h3>단어 진행률</h3>
+                                        <ReactApexChart options={chart.options} series={chart.series} type="radialBar" />
                                         <p>
                                             {total.progress}/{total.total}
                                         </p>
@@ -457,7 +542,20 @@ function Dashboard_1({ match }) {
                             </Grid>
                             <Grid item xs={4}>
                                 <div className="card comment">
-                                    <Link to={`/${num}/calendar`}>캘린더 바로가기</Link>
+                                    <Link to={`/class/${num}/calendar`}>나의 일정 보러가기</Link>
+                                    {todo.length == 0 ? (
+                                        <p>오늘의 일정이 없습니다.</p>
+                                    ) : (
+                                        <div className="todolist">
+                                            {todo.map((result, index) => {
+                                                return (
+                                                    <ul key={index}>
+                                                        <li>{result.title}</li>
+                                                    </ul>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
                                 </div>
                             </Grid>
                         </Grid>
