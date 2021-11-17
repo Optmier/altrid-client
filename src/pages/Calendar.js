@@ -159,6 +159,7 @@ function Calendar({ match }) {
             )
                 .then((result) => {
                     alert('일정이  추가 되었습니다.');
+                    setAdd('');
                     setEvents(CalEvents.concat(New_event));
                 })
                 .catch((error) => console.log(error));
@@ -207,6 +208,7 @@ function Calendar({ match }) {
                 .then((result) => {
                     alert('일정이  추가 되었습니다.');
                     setEvents(CalEvents.concat(New_event));
+                    setAdd('');
                 })
                 .catch((error) => console.log(error));
         }
@@ -214,7 +216,9 @@ function Calendar({ match }) {
     // 취소 버튼 눌렀을때는 그냥 닫기
     const nosave = () => {
         setdialog(false);
+        setAdd('');
     };
+
     // 정보를 전달하기 위한 state
     const [AddEvent, setAdd] = useState({
         title: '',
@@ -322,6 +326,7 @@ function Calendar({ match }) {
                 setopen(false);
                 CalEvents[i].title = temp.title;
                 setEvents([...CalEvents]);
+                setAdd('');
             }
         }
     };
@@ -464,7 +469,7 @@ function Calendar({ match }) {
                                 .replace('목', '4')
                                 .replace('금', '5')
                                 .replace('토', '6'),
-                            color: 'green',
+                            color: '#3AE2A1',
                             editable: false,
                         },
                     ]);
@@ -477,6 +482,7 @@ function Calendar({ match }) {
             })
                 .then((result) => {
                     console.log(result.data);
+
                     setEvents((events) =>
                         events.concat(
                             result.data.map((result, index) => ({
@@ -494,7 +500,7 @@ function Calendar({ match }) {
                                     .replace('금', '5')
                                     .replace('토', '6'),
                                 allDay: result.all_day,
-                                color: 'purple',
+                                color: '#957FCE',
                                 shared: result.shared,
                             })),
                         ),
@@ -503,6 +509,7 @@ function Calendar({ match }) {
                 .catch((err) => console.log(err));
         }
     }, []);
+
     window.test = CalEvents;
     return (
         <>
@@ -513,7 +520,7 @@ function Calendar({ match }) {
                         // googleCalendarApiKey = 'AIzaSyByCEDWVM3WF5eLKNK05-dW_NOgKwLSYXY' // google Calendar Api keys
                         initialView="dayGridMonth" // 처음 보여주는 화면 (달별로 출력)
                         selectable={true} // 달력에서 드래그로 날짜 선택
-                        editable={true} // 캘린더 내에서 일정 옮기고 수정
+                        editable={false} // 캘린더 내에서 일정 옮기고 수정
                         locale="ko" // 한국어 설정
                         dayMaxEvents={true} // 하나의 날짜에 이벤트 갯수 제한 넘어가면 more로 표시
                         businessHours={true} // 주말 색깔 블러 처리
@@ -523,7 +530,7 @@ function Calendar({ match }) {
                         select={handleSlect} // 캘린더 내에서 기간을 선택해서 이벤트 추가하기
                         eventClick={handleEventClick} // 이벤트 클릭 시 모달 창 띄우기
                         headerToolbar={headToolbar} // 캘린더 상단 툴바 설정
-                        eventOrderStrict={true}
+                        eventOrderStrict={false}
                     />
                 </div>
                 {/* 삭제 및 수정 모달 창 띄우기 */}
@@ -578,10 +585,13 @@ function Calendar({ match }) {
                             setAdd({ ...AddEvent, description: e.target.value });
                         }}
                     />
+                    <hr />
                     <p>
                         시작 : {AddEvent.start} 종료 : {AddEvent.end}
                     </p>
-
+                    <hr />
+                    <p>반복일 선택</p>
+                    <hr />
                     <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
                         월
                     </FormButton>
@@ -604,6 +614,7 @@ function Calendar({ match }) {
                         일
                     </FormButton>
                     <br />
+                    <hr />
                     {sessions.userType === 'teachers' ? (
                         <label>
                             <input
@@ -624,7 +635,7 @@ function Calendar({ match }) {
                                 }}
                                 value="shared"
                             />
-                            공유 옵션
+                            학생들에게 일정 공유하기
                         </label>
                     ) : null}
                 </DialogContent>

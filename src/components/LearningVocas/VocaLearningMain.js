@@ -37,12 +37,27 @@ const Contents = styled.div`
 `;
 const LearningSection = styled.div`
     align-items: center;
+    height: 232px;
     background-color: #ffffff;
-    border-radius: 11px;
+    border-radius: 32px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 32px;
+    border-radius: 1px solid #f6f8f9;
+    align-items: start;
+
+    & .progress {
+        font-weight: normal;
+        font-size: 18px;
+        line-height: 22px;
+    }
+    & .percentage {
+        font-weight: bold;
+        font-size: 48px;
+        line-height: 52px;
+        color: #276ef1;
+    }
 `;
 const GotoLearningContainer = styled.div``;
 const LearningProgressContainer = styled.div`
@@ -76,6 +91,9 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '1rem',
         marginLeft: 8,
         minHeight: 56,
+        background: '#3B1689',
+        color: '#ffffff',
+        borderRadius: 104,
     },
     totalProgress: {
         height: 16,
@@ -228,7 +246,12 @@ function VocaLearningMain({ history, match }) {
                 <Contents>
                     <Groupbox title="학습하기">
                         <LearningSection>
-                            <GotoLearningContainer>
+                            <div className="mainsection">
+                                <div className="progress">
+                                    <h3>나의 학습 진행률</h3>
+                                </div>
+                                <div className="percentage">{totalProgress}%</div>
+                                <br />
                                 <FormControl className={classes.selectBox} variant="outlined">
                                     <InputLabel id="select-learning-numbers-label">학습할 단어 수 선택</InputLabel>
                                     <Select
@@ -266,12 +289,52 @@ function VocaLearningMain({ history, match }) {
                                 >
                                     학습하기!
                                 </Button>
+                            </div>
+
+                            <GotoLearningContainer>
+                                {/* <FormControl className={classes.selectBox} variant="outlined">
+                                    <InputLabel id="select-learning-numbers-label">학습할 단어 수 선택</InputLabel>
+                                    <Select
+                                        labelId="select-learning-numbers-label"
+                                        label="학습할 단어 수 선택"
+                                        value={learningNumbersSelectValue}
+                                        onChange={actionOnChangeNumbersSelect}
+                                    >
+                                        <MenuItem value={10}>10</MenuItem>
+                                        <MenuItem value={20}>20</MenuItem>
+                                        <MenuItem value={30}>30</MenuItem>
+                                        <MenuItem value={50}>50</MenuItem>
+                                        <MenuItem value={100}>100</MenuItem>
+                                        <MenuItem value="custom">
+                                            <em>직접 입력하기</em>
+                                        </MenuItem>
+                                    </Select>
+                                </FormControl>
+                                {learningNumbersSelectValue === 'custom' ? (
+                                    <FormControl className={classes.customNumbersTextfield}>
+                                        <TextField
+                                            variant="outlined"
+                                            type="number"
+                                            defaultValue={customNumbers}
+                                            onChange={actionChangeCustomNumbersField}
+                                        />
+                                    </FormControl>
+                                ) : null}
+                                <Button
+                                    className={classes.learningStartButton}
+                                    variant="outlined"
+                                    color="default"
+                                    endIcon={<PlayIcon />}
+                                    onClick={actionClickLearningStart}
+                                >
+                                    학습하기!
+                                </Button> */}
                             </GotoLearningContainer>
-                            <LearningProgressContainer>
+                            {/* <LearningProgressContainer>
                                 나의 단어 학습 진행률
                                 <LearningProgressPercentage>{totalProgress}%</LearningProgressPercentage>
                                 <LinearProgress className={classes.totalProgress} variant="determinate" value={totalProgress} />
-                            </LearningProgressContainer>
+                            </LearningProgressContainer> */}
                         </LearningSection>
                     </Groupbox>
                     <Groupbox
