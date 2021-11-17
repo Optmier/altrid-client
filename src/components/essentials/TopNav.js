@@ -30,11 +30,11 @@ const StyleDiv = styled.div`
     justify-content: space-between;
     top: 0;
     z-index: 1298;
-    background-color: #f7f9f8;
-    box-shadow: 0 0 4px rgba(200, 200, 200, 0.4);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.098);
+    background-color: #ffffff;
+    box-shadow: inset 0px -1px 0px #e9edef;
+    /* border-bottom: 1px solid #e9edef; */
     transition: width 0.4s;
-    width: ${(props) => (props.leftNavState ? 'calc(100% - 240px)' : '100%')};
+    width: ${(props) => (props.leftNavState ? 'calc(100% - 392px)' : '100%')};
 
     @media all and (max-width: 902px) {
         width: 100%;
@@ -56,8 +56,8 @@ const StyleDiv = styled.div`
         display: flex;
         align-items: center;
         & img {
-            height: 40px;
-            width: 40px;
+            height: 32px;
+            width: 32px;
             border-radius: 50%;
         }
     }
@@ -127,9 +127,7 @@ function TopNav({ leftNavState, handleLeftNav, match }) {
                         </g>
                     </StyleSVGMobile>
 
-                    <Link to={`/`}>
-                        <img src={LogoColor} alt="logo_color"></img>
-                    </Link>
+                    <Link to={`/`}>{!leftNavState ? <img src={LogoColor} alt="logo_color" /> : null}</Link>
 
                     {sessions.userType === 'teachers' ? match.params.id === 'share' ? <BranchNav /> : null : null}
                 </div>

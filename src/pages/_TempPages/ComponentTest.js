@@ -99,6 +99,9 @@ function ComponentTest({ children }) {
                 <Button colors="purple">
                     <CircularProgress disableShrink />
                 </Button>
+                <Button variant="mono" disabled>
+                    Label
+                </Button>
             </Group>
         </Root>
     );

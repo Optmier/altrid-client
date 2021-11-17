@@ -3,23 +3,26 @@ import styled from 'styled-components';
 
 const GropboxRoot = styled.div`
     & + & {
-        margin-top: 90px;
+        margin-top: 32px;
     }
 `;
 const HeaderBox = styled.header`
     align-items: flex-end;
-    border-bottom: 1px solid rgba(112, 112, 112, 0.7);
+    /* border-bottom: 1px solid rgba(112, 112, 112, 0.7); */
     color: #000;
     display: flex;
     flex-direction: row;
-    font-weight: 500;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-weight: 700;
     justify-content: space-between;
-    padding: 6px 2px 6px 2px;
+    /* padding: 6px 2px 6px 2px; */
     margin-bottom: 16px;
 
     & h5.title {
-        font-size: 1.25rem;
-        font-weight: 500;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 28px;
     }
 
     & div.right-comp {
