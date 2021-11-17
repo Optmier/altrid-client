@@ -264,7 +264,7 @@ function Calendar({ match }) {
     };
     // 캘린더 내에 이벤트 기간을 늘리거나 줄였을 때 state 업데이트 하기
     const handleResize = (eventResizeInfo) => {
-        console.log(eventResizeInfo.event);
+        // console.log(eventResizeInfo.event);
         const new_end = eventResizeInfo.event.endStr;
         for (var i = 0; i < CalEvents.length; i++) {
             if (eventResizeInfo.event.id == CalEvents[i].id) {
@@ -274,7 +274,7 @@ function Calendar({ match }) {
     };
     // 캘린더 내에서 날짜를 셀렉 해서 이벤트 추가하기
     const handleSlect = (selectionInfo) => {
-        console.log(selectionInfo);
+        // console.log(selectionInfo);
         setdialog(true);
         setAdd({
             ...AddEvent,
@@ -334,14 +334,13 @@ function Calendar({ match }) {
     //이벤트 클릭 시 모달창 띄우기 및 데이터 넘기기
     const handleEventClick = (clickInfo) => {
         setopen(true);
-        console.log(clickInfo.event._def.recurringDef.typeData.daysOfWeek);
         const submit = {
             title: clickInfo.event.title,
             start: clickInfo.event.startStr,
             end: clickInfo.event.ends,
             id: clickInfo.event.id,
             color: clickInfo.event.backgroundColor,
-            daysOfWeek: clickInfo.event._def.recurringDef.typeData.daysOfWeek,
+            daysOfWeek: !clickInfo.event._def.recurringDef ? null : clickInfo.event._def.recurringDef.typeData.daysOfWeek,
         };
         settemp(submit);
     };
@@ -379,8 +378,8 @@ function Calendar({ match }) {
         if (sessions.userType === 'students') {
             Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
                 .then((result) => {
-                    setEvents([
-                        {
+                    setEvents((events) =>
+                        events.concat({
                             id: result.data[0].idx,
                             title: '오프라인 수업',
                             daysOfWeek: result.data[0].class_day
@@ -393,8 +392,8 @@ function Calendar({ match }) {
                                 .replace('토', '6'),
                             color: 'green',
                             editable: false,
-                        },
-                    ]);
+                        }),
+                    );
                 })
                 .catch((err) => console.log(err));
             // 개인적인 이벤트
@@ -403,7 +402,7 @@ function Calendar({ match }) {
                 withCredentials: true,
             })
                 .then((result) => {
-                    console.log(result.data);
+                    // console.log(result.data);
                     setEvents((events) =>
                         events.concat(
                             result.data.map((result, index) => ({
@@ -412,14 +411,16 @@ function Calendar({ match }) {
                                 end: result.ends,
                                 description: result.description,
                                 id: parseInt(result.cal_id),
-                                daysOfWeek: result.days_of_week
-                                    .replace('일', '0')
-                                    .replace('월', '1')
-                                    .replace('화', '2')
-                                    .replace('수', '3')
-                                    .replace('목', '4')
-                                    .replace('금', '5')
-                                    .replace('토', '6'),
+                                daysOfWeek: !result.days_of_week
+                                    ? null
+                                    : result.days_of_week
+                                          .replace('일', '0')
+                                          .replace('월', '1')
+                                          .replace('화', '2')
+                                          .replace('수', '3')
+                                          .replace('목', '4')
+                                          .replace('금', '5')
+                                          .replace('토', '6'),
                                 allDay: result.all_day,
                                 color: 'purple',
                             })),
@@ -440,14 +441,16 @@ function Calendar({ match }) {
                             end: result.ends,
                             description: result.description,
                             id: parseInt(result.cal_id),
-                            daysOfWeek: result.days_of_week
-                                .replace('일', '0')
-                                .replace('월', '1')
-                                .replace('화', '2')
-                                .replace('수', '3')
-                                .replace('목', '4')
-                                .replace('금', '5')
-                                .replace('토', '6'),
+                            daysOfWeek: !result.days_of_week
+                                ? null
+                                : result.days_of_week
+                                      .replace('일', '0')
+                                      .replace('월', '1')
+                                      .replace('화', '2')
+                                      .replace('수', '3')
+                                      .replace('목', '4')
+                                      .replace('금', '5')
+                                      .replace('토', '6'),
                             allDay: result.all_day,
                             color: '#3AE2A1',
                         })),
@@ -457,8 +460,8 @@ function Calendar({ match }) {
         } else if (sessions.userType === 'teachers') {
             Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
                 .then((result) => {
-                    setEvents([
-                        {
+                    setEvents((events) =>
+                        events.concat({
                             id: result.data[0].idx,
                             title: '오프라인 수업',
                             daysOfWeek: result.data[0].class_day
@@ -471,8 +474,8 @@ function Calendar({ match }) {
                                 .replace('토', '6'),
                             color: '#3AE2A1',
                             editable: false,
-                        },
-                    ]);
+                        }),
+                    );
                 })
                 .catch((err) => console.log(err));
             // 개인적인 이벤트
@@ -481,8 +484,7 @@ function Calendar({ match }) {
                 withCredentials: true,
             })
                 .then((result) => {
-                    console.log(result.data);
-
+                    // console.log(result.data);
                     setEvents((events) =>
                         events.concat(
                             result.data.map((result, index) => ({
@@ -491,14 +493,16 @@ function Calendar({ match }) {
                                 end: result.ends,
                                 description: result.description,
                                 id: parseInt(result.cal_id),
-                                daysOfWeek: result.days_of_week
-                                    .replace('일', '0')
-                                    .replace('월', '1')
-                                    .replace('화', '2')
-                                    .replace('수', '3')
-                                    .replace('목', '4')
-                                    .replace('금', '5')
-                                    .replace('토', '6'),
+                                daysOfWeek: !result.days_of_week
+                                    ? null
+                                    : result.days_of_week
+                                          .replace('일', '0')
+                                          .replace('월', '1')
+                                          .replace('화', '2')
+                                          .replace('수', '3')
+                                          .replace('목', '4')
+                                          .replace('금', '5')
+                                          .replace('토', '6'),
                                 allDay: result.all_day,
                                 color: '#957FCE',
                                 shared: result.shared,
