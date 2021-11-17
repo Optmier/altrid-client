@@ -10,8 +10,8 @@ const TalkIOButton = withStyles(() => ({
         color: '#3b178a',
         position: 'fixed',
         zIndex: 99998,
-        right: '8px',
-        bottom: '8px',
+        right: '24px',
+        bottom: '64px',
     },
 }))(IconButton);
 

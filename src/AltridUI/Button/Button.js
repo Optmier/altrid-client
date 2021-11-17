@@ -75,11 +75,13 @@ const ButtonRoot = styled.button`
     background-color: ${({ colors, variant }) => {
         if (variant === 'filled') return getColorSeries400(colors);
         else if (variant === 'light') return getColorSeries050(colors);
+        else if (variant === 'mono') return '#ffffff';
         else return 'rgba(255, 255, 255, 0)';
     }};
     border: ${({ variant }) => {
         if (variant === 'filled') return 'none';
         else if (variant === 'outlined') return '2px solid #ffffff';
+        else if (variant === 'mono') return '2px solid #9AA5AF';
         else return 'none';
     }};
     border-color: ${({ colors }) => {
@@ -88,6 +90,7 @@ const ButtonRoot = styled.button`
     border-radius: 104px;
     color: ${({ variant, colors }) => {
         if (variant === 'filled') return '#ffffff';
+        if (variant === 'mono') return '#11171C';
         else {
             return getColorSeries400(colors);
         }
@@ -120,12 +123,12 @@ const ButtonRoot = styled.button`
                 return '46px';
         }
     }};
-    padding: ${({ sizes }) => {
+    padding: ${({ sizes, variant }) => {
         switch (sizes) {
             case 'large':
-                return '12px 24px';
+                return `${variant === 'outlined' ? '10px' : '12px'} 24px`;
             case 'medium':
-                return '8px 16px';
+                return `${variant === 'outlined' ? '6px' : '8px'} 16px`;
             case 'small':
                 return '3px 12px';
             case 'xsmall':
@@ -141,14 +144,17 @@ const ButtonRoot = styled.button`
         background-color: ${({ variant, colors }) => {
             if (variant === 'light') return null;
             else if (variant === 'outlined') return 'transparent';
+            else if (variant === 'mono') return '#ffffff';
             else if (variant === 'default') return '#E9EDEF';
             return getColorSeries300(colors);
         }};
-        border-color: ${({ colors }) => {
-            return getColorSeries300(colors);
+        border-color: ${({ colors, variant }) => {
+            if (variant === 'mono') return '#E9EDEF';
+            else return getColorSeries300(colors);
         }};
         color: ${({ colors, variant }) => {
             if (variant === 'filled') return '#ffffff';
+            if (variant === 'mono') return '#11171C';
             else if (variant === 'default') return null;
             return getColorSeries300(colors);
         }};
@@ -157,13 +163,16 @@ const ButtonRoot = styled.button`
     &:disabled {
         background-color: ${({ variant }) => {
             if (variant === 'filled') return '#bfc6cd';
+            if (variant === 'mono') return '#ffffff';
             else if (variant === 'outlined') return 'transparent';
         }};
         border-color: ${({ variant }) => {
             if (variant === 'outlined') return '#bfc6cd';
+            else if (variant === 'mono') return '#E9EDEF';
         }};
         color: ${({ variant }) => {
             if (variant === 'outlined' || variant === 'light') return '#bfc6cd';
+            else if (variant === 'mono') return '#E9EDEF';
             else if (variant === 'default') return '#BFC6CD';
         }};
         cursor: default;

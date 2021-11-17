@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import Groupbox from '../../_tempComponents/Groupbox';
+import Groupbox from '../../AltridUI/GroupBox/Groupbox';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 import Button from '../../AltridUI/Button/Button';
 import ClassWrapper from '../essentials/ClassWrapper';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CamstudyListItem from './components/CamstudyListItem';
 import CreateAndEditCamstudy from './components/CreateAndEditCamstudy';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
 import HtmlParser from 'react-html-parser';
+import AddCamstudyIcon from '../../AltridUI/Icons/AddCamstudyIcon';
 
 const CamstudyMainRoot = styled.div``;
 const HeaderContainer = styled.div`
@@ -18,7 +18,7 @@ const HeaderContainer = styled.div`
     width: 100%;
 `;
 const Contents = styled.div`
-    margin-top: 54px;
+    margin-top: 32px;
     width: 100%;
 `;
 
@@ -131,86 +131,6 @@ function CamStudyMainLists({ history, match }) {
                 .catch((err) => {
                     console.error(err);
                 });
-    };
-
-    const renderContentsByMenu = (menuId) => {
-        switch (menuId) {
-            // 나의 캠스터디 항목 보여주기(초대됨, 내 항목)
-            case 0:
-                return (
-                    <>
-                        {dataListInvited.length ? (
-                            <Groupbox title="초대됨">
-                                {dataListInvited.length
-                                    ? dataListInvited.map((d) => (
-                                          <CamstudyListItem
-                                              key={d.idx}
-                                              roomId={d.room_id}
-                                              creator={d.name}
-                                              title={d.title}
-                                              description={d.description}
-                                              rules={d.rules}
-                                              liveCounts={d.liveCounts}
-                                              maxJoinCounts={d.max_joins}
-                                              publicState={d.public_state}
-                                              sessionEndDate={d.session_enddate}
-                                              onEnter={actionEnterStudy}
-                                          />
-                                      ))
-                                    : null}
-                            </Groupbox>
-                        ) : null}
-                        <Groupbox title="내가 생성함">
-                            {dataListMine.length
-                                ? dataListMine.map((d) => (
-                                      <CamstudyListItem
-                                          key={d.idx}
-                                          isMine
-                                          roomId={d.room_id}
-                                          creator={d.name}
-                                          title={d.title}
-                                          description={d.description}
-                                          rules={d.rules}
-                                          liveCounts={d.liveCounts}
-                                          maxJoinCounts={d.max_joins}
-                                          publicState={d.public_state}
-                                          sessionEndDate={d.session_enddate}
-                                          onEnter={actionEnterStudy}
-                                          onModify={actionModifyStudy}
-                                          onDelete={actionDeleteStudy}
-                                      />
-                                  ))
-                                : null}
-                        </Groupbox>
-                    </>
-                );
-            case 1:
-                return (
-                    <>
-                        <Groupbox title="전체 목록">
-                            {dataListTotal.length
-                                ? dataListTotal.map((d) => (
-                                      <CamstudyListItem
-                                          key={d.idx}
-                                          roomId={d.room_id}
-                                          creator={d.name}
-                                          title={d.title}
-                                          description={d.description}
-                                          rules={d.rules}
-                                          liveCounts={d.liveCounts}
-                                          maxJoinCounts={d.max_joins}
-                                          publicState={d.public_state}
-                                          sessionEndDate={d.session_enddate}
-                                          onEnter={actionEnterStudy}
-                                      />
-                                  ))
-                                : null}
-                        </Groupbox>
-                    </>
-                );
-            default:
-                return null;
-        }
     };
 
     const fetchListMine = (actived) => {
@@ -380,6 +300,86 @@ function CamStudyMainLists({ history, match }) {
         );
     };
 
+    const renderContentsByMenu = (menuId) => {
+        switch (menuId) {
+            // 나의 캠스터디 항목 보여주기(초대됨, 내 항목)
+            case 0:
+                return (
+                    <>
+                        {dataListInvited.length ? (
+                            <Groupbox title="초대됨">
+                                {dataListInvited.length
+                                    ? dataListInvited.map((d) => (
+                                          <CamstudyListItem
+                                              key={d.idx}
+                                              roomId={d.room_id}
+                                              creator={d.name}
+                                              title={d.title}
+                                              description={d.description}
+                                              rules={d.rules}
+                                              liveCounts={d.liveCounts}
+                                              maxJoinCounts={d.max_joins}
+                                              publicState={d.public_state}
+                                              sessionEndDate={d.session_enddate}
+                                              onEnter={actionEnterStudy}
+                                          />
+                                      ))
+                                    : null}
+                            </Groupbox>
+                        ) : null}
+                        <Groupbox title="내가 생성함">
+                            {dataListMine.length
+                                ? dataListMine.map((d) => (
+                                      <CamstudyListItem
+                                          key={d.idx}
+                                          isMine
+                                          roomId={d.room_id}
+                                          creator={d.name}
+                                          title={d.title}
+                                          description={d.description}
+                                          rules={d.rules}
+                                          liveCounts={d.liveCounts}
+                                          maxJoinCounts={d.max_joins}
+                                          publicState={d.public_state}
+                                          sessionEndDate={d.session_enddate}
+                                          onEnter={actionEnterStudy}
+                                          onModify={actionModifyStudy}
+                                          onDelete={actionDeleteStudy}
+                                      />
+                                  ))
+                                : null}
+                        </Groupbox>
+                    </>
+                );
+            case 1:
+                return (
+                    <>
+                        <Groupbox title="전체 목록">
+                            {dataListTotal.length
+                                ? dataListTotal.map((d) => (
+                                      <CamstudyListItem
+                                          key={d.idx}
+                                          roomId={d.room_id}
+                                          creator={d.name}
+                                          title={d.title}
+                                          description={d.description}
+                                          rules={d.rules}
+                                          liveCounts={d.liveCounts}
+                                          maxJoinCounts={d.max_joins}
+                                          publicState={d.public_state}
+                                          sessionEndDate={d.session_enddate}
+                                          onEnter={actionEnterStudy}
+                                      />
+                                  ))
+                                : null}
+                        </Groupbox>
+                    </>
+                );
+            default:
+                return null;
+        }
+    };
+
     const rulesDialog = (
         <Dialog open={rulesDialogOpen}>
             <DialogTitle>규칙을 읽어주세요!</DialogTitle>
@@ -423,10 +423,10 @@ function CamStudyMainLists({ history, match }) {
                         onItemClick={actionClickHeaderMenuItem}
                         rightComponent={
                             <Button
-                                variant="light"
+                                variant="filled"
                                 sizes="medium"
-                                colors="purple"
-                                leftIcon={<AddCircleOutlineIcon fontSize="small" />}
+                                colors="green"
+                                leftIcon={<AddCamstudyIcon />}
                                 onClick={actionToggleDrawer(true)}
                             >
                                 캠스터디 만들기

@@ -13,19 +13,21 @@ const ContainerTitle = styled.div`
 `;
 const RightComponentContainer = styled.div`
     margin-top: auto;
+    margin-bottom: 8px;
 `;
 const ContainerMenus = styled.div`
     align-items: center;
-    background-color: #f4f1fa;
-    border: 1px solid #e3ddf2;
-    border-radius: 32px;
+    /* background-color: #f4f1fa; */
+    background-color: #ffffff;
+    /* border: 1px solid #e3ddf2; */
+    border-radius: 8px;
     box-sizing: border-box;
     display: flex;
     font-family: inherit;
     justify-content: space-between;
     margin-top: ${({ type }) => (type === 1 ? '32px' : '16px')};
-    padding: 1px;
-    height: 48px;
+    padding: 4px;
+    height: 44px;
 `;
 const HeaderTitle = styled.div`
     font-family: inherit;
@@ -37,17 +39,20 @@ const HeaderTitle = styled.div`
 `;
 const MenuItem = styled.button`
     background-color: ${(props) => (props['m-selected'] ? '#3B1689' : 'transparent')};
-    border-radius: 32px;
-    color: ${(props) => (props['m-selected'] ? '#ffffff' : '#3B1689')};
+    /* border-radius: 32px; */
+    box-shadow: ${(props) => (props['m-selected'] ? '0px 1px 2px rgba(0, 0, 0, 0.2)' : 'none')};
+    border-radius: 4px;
+    color: ${(props) => (props['m-selected'] ? '#ffffff' : '#9AA5AF')};
     font-family: inherit;
     font-size: 1rem;
     font-weight: 500;
     line-height: 1.25rem;
+    padding: 0;
     height: 100%;
-    width: calc(100% + 32px);
-    transition: background-color 0.2s, color 0.2s;
+    width: calc(100%);
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
     & + & {
-        margin-left: -32px;
+        /* margin-left: -32px; */
     }
 `;
 
