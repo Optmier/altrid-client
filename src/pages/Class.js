@@ -58,8 +58,11 @@ const ClassPageSwitcher = (match, sessions) => {
             return <VideoLecturesManage />;
 
         case 'calendar':
-            if (sessions.userType === 'teachers') return <ErrorRestricted />;
-            return <Calendar />;
+            return (
+                <>
+                    <Route path={path} exact component={Calendar} />
+                </>
+            );
         // case 'dashboard':
         //     if (sessions.userType === 'teachers') return <ErrorRestricted />;
         //     return <Route path={`${path}`} component={Dashboard_1} />;
@@ -77,6 +80,7 @@ const ClassPageSwitcher = (match, sessions) => {
                     <Route path={path} exact component={CamStudyMainLists} />
                 </>
             );
+
         default:
             return <Error />;
     }

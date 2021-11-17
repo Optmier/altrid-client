@@ -7,11 +7,28 @@ import Box from '@material-ui/core/Box';
 import Modal from '@material-ui/core/Modal';
 import Typography from '@material-ui/core/Typography';
 import listPlugin from '@fullcalendar/list';
-import Button from '@material-ui/core/Button';
+import moment from 'moment';
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import Button from '@material-ui/core/Button';
+import { useSelector } from 'react-redux';
 
-// import rrulePlugin from '@fullcalendar/rrule';
+const FormButton = styled.button`
+    background-color: ${(props) => (props.able ? '#FFFFFF' : '#FFFFFF')};
+    color: ${(props) => (props.able ? 'black' : 'black')};
+    border: ${(props) => (props.able ? '1px solid black' : 'none')};
+    border-radius: 11px;
+    font-size: 1rem;
+    font-weight: 500;
+    width: 50px;
+    height: 25px;
+    & + & {
+        margin-left: 8px;
+    }
+`;
 
 const Container = styled.div`
     display: flex;
@@ -48,13 +65,6 @@ const Container = styled.div`
         white-space: normal;
     }
 `;
-// Css ClassName
-// Month change button = > .fc-button
-// Today button =>  .fc-button-primary  || active => .fc-button-primary:disabled
-// Day table = > .fc-daygrid-day-frame
-// Today table => .fc-day-today
-// Day Select => .fc-highlight
-
 const Modal_Style = styled.div`
     & input {
         width: 100px;
@@ -77,128 +87,10 @@ const Boxstyle = {
     p: 4,
 };
 
-// 이벤트 Todolist 에서 drag n drop 기능
-const ToDoList = memo(({ event }) => {
-    const elRef = useRef(null);
-
-    useEffect(() => {
-        const draggable = new Draggable(
-            elRef.current,
-            {
-                eventData: function () {
-                    return { ...event, create: true };
-                },
-            },
-            [],
-        );
-
-        return () => draggable.destroy(event);
-    });
-    return (
-        <div
-            ref={elRef}
-            className="fc-event fc-h-event mb-1 fc-daygrid-event fc-daygrid-block-event p-2"
-            title={event.title}
-            style={{
-                marginTop: '10px',
-                cursor: 'pointer',
-                background: '#8b00ff',
-                border: ' none',
-                padding: '5px',
-            }}
-        >
-            <div className="fc-event-main">
-                <div>
-                    <strong>{event.title}</strong>
-                </div>
-            </div>
-        </div>
-    );
-});
-
 function Calendar({ match }) {
     const { num } = match.params;
-
-    // 캘린더 안에 들어있는 이벤트들
-    const [CalEvents, setEvents] = useState([
-        // {
-        //     idx: 11111,
-        //     title: '학원 수업',
-        //     daysOfWeek: ['1', '3', '5'], //[일,월,화,수,목,금,토,일] 배열 인덱스 값으로 반복 요일 설정
-        //     color: 'green',
-        //     editable: false,
-        // },
-    ]);
-
-    // {
-    //     id : 2341,
-    //     title: '학원 수업',
-    //     color: 'red',
-    //     start: '2021-10-19T11:00',
-    //     end: '2021-10-19T13:00',
-    //     editable:false // 이벤트 수정 제한
-    // },
-    // {
-    //     id : 57124,
-    //     title: '학원 수업',
-    //     color: 'red',
-    //     // start: '2021-10-21T11:00',
-    //     // end: '2021-10-21T13:00',
-    //     constraint:'학원 수업' ,
-    //     editable:false, //이벤트 수정 제한
-    // },
-    // {
-    // id: 11111,
-    // title: '학원 수업',
-    // daysOfWeek: ['1', '3', '5'], //[일,월,화,수,목,금,토,일] 배열 인덱스 값으로 반복 요일 설정
-    // color: 'green',
-    // editable: false,
-    // },
-
-    window.calevent = CalEvents;
-
-    // Todolist 안에 들어있는 이벤트들
-    const [Todo, setTodo] = useState([
-        {
-            id: 14351,
-            title: '과제 1 단어',
-            color: '#8b00ff',
-            start: ' ',
-            end: ' ',
-        },
-        { id: 14203, title: '수능 특강 풀기', color: '#8b00ff', start: ' ', end: ' ' },
-        {
-            id: 15151,
-            title: '개념 복습하기',
-            color: '#8b00ff',
-            start: ' ',
-            end: ' ',
-        },
-        {
-            id: 16131,
-            title: '모의고사1 다시 풀기',
-            color: '#8b00ff',
-            start: ' ',
-            end: ' ',
-        },
-        {
-            id: 15678,
-            title: '오답노트 쓰기',
-            color: '#8b00ff',
-            start: ' ',
-            end: ' ',
-        },
-    ]);
-
-    // const [test] = [
-    //     {
-    //         id: CalEvents.idx,
-    //         title: CalEvents.class_name,
-    //         color: 'green',
-    //         editable: false,
-    //     },
-    // ];
-
+    const [CalEvents, setEvents] = useState([]);
+    const sessions = useSelector((state) => state.RdxSessions);
     // 클릭시 정보를 넘겨 주기 위한 일시적인 State
     const [temp, settemp] = useState({
         title: ' ',
@@ -207,45 +99,153 @@ function Calendar({ match }) {
         start: ' ',
         end: '',
     });
-
-    // const TestEvent = CalEvents.map((data,index)=>{
-    //     id = data.idx,
-    //     color = "green",
-    //     title = data.class_name,
-    //     editable =
-
-    // })
-
     const [open, setopen] = useState(false);
+    const [day, setday] = useState(new Date());
+    const [dialogopen, setdialog] = useState(false);
+    // dialog 열기 닫기 함수
+    const handleDiaOpen = () => {
+        setdialog(true);
+    };
+
+    //  닫는 동시에 DB에 업데이트 하기
+    const handleSave = () => {
+        setdialog(false);
+        let daysArr = [];
+        Object.keys(buttonAble)
+            .filter((i) => buttonAble[i] === true)
+            .map((i) => daysArr.push(i));
+        setdialog(false);
+        if (AddEvent.title == '') {
+            alert('일정 제목을 입력해주세요');
+        } else if (sessions.userType === 'students') {
+            console.log(daysArr);
+            const New_event = {
+                id: Math.floor(Math.random() * 1001),
+                title: AddEvent.title,
+                description: AddEvent.description,
+                start: AddEvent.start,
+                end: AddEvent.end,
+                type: 0,
+                classNumber: num,
+                color: '#3B1689',
+                daysOfWeek: daysArr
+                    .toString()
+                    .replace('일', '0')
+                    .replace('월', '1')
+                    .replace('화', '2')
+                    .replace('수', '3')
+                    .replace('목', '4')
+                    .replace('금', '5')
+                    .replace('토', '6'),
+                editable: 1,
+                allDay: 1,
+            };
+            Axios.post(
+                `${apiUrl}/calendar-events/students/my`,
+                {
+                    calId: Math.floor(Math.random() * 1001),
+                    title: AddEvent.title,
+                    description: AddEvent.description,
+                    starts: AddEvent.start,
+                    ends: AddEvent.end,
+                    type: 0,
+                    classNumber: num,
+                    colorSets: '#3B1689',
+                    daysOfWeek: daysArr.toString(),
+                    editable: 1,
+                    allDay: 1,
+                },
+                { withCredentials: true },
+            )
+                .then((result) => {
+                    alert('일정이  추가 되었습니다.');
+                    setEvents(CalEvents.concat(New_event));
+                })
+                .catch((error) => console.log(error));
+        } else if (sessions.userType === 'teachers') {
+            console.log(AddEvent);
+            const New_event = {
+                id: Math.floor(Math.random() * 1001),
+                title: AddEvent.title,
+                description: AddEvent.description,
+                start: AddEvent.start,
+                end: AddEvent.end,
+                type: 0,
+                classNumber: num,
+                color: '#3B1689',
+                daysOfWeek: daysArr
+                    .toString()
+                    .replace('일', '0')
+                    .replace('월', '1')
+                    .replace('화', '2')
+                    .replace('수', '3')
+                    .replace('목', '4')
+                    .replace('금', '5')
+                    .replace('토', '6'),
+                editable: 1,
+                allDay: 1,
+                shared: AddEvent.shared,
+            };
+            Axios.post(
+                `${apiUrl}/calendar-events/teachers/my`,
+                {
+                    calId: Math.floor(Math.random() * 1001),
+                    title: AddEvent.title,
+                    description: AddEvent.description,
+                    starts: AddEvent.start,
+                    ends: AddEvent.end,
+                    type: 0,
+                    classNumber: num,
+                    colorSets: '#3B1689',
+                    daysOfWeek: daysArr.toString(),
+                    editable: 1,
+                    allDay: 1,
+                    shared: AddEvent.shared,
+                },
+                { withCredentials: true },
+            )
+                .then((result) => {
+                    alert('일정이  추가 되었습니다.');
+                    setEvents(CalEvents.concat(New_event));
+                })
+                .catch((error) => console.log(error));
+        }
+    };
+    // 취소 버튼 눌렀을때는 그냥 닫기
+    const nosave = () => {
+        setdialog(false);
+    };
+    // 정보를 전달하기 위한 state
+    const [AddEvent, setAdd] = useState({
+        title: '',
+        daysOfWeek: null,
+        editable: true,
+        description: '',
+        allDay: true,
+        id: ' ',
+    });
+
+    const [buttonAble, setButtonAble] = useState({
+        월: false,
+        화: false,
+        수: false,
+        목: false,
+        금: false,
+        토: false,
+        일: false,
+    });
+
+    const handleDaysButtons = (e) => {
+        const { name } = e.target;
+
+        setButtonAble({
+            ...buttonAble,
+            [name]: !buttonAble[name],
+        });
+    };
 
     // 모달 창 닫기 위한 함수
     const handleClose = () => setopen(false);
-
-    // TodoLIst에서 캘린더로 드롭 후 todolist 와 CalEvents State 업데이트
-    const handleRecive = (info) => {
-        const new_start = info.event.startStr;
-        const new_end = info.event.endStr;
-        const NewEvent = {
-            id: info.event.id,
-            title: info.event.title,
-            color: '#8b00ff',
-            start: new_start,
-            end: new_end,
-            dow: [2, 3],
-        };
-        // calEvents state 업데이트
-        const DropList = CalEvents.concat(NewEvent);
-        setEvents(DropList);
-        // Todolist State 업데이트
-        for (var i = 0; i < Todo.length; i++) {
-            const C_todo = [...Todo];
-            if (info.event.id == C_todo[i].id) {
-                C_todo.splice(i, 1);
-                setTodo(C_todo);
-            }
-        }
-        info.revert();
-    };
 
     // 캘린더 내에서 다른 날짜로 이동 할 때 state 업데이트
     const handleDrop = (eventDropInfo) => {
@@ -258,7 +258,6 @@ function Calendar({ match }) {
             }
         }
     };
-
     // 캘린더 내에 이벤트 기간을 늘리거나 줄였을 때 state 업데이트 하기
     const handleResize = (eventResizeInfo) => {
         console.log(eventResizeInfo.event);
@@ -269,23 +268,27 @@ function Calendar({ match }) {
             }
         }
     };
-
     // 캘린더 내에서 날짜를 셀렉 해서 이벤트 추가하기
     const handleSlect = (selectionInfo) => {
         console.log(selectionInfo);
-        const title = prompt('일정을 등록해주세요.');
-        if (title) {
-            const New_event = {
-                id: Math.floor(Math.random() * 1001),
-                title,
-                color: 'blue',
-                start: selectionInfo.startStr,
-                end: selectionInfo.endStr,
-            };
-            setEvents(CalEvents.concat(New_event));
-        }
+        setdialog(true);
+        setAdd({
+            ...AddEvent,
+            start: selectionInfo.startStr,
+            end: selectionInfo.endStr,
+        });
+        // const title = prompt('일정을 등록해주세요.');
+        // if (title) {
+        //     const New_event = {
+        //         id: Math.floor(Math.random() * 1001),
+        //         title,
+        //         color: 'blue',
+        //         start: selectionInfo.startStr,
+        //         end: selectionInfo.endStr,
+        //     };
+        //     setEvents(CalEvents.concat(New_event));
+        // }
     };
-
     // 이벤트 수정하기 위한 함수
     const changetitle = () => {
         for (var i = 0; i < CalEvents.length; i++) {
@@ -295,9 +298,30 @@ function Calendar({ match }) {
                 break;
             } else if (temp.id == CalEvents[i].id) {
                 CalEvents[i].title = temp.title;
-                setEvents([...CalEvents]);
-                alert('수정이 완료되었습니다');
+                Axios.patch(
+                    `${apiUrl}/calendar-events/students/my/${temp.id}`,
+                    {
+                        title: temp.title,
+                        starts: moment(temp.start).format('YYYY-MM-DD HH:mm:ss'),
+                        ends: moment(temp.end).format('YYYY-MM-DD HH:mm:ss'),
+                        types: 1,
+                        allDay: 1,
+                        daysOfWeek: temp.daysOfWeek,
+                        editable: 0,
+                        startEditable: 1,
+                        durationEditable: 1,
+                        resourceEditable: 0,
+                        colorSets: 'green',
+                        completed: 0,
+                        classNumber: num,
+                    },
+                    { withCredentials: true },
+                ).then((res) => {
+                    alert('수정이 완료되었습니다.');
+                });
                 setopen(false);
+                CalEvents[i].title = temp.title;
+                setEvents([...CalEvents]);
             }
         }
     };
@@ -305,13 +329,14 @@ function Calendar({ match }) {
     //이벤트 클릭 시 모달창 띄우기 및 데이터 넘기기
     const handleEventClick = (clickInfo) => {
         setopen(true);
-        console.log(clickInfo);
+        console.log(clickInfo.event._def.recurringDef.typeData.daysOfWeek);
         const submit = {
             title: clickInfo.event.title,
             start: clickInfo.event.startStr,
-            end: clickInfo.event.endStr,
+            end: clickInfo.event.ends,
             id: clickInfo.event.id,
             color: clickInfo.event.backgroundColor,
+            daysOfWeek: clickInfo.event._def.recurringDef.typeData.daysOfWeek,
         };
         settemp(submit);
     };
@@ -324,34 +349,21 @@ function Calendar({ match }) {
                 alert('학원 수업 일정은 삭제 할 수 없습니다.');
                 setopen(false);
                 break;
-            } else if (copy[i].color === 'blue') {
+            } else if (CalEvents[i].id == temp.id) {
+                Axios.delete(`${apiUrl}/calendar-events/${temp.id}`, { withCredentials: true })
+                    .then((res) => {
+                        alert('삭제 되었습니다.');
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
                 copy.splice(i, 1);
                 setEvents(copy);
-                alert('일정이 삭제되었습니다.');
                 setopen(false);
-            } else if (copy[i].id == temp.id) {
-                copy.splice(i, 1);
-                setEvents(copy);
-                alert('일정이 삭제되었습니다.');
-                setopen(false);
-                setTodo(Todo.concat(temp));
-                break;
             }
         }
     };
 
-    //이벤트 드롭 제한
-    // const handleallow = (dropInfo,draggedEvent)=>{
-    //     // dropInfo.start='2021-10-15'
-    //     if (draggedEvent.id === '14351') {
-    //         return dropInfo.start < new Date('2021-10-16') && dropInfo.start > new Date('2021-10-10')-----
-    //       }
-    //       else {
-    //         return true;
-    //       }
-    // }
-
-    // 캘린더 상단 툴바 설정
     const headToolbar = {
         left: 'prev,next today',
         center: 'title',
@@ -359,117 +371,273 @@ function Calendar({ match }) {
     };
 
     useEffect(() => {
-        Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
-            .then((result) => {
-                setEvents([
-                    {
-                        id: result.data[0].idx,
-                        title: '오프라인 수업',
-                        daysOfWeek: result.data[0].class_day
-                            .replace('일', '0')
-                            .replace('월', '1')
-                            .replace('화', '2')
-                            .replace('수', '3')
-                            .replace('목', '4')
-                            .replace('금', '5')
-                            .replace('토', '6'),
-                        color: 'green',
-                        editable: false,
-                    },
-                ]);
+        if (sessions.userType === 'students') {
+            Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
+                .then((result) => {
+                    setEvents([
+                        {
+                            id: result.data[0].idx,
+                            title: '오프라인 수업',
+                            daysOfWeek: result.data[0].class_day
+                                .replace('일', '0')
+                                .replace('월', '1')
+                                .replace('화', '2')
+                                .replace('수', '3')
+                                .replace('목', '4')
+                                .replace('금', '5')
+                                .replace('토', '6'),
+                            color: 'green',
+                            editable: false,
+                        },
+                    ]);
+                })
+                .catch((err) => console.log(err));
+            // 개인적인 이벤트
+            Axios.get(`${apiUrl}/calendar-events/my/${num}`, {
+                params: { currentDate: moment(day).format('YYYY-MM-DD') },
+                withCredentials: true,
             })
-            .catch((err) => console.log(err));
+                .then((result) => {
+                    console.log(result.data);
+                    setEvents((events) =>
+                        events.concat(
+                            result.data.map((result, index) => ({
+                                title: result.title,
+                                start: result.starts,
+                                end: result.ends,
+                                description: result.description,
+                                id: parseInt(result.cal_id),
+                                daysOfWeek: result.days_of_week
+                                    .replace('일', '0')
+                                    .replace('월', '1')
+                                    .replace('화', '2')
+                                    .replace('수', '3')
+                                    .replace('목', '4')
+                                    .replace('금', '5')
+                                    .replace('토', '6'),
+                                allDay: result.all_day,
+                                color: 'purple',
+                            })),
+                        ),
+                    );
+                })
+                .catch((err) => console.log(err));
+            // 선생님 공유 이벤트
+            Axios.get(`${apiUrl}/calendar-events/class-shared/${num}`, {
+                params: { currentDate: moment(day).format('YYYY-MM-DD') },
+                withCredentials: true,
+            }).then((result) => {
+                setEvents((resource) =>
+                    resource.concat(
+                        result.data.map((result, index) => ({
+                            title: result.title,
+                            start: result.starts,
+                            end: result.ends,
+                            description: result.description,
+                            id: parseInt(result.cal_id),
+                            daysOfWeek: result.days_of_week
+                                .replace('일', '0')
+                                .replace('월', '1')
+                                .replace('화', '2')
+                                .replace('수', '3')
+                                .replace('목', '4')
+                                .replace('금', '5')
+                                .replace('토', '6'),
+                            allDay: result.all_day,
+                            color: '#3AE2A1',
+                        })),
+                    ),
+                );
+            });
+        } else if (sessions.userType === 'teachers') {
+            Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
+                .then((result) => {
+                    setEvents([
+                        {
+                            id: result.data[0].idx,
+                            title: '오프라인 수업',
+                            daysOfWeek: result.data[0].class_day
+                                .replace('일', '0')
+                                .replace('월', '1')
+                                .replace('화', '2')
+                                .replace('수', '3')
+                                .replace('목', '4')
+                                .replace('금', '5')
+                                .replace('토', '6'),
+                            color: 'green',
+                            editable: false,
+                        },
+                    ]);
+                })
+                .catch((err) => console.log(err));
+            // 개인적인 이벤트
+            Axios.get(`${apiUrl}/calendar-events/my/${num}`, {
+                params: { currentDate: moment(day).format('YYYY-MM-DD') },
+                withCredentials: true,
+            })
+                .then((result) => {
+                    console.log(result.data);
+                    setEvents((events) =>
+                        events.concat(
+                            result.data.map((result, index) => ({
+                                title: result.title,
+                                start: result.starts,
+                                end: result.ends,
+                                description: result.description,
+                                id: parseInt(result.cal_id),
+                                daysOfWeek: result.days_of_week
+                                    .replace('일', '0')
+                                    .replace('월', '1')
+                                    .replace('화', '2')
+                                    .replace('수', '3')
+                                    .replace('목', '4')
+                                    .replace('금', '5')
+                                    .replace('토', '6'),
+                                allDay: result.all_day,
+                                color: 'purple',
+                                shared: result.shared,
+                            })),
+                        ),
+                    );
+                })
+                .catch((err) => console.log(err));
+        }
     }, []);
-
+    window.test = CalEvents;
     return (
-        <Container>
-            {/* {settest({
-                id: CalEvents.idx,
-                title: CalEvents.class_name,
-                color: 'green',
-                editable: false,
-            })} */}
-            {console.log(CalEvents)}
-            <div className="calendar">
-                <Fullcalendar
-                    plugins={[dayGridPlugin, interactionPlugin, listPlugin]}
-                    // googleCalendarApiKey = 'AIzaSyByCEDWVM3WF5eLKNK05-dW_NOgKwLSYXY' // google Calendar Api keys
-                    initialView="dayGridMonth" // 처음 보여주는 화면 (달별로 출력)
-                    selectable={true} // 달력에서 드래그로 날짜 선택
-                    editable={true} // 캘린더 내에서 일정 옮기고 수정
-                    locale="ko" // 한국어 설정
-                    dayMaxEvents={true} // 하나의 날짜에 이벤트 갯수 제한 넘어가면 more로 표시
-                    businessHours={true} // 주말 색깔 블러 처리
-                    events={CalEvents} // calendar event 불러오기
-                    eventReceive={handleRecive} // Todolist 에서 event를 드롭했을 때 state 업데이트
-                    eventDrop={handleDrop} // 이벤트 날짜를 옮겼을 때 state에 업데이트
-                    eventResize={handleResize} //이벤트 기간을 늘리거나 줄였을때 state를 업데이트
-                    select={handleSlect} // 캘린더 내에서 기간을 선택해서 이벤트 추가하기
-                    eventClick={handleEventClick} // 이벤트 클릭 시 모달 창 띄우기
-                    headerToolbar={headToolbar} // 캘린더 상단 툴바 설정
-                    eventOrderStrict={true}
-                />
-            </div>
-
-            {/* 투 두 리스트  */}
-
-            <div className="Todo">
-                <h2>To Do List</h2>
-                <div className="list">
-                    {Todo.map((event, index) => {
-                        return (
-                            <>
-                                <ToDoList key={index} event={event} />
-                                <Button
-                                    fullWidth
-                                    onClick={() => {
-                                        const copy_todo = [...Todo];
-                                        copy_todo.splice(index, 1);
-                                        setTodo(copy_todo);
-                                    }}
-                                >
-                                    삭제하기
-                                </Button>
-                            </>
-                        );
-                    })}
+        <>
+            <Container>
+                <div className="calendar">
+                    <Fullcalendar
+                        plugins={[dayGridPlugin, interactionPlugin, listPlugin]}
+                        // googleCalendarApiKey = 'AIzaSyByCEDWVM3WF5eLKNK05-dW_NOgKwLSYXY' // google Calendar Api keys
+                        initialView="dayGridMonth" // 처음 보여주는 화면 (달별로 출력)
+                        selectable={true} // 달력에서 드래그로 날짜 선택
+                        editable={true} // 캘린더 내에서 일정 옮기고 수정
+                        locale="ko" // 한국어 설정
+                        dayMaxEvents={true} // 하나의 날짜에 이벤트 갯수 제한 넘어가면 more로 표시
+                        businessHours={true} // 주말 색깔 블러 처리
+                        events={CalEvents} // calendar event 불러오기
+                        eventDrop={handleDrop} // 이벤트 날짜를 옮겼을 때 state에 업데이트
+                        eventResize={handleResize} //이벤트 기간을 늘리거나 줄였을때 state를 업데이트
+                        select={handleSlect} // 캘린더 내에서 기간을 선택해서 이벤트 추가하기
+                        eventClick={handleEventClick} // 이벤트 클릭 시 모달 창 띄우기
+                        headerToolbar={headToolbar} // 캘린더 상단 툴바 설정
+                        eventOrderStrict={true}
+                    />
                 </div>
-                <Button fullWidth>To Do list 추가하기</Button>
-            </div>
+                {/* 삭제 및 수정 모달 창 띄우기 */}
 
-            {/* 삭제 및 수정 모달 창 띄우기 */}
-
-            <Modal open={open} onClose={handleClose} disableAutoFocus={true} disableRestoreFocus={true}>
-                <Box sx={Boxstyle}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        일정 관리
-                    </Typography>
-                    <Modal_Style>
-                        <Typography id="modal-modal-description">
-                            일정 :{' '}
-                            <input
-                                type="text"
-                                value={temp.title}
-                                placeholder={temp.title}
-                                style={{ border: 'none', height: '18px', background: 'rgb(239, 239, 239)' }}
-                                onChange={(e) => {
-                                    settemp({
-                                        ...temp,
-                                        title: e.target.value,
-                                    });
-                                    console.log(e.target.value);
-                                }}
-                            />{' '}
-                            <br />
-                            일시 : {temp.start}
-                            <br />
-                            <button onClick={changetitle}>수정하기</button>
-                            <button onClick={RemoveItem}>삭제하기</button>
+                <Modal open={open} onClose={handleClose} disableAutoFocus={true} disableRestoreFocus={true}>
+                    <Box sx={Boxstyle}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            일정 관리
                         </Typography>
-                    </Modal_Style>
-                </Box>
-            </Modal>
-        </Container>
+                        <Modal_Style>
+                            <Typography id="modal-modal-description">
+                                일정 :{' '}
+                                <input
+                                    type="text"
+                                    value={temp.title}
+                                    placeholder={temp.title}
+                                    style={{ border: 'none', height: '18px', background: 'rgb(239, 239, 239)' }}
+                                    onChange={(e) => {
+                                        settemp({
+                                            ...temp,
+                                            title: e.target.value,
+                                        });
+                                        console.log(e.target.value);
+                                    }}
+                                />{' '}
+                                <br />
+                                일시 : {temp.start}
+                                <br />
+                                <button onClick={changetitle}>수정하기 </button>
+                                <button onClick={RemoveItem}>삭제하기</button>
+                            </Typography>
+                        </Modal_Style>
+                    </Box>
+                </Modal>
+            </Container>
+            <Dialog open={dialogopen} onClose={nosave}>
+                <DialogContent>
+                    <input
+                        type="text"
+                        placeholder="제목"
+                        value={AddEvent.title}
+                        onChange={(e) => {
+                            setAdd({ ...AddEvent, title: e.target.value });
+                        }}
+                    />
+                    <br />
+                    <input
+                        type="text"
+                        placeholder="설명"
+                        value={AddEvent.description}
+                        onChange={(e) => {
+                            setAdd({ ...AddEvent, description: e.target.value });
+                        }}
+                    />
+                    <p>
+                        시작 : {AddEvent.start} 종료 : {AddEvent.end}
+                    </p>
+
+                    <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
+                        월
+                    </FormButton>
+                    <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
+                        화
+                    </FormButton>
+                    <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
+                        수
+                    </FormButton>
+                    <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
+                        목
+                    </FormButton>
+                    <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
+                        금
+                    </FormButton>
+                    <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
+                        토
+                    </FormButton>
+                    <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
+                        일
+                    </FormButton>
+                    <br />
+                    {sessions.userType === 'teachers' ? (
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="shared"
+                                onChange={(e) => {
+                                    if (e.target.checked)
+                                        setAdd({
+                                            ...AddEvent,
+                                            shared: 1,
+                                        });
+                                    else {
+                                        setAdd({
+                                            ...AddEvent,
+                                            editable: 0,
+                                        });
+                                    }
+                                }}
+                                value="shared"
+                            />
+                            공유 옵션
+                        </label>
+                    ) : null}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleSave} color="primary">
+                        확인
+                    </Button>
+                    <Button onClick={nosave} color="primary" autoFocus>
+                        취소
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 }
 
