@@ -542,7 +542,7 @@ function Dashboard_1({ match }) {
                             </Grid>
                             <Grid item xs={4}>
                                 <div className="card comment">
-                                    <Link to={`/${num}/calendar`}>나의 일정 보러가기</Link>
+                                    <Link to={`/class/${num}/calendar`}>나의 일정 보러가기</Link>
                                     {todo.length == 0 ? (
                                         <p>오늘의 일정이 없습니다.</p>
                                     ) : (
