@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import BackdropComponent from '../../components/essentials/BackdropComponent';
 import { updateVocaDatas } from '../../redux_modules/vocaLearnings';
+import finish from '../../images/finish.png';
 
 /** https://codingbroker.tistory.com/86 */
 const arrShuffle = function (arr) {
@@ -257,7 +258,10 @@ function LearningVocas({ history, match, children }) {
                         </>
                     ) : null
                 ) : (
-                    <h1>학습이 종료되었습니다 :)</h1>
+                    <>
+                        <img width="250px" height="250px" src={finish} alt="finish learn" />
+                        <h1 style={{ marginTop: '52px' }}>학습이 종료되었습니다. </h1>
+                    </>
                 )}
             </ScriptRoot>
         </>
