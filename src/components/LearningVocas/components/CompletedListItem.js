@@ -3,18 +3,21 @@ import styled from 'styled-components';
 import VerifiedIcon from '@material-ui/icons/CheckCircle';
 
 const ItemRoot = styled.div`
-    background-color: #ffffff;
-    border-radius: 11px;
+    background-color: ${({ idx }) => (idx % 2 === 1 ? '#ffffff' : '#F6F8F9')};
+    border-radius: 8px;
+    color: #11171c;
     display: flex;
-    min-height: 16px;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    line-height: 22px;
+    min-height: 46px;
     width: 100%;
     & + & {
-        margin-top: 4px;
+        /* margin-top: 4px; */
     }
 `;
 const LabelColor = styled.div`
-    border-top-left-radius: 11px;
-    border-bottom-left-radius: 11px;
+    border-radius: 8px;
     background-color: ${(props) =>
         props['label-color'] === 1
             ? '#cbcbcb'
@@ -23,8 +26,10 @@ const LabelColor = styled.div`
             : props['label-color'] >= 3
             ? '#e85c4a'
             : '#ffffff'};
-    height: 48px;
-    width: 12px;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 36px;
+    width: 5px;
 `;
 const ContentsContainer = styled.div`
     align-items: center;
@@ -35,14 +40,17 @@ const ContentsContainer = styled.div`
 `;
 const Word = styled.div`
     flex-basis: 27%;
+    font-weight: 700;
     margin-left: 16px;
 `;
 const Means = styled.div`
     flex-basis: 48%;
+    font-weight: 400;
     margin: 0 4px;
 `;
 const Notes = styled.div`
     flex-basis: 16%;
+    font-weight: 400;
 `;
 const Verified = styled.div`
     align-items: center;
@@ -52,9 +60,9 @@ const Verified = styled.div`
     min-width: 26px;
 `;
 
-function CompletedListItem({ word, means, notes, label, verified, children }) {
+function CompletedListItem({ idx, word, means, notes, label, verified, children }) {
     return (
-        <ItemRoot>
+        <ItemRoot idx={idx}>
             <LabelColor label-color={label} />
             <ContentsContainer>
                 <Word>{word}</Word>
@@ -71,7 +79,7 @@ CompletedListItem.defaultProps = {
     means: '뜻',
     notes: '메모',
     label: 1,
-    verified: false,
+    verified: true,
 };
 
 export default CompletedListItem;

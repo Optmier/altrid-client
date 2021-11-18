@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import Button from '../../AltridUI/Button/Button';
 import Axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import BackdropComponent from '../../components/essentials/BackdropComponent';
 import { updateVocaDatas } from '../../redux_modules/vocaLearnings';
 import finish from '../../images/finish.png';
+import ProgressIndicator from '../../AltridUI/Icons/ProgressIndicator';
 
 /** https://codingbroker.tistory.com/86 */
 const arrShuffle = function (arr) {
@@ -18,51 +19,124 @@ const arrShuffle = function (arr) {
 
 const ScriptRoot = styled.div`
     align-items: center;
+    color: #11171c;
     display: flex;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
     flex-direction: column;
     justify-content: center;
     height: calc(100vh - 192px);
+    padding: 16px;
     position: relative;
     margin: 0 auto;
     max-width: 560px;
-    width: 100%;
+    width: calc(100% - 32px);
 `;
 const ProgressCount = styled.div`
     display: flex;
+    font-size: 12px;
+    font-weight: 700;
     justify-content: flex-end;
+    letter-spacing: -0.01em;
+    line-height: 16px;
+    max-width: 500px;
     width: 100%;
 `;
 const VocaCardContainer = styled.div`
     display: flex;
     justify-content: center;
-    margin: 36px 0;
+    margin: 16px 0;
+    padding: 0 16px;
+    max-width: 500px;
     width: 100%;
 `;
 const VocaCard = styled.div`
     align-items: center;
     background-color: #ffffff;
-    border: 1px solid #e2e2e2;
-    border-radius: 11px;
+    border: 1px solid #e9edef;
+    border-radius: 32px;
     cursor: pointer;
     display: flex;
     justify-content: center;
-    min-height: 320px;
+    min-height: 240px;
     padding: 32px;
     width: 100%;
+
+    @media (min-width: 0) and (max-width: 767px) {
+        & {
+            padding: 16px;
+        }
+    }
 `;
 const CardWord = styled.div`
-    font-size: 1.8rem;
+    font-size: 2.625rem;
     font-weight: 700;
 `;
 const CardMeans = styled.div`
-    font-size: 1.6rem;
+    font-size: 2rem;
+    font-weight: 500;
+    text-align: center;
 `;
 const ActionButtonsContainer = styled.div`
-    bottom: calc(50% - 300px);
+    bottom: calc(50% - 220px);
     display: flex;
     justify-content: space-evenly;
     position: absolute;
     width: 100%;
+
+    @media (min-width: 0) and (max-width: 767px) {
+        & {
+            flex-direction: column;
+            justify-content: flex-start;
+            margin-bottom: -72px;
+            max-width: 500px;
+            height: 128px;
+            width: calc(100% - 32px);
+            & button + button {
+                margin-top: 4px;
+            }
+        }
+    }
+`;
+const TopProgressBar = styled.div`
+    background: #e9edef;
+    border: none;
+    display: flex;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    position: absolute;
+    top: 48px;
+    height: 8px;
+    width: 100%;
+    z-index: 900;
+`;
+const Bar = styled.div`
+    flex-basis: ${({ progress }) => progress + '%'};
+    background: #0cb573;
+    border-radius: 0px 16px 16px 0px;
+    height: 8px;
+    transition: flex-basis 0.3s;
+`;
+const Indicator = styled.div`
+    align-items: center;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.25rem;
+    text-align: center;
+    letter-spacing: -0.02em;
+    top: 9px;
+    left: ${({ progress }) => `calc(${progress}% - 16px)`};
+    position: absolute;
+    transition: left 0.3s;
+    z-index: 901;
+    & span {
+        margin-top: 2px;
+        position: absolute;
+        z-index: 902;
+    }
 `;
 
 function LearningVocas({ history, match, children }) {
@@ -76,6 +150,7 @@ function LearningVocas({ history, match, children }) {
     const [flipped, setFlipped] = useState(false);
     const [currentMeans, setCurrentMeans] = useState('');
     const [finished, setFinished] = useState(false);
+    const [completedCount, setCompletedCount] = useState(0);
     const [korean, setkorean] = useState('');
     const dispatch = useDispatch();
 
@@ -151,6 +226,7 @@ function LearningVocas({ history, match, children }) {
         nextAndRotation(2);
         setCurrentMeans('');
         setkorean('');
+        setCompletedCount(completedCount + 1);
     };
 
     // 좀 더 학습이 필요하다고 답한 경우
@@ -218,6 +294,17 @@ function LearningVocas({ history, match, children }) {
     return (
         <>
             <BackdropComponent open={isPending} blind={true} />
+            {!finished ? (
+                learningDatas && learningDatas.length ? (
+                    <TopProgressBar>
+                        <Bar progress={(completedCount / vocaDatasOriginal.length) * 100} />
+                        <Indicator progress={(completedCount / vocaDatasOriginal.length) * 100}>
+                            <span>{completedCount}</span>
+                            <ProgressIndicator />
+                        </Indicator>
+                    </TopProgressBar>
+                ) : null
+            ) : null}
             <ScriptRoot>
                 {!finished ? (
                     learningDatas && learningDatas.length ? (
@@ -240,16 +327,16 @@ function LearningVocas({ history, match, children }) {
                             </VocaCardContainer>
                             {flipped ? (
                                 <ActionButtonsContainer>
-                                    <Button color="primary" variant="outlined" onClick={actionClickReplyConfirm}>
+                                    <Button sizes="medium" colors="purple" variant="light" onClick={actionClickReplyConfirm}>
                                         {rotation > 0 || learningDatas[currentIdx].dist === 1
                                             ? '이제 확실히 알겠습니다!'
                                             : '아는 단어입니다.'}
                                     </Button>
-                                    <Button color="default" variant="outlined" onClick={actionClickReplyLearnMore}>
+                                    <Button sizes="medium" colors="default" variant="mono" onClick={actionClickReplyLearnMore}>
                                         좀 더 학습이 필요합니다.
                                     </Button>
                                     {rotation === 0 && learningDatas[currentIdx].dist === 0 ? (
-                                        <Button color="secondary" variant="outlined" onClick={actionClickReplyNegative}>
+                                        <Button sizes="medium" colors="red" variant="outlined" onClick={actionClickReplyNegative}>
                                             모르는 단어입니다.
                                         </Button>
                                     ) : null}
