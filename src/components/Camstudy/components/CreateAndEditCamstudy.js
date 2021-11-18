@@ -15,6 +15,7 @@ import { apiUrl } from '../../../configs/configs';
 import moment from 'moment-timezone';
 import Drawer from '../../../AltridUI/Drawer/Drawer';
 import DrawerActions from '../../../AltridUI/Drawer/DrawerActions';
+import Button from '../../../AltridUI/Button/Button';
 import { useSelector } from 'react-redux';
 
 const ContentsRoot = styled.div``;
@@ -591,9 +592,13 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                 </DrawerGroupBox>
                 <DrawerActions>
                     {Boolean(defaultData) ? (
-                        <button onClick={handleUpdate}>수정하기</button>
+                        <Button colors="purple" onClick={handleUpdate}>
+                            수정하기
+                        </Button>
                     ) : (
-                        <button onClick={handleCrate}>만들기</button>
+                        <Button colors="purple" onClick={handleCrate}>
+                            만들기
+                        </Button>
                     )}
                 </DrawerActions>
             </Drawer>

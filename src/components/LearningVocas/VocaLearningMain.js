@@ -3,18 +3,8 @@ import styled from 'styled-components';
 import ClassWrapper from '../essentials/ClassWrapper';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 import Groupbox from '../../AltridUI/GroupBox/Groupbox';
-import {
-    Button,
-    FormControl,
-    Grid,
-    Input,
-    InputAdornment,
-    InputLabel,
-    LinearProgress,
-    MenuItem,
-    Select,
-    TextField,
-} from '@material-ui/core';
+import Button from '../../AltridUI/Button/Button';
+import { FormControl, Grid, Input, InputAdornment, InputLabel, LinearProgress, MenuItem, Select, TextField } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
@@ -24,55 +14,100 @@ import CompletedListItem from './components/CompletedListItem';
 import SearchIcon from '@material-ui/icons/Search';
 import { useDispatch } from 'react-redux';
 import { fetchVocaDatas } from '../../redux_modules/vocaLearnings';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import ProgressIndicator from '../../AltridUI/Icons/ProgressIndicator';
 
 /**
  * 구현해야 할 것...
  * 1. 단어 묶음 카드
  * 2. 몇개씩 묶을 것인지
  */
-const LearningRoot = styled.div``;
+const LearningRoot = styled.div`
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+`;
 const Contents = styled.div`
     margin-top: 54px;
     width: 100%;
 `;
 const LearningSection = styled.div`
-    align-items: center;
-    height: 232px;
+    align-items: start;
     background-color: #ffffff;
+    border: 1px solid #e9edef;
     border-radius: 32px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 32px;
-    border-radius: 1px solid #f6f8f9;
-    align-items: start;
+    padding: 48px 56px;
+`;
+const GotoLearningContainer = styled.div`
+    align-items: center;
+    display: flex;
+    margin-top: 8px;
+    width: 100%;
+`;
+const WordCountsSelect = styled.select`
+    cursor: pointer;
+    background: url(/bg_images/Vector.png) no-repeat 92% 50%;
+    background-color: #f6f8f9;
+    min-height: 40px;
+    padding: 12px 16px;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-size: 1.125rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 16px;
+    color: #77818b;
+    line-height: 1.375rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
 
-    & .progress {
-        font-weight: normal;
-        font-size: 18px;
-        line-height: 22px;
+    &.small {
+        width: 120px;
     }
-    & .percentage {
-        font-weight: bold;
-        font-size: 48px;
-        line-height: 52px;
-        color: #276ef1;
+
+    &.tiny {
+        width: 90px;
+        height: 32px;
+        min-height: initial;
     }
 `;
-const GotoLearningContainer = styled.div``;
+const CustomNumberField = styled.input`
+    background-color: #f6f8f9;
+    padding: 12px 16px;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-size: 1.125rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 16px;
+    color: #77818b;
+    line-height: 1.375rem;
+    max-width: 64px;
+    margin-left: 8px;
+`;
 const LearningProgressContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    font-size: 1.1rem;
-    margin-top: 32px;
-    text-align: center;
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.375rem;
     width: 100%;
 `;
 const LearningProgressPercentage = styled.div`
-    font-weight: 700;
-    font-size: 1.8rem;
-    margin: 8px 0;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 3rem;
+    line-height: 3.25rem;
+    letter-spacing: -0.03em;
+    color: #276ef1;
+    margin-top: 8px;
 `;
 const CompletedListDivider = styled.div`
     border-top: 2px solid #cbcbcb;
@@ -81,11 +116,17 @@ const CompletedListDivider = styled.div`
 `;
 const useStyles = makeStyles((theme) => ({
     selectBox: {
-        minWidth: 240,
+        minWidth: 160,
+        maxWidth: 328,
+        width: '100%',
     },
     customNumbersTextfield: {
+        backgroundColor: '#f6f8f9',
+        borderRadius: 16,
         maxWidth: 64,
         marginLeft: 8,
+        minHeight: 40,
+        padding: '12px 16px',
     },
     learningStartButton: {
         fontSize: '1rem',
@@ -101,20 +142,38 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const CompletedSearchBox = styled.div`
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 16px;
+    color: #77818b;
+    display: flex;
+    padding: 8px 16px;
+`;
+const CompletedSearchBoxIcon = styled.div`
+    align-items: center;
+    display: flex;
+`;
+const CompletedSearchBoxInput = styled.input`
+    padding: 0;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-size: 1rem;
+    font-weight: 400;
+    border: none;
+    color: #77818b;
+    line-height: 1.25rem;
+    margin-left: 4px;
+`;
+
 const CompletedListSearchbox = ({ onSearchboxChange }) => {
     return (
-        <FormControl>
-            <Input
-                id="searchbox-completed-list"
-                placeholder="단어 찾기"
-                startAdornment={
-                    <InputAdornment position="start">
-                        <SearchIcon />
-                    </InputAdornment>
-                }
-                onChange={onSearchboxChange}
-            />
-        </FormControl>
+        <CompletedSearchBox>
+            <CompletedSearchBoxIcon>
+                <SearchIcon color="inherit" fontSize="small" />
+            </CompletedSearchBoxIcon>
+            <CompletedSearchBoxInput id="searchbox-completed-list" placeholder="단어 찾기" onChange={onSearchboxChange} />
+        </CompletedSearchBox>
     );
 };
 
@@ -132,8 +191,8 @@ function VocaLearningMain({ history, match }) {
     ];
     const classNum = match.params.num;
     const [menuStatus, setMenuStatus] = useState(0);
-    const [learningNumbers, setLearningNumbers] = useState(10);
-    const [learningNumbersSelectValue, setLearningNumbersSelectValue] = useState(10);
+    const [learningNumbers, setLearningNumbers] = useState(0);
+    const [learningNumbersSelectValue, setLearningNumbersSelectValue] = useState(0);
     const [customNumbers, setCustomNumbers] = useState(10);
     const [totalProgress, setTotalProgress] = useState(0);
     const [completedList, setCompletedList] = useState([]);
@@ -246,95 +305,47 @@ function VocaLearningMain({ history, match }) {
                 <Contents>
                     <Groupbox title="학습하기">
                         <LearningSection>
-                            <div className="mainsection">
-                                <div className="progress">
-                                    <h3>나의 학습 진행률</h3>
-                                </div>
-                                <div className="percentage">{totalProgress}%</div>
-                                <br />
+                            <LearningProgressContainer>
+                                나의 단어 학습 진행률
+                                <LearningProgressPercentage>{totalProgress}%</LearningProgressPercentage>
+                            </LearningProgressContainer>
+                            <GotoLearningContainer>
                                 <FormControl className={classes.selectBox} variant="outlined">
-                                    <InputLabel id="select-learning-numbers-label">학습할 단어 수 선택</InputLabel>
-                                    <Select
+                                    {/* <InputLabel id="select-learning-numbers-label">학습할 단어 수 선택</InputLabel> */}
+                                    <WordCountsSelect
                                         labelId="select-learning-numbers-label"
-                                        label="학습할 단어 수 선택"
+                                        // label="학습할 단어 수 선택"
                                         value={learningNumbersSelectValue}
                                         onChange={actionOnChangeNumbersSelect}
                                     >
-                                        <MenuItem value={10}>10</MenuItem>
-                                        <MenuItem value={20}>20</MenuItem>
-                                        <MenuItem value={30}>30</MenuItem>
-                                        <MenuItem value={50}>50</MenuItem>
-                                        <MenuItem value={100}>100</MenuItem>
-                                        <MenuItem value="custom">
-                                            <em>직접 입력하기</em>
-                                        </MenuItem>
-                                    </Select>
+                                        <option value={0}>학습할 단어 수 선택</option>
+                                        <option value={10}>10</option>
+                                        <option value={20}>20</option>
+                                        <option value={30}>30</option>
+                                        <option value={50}>50</option>
+                                        <option value={100}>100</option>
+                                        <option value="custom">직접 입력하기</option>
+                                    </WordCountsSelect>
                                 </FormControl>
                                 {learningNumbersSelectValue === 'custom' ? (
-                                    <FormControl className={classes.customNumbersTextfield}>
-                                        <TextField
-                                            variant="outlined"
-                                            type="number"
-                                            defaultValue={customNumbers}
-                                            onChange={actionChangeCustomNumbersField}
-                                        />
-                                    </FormControl>
-                                ) : null}
+                                    // <FormControl className={classes.customNumbersTextfield}>
+                                    <CustomNumberField
+                                        variant="outlined"
+                                        type="number"
+                                        defaultValue={customNumbers}
+                                        onChange={actionChangeCustomNumbersField}
+                                    />
+                                ) : // </FormControl>
+                                null}
                                 <Button
-                                    className={classes.learningStartButton}
-                                    variant="outlined"
-                                    color="default"
-                                    endIcon={<PlayIcon />}
+                                    colors="purple"
                                     onClick={actionClickLearningStart}
+                                    disabled={learningNumbersSelectValue === '0'}
+                                    style={{ marginLeft: 8 }}
                                 >
                                     학습하기!
                                 </Button>
-                            </div>
-
-                            <GotoLearningContainer>
-                                {/* <FormControl className={classes.selectBox} variant="outlined">
-                                    <InputLabel id="select-learning-numbers-label">학습할 단어 수 선택</InputLabel>
-                                    <Select
-                                        labelId="select-learning-numbers-label"
-                                        label="학습할 단어 수 선택"
-                                        value={learningNumbersSelectValue}
-                                        onChange={actionOnChangeNumbersSelect}
-                                    >
-                                        <MenuItem value={10}>10</MenuItem>
-                                        <MenuItem value={20}>20</MenuItem>
-                                        <MenuItem value={30}>30</MenuItem>
-                                        <MenuItem value={50}>50</MenuItem>
-                                        <MenuItem value={100}>100</MenuItem>
-                                        <MenuItem value="custom">
-                                            <em>직접 입력하기</em>
-                                        </MenuItem>
-                                    </Select>
-                                </FormControl>
-                                {learningNumbersSelectValue === 'custom' ? (
-                                    <FormControl className={classes.customNumbersTextfield}>
-                                        <TextField
-                                            variant="outlined"
-                                            type="number"
-                                            defaultValue={customNumbers}
-                                            onChange={actionChangeCustomNumbersField}
-                                        />
-                                    </FormControl>
-                                ) : null}
-                                <Button
-                                    className={classes.learningStartButton}
-                                    variant="outlined"
-                                    color="default"
-                                    endIcon={<PlayIcon />}
-                                    onClick={actionClickLearningStart}
-                                >
-                                    학습하기!
-                                </Button> */}
                             </GotoLearningContainer>
-                            {/* <LearningProgressContainer>
-                                나의 단어 학습 진행률
-                                <LearningProgressPercentage>{totalProgress}%</LearningProgressPercentage>
-                                <LinearProgress className={classes.totalProgress} variant="determinate" value={totalProgress} />
-                            </LearningProgressContainer> */}
                         </LearningSection>
                     </Groupbox>
                     <Groupbox
@@ -348,6 +359,7 @@ function VocaLearningMain({ history, match }) {
                             <React.Fragment key={d.idx + '_F'}>
                                 {i >= 10 && i % 10 === 0 ? <CompletedListDivider key={d.idx + '_hr'} /> : null}
                                 <CompletedListItem
+                                    idx={i}
                                     key={d.idx}
                                     word={d.word}
                                     means={d.means}

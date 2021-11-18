@@ -17,7 +17,6 @@ import styled from 'styled-components';
 import TopNav from '../components/essentials/TopNav';
 import * as $ from 'jquery';
 import Calendar from './Calendar';
-
 import VocaLearningMain from '../components/LearningVocas/VocaLearningMain';
 import RestrictRoute from '../components/essentials/RestrictRoute';
 import LearningVocas from '../components/LearningVocas/LearningVocas';
@@ -26,14 +25,17 @@ import Dashboard_1 from '../components/essentials/Dashboard_1';
 import DashboardDDay from '../controllers/DashboardDDay.js';
 
 const SlideWrapper = styled.div`
+    position: relative;
     transition: all 0.4s;
 
     @media (min-width: 903px) {
-        padding: ${(props) => (props.leftNavState ? '95px 0 0 392px' : '95px 0 0 0')};
+        padding: ${(props) => (props.leftNavState ? '95px 0 0 0' : '95px 0 0 0')};
+        margin-left: ${(props) => (props.leftNavState ? '392px' : 0)};
     }
 
     @media (min-width: 0) and (max-width: 902px) {
         padding: 95px 0 0 0;
+        margin-left: 0;
     }
 `;
 

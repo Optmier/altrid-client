@@ -42,7 +42,7 @@ const StyleDiv = styled.div`
 
     & img,
     svg {
-        height: 40px;
+        height: 32px;
     }
     & .top-nav-left {
         display: flex;
