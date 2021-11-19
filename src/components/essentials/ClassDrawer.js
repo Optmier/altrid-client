@@ -4,7 +4,7 @@ import ToggleSwitch from './ToggleSwitch';
 import { useSelector, useDispatch } from 'react-redux';
 import { postDraft, patchDraft } from '../../redux_modules/assignmentDraft';
 import { withRouter } from 'react-router-dom';
-import { Button, Dialog, withStyles } from '@material-ui/core';
+import { Dialog, withStyles } from '@material-ui/core';
 import TOFELEditor from '../TOFELEditor/TOFELEditor';
 import styled, { css } from 'styled-components';
 import { SecondsToHoursAndMinutes } from './TimeChange';
@@ -13,14 +13,19 @@ import { changeDueDate } from '../../redux_modules/assignmentActived';
 // import BackdropComponent from './BackdropComponent';
 import CloseIcon from '@material-ui/icons/Close';
 import RestrictWrapper from './RestrictWrapper';
+import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
+import BulbIcon from '../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
+import RestricRoute_1 from './RestricRoute_1';
+import DrawerActions from '../../AltridUI/Drawer/DrawerActions';
+import Button from '../../AltridUI/Button/Button';
 
 const StyleLabel = styled.label`
     ${(props) =>
         props.clicked === 'left'
             ? css`
-                  background-color: #13e2a11f !important;
+                  background-color: #fff !important;
                   box-sizing: border-box;
-                  border: 1.5px solid #13e2a1;
+                  border: 2px solid #3b1689; ;
               `
             : ''}
 `;
@@ -28,9 +33,9 @@ const StyleLabel2 = styled.label`
     ${(props) =>
         props.clicked === 'right'
             ? css`
-                  background-color: #13e2a11f !important;
+                  background-color: #fff !important;
                   box-sizing: border-box;
-                  border: 1.5px solid #13e2a1;
+                  border: 2px solid #3b1689; ;
               `
             : ''}
 `;
@@ -80,6 +85,8 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     data.filter((i) => i['idx'] !== cardData['idx']).map((i) => titleArr.push(i['title'].replace(/(\s*)/g, '')));
 
     /** 과제 생성 state */
+    const [direct, setdirect] = useState(false);
+    const [upload, setupload] = useState(false);
     const [selectClassState, setSelectClassState] = useState(null);
     const [attachFiles, setAttachFiles] = useState(new FormData());
     const [contentsData, setContentsData] = useState(
@@ -108,6 +115,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
 
     const handleEditDialogOpen = () => {
         setEditDialogOpen(true);
+        setdirect(true);
     };
     const handleEditDialogClose = () => {
         setEditDialogOpen(false);
@@ -393,7 +401,13 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
 
             <div className="class-drawer-root">
                 <div className="close-icon" onClick={handleClose}>
-                    <CloseIcon />
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="48" height="48" rx="16" fill="#F6F8F9" />
+                        <path
+                            d="M24.0002 22.5857L28.9502 17.6357L30.3642 19.0497L25.4142 23.9997L30.3642 28.9497L28.9502 30.3637L24.0002 25.4137L19.0502 30.3637L17.6362 28.9497L22.5862 23.9997L17.6362 19.0497L19.0502 17.6357L24.0002 22.5857Z"
+                            fill="#77818B"
+                        />
+                    </svg>
                 </div>
                 <div style={{ width: '100%' }}>
                     {ver === 'draft' ? (
@@ -408,154 +422,309 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                         </>
                     )}
                     <div className="class-drawer-block">
-                        <div className="drawer-subTitle">
-                            {ver === 'draft' ? (
-                                <>
-                                    <span>1. 과제의 선택적인 정보를 입력해주세요.</span>
-                                    <span className="drawer-error" style={{ textAlign: 'right' }}>
-                                        {time_error}
-                                    </span>
-                                </>
-                            ) : (
-                                <div className="drawer-error" style={{ width: '100%', textAlign: 'right' }}>
-                                    {time_error}
-                                </div>
-                            )}
-                        </div>
-                        <div className="drawer-toggle">
-                            <span>
-                                <p>시선흐름 측정</p>
-                                <ToggleSwitch
-                                    name={'eyetrack'}
-                                    toggle={toggleState['eyetrack']}
-                                    handleToggleChange={handleChange}
-                                    type={'drawer'}
-                                />
-                            </span>
-                            <span>
-                                <p>제한시간 설정</p>
-
-                                <div className="time-inputs">
-                                    <input
-                                        type="number"
-                                        name="hh"
-                                        value={hh}
-                                        readOnly={hh === '--' ? true : false}
-                                        onChange={onTimeChange}
-                                        placeholder="00"
-                                    />
-                                    <p>시간</p>
-                                    <input
-                                        type="number"
-                                        name="mm"
-                                        value={mm}
-                                        readOnly={mm === '--' ? true : false}
-                                        onChange={onTimeChange}
-                                        placeholder="00"
-                                    />
-                                    <p>분</p>
-                                </div>
-
-                                <ToggleSwitch
-                                    name={'timeAttack'}
-                                    toggle={toggleState['timeAttack']}
-                                    handleToggleChange={handleChange}
-                                    type={'drawer'}
-                                />
-                            </span>
-                        </div>
-
-                        <div className="drawer-select-warn">** 시선흐름 측정시, 제한시간은 필수사항입니다.</div>
-                        <div className="drawer-select-warn">** 제한시간이 포함된 과제는 단 1번의 풀이 기회가 제공됩니다. </div>
-                    </div>
-                    <div className="class-drawer-block">
-                        {ver === 'draft' ? <p className="drawer-subTitle">2. 과제의 필수적인 정보를 입력해주세요.</p> : ''}
-                        <div className="drawer-inputs">
-                            <div className="drawer-input">
-                                <input
-                                    name="title"
-                                    value={title}
-                                    className="input-name"
-                                    placeholder="과제 이름"
-                                    onChange={onInputChange}
-                                    onBlur={onInputOut}
-                                ></input>
-                                <div className="drawer-error">{title_error}</div>
-                            </div>
-                            <div className="drawer-input">
-                                <input
-                                    name="description"
-                                    value={description}
-                                    className="input-desc"
-                                    placeholder="과제 한 줄 설명"
-                                    onChange={onInputChange}
-                                    onBlur={onInputOut}
-                                ></input>
-                                <div className="drawer-error">{description_error}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="class-drawer-block">
-                        <div className="drawer-subTitle">
-                            {ver === 'draft' ? <> 3. 과제 생성 방법을 선택해주세요.</> : ''}
-                            <StyleSelectdiv ver={ver} errorCheck={selectName}>
-                                {selectName}
-                            </StyleSelectdiv>
-                        </div>
                         {ver === 'draft' ? (
                             <>
-                                <div className="drawer-selects">
-                                    <input
-                                        ref={filesInput}
-                                        id={fileCreation ? null : 'file-click'}
-                                        type="file"
-                                        accept=".hwp,.pdf,.docx"
-                                        onChange={handleChangeFile}
-                                    />
-
-                                    <StyleLabel
-                                        clicked={selectState}
-                                        className="drawer-select"
-                                        htmlFor={fileCreation ? null : 'file-click'}
-                                    >
-                                        <RestrictWrapper type="default" restricted={fileCreation}>
-                                            <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M38.7 12.08C37.34 5.18 31.28 0 24 0C18.22 0 13.2 3.28 10.7 8.08C4.68 8.72 0 13.82 0 20C0 26.62 5.38 32 12 32H38C43.52 32 48 27.52 48 22C48 16.72 43.9 12.44 38.7 12.08ZM28 18V26H20V18H14L24 8L34 18H28Z"
-                                                    fill="#969393"
-                                                />
-                                            </svg>
-                                            <h4>과제 파일 업로드하기</h4>
-                                            <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
-                                        </RestrictWrapper>
-                                    </StyleLabel>
-
-                                    <StyleLabel2 clicked={selectState} className="drawer-select" onClick={handleEditDialogOpen}>
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <g clipPath="url(#clip0)">
-                                                <path
-                                                    d="M17.75 7.00006L14 3.25006L4 13.2501V17.0001H7.75L17.75 7.00006ZM20.71 4.04006C21.1 3.65006 21.1 3.02006 20.71 2.63006L18.37 0.290059C17.98 -0.0999414 17.35 -0.0999414 16.96 0.290059L15 2.25006L18.75 6.00006L20.71 4.04006Z"
-                                                    fill="#969393"
-                                                />
-                                                <path d="M0 20H24V24H0V20Z" fill="black" fillOpacity="0.36" />
-                                            </g>
-                                            <defs>
-                                                <clipPath id="clip0">
-                                                    <rect width="24" height="24" fill="white" />
-                                                </clipPath>
-                                            </defs>
-                                        </svg>
-
-                                        <h4>직접 제작하기</h4>
-                                        <p>과제를 바로 제작하고 싶으시다면, 자체 에디터를 통해 과제 생성이 가능합니다.</p>
-                                    </StyleLabel2>
-                                </div>
-                                <div className="drawer-select-warn">
-                                    ** 과제 파일 업로드의 경우, 과제 생성의 완료까지 최대 1일의 시간이 소요됩니다. <br />
-                                    ** 여러 파일인 경우, 하나의 파일로 압축해주세요.
-                                </div>
+                                <DrawerGroupBox
+                                    title="과제 필수 정보 "
+                                    description="과제 소개를 입력해주세요"
+                                    descriptionAdornment={BulbIcon}
+                                >
+                                    <div className="drawer-inputs">
+                                        <div className="drawer-input">
+                                            <input
+                                                name="title"
+                                                value={title}
+                                                className="input-name"
+                                                placeholder="과제 이름"
+                                                onChange={onInputChange}
+                                                onBlur={onInputOut}
+                                            ></input>
+                                            <div className="drawer-error">{title_error}</div>
+                                        </div>
+                                        <div className="drawer-input">
+                                            <input
+                                                name="description"
+                                                value={description}
+                                                className="input-desc"
+                                                placeholder="과제 한 줄 설명"
+                                                onChange={onInputChange}
+                                                onBlur={onInputOut}
+                                            ></input>
+                                            <div className="drawer-error">{description_error}</div>
+                                        </div>
+                                    </div>{' '}
+                                </DrawerGroupBox>
                             </>
-                        ) : cardData['contents_data'] ? (
+                        ) : (
+                            <div className="drawer-error" style={{ width: '100%', textAlign: 'right' }}>
+                                {time_error}
+                            </div>
+                        )}
+
+                        <div className="class-drawer-block">
+                            {ver === 'draft' ? (
+                                <>
+                                    <DrawerGroupBox
+                                        title="과제 설정 "
+                                        description="시선흐름 측정시 제한시간은 필수사항입니다."
+                                        descriptionAdornment={BulbIcon}
+                                    >
+                                        <div className="drawer-toggle">
+                                            <span>
+                                                <p>시선흐름 측정</p>
+                                                <ToggleSwitch
+                                                    name={'eyetrack'}
+                                                    toggle={toggleState['eyetrack']}
+                                                    handleToggleChange={handleChange}
+                                                    type={'drawer'}
+                                                />
+                                            </span>
+                                            <span>
+                                                <p>제한시간 설정</p>
+
+                                                <div className="time-inputs">
+                                                    <input
+                                                        style={{ backgroundColor: '#F6F8F9' }}
+                                                        type="number"
+                                                        name="hh"
+                                                        value={hh}
+                                                        readOnly={hh === '--' ? true : false}
+                                                        onChange={onTimeChange}
+                                                        placeholder="00"
+                                                    />
+                                                    <p>시간</p>
+                                                    <input
+                                                        style={{ backgroundColor: '#F6F8F9' }}
+                                                        type="number"
+                                                        name="mm"
+                                                        value={mm}
+                                                        readOnly={mm === '--' ? true : false}
+                                                        onChange={onTimeChange}
+                                                        placeholder="00"
+                                                    />
+                                                    <p>분</p>
+                                                </div>
+
+                                                <ToggleSwitch
+                                                    name={'timeAttack'}
+                                                    toggle={toggleState['timeAttack']}
+                                                    handleToggleChange={handleChange}
+                                                    type={'drawer'}
+                                                />
+                                            </span>
+                                        </div>
+                                        <div className="drawer-select-warn">** 시선흐름 측정시, 제한시간은 필수사항입니다.</div>
+                                        <div className="drawer-select-warn">
+                                            ** 제한시간이 포함된 과제는 단 1번의 풀이 기회가 제공됩니다.{' '}
+                                        </div>
+                                    </DrawerGroupBox>
+                                </>
+                            ) : (
+                                ''
+                            )}
+                            {ver === 'draft' ? null : (
+                                <>
+                                    <div className="drawer-inputs">
+                                        <div className="drawer-input">
+                                            <input
+                                                name="title"
+                                                value={title}
+                                                className="input-name"
+                                                placeholder="과제 이름"
+                                                onChange={onInputChange}
+                                                onBlur={onInputOut}
+                                            ></input>
+                                            <div className="drawer-error">{title_error}</div>
+                                        </div>
+                                        <div className="drawer-input">
+                                            <input
+                                                name="description"
+                                                value={description}
+                                                className="input-desc"
+                                                placeholder="과제 한 줄 설명"
+                                                onChange={onInputChange}
+                                                onBlur={onInputOut}
+                                            ></input>
+                                            <div className="drawer-error">{description_error}</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="drawer-toggle">
+                                        <span>
+                                            <p>시선흐름 측정</p>
+                                            <ToggleSwitch
+                                                name={'eyetrack'}
+                                                toggle={toggleState['eyetrack']}
+                                                handleToggleChange={handleChange}
+                                                type={'drawer'}
+                                            />
+                                        </span>
+                                        <span>
+                                            <p>제한시간 설정</p>
+
+                                            <div className="time-inputs">
+                                                <input
+                                                    style={{ backgroundColor: '#F6F8F9' }}
+                                                    type="number"
+                                                    name="hh"
+                                                    value={hh}
+                                                    readOnly={hh === '--' ? true : false}
+                                                    onChange={onTimeChange}
+                                                    placeholder="00"
+                                                />
+                                                <p>시간</p>
+                                                <input
+                                                    style={{ backgroundColor: '#F6F8F9' }}
+                                                    type="number"
+                                                    name="mm"
+                                                    value={mm}
+                                                    readOnly={mm === '--' ? true : false}
+                                                    onChange={onTimeChange}
+                                                    placeholder="00"
+                                                />
+                                                <p>분</p>
+                                            </div>
+
+                                            <ToggleSwitch
+                                                name={'timeAttack'}
+                                                toggle={toggleState['timeAttack']}
+                                                handleToggleChange={handleChange}
+                                                type={'drawer'}
+                                            />
+                                        </span>
+                                    </div>
+
+                                    <div className="drawer-select-warn">** 시선흐름 측정시, 제한시간은 필수사항입니다.</div>
+                                    <div className="drawer-select-warn">** 제한시간이 포함된 과제는 단 1번의 풀이 기회가 제공됩니다. </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="class-drawer-block">
+                        {ver === 'draft' ? (
+                            <>
+                                <DrawerGroupBox
+                                    title="과제 생성 방법"
+                                    description="파일 업로드의 경우 과제 생성의 완료까지 최대 1일의 시간이 소요됩니다."
+                                    descriptionAdornment={BulbIcon}
+                                >
+                                    <div className="drawer-selects">
+                                        <input
+                                            ref={filesInput}
+                                            id={fileCreation ? null : 'file-click'}
+                                            type="file"
+                                            accept=".hwp,.pdf,.docx"
+                                            onChange={handleChangeFile}
+                                        />
+
+                                        <StyleLabel
+                                            clicked={selectState}
+                                            className={fileCreation ? 'disabled' : 'drawer-select'}
+                                            htmlFor={fileCreation ? null : 'file-click'}
+                                        >
+                                            <>
+                                                <RestricRoute_1
+                                                    onClick={() => {
+                                                        setupload(true);
+                                                    }}
+                                                    type="default"
+                                                    restricted={fileCreation}
+                                                >
+                                                    {upload ? (
+                                                        <>
+                                                            <svg
+                                                                width="15"
+                                                                height="14"
+                                                                viewBox="0 0 15 14"
+                                                                fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <path
+                                                                    d="M7.50016 13.6663C3.81816 13.6663 0.833496 10.6817 0.833496 6.99967C0.833496 3.31767 3.81816 0.333008 7.50016 0.333008C11.1822 0.333008 14.1668 3.31767 14.1668 6.99967C14.1668 10.6817 11.1822 13.6663 7.50016 13.6663ZM6.8355 9.66634L11.5488 4.95234L10.6062 4.00967L6.8355 7.78101L4.9495 5.89501L4.00683 6.83767L6.8355 9.66634Z"
+                                                                    fill="#3B1689"
+                                                                />
+                                                            </svg>
+                                                            <h4>과제 파일 업로드하기</h4>
+                                                            <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <svg
+                                                                width="15"
+                                                                height="14"
+                                                                viewBox="0 0 15 14"
+                                                                fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <path
+                                                                    d="M7.50016 13.6663C3.81816 13.6663 0.833496 10.6817 0.833496 6.99967C0.833496 3.31767 3.81816 0.333008 7.50016 0.333008C11.1822 0.333008 14.1668 3.31767 14.1668 6.99967C14.1668 10.6817 11.1822 13.6663 7.50016 13.6663ZM7.50016 12.333C8.91465 12.333 10.2712 11.7711 11.2714 10.7709C12.2716 9.77072 12.8335 8.41416 12.8335 6.99967C12.8335 5.58519 12.2716 4.22863 11.2714 3.22844C10.2712 2.22824 8.91465 1.66634 7.50016 1.66634C6.08567 1.66634 4.72912 2.22824 3.72893 3.22844C2.72873 4.22863 2.16683 5.58519 2.16683 6.99967C2.16683 8.41416 2.72873 9.77072 3.72893 10.7709C4.72912 11.7711 6.08567 12.333 7.50016 12.333V12.333Z"
+                                                                    fill="#3B1689"
+                                                                />
+                                                            </svg>
+                                                            <h4>과제 파일 업로드하기</h4>
+                                                            <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
+                                                        </>
+                                                    )}
+                                                </RestricRoute_1>
+                                            </>
+                                        </StyleLabel>
+
+                                        <>
+                                            <StyleLabel2 clicked={selectState} className="drawer-select" onClick={handleEditDialogOpen}>
+                                                {direct ? (
+                                                    <>
+                                                        <svg
+                                                            width="15"
+                                                            height="14"
+                                                            viewBox="0 0 15 14"
+                                                            fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path
+                                                                d="M7.50016 13.6663C3.81816 13.6663 0.833496 10.6817 0.833496 6.99967C0.833496 3.31767 3.81816 0.333008 7.50016 0.333008C11.1822 0.333008 14.1668 3.31767 14.1668 6.99967C14.1668 10.6817 11.1822 13.6663 7.50016 13.6663ZM6.8355 9.66634L11.5488 4.95234L10.6062 4.00967L6.8355 7.78101L4.9495 5.89501L4.00683 6.83767L6.8355 9.66634Z"
+                                                                fill="#3B1689"
+                                                            />
+                                                        </svg>
+                                                        <h4>직접 제작하기</h4>
+                                                        <p>과제를 바로 제작하고 싶으시다면, 자체 에디터를 통해 과제 생성이 가능합니다.</p>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <svg
+                                                            width="15"
+                                                            height="14"
+                                                            viewBox="0 0 15 14"
+                                                            fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path
+                                                                d="M7.50016 13.6663C3.81816 13.6663 0.833496 10.6817 0.833496 6.99967C0.833496 3.31767 3.81816 0.333008 7.50016 0.333008C11.1822 0.333008 14.1668 3.31767 14.1668 6.99967C14.1668 10.6817 11.1822 13.6663 7.50016 13.6663ZM7.50016 12.333C8.91465 12.333 10.2712 11.7711 11.2714 10.7709C12.2716 9.77072 12.8335 8.41416 12.8335 6.99967C12.8335 5.58519 12.2716 4.22863 11.2714 3.22844C10.2712 2.22824 8.91465 1.66634 7.50016 1.66634C6.08567 1.66634 4.72912 2.22824 3.72893 3.22844C2.72873 4.22863 2.16683 5.58519 2.16683 6.99967C2.16683 8.41416 2.72873 9.77072 3.72893 10.7709C4.72912 11.7711 6.08567 12.333 7.50016 12.333V12.333Z"
+                                                                fill="#3B1689"
+                                                            />
+                                                        </svg>
+
+                                                        <h4>직접 제작하기</h4>
+                                                        <p>과제를 바로 제작하고 싶으시다면, 자체 에디터를 통해 과제 생성이 가능합니다.</p>
+                                                    </>
+                                                )}
+                                            </StyleLabel2>
+                                        </>
+                                    </div>
+                                    <div className="drawer-select-warn">
+                                        ** 과제 파일 업로드의 경우, 과제 생성의 완료까지 최대 1일의 시간이 소요됩니다. <br />
+                                        ** 여러 파일인 경우, 하나의 파일로 압축해주세요.
+                                    </div>
+                                </DrawerGroupBox>
+                            </>
+                        ) : (
+                            ''
+                        )}
+                        {/* <StyleSelectdiv ver={ver} errorCheck={selectName}>
+                            {selectName}
+                        </StyleSelectdiv> */}
+
+                        {ver === 'draft' ? null : cardData['contents_data'] ? (
                             <>
                                 <div className="drawer-selects">
                                     <div style={{ width: '100%' }} className="drawer-select" onClick={handleEditDialogOpen}>
@@ -601,22 +770,11 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                 <div className="drawer-footer">
                     {ver === 'draft' ? (
                         <>
-                            <CreateButton
-                                className="drawer-button primary"
-                                name="drawer-share"
-                                variant="contained"
-                                onClick={onDrawerErrorCheck}
-                            >
-                                생성 및 게시하기
-                            </CreateButton>
-                            <CreateButton
-                                className="drawer-button primary"
-                                name="drawer-draft"
-                                variant="contained"
-                                onClick={onDrawerErrorCheck}
-                            >
-                                생성하기
-                            </CreateButton>
+                            <DrawerActions>
+                                <Button variant="filled" colors="purple" onClick={onDrawerErrorCheck}>
+                                    생성하기
+                                </Button>
+                            </DrawerActions>
                         </>
                     ) : (
                         <CreateButton

@@ -11,12 +11,15 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { Link } from 'react-router-dom';
 import ReactApexChart from 'react-apexcharts';
+import Button from '../../AltridUI/Button/Button';
 
 const Container = styled.div`
     margin: 0px auto;
     max-width: 1216px;
     margin-bottom: 160px;
-
+    & .gobutton {
+        margin-top: 68px;
+    }
     & .header {
         height: 80px;
         display: flex;
@@ -124,6 +127,7 @@ const Container = styled.div`
                 line-height: 28px;
                 color: '#000000';
             }
+
             & p {
                 font-weight: bold;
                 width: 100%;
@@ -175,6 +179,12 @@ const Container = styled.div`
                 flex-direction: row;
                 align-items: center;
                 align-content: center;
+                & .assign_title {
+                    width: 200px;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
                 & .dday {
                     background: #d4e2fc;
                     border-radius: 8px;
@@ -189,6 +199,9 @@ const Container = styled.div`
                 & span {
                     font-weight: normal;
                     font-size: 18px;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
                 }
             }
             & p {
@@ -208,14 +221,6 @@ const Container = styled.div`
                 line-height: 36px;
                 font-weight: 400;
             }
-            & .todolist {
-                height: 170px;
-                overflow-y: hidden;
-                & li {
-                    padding-top: 10px;
-                    font-size: 20px;
-                }
-            }
         }
         & .wordprogress {
             & h3 {
@@ -224,6 +229,7 @@ const Container = styled.div`
                 line-height: 28px;
                 color: '#000000';
             }
+
             & p {
                 margin-top: 20px;
                 color: #000000;
@@ -231,6 +237,42 @@ const Container = styled.div`
                 font-size: 20px;
 
                 text-align: center;
+            }
+            & h4 {
+                padding-top: 60px;
+                font-size: 20px;
+                text-align: center;
+            }
+        }
+        & .calendar {
+            height: 280px;
+            & h3 {
+                padding-top: 32px;
+                font-size: 24px;
+                line-height: 28px;
+                color: '#000000';
+            }
+            & .todolist {
+                height: 120px;
+                overflow-y: hidden;
+                & li {
+                    padding-top: 10px;
+                    font-size: 20px;
+                }
+                & p {
+                    padding-top: 10px;
+                }
+            }
+            & .gocalendar {
+                margin-top: 30px;
+            }
+        }
+        & .optimer {
+            & h3 {
+                padding-top: 32px;
+                font-size: 24px;
+                line-height: 28px;
+                color: '#000000';
             }
         }
     }
@@ -309,6 +351,87 @@ function Dashboard_1({ match }) {
         },
     });
 
+    const [optimer, setoptimer] = useState({
+        series: [
+            {
+                name: 'Optimer',
+                data: [0, 0, 0, 0, 0, 0, 0],
+            },
+        ],
+        options: {
+            chart: {
+                offsetY: -20,
+                height: 350,
+                type: 'bar',
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 100,
+                    dataLabels: {
+                        position: 'top',
+                    },
+                },
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return val + '분';
+                },
+                offsetY: -20,
+                style: {
+                    fontSize: '15px',
+                    colors: ['black'],
+                },
+            },
+
+            xaxis: {
+                categories: ['월', '화', '수', '목', '금', '토', '일'],
+                position: 'bottom',
+                axisBorder: {
+                    show: false,
+                },
+                axisTicks: {
+                    show: false,
+                },
+                crosshairs: {
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            colorFrom: '#D8E3F0',
+                            colorTo: '#BED1E6',
+                            stops: [0, 100],
+                            opacityFrom: 0.4,
+                            opacityTo: 0.5,
+                        },
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                },
+            },
+            yaxis: {
+                axisBorder: {
+                    show: false,
+                },
+                axisTicks: {
+                    show: false,
+                },
+                labels: {
+                    show: false,
+                },
+            },
+            title: {
+                text: 'MY Study Time',
+                floating: true,
+                offsetY: 330,
+                align: 'center',
+                style: {
+                    color: '#444',
+                },
+            },
+        },
+    });
+
     useEffect(() => {
         Axios.get(`${apiUrl}/meeting-room/livelecture`, { withCredentials: true })
             .then((result) => {
@@ -384,6 +507,45 @@ function Dashboard_1({ match }) {
             })
             .catch((err) => console.log(err));
     }, []);
+
+    // optimer 가져오기
+    // console.log(sessions.authId);
+    useEffect(() => {
+        Axios.get(`${apiUrl}/optimer/${num}/${sessions.authId}`, { withCredentials: true })
+            .then((result) => {
+                // if (!result) {
+                //     setoptimer({
+                //         series: [
+                //             {
+                //                 name: 'optimer',
+                //                 data: [0, 0, 0, 0, 0, 0, 0],
+                //             },
+                //         ],
+                //         ...optimer,
+                //     });
+                // }
+
+                // } else if (sessions.authId) {
+                setoptimer({
+                    series: [
+                        {
+                            name: 'optimer',
+                            data: [
+                                Math.floor(result.data.time_mon / 60 / 60),
+                                Math.floor(result.data.time_tue / 60 / 60),
+                                Math.floor(result.data.time_wed / 60 / 60),
+                                Math.floor(result.data.time_thu / 60 / 60),
+                                Math.floor(result.data.time_fri / 60 / 60),
+                                Math.floor(result.data.time_sat / 60 / 60),
+                                Math.floor(result.data.time_sun / 60 / 60),
+                            ],
+                        },
+                    ],
+                });
+            })
+            .catch((err) => console.log(err));
+    }, [sessions]);
+
     return (
         <>
             <HeaderBar />
@@ -420,9 +582,13 @@ function Dashboard_1({ match }) {
                                         ) : (
                                             <>
                                                 <p>현재 진행중인 강의가 없습니다.</p>
-                                                <Link to={`/class/${num}/vid-lecture`}>
-                                                    <button className="input">강의실로 이동하기</button>
-                                                </Link>
+                                                <div className="gobutton">
+                                                    <Link to={`/class/${num}/vid-lecture`}>
+                                                        <Button fullWidth colors="purple" variant="filled">
+                                                            강의실로 입장하기
+                                                        </Button>
+                                                    </Link>
+                                                </div>
                                             </>
                                         )}
                                     </div>
@@ -440,10 +606,13 @@ function Dashboard_1({ match }) {
                                                 함께 공부해보세요
                                             </p>
                                         )}
-
-                                        <Link to={`/class/${num}/cam-study`}>
-                                            <button className="input">입장하기</button>
-                                        </Link>
+                                        <div className="gobutton">
+                                            <Link to={`/class/${num}/cam-study`}>
+                                                <Button colors="purple" fullWidth variant="filled">
+                                                    입장하기
+                                                </Button>
+                                            </Link>
+                                        </div>
                                     </div>
                                 </Item>
                             </Grid>
@@ -452,6 +621,7 @@ function Dashboard_1({ match }) {
                                     <div className="card word">
                                         <h3>오늘의 단어</h3>
                                         {!word ? <h4>단어가 없습니다.</h4> : <h1 onClick={ClickCard}>{flip ? korean : word}</h1>}
+
                                         <Link to={`/class/${num}/learning-vocas`}>
                                             <p>더 많은 단어 학습하기</p>
                                         </Link>
@@ -478,7 +648,7 @@ function Dashboard_1({ match }) {
                                                                     )}
                                                                 </p>
                                                                 <Link to={`/class/${num}/share`}>
-                                                                    <p>{data.title}</p>
+                                                                    <p className="assign_title">{data.title}</p>
                                                                 </Link>
 
                                                                 <p>
@@ -494,8 +664,8 @@ function Dashboard_1({ match }) {
                                                 <p>현재진행 중인 과제가 없습니다. </p>
                                             </>
                                         )}
-                                        <h3>마감된 과제 </h3>
-                                        {assignment.length !== 0
+                                        {/* <h3>마감된 과제 </h3> */}
+                                        {/* {assignment.length !== 0
                                             ? assignment.map((data, index) => {
                                                   return (
                                                       <div key={index} className="info">
@@ -512,7 +682,7 @@ function Dashboard_1({ match }) {
                                                       </div>
                                                   );
                                               })
-                                            : null}
+                                            : null} */}
                                     </div>
                                 </Item>
                             </Grid>
@@ -520,10 +690,16 @@ function Dashboard_1({ match }) {
                                 <Item>
                                     <div className="card wordprogress">
                                         <h3>단어 진행률</h3>
-                                        <ReactApexChart options={chart.options} series={chart.series} type="radialBar" />
-                                        <p>
-                                            {total.progress}/{total.total}
-                                        </p>
+                                        {!total.total ? (
+                                            <h4>저장된 단어가 없습니다.</h4>
+                                        ) : (
+                                            <>
+                                                <ReactApexChart options={chart.options} series={chart.series} type="radialBar" />
+                                                <p>
+                                                    {total.progress}/{total.total}
+                                                </p>
+                                            </>
+                                        )}
                                     </div>
                                 </Item>
                             </Grid>
@@ -541,10 +717,13 @@ function Dashboard_1({ match }) {
                                 </Item>
                             </Grid>
                             <Grid item xs={4}>
-                                <div className="card comment">
-                                    <Link to={`/class/${num}/calendar`}>나의 일정 보러가기</Link>
+                                <div className="card calendar">
+                                    <h3>오늘의 일정</h3>
+
                                     {todo.length == 0 ? (
-                                        <p>오늘의 일정이 없습니다.</p>
+                                        <div className="todolist">
+                                            <p>오늘의 일정이 없습니다.</p>
+                                        </div>
                                     ) : (
                                         <div className="todolist">
                                             {todo.map((result, index) => {
@@ -556,6 +735,19 @@ function Dashboard_1({ match }) {
                                             })}
                                         </div>
                                     )}
+                                    <div className="gocalendar">
+                                        <Link to={`/class/${num}/calendar`}>
+                                            <Button fullWidth variant="outlined" color="black">
+                                                나의 일정 보러가기
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <div className="card optimer">
+                                    <h3>나의 학습 시간</h3>
+                                    <ReactApexChart options={optimer.options} series={optimer.series} type="bar" height={300} />
                                 </div>
                             </Grid>
                         </Grid>
