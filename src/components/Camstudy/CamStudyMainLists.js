@@ -68,7 +68,7 @@ function CamStudyMainLists({ history, match }) {
     const headerMenus = [
         {
             mId: 0,
-            mName: '나의 캠스터디',
+            mName: '나의 캠 스터디',
         },
         {
             mId: 1,
@@ -440,7 +440,7 @@ function CamStudyMainLists({ history, match }) {
                                 leftIcon={<AddCamstudyIcon />}
                                 onClick={actionToggleDrawer(true)}
                             >
-                                캠스터디 만들기
+                                캠 스터디 만들기
                             </Button>
                         }
                     />
