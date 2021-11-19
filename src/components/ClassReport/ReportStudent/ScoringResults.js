@@ -1,4 +1,13 @@
-import { Accordion, AccordionDetails, AccordionSummary, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core';
+import {
+    Accordion as MuiAccordion,
+    AccordionDetails as MuiAccordionDetails,
+    AccordionSummary as MuiAccordionSummary,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    withStyles,
+} from '@material-ui/core';
 import Button from '../../../AltridUI/Button/Button';
 import React, { useEffect, useState } from 'react';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -7,6 +16,12 @@ import HandsUpIcon from '@material-ui/icons/PanTool';
 import StarIcon from '@material-ui/icons/Star';
 import HtmlParser from 'react-html-parser';
 import styled from 'styled-components';
+import DrawerTopCloseIcon from '../../../AltridUI/Icons/DrawerTopCloseIcon';
+import DrawerTopHelpIcon from '../../../AltridUI/Icons/DrawerTopHelpIcon';
+import ScoringDetailsChoosenIcon from '../../../AltridUI/Icons/ScoringDetailsChoosenIcon';
+import ScoringDetailsHandsUpIcon from '../../../AltridUI/Icons/ScoringDetailsHandsUpIcon';
+import ScoringDetailsStarringIcon from '../../../AltridUI/Icons/ScoringDetailsStarringIcon';
+import AccordionArrowIcon from '../../../AltridUI/Icons/AccordionArrowIcon';
 
 const TextsContentsRenderRoot = styled.div`
     min-width: 320px;
@@ -83,12 +98,15 @@ const SummaryRoot = styled.div`
     display: flex;
     font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.375rem;
     justify-content: space-between;
     width: 100%;
 `;
 const SummaryNoTitle = styled.div`
     flex-basis: 11%;
-    font-weight: 600;
     width: 2.6rem;
 `;
 const SummaryIsCorrect = styled.div`
@@ -123,8 +141,155 @@ const SummaryIconTeacherSelected = styled.div`
 `;
 const SummaryActions = styled.div`
     justify-content: flex-end;
-    width: 92px;
+    width: 120px;
 `;
+
+const TopIconContainer = styled.div`
+    display: flex;
+    margin-bottom: 32px;
+`;
+const CloseButton = styled.button`
+    align-items: center;
+    background-color: #f4f1fa;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    margin-right: auto;
+    height: 40px;
+    width: 40px;
+`;
+const HelpButton = styled.button`
+    align-items: center;
+    background-color: #f4f1fa;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    height: 40px;
+    width: 40px;
+`;
+
+const AltDialog = withStyles((theme) => ({
+    root: {
+        fontFamily: [
+            'inter',
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ],
+    },
+    paper: {
+        borderRadius: 16,
+        maxWidth: 800,
+        width: '100%',
+    },
+}))(Dialog);
+
+const AltDialogTitle = withStyles((theme) => ({
+    root: {
+        padding: '48px 48px 0 48px',
+        '@media (min-width: 0) and (max-width: 540px)': {
+            padding: '16px 16px 0 16px',
+        },
+    },
+}))(DialogTitle);
+
+const AltDialogContent = withStyles((theme) => ({
+    root: {
+        padding: '0 48px 0 48px',
+        marginTop: 32,
+        '@media (min-width: 0) and (max-width: 540px)': {
+            padding: '0 16px 0 16px',
+        },
+    },
+}))(DialogContent);
+
+const AltDialogActions = withStyles((theme) => ({
+    root: {
+        padding: '13px 48px 13px 48px',
+        '@media (min-width: 0) and (max-width: 540px)': {
+            padding: '13px 16px 13px 16px',
+        },
+    },
+}))(DialogActions);
+
+const TitleText = styled.div`
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 3.25rem;
+`;
+
+const Accordion = withStyles({
+    root: {
+        boxShadow: 'none',
+        '&:not(:first-child)': {
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
+        },
+        '&:not(:last-child)': {
+            borderBottom: 0,
+        },
+        '&:before': {
+            display: 'none',
+        },
+        '&$expanded': {
+            margin: 'auto',
+        },
+    },
+    expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+    root: {
+        backgroundColor: ({ mark }) => (mark % 2 === 1 ? '#F6F8F9' : '#ffffff'),
+        borderTop: '2px solid transparent',
+        borderLeft: '2px solid transparent',
+        borderRight: '2px solid transparent',
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+        marginBottom: 0,
+        minHeight: 44,
+        paddingLeft: 0,
+        '&$expanded': {
+            borderColor: '#6C46A1',
+            minHeight: 44,
+        },
+    },
+    content: {
+        alignItems: 'center',
+        margin: '0 32px',
+        '&$expanded': {
+            margin: '0 32px',
+        },
+    },
+    expanded: {},
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+    root: {
+        borderBottom: '2px solid',
+        borderLeft: '2px solid',
+        borderRight: '2px solid',
+        borderBottomLeftRadius: 8,
+        borderBottomRightRadius: 8,
+        borderColor: '#6C46A1',
+        padding: theme.spacing(2),
+        '&$expanded': {
+            borderColor: '#6C46A1',
+            minHeight: 44,
+        },
+    },
+}))(MuiAccordionDetails);
 
 function ScoringResults({
     open,
@@ -183,12 +348,31 @@ function ScoringResults({
     }, [userData, contentsData, handsUp, teacherSelected]);
 
     return (
-        <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>상세한 채점 결과</DialogTitle>
-            <DialogContent dividers>
+        <AltDialog open={open} onClose={handleClose}>
+            <AltDialogTitle>
+                <TopIconContainer>
+                    {handleClose ? (
+                        <CloseButton onClick={handleClose}>
+                            <DrawerTopCloseIcon />
+                        </CloseButton>
+                    ) : null}
+                    {/* {handleHelp ? (
+                        <HelpButton onClick={handleHelp}>
+                            <DrawerTopHelpIcon />
+                        </HelpButton>
+                    ) : null} */}
+                </TopIconContainer>
+                <TitleText>상세한 채점 결과</TitleText>
+            </AltDialogTitle>
+            <AltDialogContent>
                 {totalProblems.map((d, idx) => (
                     <Accordion key={d.uuid} expanded={expanded === d.uuid} onChange={handleChange(d.uuid, d.passageUid)}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={`${d.uuid}bh-content`} id={`${d.uuid}bh-header`}>
+                        <AccordionSummary
+                            mark={idx}
+                            expandIcon={<AccordionArrowIcon />}
+                            aria-controls={`${d.uuid}bh-content`}
+                            id={`${d.uuid}bh-header`}
+                        >
                             <SummaryRoot onClick={(e) => e.stopPropagation()}>
                                 <SummaryNoTitle>#{idx + 1}</SummaryNoTitle>
                                 <SummaryIsCorrect userAnswer={d.userAnswer} isCorrect={d.isCorrect}>
@@ -196,23 +380,25 @@ function ScoringResults({
                                 </SummaryIsCorrect>
                                 <SummarySpentTime>{d.spentTime === null ? '' : d.spentTime + '초'}</SummarySpentTime>
                                 <SummaryIcons>
-                                    <SummaryIconStarred>
-                                        {d.starred ? <StarIcon fontSize="inherit" color="inherit" /> : null}
-                                    </SummaryIconStarred>
                                     <SummaryIconHandsUp>
-                                        {d.handsUp ? <HandsUpIcon fontSize="inherit" color="inherit" /> : null}
+                                        <ScoringDetailsHandsUpIcon fillColor={d.handsUp ? '#6C46A1' : '#BFC6CD'} />
                                     </SummaryIconHandsUp>
+                                    <SummaryIconStarred>
+                                        <ScoringDetailsStarringIcon fillColor={d.starred ? '#6C46A1' : '#BFC6CD'} />
+                                    </SummaryIconStarred>
                                     <SummaryIconTeacherSelected>
-                                        {d.teacherSelected ? <CheckCircleIcon fontSize="inherit" color="inherit" /> : null}
+                                        <ScoringDetailsChoosenIcon fillColor={d.teacherSelected ? '#6C46A1' : '#BFC6CD'} />
                                     </SummaryIconTeacherSelected>
                                 </SummaryIcons>
                                 <SummaryActions>
                                     <Button
                                         fullWidth
-                                        sizes="xsmall"
-                                        colors="green"
+                                        sizes="small"
+                                        colors="purple"
                                         variant={d.handsUp ? 'filled' : 'light'}
-                                        leftIcon={<HandsUpIcon fontSize="inherit" />}
+                                        leftIcon={
+                                            <ScoringDetailsHandsUpIcon fontSize="inherit" fillColor={d.handsUp ? '#ffffff' : '#6C46A1'} />
+                                        }
                                         onClick={() => {
                                             actionClickHandsUp(idx, d.handsUp, d.teacherSelected);
                                         }}
@@ -245,13 +431,13 @@ function ScoringResults({
                         </AccordionDetails>
                     </Accordion>
                 ))}
-            </DialogContent>
-            <DialogActions>
-                <Button variant="default" colors="black" sizes="medium" onClick={handleClose}>
+            </AltDialogContent>
+            <AltDialogActions>
+                <Button variant="filled" colors="purple" sizes="medium" onClick={handleClose}>
                     확인
                 </Button>
-            </DialogActions>
-        </Dialog>
+            </AltDialogActions>
+        </AltDialog>
     );
 }
 
