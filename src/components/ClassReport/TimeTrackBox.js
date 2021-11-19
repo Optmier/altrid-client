@@ -26,11 +26,27 @@ const StyleTimeTrackWrapper = styled.div`
             width: 50%;
             box-sizing: border-box;
             display: flex;
+            flex-direction: column;
             align-items: center;
             font-size: 1.18rem;
             font-weight: 500;
             color: #707070;
-
+            & .purple-time {
+                font-weight: bold;
+                font-size: 48px;
+                line-height: 52px;
+                text-align: center;
+                color: #6c46a1;
+                margin-bottom: 8px;
+            }
+            & .subtitle {
+                font-weight: normal;
+                font-size: 16px;
+                line-height: 20px;
+                text-align: center;
+                letter-spacing: -0.02em;
+                color: #11171c;
+            }
             & > div {
                 color: black;
                 margin-right: 1.5rem;
@@ -96,13 +112,19 @@ function TimeTrackBox({ data, total, totalProblems }) {
         <StyleTimeTrackWrapper>
             <div className="white-box time-box">
                 <div className="time-header-col">
-                    <div>최장 소요시간(문제)</div> {timeValueToTimer(arranged[0].time)} ({arranged[0].pid + 1}번)
+                    <div className="purple-time">
+                        {timeValueToTimer(arranged[0].time)} ({arranged[0].pid + 1}번)
+                    </div>
+
+                    <div className="subtitle">최장 소요시간(문제)</div>
                 </div>
                 <div className="time-header-col">
-                    <div>문제당 평균 풀이시간</div>
-                    {SecondtoMinute(personalAvg)[0]
-                        ? SecondtoMinute(personalAvg)[0] + '분 ' + SecondtoMinute(personalAvg)[1] + '초'
-                        : SecondtoMinute(personalAvg)[1] + '초'}
+                    <div className="purple-time">
+                        {SecondtoMinute(personalAvg)[0]
+                            ? SecondtoMinute(personalAvg)[0] + '분 ' + SecondtoMinute(personalAvg)[1] + '초'
+                            : SecondtoMinute(personalAvg)[1] + '초'}
+                    </div>
+                    <div className="subtitle">문제당 평균 풀이시간</div>
                 </div>
             </div>
             <div className="white-box time-box">

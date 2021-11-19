@@ -219,6 +219,7 @@
     & .card-item-student {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         & .card-content-score {
             display: flex;
         }
