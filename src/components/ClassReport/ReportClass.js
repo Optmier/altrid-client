@@ -28,6 +28,9 @@ import { changeParams } from '../../redux_modules/params';
 import { withRouter } from 'react-router-dom';
 import { SecondsToHoursAndMinutes } from '../essentials/TimeChange';
 import { Link } from '@material-ui/core';
+import Groupbox from '../../AltridUI/GroupBox/Groupbox';
+import Button from '../../AltridUI/Button/Button';
+import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
 
 const pad = (n, width) => {
     n = n + '';
@@ -494,7 +497,7 @@ function ReportClass({ match, history }) {
                             <h3>{title}</h3>
                             <p>{description}</p>
                         </div>
-                        <div className="class-report-header-right">
+                        {/* <div className="class-report-header-right">
                             <IsPresence type="eye" able={eyetrack} align="left" fontSize="0.94rem" />
                             <ToggleSwitch
                                 isStarted={new Date(mainReportData ? mainReportData.created : null).getTime() <= serverdate.datetime}
@@ -503,20 +506,12 @@ function ReportClass({ match, history }) {
                                 type="share2"
                                 name="checked"
                             />
-                        </div>
+                        </div> */}
                     </div>
                     <section className="class-report-info">
                         <div className="report-box">
                             <div className="report-row">
-                                <span className="left-desc">
-                                    <svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M0 13H2V13.5H1V14.5H2V15H0V16H3V12H0V13ZM1 4H2V0H0V1H1V4ZM0 7H1.8L0 9.1V10H3V9H1.2L3 6.9V6H0V7ZM5 1V3H19V1H5ZM5 15H19V13H5V15ZM5 9H19V7H5V9Z"
-                                            fill="#706D6D"
-                                        />
-                                    </svg>
-                                    문항수
-                                </span>
+                                <span className="left-desc">문항수</span>
                                 <span className="left-content">
                                     {problemNumbers}
                                     문제
@@ -524,15 +519,7 @@ function ReportClass({ match, history }) {
                             </div>
 
                             <div className="report-row">
-                                <span className="left-desc">
-                                    <svg width="18" height="21" viewBox="0 0 18 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M12 0H6V2H12V0ZM8 13H10V7H8V13ZM16.03 6.39L17.45 4.97C17.02 4.46 16.55 3.98 16.04 3.56L14.62 4.98C13.07 3.74 11.12 3 9 3C4.03 3 0 7.03 0 12C0 16.97 4.02 21 9 21C13.98 21 18 16.97 18 12C18 9.88 17.26 7.93 16.03 6.39ZM9 19C5.13 19 2 15.87 2 12C2 8.13 5.13 5 9 5C12.87 5 16 8.13 16 12C16 15.87 12.87 19 9 19Z"
-                                            fill="#706D6D"
-                                        />
-                                    </svg>
-                                    제한 시간
-                                </span>
+                                <span className="left-desc">제한 시간</span>
                                 <span className="left-content">
                                     {timeLimit === -2
                                         ? '없음'
@@ -546,15 +533,7 @@ function ReportClass({ match, history }) {
                                 </span>
                             </div>
                             <div className="report-row">
-                                <span className="left-desc">
-                                    <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M6 9H4V11H6V9ZM10 9H8V11H10V9ZM14 9H12V11H14V9ZM16 2H15V0H13V2H5V0H3V2H2C0.89 2 0.00999999 2.9 0.00999999 4L0 18C0 19.1 0.89 20 2 20H16C17.1 20 18 19.1 18 18V4C18 2.9 17.1 2 16 2ZM16 18H2V7H16V18Z"
-                                            fill="#706D6D"
-                                        />
-                                    </svg>
-                                    과제 기한
-                                </span>
+                                <span className="left-desc">과제 기한</span>
                                 <span className="left-content tablet-responsive">
                                     <span>{startDate} ~ </span>{' '}
                                     <span>
@@ -562,8 +541,16 @@ function ReportClass({ match, history }) {
                                     </span>
                                 </span>
                             </div>
+                            <div className="report-row">
+                                <span className="left-desc">제출한 학생</span>
+                                <span className="left-content tablet-responsive">
+                                    <span>
+                                        {studentsData.filter((s) => s.submitted).length} / {studentsData.length}
+                                    </span>
+                                </span>
+                            </div>
                         </div>
-                        <div className="report-box">
+                        {/* <div className="report-box">
                             <div className="report-row">
                                 <div className="right-top">제출한 학생</div>
                             </div>
@@ -572,29 +559,75 @@ function ReportClass({ match, history }) {
                                     {studentsData.filter((s) => s.submitted).length} / {studentsData.length}
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </section>
                     <section className="class-report-progress">
-                        <div className="class-report-title">
-                            <div className="title-progress-left">전체 진행률</div>
-                            <div className="title-progress-right">
-                                <span>
-                                    정답 <div className="circle able"></div>
-                                </span>
-                                <span>
-                                    오답 <div className="circle disable"></div>
-                                </span>
-                                <span>
-                                    미응시 <div className="circle none"></div>
-                                </span>
-                            </div>
-                        </div>
+                        <Groupbox
+                            title="채점 결과 요약"
+                            rightComponent={
+                                <Link href={`${match.url}/hands-up`}>
+                                    <Button variant="light" colors="purple">
+                                        학생 손들기 목록 확인
+                                    </Button>
+                                </Link>
+                            }
+                        />
                         <TotalProgress studentList={studentsData} problemNumbers={problemNumbers}></TotalProgress>
-                        <Link href={`${match.url}/hands-up`}>학생 손들기 목록 확인</Link>
                     </section>
 
                     <section className="class-report-graph">
-                        <div className="class-report-title graph-title">
+                        <Groupbox title="점수 비교 그래프"></Groupbox>
+                        {achievesForTypes.value >= 100 ? (
+                            <div style={{ display: 'flex', alignItems: 'center' }} className="descrition">
+                                <svg
+                                    style={{ marginRight: '6px', marginBottom: '8px' }}
+                                    width="12"
+                                    height="15"
+                                    viewBox="0 0 12 15"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M3.29393 11C3.09593 10.1513 2.20259 9.45732 1.83593 8.99998C1.20805 8.21551 0.814559 7.26963 0.70077 6.27129C0.586981 5.27296 0.757528 4.26279 1.19276 3.35715C1.628 2.4515 2.31022 1.68723 3.16083 1.15237C4.01145 0.617512 4.99585 0.333824 6.00065 0.333984C7.00545 0.334145 7.98976 0.61815 8.8402 1.15328C9.69065 1.68841 10.3726 2.4529 10.8076 3.35869C11.2425 4.26447 11.4127 5.27469 11.2986 6.27299C11.1845 7.27129 10.7907 8.21705 10.1626 9.00132C9.79593 9.45798 8.90393 10.152 8.70593 11H3.29326H3.29393ZM8.66659 12.3333V13C8.66659 13.3536 8.52612 13.6927 8.27607 13.9428C8.02602 14.1928 7.68688 14.3333 7.33326 14.3333H4.66659C4.31297 14.3333 3.97383 14.1928 3.72379 13.9428C3.47374 13.6927 3.33326 13.3536 3.33326 13V12.3333H8.66659ZM6.66659 5.66998V2.99998L3.66659 7.00332H5.33326V9.66998L8.33326 5.66998H6.66659Z"
+                                        fill="#FFC043"
+                                    />
+                                </svg>
+
+                                <p style={{ marginBottom: '8px', marginRight: '6px' }}>과제 최소 조건을 만족하셨습니다.</p>
+                                <a
+                                    style={{ textDecoration: 'underline', marginBottom: '8px' }}
+                                    href="https://www.notion.so/a4daf8676b2b4460b75613f25249abf3"
+                                >
+                                    조건 확인하기
+                                </a>
+                            </div>
+                        ) : (
+                            <div style={{ display: 'flex', alignItems: 'center' }} className="descrition">
+                                <svg
+                                    style={{ marginRight: '6px', marginBottom: '8px' }}
+                                    width="12"
+                                    height="15"
+                                    viewBox="0 0 12 15"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M3.29393 11C3.09593 10.1513 2.20259 9.45732 1.83593 8.99998C1.20805 8.21551 0.814559 7.26963 0.70077 6.27129C0.586981 5.27296 0.757528 4.26279 1.19276 3.35715C1.628 2.4515 2.31022 1.68723 3.16083 1.15237C4.01145 0.617512 4.99585 0.333824 6.00065 0.333984C7.00545 0.334145 7.98976 0.61815 8.8402 1.15328C9.69065 1.68841 10.3726 2.4529 10.8076 3.35869C11.2425 4.26447 11.4127 5.27469 11.2986 6.27299C11.1845 7.27129 10.7907 8.21705 10.1626 9.00132C9.79593 9.45798 8.90393 10.152 8.70593 11H3.29326H3.29393ZM8.66659 12.3333V13C8.66659 13.3536 8.52612 13.6927 8.27607 13.9428C8.02602 14.1928 7.68688 14.3333 7.33326 14.3333H4.66659C4.31297 14.3333 3.97383 14.1928 3.72379 13.9428C3.47374 13.6927 3.33326 13.3536 3.33326 13V12.3333H8.66659ZM6.66659 5.66998V2.99998L3.66659 7.00332H5.33326V9.66998L8.33326 5.66998H6.66659Z"
+                                        fill="#FFC043"
+                                    />
+                                </svg>
+
+                                <p style={{ marginBottom: '8px', marginRight: '6px' }}>과제 최소 조건을 만족하지 못했습니다.</p>
+                                <a
+                                    style={{ textDecoration: 'underline', marginBottom: '8px' }}
+                                    href="https://www.notion.so/a4daf8676b2b4460b75613f25249abf3"
+                                >
+                                    조건 확인하기
+                                </a>
+                            </div>
+                        )}
+
+                        {/* <div className="class-report-title graph-title">
                             점수 비교 그래프
                             <div className="title-graph-right">
                                 <TypeBanner
@@ -602,7 +635,7 @@ function ReportClass({ match, history }) {
                                     value={achievesForTypes.value}
                                 />
                             </div>
-                        </div>
+                        </div> */}
                         <div className="graph-box-header">
                             <div className="tablet-responsive">
                                 <div>
@@ -630,30 +663,39 @@ function ReportClass({ match, history }) {
                                 </div>
                             </div>
                             <div className="web-responsive">
-                                <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
-                                {Math.min(...avgScoresOfNumber).toFixed(1)}%)
+                                <span style={{ color: '#4D5C6A' }}>가장 취약한 문제 </span>{' '}
+                                <div style={{ color: '#FF6937' }}>
+                                    {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
+                                    {Math.min(...avgScoresOfNumber).toFixed(1)}%)
+                                </div>
                             </div>
                             <div className="web-responsive">
-                                <span>가장 취약한 영역 </span>
-                                {
-                                    ProblemCategories.filter(
-                                        (p) =>
-                                            p.id ===
-                                            achievesForTypes.allExists
-                                                .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
-                                                .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].category,
-                                    )[0].name
-                                }
-                                (
-                                {(
-                                    achievesForTypes.allExists
-                                        .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
-                                        .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
-                                ).toFixed(1) || 0}
-                                %)
+                                <span style={{ color: '#4D5C6A' }}>가장 취약한 영역 </span>
+                                <div style={{ color: '#FF6937' }}>
+                                    {
+                                        ProblemCategories.filter(
+                                            (p) =>
+                                                p.id ===
+                                                achievesForTypes.allExists
+                                                    .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                                    .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].category,
+                                        )[0].name
+                                    }
+                                    (
+                                    {(
+                                        achievesForTypes.allExists
+                                            .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                            .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
+                                    ).toFixed(1) || 0}
+                                    %)
+                                </div>
                             </div>
                             <div>
-                                <select name="chart-option" onChange={handleSelect}>
+                                <select
+                                    style={{ borderRadius: '104px', color: '#6C46A1', border: '1.5px solid #6C46A1' }}
+                                    name="chart-option"
+                                    onChange={handleSelect}
+                                >
                                     <option value="0">문제별 정답률</option>
                                     <option value="1">유형별 정답률</option>
                                 </select>
@@ -691,17 +733,31 @@ function ReportClass({ match, history }) {
 
             <CardLists
                 upperDeck={
-                    <div className="class-report-title">
-                        학생별 리포트
-                        <div className="title-student-right">
-                            <select name="student-option" onChange={handleSortStudentsCard}>
-                                <option value="0">제출 순</option>
-                                <option value="1">이름 순</option>
-                                <option value="2">점수 순</option>
-                                <option value="3">소요시간 순</option>
-                            </select>
-                        </div>
-                    </div>
+                    <>
+                        <Groupbox
+                            title="학생별 리포트"
+                            rightComponent={
+                                <select
+                                    style={{
+                                        border: ' 1.5px solid #6C46A1',
+                                        borderRadius: ' 104px',
+                                        width: '97px',
+                                        height: '28px',
+                                        backgroundColor: '#F6F8F9',
+                                        color: ' #6C46A1',
+                                        textAlign: 'center',
+                                    }}
+                                    name="student-option"
+                                    onChange={handleSortStudentsCard}
+                                >
+                                    <option value="0">제출 순</option>
+                                    <option value="1">이름 순</option>
+                                    <option value="2">점수 순</option>
+                                    <option value="3">소요시간 순</option>
+                                </select>
+                            }
+                        ></Groupbox>
+                    </>
                 }
             >
                 {studentsData.map((data) => (

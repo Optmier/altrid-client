@@ -10,10 +10,10 @@ const StyleTestSquareList = styled.div`
     align-items: center;
     justify-content: flex-start;
     & .square {
-        min-width: 30px;
+        min-width: 56px;
         width: -webkit-fill-available;
-        height: 30px;
-        border-radius: 5px;
+        height: 34px;
+        border-radius: 8px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -61,13 +61,14 @@ function Progress({ mode, idx, selections, problemNumbers, onDoubleClick, handsU
                             style={{ backgroundColor: '#E5E5E5' }}
                             // onDoubleClick={() => onDoubleClick(i + limiter * idx, selections[i].qUUID, isHandsUp, isTeacherSelected)}
                         >
+                            <p style={{ color: '#fff' }}>미응시</p>
                             {/* {isHandsUp ? <PanToolIcon className="inner-icon hands-up" fontSize="small" /> : null}
                             {isTeacherSelected ? <CheckCircleOutlineIcon className="inner-icon teacher-selected" fontSize="small" /> : null} */}
                         </div>
                     </HtmlTooltip>,
                 ]);
             } else if (selections[i] === -2) {
-                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: 'white' }}></div>]);
+                setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#F6F8F9' }}></div>]);
             } else if (selections[i].correct) {
                 setSquars((squares) => [
                     ...squares,
@@ -78,6 +79,7 @@ function Progress({ mode, idx, selections, problemNumbers, onDoubleClick, handsU
                             style={{ backgroundColor: '#13E2A1' }}
                             // onDoubleClick={() => onDoubleClick(i + limiter * idx, selections[i].qUUID, isHandsUp, isTeacherSelected)}
                         >
+                            <p style={{ color: '#fff' }}>정답</p>
                             {/* {isHandsUp ? <PanToolIcon className="inner-icon hands-up" fontSize="small" /> : null} */}
                             {/* {isTeacherSelected ? <CheckCircleOutlineIcon className="inner-icon teacher-selected" fontSize="small" /> : null} */}
                         </div>
@@ -91,8 +93,10 @@ function Progress({ mode, idx, selections, problemNumbers, onDoubleClick, handsU
                             key={i}
                             className="square"
                             style={{ backgroundColor: '#FF7A60' }}
+
                             // onDoubleClick={() => onDoubleClick(i + limiter * idx, selections[i].qUUID, isHandsUp, isTeacherSelected)}
                         >
+                            <p style={{ color: '#fff' }}>오답</p>
                             {/* {isHandsUp ? <PanToolIcon className="inner-icon hands-up" fontSize="small" /> : null} */}
                             {/* {isTeacherSelected ? <CheckCircleOutlineIcon className="inner-icon teacher-selected" fontSize="small" /> : null} */}
                         </div>

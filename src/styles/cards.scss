@@ -31,10 +31,11 @@ $cardHover: #f6f7f9;
 
             & .card-root {
                 background: #ffffff;
-                box-shadow: 7px 5px 23px #5f5f5f33;
+                // box-shadow: 7px 5px 23px #5f5f5f33;
                 cursor: pointer;
                 border-radius: 32px;
-                width: 304px;
+                width: 466px;
+                border: 1px solid #e9edef;
 
                 transition: background-color 0.1s;
                 &.wider {

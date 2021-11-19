@@ -45,7 +45,7 @@ const Playerset = styled.div`
     padding: 0px 100px 0px 0px;
 `;
 
-const Accordion = styled((props) => <MuiAccordion elevation={0} square {...props} />)(({ theme }) => ({
+const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
     border: `none`,
 }));
 
@@ -93,7 +93,7 @@ const StyleEyeTrackBox = styled.div`
     }
 `;
 
-function EyeTrackBox({
+function EyeTrackChart({
     hasEyetrack,
     eyetrackData,
     contentsData,
@@ -131,15 +131,15 @@ function EyeTrackBox({
         }
     };
 
-    const [chart, setchart] = useState({
+    const [chart1, setchart1] = useState({
         series: [
             {
                 name: '재현 학생',
-                data: [200],
+                data: [310],
             },
             {
                 name: '반 평균',
-                data: [250],
+                data: [510],
             },
         ],
         options: {
@@ -172,7 +172,7 @@ function EyeTrackBox({
                 },
             },
             xaxis: {
-                // categories: ['평균 응시속도'],
+                categories: ['총 응시점 개수'],
             },
             yaxis: {
                 show: true,
@@ -184,9 +184,128 @@ function EyeTrackBox({
                 //     show: true,
                 // },
             },
+            toolbar: {
+                show: false,
+            },
+        },
+    });
+    const [chart2, setchart2] = useState({
+        series: [
+            {
+                name: '재현 학생',
+                data: [310],
+            },
+            {
+                name: '반 평균',
+                data: [510],
+            },
+        ],
+        options: {
+            chart: {
+                width: '100%',
+                height: '100%',
+                type: 'bar',
+            },
+            dataLabels: {
+                enabled: false,
+            },
+
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded',
+                },
+            },
+            title: {},
+            colors: ['#351e85', '#68dea6'],
+            markers: {
+                size: 0,
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return val;
+                    },
+                },
+            },
+            xaxis: {
+                categories: ['평균 응시속도'],
+            },
+            yaxis: {
+                show: true,
+                //     title: {
+                //         text: '번',
+                //     },
+                // },
+                // legend: {
+                //     show: true,
+                // },
+            },
+            toolbar: {
+                show: false,
+            },
         },
     });
 
+    const [chart3, setchart3] = useState({
+        series: [
+            {
+                name: '재현 학생',
+                data: [310],
+            },
+            {
+                name: '반 평균',
+                data: [510],
+            },
+        ],
+        options: {
+            chart: {
+                width: '100%',
+                height: '100%',
+                type: 'bar',
+            },
+            dataLabels: {
+                enabled: false,
+            },
+
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded',
+                },
+            },
+            title: {},
+            colors: ['#351e85', '#68dea6'],
+            markers: {
+                size: 0,
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return val;
+                    },
+                },
+            },
+            xaxis: {
+                categories: ['재응시 횟수'],
+            },
+            yaxis: {
+                show: true,
+                //     title: {
+                //         text: '번',
+                //     },
+                // },
+                // legend: {
+                //     show: true,
+                // },
+            },
+            toolbar: {
+                show: false,
+            },
+        },
+    });
     useEffect(() => {
         Axios.get(`${apiUrl}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
             params: {
@@ -244,151 +363,59 @@ function EyeTrackBox({
         setFixationsTotalAvg(totalEyeStatsAvg.num_of_fixs.toFixed(0));
         setAvgFixDurTotalAvg(totalEyeStatsAvg.avg_of_fix_vels.toFixed(0));
         setRegressionsTotalAvg(totalEyeStatsAvg.num_of_regs.toFixed(0));
-        // setchart({
-        //     ...chart,
-        //     series: [
-        //         {
-        //             name: '학생',
-        //             data: [currentStudentDatas.num_of_fixs, currentStudentDatas.num_of_fix_vels, currentStudentDatas.num_of_regs],
-        //         },
-        //         {
-        //             name: '평균',
-        //             data: [
-        //                 totalEyeStatsAvg.num_of_fixs.toFixed(0),
-        //                 totalEyeStatsAvg.avg_of_fix_vels.toFixed(0),
-        //                 totalEyeStatsAvg.num_of_regs.toFixed(0),
-        //             ],
-        //         },
-        //     ],
-        // });
+        setchart1({
+            ...chart1,
+            series: [
+                {
+                    name: '학생',
+                    data: [currentStudentDatas.num_of_fixs],
+                },
+                {
+                    name: '평균',
+                    data: [totalEyeStatsAvg.num_of_fixs.toFixed(0)],
+                },
+            ],
+        });
+        setchart2({
+            ...chart2,
+            series: [
+                {
+                    name: '학생',
+                    data: [currentStudentDatas.avg_of_fix_vels],
+                },
+                {
+                    name: '평균',
+                    data: [totalEyeStatsAvg.avg_of_fix_vels.toFixed(0)],
+                },
+            ],
+        });
+        setchart3({
+            ...chart3,
+            series: [
+                {
+                    name: '학생',
+                    data: [currentStudentDatas.num_of_regs],
+                },
+                {
+                    name: '평균',
+                    data: [totalEyeStatsAvg.num_of_regs.toFixed(0)],
+                },
+            ],
+        });
+        console.log(chart3);
     }, [totalStudentsDatas]);
-
+    console.log(chart1);
     return (
-        // 시선 추적 영상
-
-        <StyleEyeTrackBox>
-            <div className="white-box">
-                <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-                        <Typography>시선 흐름 분석 영상</Typography>
-                    </AccordionSummary>
-
-                    <AccordionDetails>
-                        <Playerset>
-                            {hasEyetrack && mEyetrackData ? (
-                                <EyetrackingPlayer data={mEyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
-                            ) : (
-                                <div className="no-eyetrack">
-                                    <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                                        <path
-                                            id="패스_35"
-                                            data-name="패스 35"
-                                            d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
-                                            fill="#605f60"
-                                        />
-                                    </svg>
-                                    시선 추적이 포함되지 않은 과제입니다.
-                                </div>
-                            )}
-                        </Playerset>
-                    </AccordionDetails>
-                </Accordion>
-            </div>
-
-            {/* 자신의 데이터 결과 */}
-
-            <div className="white-box">
-                {hasEyetrack && mEyetrackData ? (
-                    <div className="ment-ai-col">
-                        <Dataset>
-                            <span className="row-title">총 응시점 개수 </span>
-                            <TooltipCard title={`${fixations}개`}>
-                                <span className="row-desc">{fixations}개</span>
-                            </TooltipCard>
-                            <svg
-                                style={{ marginRight: '1rem' }}
-                                width="1"
-                                height="10"
-                                viewBox="0 0 1 10"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <line x1="0.5" x2="0.5" y2="10" stroke="#BFC6CD" />
-                            </svg>
-
-                            <span className="row-title">평균 응시 속도</span>
-                            <TooltipCard title={`${avgFixVels}px/s`}>
-                                <span className="row-desc">{avgFixVels}px/s</span>
-                            </TooltipCard>
-                            <svg
-                                style={{ marginRight: '1rem' }}
-                                width="1"
-                                height="10"
-                                viewBox="0 0 1 10"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <line x1="0.5" x2="0.5" y2="10" stroke="#BFC6CD" />
-                            </svg>
-
-                            <span className="row-title">재응시 횟수</span>
-                            <TooltipCard title={`${regressions}회`}>
-                                <span className="row-desc">{regressions}회</span>
-                            </TooltipCard>
-                        </Dataset>
-                    </div>
-                ) : (
-                    <div className="ment-ai-col" id="no-eyetrack">
-                        <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                            <path
-                                id="패스_35"
-                                data-name="패스 35"
-                                d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
-                                fill="#605f60"
-                            />
-                        </svg>
-                        시선 추적 미포함 과제
-                    </div>
-                )}
-            </div>
-
-            {/* 변경 문제             */}
-
-            <div style={{ paddingLeft: '50px' }} className="white-box ment-ai">
-                <div className="ment-ai-col ment-ai-designed">
-                    <div>
-                        <span style={{ marginBottom: '6px' }} className="ment-ai-name">
-                            {stdName}
-                        </span>{' '}
-                        학생은 풀이 중
-                        <br />
-                    </div>
-                    <div>
-                        <span style={{ marginBottom: '10px' }} className="ment-ai-underline">
-                            총 {answerChangedProblems}문제
-                        </span>
-                        에서 답 변경 후,
-                        <br />
-                    </div>
-                    <div>
-                        <span className="ment-ai-underline">{aftChangedFaileds}문제</span>가 오답 처리되었습니다.
-                    </div>
-                </div>
-                <div className="ment-ai-col">
-                    {eyetrack && userType === 'students' ? null : (
-                        <div className="eyetrack-right">
-                            <EyeTrackPattern data={patternData} hasEyetrack={hasEyetrack} onEyetrackGoTo={handleGoTo} />
-                        </div>
-                    )}
-                </div>
-            </div>
-            {/* <Chart options={chart.options} series={chart.series} type="bar" height={'300px'} width={'100px'} /> */}
-        </StyleEyeTrackBox>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Chart options={chart1.options} series={chart1.series} type="bar" height={'300px'} width={'150px'} />
+            <Chart options={chart2.options} series={chart2.series} type="bar" height={'300px'} width={'150px'} />
+            <Chart options={chart3.options} series={chart3.series} type="bar" height={'300px'} width={'150px'} />
+        </div>
     );
 }
 
-EyeTrackBox.defaultProps = {
+EyeTrackChart.defaultProps = {
     totalDatas: [],
 };
 
-export default EyeTrackBox;
+export default EyeTrackChart;

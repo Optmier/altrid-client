@@ -4,7 +4,6 @@ import Progress from './Progress.js';
 import TooltipCard from '../essentials/TooltipCard';
 
 const StyleTotalProgress = styled.div`
-    background-color: white;
     border-radius: 11px;
     padding: 30px 32px;
     overflow: auto;
