@@ -28,9 +28,11 @@ const AssignCard = styled.div`
         height: 262px;
         margin: 10px 10px;
         & .card-subTitle-p {
+            width: 230px;
             color: #000000;
             font-size: 18px;
             font-weight: bold;
+            text-overflow: ellipsis;
         }
         & .class-card-header-on {
             padding: 8px 24px;
