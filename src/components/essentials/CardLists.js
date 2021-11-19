@@ -30,7 +30,10 @@ const cardSizer = (dt) => {
     if (dt.width >= 992) {
         $('.cards-contents-root').css({ width: '960px' });
         $('.card-lists').removeClass('phase-1').removeClass('phase-2');
-    } else if (dt.width >= 663 && dt.width < 992) {
+    } else if (dt.width >= 800 && dt.width < 992) {
+        $('.cards-contents-root').css({ width: '768px' });
+        $('.card-lists').addClass('phase-1').removeClass('phase-2');
+    } else if (dt.width >= 663 && dt.width < 800) {
         $('.cards-contents-root').css({ width: '632px' });
         $('.card-lists').addClass('phase-1').removeClass('phase-2');
     } else {

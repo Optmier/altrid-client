@@ -2,7 +2,7 @@ import React from 'react';
 import { TextField as MuiTextField } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
-const TextField = withStyles((theme) => ({
+const TextFieldTest = withStyles((theme) => ({
     root: {
         fontFamily: [
             'inter',
@@ -42,9 +42,6 @@ const TextField = withStyles((theme) => ({
             lineHeight: '16px',
             transform: 'translate(16px, 12px)',
         },
-        '& .MuiFilledInput-adornedEnd': {
-            padding: 0,
-        },
         '& .MuiFilledInput-root': {
             backgroundColor: ({ status }) => {
                 switch (status) {
@@ -77,15 +74,6 @@ const TextField = withStyles((theme) => ({
                 letterSpacing: '-0.02em',
                 lineHeight: '22px',
                 padding: '30px 16px 12px',
-            },
-            '& input[type="datetime-local"]::-webkit-calendar-picker-indicator ': {
-                color: 'transparent',
-                background: 'none',
-                zIndex: 1,
-            },
-            '& input[type="datetime-local"]:before': {
-                display: 'none',
-                content: 'none',
             },
             '&:hover': {
                 backgroundColor: ({ status }) => {
@@ -151,4 +139,4 @@ const TextField = withStyles((theme) => ({
     },
 }))(MuiTextField);
 
-export default TextField;
+export default TextFieldTest;
