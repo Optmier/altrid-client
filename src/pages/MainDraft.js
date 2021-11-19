@@ -77,7 +77,8 @@ const Main_header = styled.div`
     }
 `;
 const CardSection = styled.div`
-    font-family: 'inter, -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, “Helvetica Neue”, Arial, sans-serif, “Apple Color Emoji”, “Segoe UI Emoji”, “Segoe UI Symbol”';
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
     max-width: 1216px;
     margin: 0 auto;
     margin-top: 24px;

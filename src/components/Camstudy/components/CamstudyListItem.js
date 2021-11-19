@@ -1,15 +1,68 @@
 import moment from 'moment';
 import React from 'react';
 import styled from 'styled-components';
+import Button from '../../../AltridUI/Button/Button';
+import CardPeopleIcon from '../../../AltridUI/Icons/CardPeopleIcon';
+import CardKeyIcon from '../../../AltridUI/Icons/CardKeyIcon';
+import CardClockIcon from '../../../AltridUI/Icons/CardClockIcon';
 
 const ItemRoot = styled.div`
     background-color: #ffffff;
-    border-radius: 11px;
+    border: 1px solid #e9edef;
+    border-radius: 32px;
     display: flex;
-    padding: 16px;
+    flex-direction: column;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    padding: 25px 32px;
 
     & + & {
         margin-top: 16px;
+    }
+`;
+const ItemTopInfoTagContaier = styled.div`
+    align-items: center;
+    display: flex;
+`;
+const TopInfoTag = styled.div`
+    align-items: center;
+    background-color: ${({ colors }) => {
+        switch (colors) {
+            case 'blue':
+                return '#D4E2FC';
+            case 'yellow':
+                return '#FFF2D9';
+            case 'purple':
+                return '#E3DDF2';
+            default:
+                return '#ffffff';
+        }
+    }};
+    color: ${({ colors }) => {
+        switch (colors) {
+            case 'blue':
+                return '#174291';
+            case 'yellow':
+                return '#997328';
+            case 'purple':
+                return '#3B1689';
+            default:
+                return '#000000';
+        }
+    }};
+    border-radius: 8px;
+    display: flex;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 16px;
+    padding: 4px 6px;
+    text-align: center;
+    & + & {
+        margin-left: 4px;
+    }
+    & span {
+        margin-left: 5px;
     }
 `;
 const ItemLeft = styled.div`
@@ -29,27 +82,37 @@ const ItemRight = styled.div`
         margin-top: 8px;
     }
 `;
-const MainInfo = styled.div``;
-const SubInfo = styled.div`
-    color: #757575;
+const ItemMainInfoContainer = styled.div`
     display: flex;
-    font-size: 0.9rem;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: flex-start;
     margin-top: 8px;
+    width: 100%;
 `;
 const Title = styled.div`
-    font-size: 1.2rem;
-    font-weight: 600;
+    color: #000000;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.75rem;
 `;
-const Description = styled.div``;
+const Description = styled.div`
+    color: #000000;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+    line-height: 1.25rem;
+`;
 const CreatorName = styled.div``;
-const LiveCounts = styled.div``;
-const MaxCounts = styled.div``;
-const Dist = styled.div``;
-const SessionEndDate = styled.div`
-    color: #757575;
-    font-size: 0.9rem;
-    margin-top: 8px;
+const ItemActionsContainer = styled.div`
+    align-items: center;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 32px;
+    width: 100%;
+    & button + button {
+        margin-left: 8px;
+    }
 `;
 
 function CamstudyListItem({
@@ -82,7 +145,7 @@ function CamstudyListItem({
 
     return (
         <ItemRoot>
-            <ItemLeft>
+            {/* <ItemLeft>
                 <MainInfo>
                     <Title>{title}</Title>
                     <Description>{description}</Description>
@@ -103,7 +166,46 @@ function CamstudyListItem({
                         <button onClick={actionDeleteStudy}>종료하기</button>
                     </>
                 ) : null}
-            </ItemRight>
+            </ItemRight> */}
+            <ItemTopInfoTagContaier>
+                <TopInfoTag colors="blue">
+                    <CardPeopleIcon style={{ marginTop: -1 }} />
+                    <span>
+                        {liveCounts}/{maxJoinCounts}
+                    </span>
+                </TopInfoTag>
+                <TopInfoTag colors="purple">
+                    <CardClockIcon />
+                    <span>34시간 남음</span>
+                </TopInfoTag>
+                {publicState === 1 ? (
+                    <TopInfoTag colors="yellow">
+                        <CardKeyIcon width={6} height={12} viewBox="0 0 13 24" />
+                        <span>암호 설정 됨</span>
+                    </TopInfoTag>
+                ) : null}
+            </ItemTopInfoTagContaier>
+
+            <ItemMainInfoContainer>
+                <Title>{title}</Title>
+                <Description>{description}</Description>
+            </ItemMainInfoContainer>
+
+            <ItemActionsContainer>
+                <Button variant="light" sizes="medium" colors="purple" onClick={actionEnterStudy}>
+                    입장하기
+                </Button>
+                {isMine ? (
+                    <>
+                        <Button variant="mono" sizes="medium" onClick={actionModifyStudy}>
+                            수정하기
+                        </Button>
+                        <Button variant="outlined" sizes="medium" colors="red" onClick={actionDeleteStudy}>
+                            종료하기
+                        </Button>
+                    </>
+                ) : null}
+            </ItemActionsContainer>
         </ItemRoot>
     );
 }

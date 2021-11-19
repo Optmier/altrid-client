@@ -44,13 +44,20 @@ $.fn.changeSize = function (handleFunction) {
 
 const cardSizer = (dt) => {
     if (!dt.width) return;
+    console.log(dt.width);
     if (dt.width >= 992) {
         $('#class-wrapper').css({ width: '960px' });
         $('.class-report-root').removeAttr('id', 'responsive-tablet');
         $('.class-report-root').removeAttr('id', 'responsive-mobile');
         $('.student-report-root').removeAttr('id', 'responsive-tablet');
         $('.student-report-root').removeAttr('id', 'responsive-mobile');
-    } else if (dt.width >= 663 && dt.width < 992) {
+    } else if (dt.width >= 800 && dt.width < 992) {
+        $('#class-wrapper').css({ width: '768px' });
+        $('.class-report-root').removeAttr('id', 'responsive-mobile');
+        $('.class-report-root').attr('id', 'responsive-tablet');
+        $('.student-report-root').removeAttr('id', 'responsive-mobile');
+        $('.student-report-root').attr('id', 'responsive-tablet');
+    } else if (dt.width >= 663 && dt.width < 800) {
         $('#class-wrapper').css({ width: '632px' });
         $('.class-report-root').removeAttr('id', 'responsive-mobile');
         $('.class-report-root').attr('id', 'responsive-tablet');

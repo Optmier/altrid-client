@@ -2,13 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import DrawerGroupBox from '../../../AltridUI/Drawer/DrawerGroupBox';
 import TextField from '../../../AltridUI/TextField/TextField';
+import FormControl from '../../../AltridUI/TextField/FormControl';
 import MuiTextField from '@material-ui/core/TextField';
 import CheckIcon from '@material-ui/icons/CheckCircleOutline';
 import ErrorIcon from '@material-ui/icons/ErrorOutline';
 import TextFieldHelperText from '../../../AltridUI/TextField/TextFieldHelperText';
 import ReactQuill from 'react-quill';
 import BulbIcon from '../../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
-import { Avatar, Chip, CircularProgress, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { Avatar, Chip, CircularProgress, IconButton, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import Axios from 'axios';
 import { apiUrl } from '../../../configs/configs';
@@ -17,6 +18,8 @@ import Drawer from '../../../AltridUI/Drawer/Drawer';
 import DrawerActions from '../../../AltridUI/Drawer/DrawerActions';
 import Button from '../../../AltridUI/Button/Button';
 import { useSelector } from 'react-redux';
+import ArrowDropDownIcon from '../../../AltridUI/Icons/ArrowDropDownIcon';
+import CalendarIcon from '../../../AltridUI/Icons/CalendarIcon';
 
 const ContentsRoot = styled.div``;
 const TitleContainer = styled.div`
@@ -80,6 +83,8 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
     const [invitationOptionOpen, setInvitationOptionOpen] = useState(false);
     const [invitationsLoading, setInvitationLoading] = useState(false);
     const [selectedInvitations, setSelectedInvitations] = useState([]);
+    window.selectedInvitations = selectedInvitations;
+    window.setSelectedInvitations = setSelectedInvitations;
     const [rulesData, setRulesData] = useState({
         renderContents: null,
         deltaContents: null,
@@ -331,7 +336,10 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                     const data = res.data
                         .map(({ auth_id, name, image }) => ({ id: auth_id, name: name, image: image }))
                         .filter(({ id }) => id !== sessions.authId);
-                    if (active) setInvitationOptions(data);
+                    if (active) {
+                        setInvitationOptions(data);
+                        setSelectedInvitations(convertDefaultInvitations(data, defaultData.invitation_ids));
+                    }
                 })
                 .catch((err) => {
                     console.error(err);
@@ -358,7 +366,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
         titleFieldRef.current.value = '';
         descriptionFieldRef.current.value = '';
         rulesEditorRef.current.value = null;
-        setPublicState(0);
+        // setPublicState(0);
         maxJoinsFieldRef.current && (maxJoinsFieldRef.current.value = 0);
         passwordFieldRef.current && (passwordFieldRef.current.value = '');
         sessionEndDateFieldRef.current && (sessionEndDateFieldRef.current.value = moment().add('day', 3).format('yyyy-MM-DDTHH:mm'));
@@ -373,6 +381,8 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
         handleClose(true);
     };
 
+    const [invitationTags, setInvitationTags] = useState([]);
+
     return (
         <ContentsRoot>
             <Drawer anchor="right" open={open} handleClose={onDrawerClose}>
@@ -382,7 +392,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                 <DrawerGroupBox title="기본 정보" description="제목, 설명, 규칙을 설정하세요" descriptionAdornment={BulbIcon}>
                     <GroupBoxContentsBasicInfoRoot>
                         <FormPlacer>
-                            <MuiTextField
+                            <TextField
                                 autoFocus
                                 variant="filled"
                                 required
@@ -391,19 +401,21 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                 defaultValue={defaultTitle}
                                 disabled={Boolean(defaultData)}
                                 inputRef={titleFieldRef}
-                                error={fieldErrorControl['title'].error}
+                                InputProps={{ disableUnderline: true }}
+                                status={fieldErrorControl['title'].error ? 'error' : null}
                                 helperText={fieldErrorControl['title'].errorText}
                                 name="title"
                                 onChange={fieldOnChange}
                             />
                         </FormPlacer>
                         <FormPlacer>
-                            <MuiTextField
+                            <TextField
                                 variant="filled"
                                 fullWidth
                                 label="한 줄 설명"
                                 defaultValue={defaultDescription}
                                 inputRef={descriptionFieldRef}
+                                InputProps={{ disableUnderline: true }}
                             />
                         </FormPlacer>
                         <FormPlacer>
@@ -425,7 +437,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                 fullWidth
                                 variant="filled"
                                 disabled={Boolean(defaultData)}
-                                error={fieldErrorControl['publicState'].error}
+                                status={fieldErrorControl['publicState'].error ? 'error' : null}
                             >
                                 <InputLabel id="label-select-public-state">공개 설정</InputLabel>
                                 <Select
@@ -434,6 +446,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                     defaultValue={defaultPublicState}
                                     inputRef={publicStateFieldRef}
                                     onChange={actionOnChangePublicState}
+                                    IconComponent={ArrowDropDownIcon}
                                 >
                                     <MenuItem value={0}>오픈됨</MenuItem>
                                     <MenuItem value={1}>암호 설정</MenuItem>
@@ -448,7 +461,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                     return (
                                         <>
                                             <FormPlacer>
-                                                <MuiTextField
+                                                <TextField
                                                     required
                                                     id="input_max_joins"
                                                     variant="filled"
@@ -459,7 +472,8 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                                     defaultValue={defaultData ? defaultMaxJoins : 4}
                                                     disabled={Boolean(defaultData)}
                                                     inputRef={maxJoinsFieldRef}
-                                                    error={fieldErrorControl['maxJoins'].error}
+                                                    InputProps={{ disableUnderline: true }}
+                                                    status={fieldErrorControl['maxJoins'].error ? 'error' : null}
                                                     helperText={fieldErrorControl['maxJoins'].errorText}
                                                     name="maxJoins"
                                                     onChange={fieldOnChange}
@@ -467,7 +481,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                             </FormPlacer>
                                             {state === 1 ? (
                                                 <FormPlacer>
-                                                    <MuiTextField
+                                                    <TextField
                                                         required
                                                         id="input_password"
                                                         variant="filled"
@@ -477,7 +491,8 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                                         defaultValue={defaultData ? '****' : null}
                                                         disabled={Boolean(defaultData)}
                                                         inputRef={passwordFieldRef}
-                                                        error={fieldErrorControl['password'].error}
+                                                        InputProps={{ disableUnderline: true }}
+                                                        status={fieldErrorControl['password'].error ? 'error' : null}
                                                         helperText={fieldErrorControl['password'].errorText}
                                                         name="password"
                                                         onChange={fieldOnChange}
@@ -534,13 +549,14 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                                         )
                                                     }
                                                     renderInput={(params) => (
-                                                        <MuiTextField
+                                                        <TextField
                                                             {...params}
                                                             required
                                                             variant="filled"
                                                             label="초대 인원 선택"
                                                             InputProps={{
                                                                 ...params.InputProps,
+                                                                disableUnderline: true,
                                                                 endAdornment: (
                                                                     <>
                                                                         {invitationsLoading ? (
@@ -550,18 +566,21 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                                                     </>
                                                                 ),
                                                             }}
-                                                            error={fieldErrorControl['invitations'].error}
+                                                            status={fieldErrorControl['invitations'].error ? 'error' : null}
                                                             helperText={fieldErrorControl['invitations'].errorText}
                                                         />
                                                     )}
-                                                    defaultValue={
-                                                        Boolean(defaultData)
-                                                            ? convertDefaultInvitations(invitationOptions, defaultData.invitation_ids)
-                                                            : []
+                                                    popupIcon={<ArrowDropDownIcon style={{ padding: 10 }} />}
+                                                    value={
+                                                        // Boolean(defaultData)
+                                                        //     ? convertDefaultInvitations(invitationOptions, defaultData.invitation_ids)
+                                                        //     : []
+                                                        selectedInvitations
                                                     }
                                                     disabled={Boolean(defaultData)}
                                                 />
                                             ) : null}
+                                            {invitationTags}
                                         </FormPlacer>
                                     );
                                 default:
@@ -569,7 +588,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                             }
                         })(publicState)}
                         <FormPlacer>
-                            <MuiTextField
+                            <TextField
                                 required
                                 fullWidth
                                 variant="filled"
@@ -577,12 +596,17 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                 defaultValue={defaultData ? defaultSessionEndDate : moment().add('day', 3).format('yyyy-MM-DDTHH:mm')}
                                 id="datetime-local"
                                 type="datetime-local"
+                                data-date-inline-picker="true"
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
                                 disabled={Boolean(defaultData)}
                                 inputRef={sessionEndDateFieldRef}
-                                error={fieldErrorControl['sessionEndDate'].error}
+                                InputProps={{
+                                    disableUnderline: true,
+                                    endAdornment: <CalendarIcon style={{ position: 'absolute', right: 18 }} />,
+                                }}
+                                status={fieldErrorControl['sessionEndDate'].error ? 'error' : null}
                                 helperText={fieldErrorControl['sessionEndDate'].errorText}
                                 name="sessionEndDate"
                                 onChange={fieldOnChange}

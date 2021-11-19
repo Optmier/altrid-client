@@ -126,9 +126,9 @@ const ButtonRoot = styled.button`
     padding: ${({ sizes, variant }) => {
         switch (sizes) {
             case 'large':
-                return `${variant === 'outlined' ? '10px' : '12px'} 24px`;
+                return `${variant === 'outlined' || variant === 'mono' ? '10px' : '12px'} 24px`;
             case 'medium':
-                return `${variant === 'outlined' ? '6px' : '8px'} 16px`;
+                return `${variant === 'outlined' || variant === 'mono' ? '6px' : '8px'} 16px`;
             case 'small':
                 return '3px 12px';
             case 'xsmall':
