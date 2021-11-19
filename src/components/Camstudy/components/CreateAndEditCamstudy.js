@@ -9,7 +9,7 @@ import ErrorIcon from '@material-ui/icons/ErrorOutline';
 import TextFieldHelperText from '../../../AltridUI/TextField/TextFieldHelperText';
 import ReactQuill from 'react-quill';
 import BulbIcon from '../../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
-import { Avatar, Chip, CircularProgress, IconButton, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { Avatar, CircularProgress, IconButton, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import Axios from 'axios';
 import { apiUrl } from '../../../configs/configs';
@@ -20,6 +20,8 @@ import Button from '../../../AltridUI/Button/Button';
 import { useSelector } from 'react-redux';
 import ArrowDropDownIcon from '../../../AltridUI/Icons/ArrowDropDownIcon';
 import CalendarIcon from '../../../AltridUI/Icons/CalendarIcon';
+import Chip from '../../../AltridUI/Accounts/Chip';
+import ChipDeleteIcon from '../../../AltridUI/Icons/ChipDeleteIcon';
 
 const ContentsRoot = styled.div``;
 const TitleContainer = styled.div`
@@ -40,6 +42,20 @@ const FormPlacer = styled.div`
     & + & {
         margin-top: 16px;
     }
+    & .quill.camstudy-rules-editor {
+        & .ql-toolbar {
+            background-color: #e9edef;
+            border: none;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+        & .ql-container {
+            background-color: #f6f8f9;
+            border: none;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+        }
+    }
 `;
 const GroupBoxContentsBasicInfoRoot = styled.div`
     display: flex;
@@ -49,6 +65,12 @@ const GroupBoxContentsBasicInfoRoot = styled.div`
 const GroupBoxContentsOtherInfoRoot = styled.div`
     display: flex;
     flex-direction: column;
+`;
+const InvitationChipsContainer = styled.div`
+    display: inline;
+    & div.MuiChip-root {
+        margin: 4px;
+    }
 `;
 
 function asyncTestSleep(delay = 0) {
@@ -362,11 +384,11 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
     };
 
     const onDrawerClose = () => {
-        console.log('set to default');
+        // console.log('set to default');
         titleFieldRef.current.value = '';
         descriptionFieldRef.current.value = '';
         rulesEditorRef.current.value = null;
-        // setPublicState(0);
+        setPublicState(0);
         maxJoinsFieldRef.current && (maxJoinsFieldRef.current.value = 0);
         passwordFieldRef.current && (passwordFieldRef.current.value = '');
         sessionEndDateFieldRef.current && (sessionEndDateFieldRef.current.value = moment().add('day', 3).format('yyyy-MM-DDTHH:mm'));
@@ -381,7 +403,9 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
         handleClose(true);
     };
 
-    const [invitationTags, setInvitationTags] = useState([]);
+    const actionDeleteInvitation = (deleteId) => (e) => {
+        setSelectedInvitations(selectedInvitations.filter(({ id }) => id !== deleteId));
+    };
 
     return (
         <ContentsRoot>
@@ -443,7 +467,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                 <Select
                                     labelId="label-select-public-state"
                                     id="select-public-state"
-                                    defaultValue={defaultPublicState}
+                                    value={publicState}
                                     inputRef={publicStateFieldRef}
                                     onChange={actionOnChangePublicState}
                                     IconComponent={ArrowDropDownIcon}
@@ -503,85 +527,93 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
                                     );
                                 case 2:
                                     return (
-                                        <FormPlacer>
-                                            {!Boolean(defaultData) || (Boolean(defaultData) && invitationOptions.length) ? (
-                                                <Autocomplete
-                                                    multiple
-                                                    open={invitationOptionOpen}
-                                                    loading={invitationsLoading}
-                                                    onOpen={() => {
-                                                        setInvitationOptionOpen(true);
+                                        <>
+                                            <FormPlacer>
+                                                {!Boolean(defaultData) || (Boolean(defaultData) && invitationOptions.length) ? (
+                                                    <Autocomplete
+                                                        multiple
+                                                        open={invitationOptionOpen}
+                                                        loading={invitationsLoading}
+                                                        onOpen={() => {
+                                                            setInvitationOptionOpen(true);
+                                                        }}
+                                                        onClose={() => {
+                                                            setInvitationOptionOpen(false);
+                                                        }}
+                                                        onChange={actionOnChangeInvitationSelect}
+                                                        limitTags={3}
+                                                        id="select-invitations"
+                                                        options={invitationOptions}
+                                                        getOptionLabel={(option) => option.name}
+                                                        renderOption={(option) => (
+                                                            <React.Fragment>
+                                                                <Avatar
+                                                                    alt={`${option.name}'s profile image'`}
+                                                                    src={option.image}
+                                                                    sizes="small"
+                                                                >
+                                                                    {Boolean(option.image) ? null : option.name[0]}
+                                                                </Avatar>
+                                                                <span style={{ marginLeft: 10 }}>{option.name}</span>
+                                                            </React.Fragment>
+                                                        )}
+                                                        renderTags={() => null}
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                {...params}
+                                                                required
+                                                                variant="filled"
+                                                                label="초대 인원 선택"
+                                                                InputProps={{
+                                                                    ...params.InputProps,
+                                                                    disableUnderline: true,
+                                                                    endAdornment: (
+                                                                        <>
+                                                                            {invitationsLoading ? (
+                                                                                <CircularProgress color="inherit" size={20} />
+                                                                            ) : null}
+                                                                            {params.InputProps.endAdornment}
+                                                                        </>
+                                                                    ),
+                                                                }}
+                                                                status={fieldErrorControl['invitations'].error ? 'error' : null}
+                                                                helperText={fieldErrorControl['invitations'].errorText}
+                                                            />
+                                                        )}
+                                                        popupIcon={<ArrowDropDownIcon style={{ padding: 10 }} />}
+                                                        value={selectedInvitations}
+                                                        disabled={Boolean(defaultData)}
+                                                    />
+                                                ) : null}
+                                            </FormPlacer>
+                                            {selectedInvitations.length ? (
+                                                <FormPlacer
+                                                    style={{
+                                                        marginTop: 12,
+                                                        marginBottom: -4,
+                                                        marginLeft: -4,
+                                                        marginRight: -4,
                                                     }}
-                                                    onClose={() => {
-                                                        setInvitationOptionOpen(false);
-                                                    }}
-                                                    onChange={actionOnChangeInvitationSelect}
-                                                    limitTags={3}
-                                                    id="select-invitations"
-                                                    options={invitationOptions}
-                                                    getOptionLabel={(option) => option.name}
-                                                    renderOption={(option) => (
-                                                        <React.Fragment>
-                                                            <Avatar
-                                                                alt={`${option.name}'s profile image'`}
-                                                                src={option.image}
-                                                                sizes="small"
-                                                            >
-                                                                {Boolean(option.image) ? null : option.name[0]}
-                                                            </Avatar>
-                                                            <span style={{ marginLeft: 10 }}>{option.name}</span>
-                                                        </React.Fragment>
-                                                    )}
-                                                    renderTags={(value, getTagProps) =>
-                                                        value.map((option, index) =>
-                                                            index < 64 ? (
-                                                                <Chip
-                                                                    variant="outlined"
-                                                                    avatar={
-                                                                        <Avatar alt={`${option.name}'s profile image'`} src={option.image}>
-                                                                            {Boolean(option.image) ? null : option.name[0]}
-                                                                        </Avatar>
-                                                                    }
-                                                                    label={option.name}
-                                                                    {...getTagProps({ index })}
-                                                                />
-                                                            ) : null,
-                                                        )
-                                                    }
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            required
-                                                            variant="filled"
-                                                            label="초대 인원 선택"
-                                                            InputProps={{
-                                                                ...params.InputProps,
-                                                                disableUnderline: true,
-                                                                endAdornment: (
-                                                                    <>
-                                                                        {invitationsLoading ? (
-                                                                            <CircularProgress color="inherit" size={20} />
-                                                                        ) : null}
-                                                                        {params.InputProps.endAdornment}
-                                                                    </>
-                                                                ),
-                                                            }}
-                                                            status={fieldErrorControl['invitations'].error ? 'error' : null}
-                                                            helperText={fieldErrorControl['invitations'].errorText}
-                                                        />
-                                                    )}
-                                                    popupIcon={<ArrowDropDownIcon style={{ padding: 10 }} />}
-                                                    value={
-                                                        // Boolean(defaultData)
-                                                        //     ? convertDefaultInvitations(invitationOptions, defaultData.invitation_ids)
-                                                        //     : []
-                                                        selectedInvitations
-                                                    }
-                                                    disabled={Boolean(defaultData)}
-                                                />
+                                                >
+                                                    <InvitationChipsContainer>
+                                                        {selectedInvitations.map((d) => (
+                                                            <Chip
+                                                                key={d.id}
+                                                                variant="default"
+                                                                avatar={
+                                                                    <Avatar alt={`${d.name}'s profile image'`} src={d.image}>
+                                                                        {Boolean(d.image) ? null : d.name[0]}
+                                                                    </Avatar>
+                                                                }
+                                                                label={d.name}
+                                                                deleteIcon={<ChipDeleteIcon />}
+                                                                onDelete={actionDeleteInvitation(d.id)}
+                                                            />
+                                                        ))}
+                                                    </InvitationChipsContainer>
+                                                </FormPlacer>
                                             ) : null}
-                                            {invitationTags}
-                                        </FormPlacer>
+                                        </>
                                     );
                                 default:
                                     return null;

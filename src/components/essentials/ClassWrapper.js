@@ -44,7 +44,6 @@ $.fn.changeSize = function (handleFunction) {
 
 const cardSizer = (dt) => {
     if (!dt.width) return;
-    console.log(dt.width);
     if (dt.width >= 992) {
         $('#class-wrapper').css({ width: '960px' });
         $('.class-report-root').removeAttr('id', 'responsive-tablet');
