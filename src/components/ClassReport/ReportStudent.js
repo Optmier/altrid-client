@@ -7,7 +7,6 @@ import StudentTypeScore from './StudentTypeScore';
 import EyeTrackBox from './EyeTrackBox';
 import EyeTrackPattern from './EyeTrackPattern';
 import {
-    Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -40,6 +39,9 @@ import {
 } from './ReportStudent/TeacherFeedback';
 import CommChart from './CommChart';
 import ScoringResults from './ReportStudent/ScoringResults';
+import Groupbox from '../../AltridUI/GroupBox/Groupbox';
+import Button from '../../AltridUI/Button/Button';
+import EyeTrackChart from './EyeTrackChart';
 
 const pad = (n, width) => {
     n = n + '';
@@ -819,105 +821,77 @@ function ReportStudent({ history, match }) {
                 <div className="student-report-root">
                     <section className="student-report-header">
                         <div className="student-report-top">
-                            <div className="name">{stdName} 학생의 개인 리포트</div>
-                            <div className="class-name">{title}</div>
+                            <div className="name">상세 리포트</div>
+                            <div className="class-name">
+                                <span>{stdName} 학생</span>
+                                {title}
+                            </div>
                         </div>
                         <div className="white-box student-report-bottom">
                             <div className="bottom-col">
-                                <InfoItems title={'제출 날짜'} contents={submittedDate ? submittedDate : '-'}>
-                                    <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M5.33333 8H3.55556V9.77778H5.33333V8ZM8.88889 8H7.11111V9.77778H8.88889V8ZM12.4444 8H10.6667V9.77778H12.4444V8ZM14.2222 1.77778H13.3333V0H11.5556V1.77778H4.44444V0H2.66667V1.77778H1.77778C0.791111 1.77778 0.00888888 2.57778 0.00888888 3.55556L0 16C0 16.9778 0.791111 17.7778 1.77778 17.7778H14.2222C15.2 17.7778 16 16.9778 16 16V3.55556C16 2.57778 15.2 1.77778 14.2222 1.77778ZM14.2222 16H1.77778V6.22222H14.2222V16Z"
-                                            fill="#706D6D"
-                                        />
-                                    </svg>
-                                </InfoItems>
-                                <InfoItems title={'소요 시간'} contents={timeValueToTimer(durTimes)}>
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M11.392 4.608C10.456 3.672 9.232 3.2 8 3.2V8L4.608 11.392C6.48 13.264 9.52 13.264 11.4 11.392C13.272 9.52 13.272 6.48 11.392 4.608ZM8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0ZM8 14.4C4.464 14.4 1.6 11.536 1.6 8C1.6 4.464 4.464 1.6 8 1.6C11.536 1.6 14.4 4.464 14.4 8C14.4 11.536 11.536 14.4 8 14.4Z"
-                                            fill="#706D6D"
-                                        />
-                                    </svg>
-                                </InfoItems>
-                                <TriesItems title={'시도 횟수'} tries={tries}>
-                                    <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M2.66683 3H13.3335C13.6871 3 14.0263 3.15804 14.2763 3.43934C14.5264 3.72064 14.6668 4.10218 14.6668 4.5V13.5C14.6668 13.8978 14.5264 14.2794 14.2763 14.5607C14.0263 14.842 13.6871 15 13.3335 15H2.66683C2.31321 15 1.97407 14.842 1.72402 14.5607C1.47397 14.2794 1.3335 13.8978 1.3335 13.5V4.5C1.3335 4.10218 1.47397 3.72064 1.72402 3.43934C1.97407 3.15804 2.31321 3 2.66683 3V3ZM2.66683 4.5V13.5H7.3335V4.5H2.66683ZM13.3335 13.5V4.5H12.5068C12.6668 4.905 12.6335 5.3025 12.6335 5.3475C12.5868 5.85 12.2735 6.375 12.1602 6.5625L10.6068 8.475L12.8202 8.46L12.8268 9.375L9.36016 9.3525L9.3335 8.6025C9.3335 8.6025 11.3668 6.18 11.4668 5.9625C11.5602 5.7525 11.9402 4.5 11.0002 4.5C10.1802 4.5375 10.2735 5.475 10.2735 5.475L9.24683 5.4825C9.24683 5.4825 9.2535 4.9875 9.50016 4.5H8.66683V13.5H10.3868L10.3802 12.855L11.0268 12.8475C11.0268 12.8475 11.6335 12.7275 11.6402 12.06C11.6668 11.31 11.1002 11.31 11.0002 11.31C10.9135 11.31 10.2868 11.3475 10.2868 11.9625H9.2735C9.2735 11.9625 9.30016 10.4175 11.0002 10.4175C12.7335 10.4175 12.6402 11.9325 12.6402 11.9325C12.6402 11.9325 12.6668 12.87 11.9002 13.2225L12.2468 13.5H13.3335ZM5.94683 12H4.94683V7.65L3.74683 8.07V7.1475L5.84016 6.3075H5.94683V12Z"
-                                            fill="#706D6D"
-                                        />
-                                    </svg>
-                                </TriesItems>
+                                <InfoItems title={'제출 날짜'} contents={submittedDate ? submittedDate : '-'}></InfoItems>
+                                <InfoItems title={'소요 시간'} contents={timeValueToTimer(durTimes)}></InfoItems>
+                                <TriesItems title={'시도 횟수'} tries={tries}></TriesItems>
                             </div>
                             <div className="bottom-col">
-                                <ScoreItems title={'점수'} score={correctProblems} total={totalProblems} percent={scorePercentage}>
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M14.2222 0H1.77778C0.8 0 0 0.8 0 1.77778V14.2222C0 15.2 0.8 16 1.77778 16H14.2222C15.2 16 16 15.2 16 14.2222V1.77778C16 0.8 15.2 0 14.2222 0ZM5.33333 12.4444H3.55556V6.22222H5.33333V12.4444ZM8.88889 12.4444H7.11111V3.55556H8.88889V12.4444ZM12.4444 12.4444H10.6667V8.88889H12.4444V12.4444Z"
-                                            fill="#706D6D"
-                                        />
-                                    </svg>
-                                </ScoreItems>
+                                <ScoreItems
+                                    title={'점수'}
+                                    score={correctProblems}
+                                    total={totalProblems}
+                                    percent={scorePercentage}
+                                ></ScoreItems>
                                 <CompareItems
                                     title={'비교 성취도'}
                                     contents={
                                         currentStudentData.score_percentage -
                                         (!prevStudentData || !prevStudentData.score_percentage ? 0 : prevStudentData.score_percentage)
                                     }
-                                >
-                                    <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M11 14.01V7H9V14.01H6L10 18L14 14.01H11ZM4 0L0 3.99H3V11H5V3.99H8L4 0Z" fill="#706D6D" />
-                                    </svg>
-                                </CompareItems>
+                                ></CompareItems>
                                 {sessions.userType === 'students' ? null : (
-                                    <EraseResultItems title={'결과 초기화'} onClick={handleEraseResult}>
-                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M13.58 6.68262L12.9133 7.98012L4.82667 2.73012L5.49333 1.43262L7.52 2.74512L8.42667 2.46762L11.3133 4.34262L11.56 5.37012L13.58 6.68262ZM4 14.2501V5.25012H7.38L12 8.25012V14.2501C12 14.6479 11.8595 15.0295 11.6095 15.3108C11.3594 15.5921 11.0203 15.7501 10.6667 15.7501H5.33333C4.97971 15.7501 4.64057 15.5921 4.39052 15.3108C4.14048 15.0295 4 14.6479 4 14.2501Z"
-                                                fill="#F57C7C"
-                                            />
-                                        </svg>
-                                    </EraseResultItems>
+                                    <EraseResultItems title={'결과 초기화'} onClick={handleEraseResult}></EraseResultItems>
                                 )}
                             </div>
                         </div>
                     </section>
 
                     <section className="student-report-progress">
-                        <div className="class-report-title">
-                            <div className="title-progress-left">전체 진행률</div>
-                            <div className="title-progress-right">
-                                <span>
-                                    정답 <div className="circle able"></div>
-                                </span>
-                                <span>
-                                    오답 <div className="circle disable"></div>
-                                </span>
-                                <span>
-                                    미응시 <div className="circle none"></div>
-                                </span>
-                            </div>
-                        </div>
-                        <div className="white-box progress">
-                            {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
-                                ? division(
-                                      currentStudentData.user_data.selections,
-                                      currentStudentData.contents_data.flatMap((m) => m.problemDatas),
-                                      15,
-                                  ).map((arr, idx) => (
-                                      <Progress
-                                          mode
-                                          key={idx}
-                                          idx={idx}
-                                          selections={arr}
-                                          problemNumbers={999}
-                                          handsUp={handsUpList}
-                                          teacherSelected={teacherSelectedList}
-                                          onDoubleClick={progressDoubleClick}
-                                      />
-                                  ))
-                                : null}
-                        </div>
+                        <Groupbox
+                            title="문제별 채점 결과"
+                            rightComponent={
+                                <>
+                                    <Link
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setScoringResultsOpen(true);
+                                        }}
+                                    >
+                                        <Button variant="light" colors="purple">
+                                            채점결과 상세보기
+                                        </Button>
+                                    </Link>
+                                </>
+                            }
+                        />
+
+                        {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
+                            ? division(
+                                  currentStudentData.user_data.selections,
+                                  currentStudentData.contents_data.flatMap((m) => m.problemDatas),
+                                  15,
+                              ).map((arr, idx) => (
+                                  <Progress
+                                      mode
+                                      key={idx}
+                                      idx={idx}
+                                      selections={arr}
+                                      problemNumbers={999}
+                                      handsUp={handsUpList}
+                                      teacherSelected={teacherSelectedList}
+                                      onDoubleClick={progressDoubleClick}
+                                  />
+                              ))
+                            : null}
                         <ScoringResults
                             open={scoringResultsOpen}
                             userData={currentStudentData.user_data.selections}
@@ -930,42 +904,10 @@ function ReportStudent({ history, match }) {
                                 setScoringResultsOpen(false);
                             }}
                         />
-                        <Typography>
-                            <Link
-                                href="#"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setScoringResultsOpen(true);
-                                }}
-                            >
-                                자세한 채점 결과 보기
-                            </Link>
-                        </Typography>
                     </section>
 
                     <section className="student-report-timetrack">
-                        <div className="class-report-title">
-                            <div className="title-time-analysis-left">
-                                <div>문제별 시간 분석</div>
-                                <HTMLTooltip title="각 문제별 풀이 소요 시간과 최장 소요시간의 문제를 나타냅니다.">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
-                                            fill="#A9ACAF"
-                                        />
-                                    </svg>
-                                </HTMLTooltip>
-                            </div>
-                            <div className="title-time-analysis-right">
-                                <span>
-                                    학생 시간 <div className="circle student"></div>
-                                </span>
-                                <span>
-                                    반 평균 <div className="circle class"></div>
-                                </span>
-                            </div>
-                        </div>
-
+                        <Groupbox title="문제별 시간 분석" />
                         {currentStudentData && patternDatas.length ? (
                             <TimeTrackBox
                                 data={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
@@ -977,21 +919,37 @@ function ReportStudent({ history, match }) {
 
                     {sessions.userType === 'students' && achievesForTypes.value < 100 ? null : (
                         <section className="student-report-type-analysis">
-                            <div className="class-report-title graph-title">
-                                유형별 분석
-                                {sessions.userType === 'students' ? null : (
-                                    <div className="title-graph-right">
-                                        <TypeBanner
-                                            situation={achievesForTypes.value < 100 ? 'warning' : 'success'}
-                                            value={achievesForTypes.value}
-                                        />
-                                    </div>
-                                )}
-                            </div>
+                            <Groupbox
+                                title="유형별 분석"
+                                // rightComponent={
+                                //     sessions.userType === 'students' ? null : (
+                                //         <div className="title-graph-right">
+                                //             <TypeBanner
+                                //                 situation={achievesForTypes.value < 100 ? 'warning' : 'success'}
+                                //                 value={achievesForTypes.value}
+                                //             />
+                                //         </div>
+                                //     )
+                                // }
+                            />
+
                             <div className="white-box">
                                 <div className="ment-ai">
                                     <div className="ment-ai-col">
                                         <div>
+                                            <svg
+                                                style={{ marginRight: '16px' }}
+                                                width="34"
+                                                height="22"
+                                                viewBox="0 0 34 22"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    d="M11.1755 0.0157251C11.4912 -0.047176 11.6806 0.0786284 11.7437 0.393139C11.8069 0.644745 11.6806 0.802003 11.3649 0.864904C9.02877 1.36812 7.10308 2.18585 5.58773 3.31808C4.13556 4.38742 3.40947 5.55112 3.40947 6.80914C3.40947 7.56397 3.66203 8.16153 4.16713 8.60186C4.73538 9.04219 6.40852 9.57683 9.18661 10.2058C11.1439 10.7091 12.5645 11.4325 13.4485 12.376C14.3956 13.3195 14.8691 14.5461 14.8691 16.0557C14.8691 17.7541 14.2693 19.1694 13.0696 20.3016C11.87 21.4339 10.3231 22 8.42898 22C5.96657 22 3.94615 21.1508 2.36769 19.4524C0.789231 17.6912 0 15.4582 0 12.7534C0 9.48247 0.978645 6.74623 2.93593 4.54467C4.95634 2.3431 7.70287 0.833454 11.1755 0.0157251ZM30.2117 0.0157251C30.5274 -0.047176 30.7168 0.0786284 30.78 0.393139C30.9062 0.644745 30.8115 0.802003 30.4958 0.864904C28.1597 1.36812 26.234 2.18585 24.7187 3.31808C23.2665 4.38742 22.5404 5.55112 22.5404 6.80914C22.5404 7.56397 22.7929 8.16153 23.298 8.60186C23.8032 9.04219 25.4447 9.57683 28.2228 10.2058C30.2433 10.7091 31.6954 11.4325 32.5794 12.376C33.5264 13.3195 34 14.5461 34 16.0557C34 17.7541 33.4002 19.1694 32.2005 20.3016C31.0009 21.4339 29.4541 22 27.5599 22C25.0975 22 23.077 21.1194 21.4986 19.3581C19.9202 17.534 19.1309 15.238 19.1309 12.4703C19.1309 9.26233 20.1096 6.589 22.0669 4.45032C24.0242 2.31165 26.7391 0.833454 30.2117 0.0157251Z"
+                                                    fill="#AEFFE0"
+                                                />
+                                            </svg>
                                             <TooltipCard title={stdName}>
                                                 <b className="ment-ai-name">{stdName} </b>
                                             </TooltipCard>
@@ -1073,9 +1031,8 @@ function ReportStudent({ history, match }) {
 
                     <Element name="analyze_page_start"></Element>
                     <section className="student-report-observe">
-                        <div className="class-report-title graph-title">
-                            <div className="observe-header">
-                                시선 흐름 및 패턴 분석
+                        <Groupbox title="시선 흐름 및 패턴 분석" />
+                        {/* 시선 흐름 및 패턴 분석
                                 <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -1083,13 +1040,13 @@ function ReportStudent({ history, match }) {
                                             fill="#A9ACAF"
                                         />
                                     </svg>
-                                </HTMLTooltip>
-                            </div>
-                            <div className="title-graph-right">
+                                </HTMLTooltip> */}
+
+                        {/* <div className="title-graph-right">
                                 <TypeBanner situation={'info'} value={achievesForTypes.value} />
-                            </div>
-                        </div>
-                        {/* {currentStudentData && patternDatas.length ? (
+                            </div> */}
+
+                        {currentStudentData && patternDatas.length ? (
                             <EyeTrackBox
                                 hasEyetrack={currentStudentData.eyetrack}
                                 eyetrackData={currentStudentData.eyetrack_data}
@@ -1103,20 +1060,22 @@ function ReportStudent({ history, match }) {
                                 answerChangedProblems={answerChangedProblems}
                                 aftChangedFaileds={aftChangedFaileds}
                             />
-                        ) : 
-                        // </Typography>
+                        ) : // </Typography>
                         // </AccordionDetails>
                         // </Accordion>
-                        null} */}
+                        null}
                     </section>
 
                     <section className="AI-comment">
-                        <div className="class-report-title">
-                            <div className="observe-header">AI-Comment</div>
-                        </div>
+                        <Groupbox title="AI-Comment" />
+
                         <div className="white-box ment-ai">
                             <div className="ment-ai-col">
-                                {currentStudentData && patternDatas.length ? <CommChart /> : <p>시선추적이 포함되지 않은 과제입니다.</p>}
+                                {currentStudentData && patternDatas.length ? (
+                                    <EyeTrackChart />
+                                ) : (
+                                    <p>시선추적이 포함되지 않은 과제입니다.</p>
+                                )}
                             </div>
                             <div className="ment-ai-col" id="no-eyetrack">
                                 <h5>
@@ -1128,8 +1087,8 @@ function ReportStudent({ history, match }) {
                     </section>
 
                     <section className="student-report-observe">
-                        <div className="class-report-title graph-title">
-                            <div className="observe-header">
+                        <Groupbox title="선생님 피드백" />
+                        {/* <div className="observe-header">
                                 선생님 피드백
                                 {/* <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1138,21 +1097,33 @@ function ReportStudent({ history, match }) {
                                             fill="#A9ACAF"
                                         />
                                     </svg>
-                                </HTMLTooltip> */}
-                            </div>
-                            <div className="title-graph-right">
-                                {/* <TypeBanner situation={'info'} value={achievesForTypes.value} /> */}
-                            </div>
+                                </HTMLTooltip>
+                            </div> */}
+                        <div className="title-graph-right">{/* <TypeBanner situation={'info'} value={achievesForTypes.value} /> */}</div>
+                        <div className="white-box">
+                            {sessions.userType === 'students' ? (
+                                <>
+                                    {!teacherFeedbackContents.renderContents ? (
+                                        <>피드백이 없습니다.</>
+                                    ) : (
+                                        <>
+                                            <svg width="34" height="22" viewBox="0 0 34 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M11.1755 0.0157251C11.4912 -0.047176 11.6806 0.0786284 11.7437 0.393139C11.8069 0.644745 11.6806 0.802003 11.3649 0.864904C9.02877 1.36812 7.10308 2.18585 5.58773 3.31808C4.13556 4.38742 3.40947 5.55112 3.40947 6.80914C3.40947 7.56397 3.66203 8.16153 4.16713 8.60186C4.73538 9.04219 6.40852 9.57683 9.18661 10.2058C11.1439 10.7091 12.5645 11.4325 13.4485 12.376C14.3956 13.3195 14.8691 14.5461 14.8691 16.0557C14.8691 17.7541 14.2693 19.1694 13.0696 20.3016C11.87 21.4339 10.3231 22 8.42898 22C5.96657 22 3.94615 21.1508 2.36769 19.4524C0.789231 17.6912 0 15.4582 0 12.7534C0 9.48247 0.978645 6.74623 2.93593 4.54467C4.95634 2.3431 7.70287 0.833454 11.1755 0.0157251ZM30.2117 0.0157251C30.5274 -0.047176 30.7168 0.0786284 30.78 0.393139C30.9062 0.644745 30.8115 0.802003 30.4958 0.864904C28.1597 1.36812 26.234 2.18585 24.7187 3.31808C23.2665 4.38742 22.5404 5.55112 22.5404 6.80914C22.5404 7.56397 22.7929 8.16153 23.298 8.60186C23.8032 9.04219 25.4447 9.57683 28.2228 10.2058C30.2433 10.7091 31.6954 11.4325 32.5794 12.376C33.5264 13.3195 34 14.5461 34 16.0557C34 17.7541 33.4002 19.1694 32.2005 20.3016C31.0009 21.4339 29.4541 22 27.5599 22C25.0975 22 23.077 21.1194 21.4986 19.3581C19.9202 17.534 19.1309 15.238 19.1309 12.4703C19.1309 9.26233 20.1096 6.589 22.0669 4.45032C24.0242 2.31165 26.7391 0.833454 30.2117 0.0157251Z"
+                                                    fill="#AEFFE0"
+                                                />
+                                            </svg>
+                                            <TeacherFeedbackViewer contents={teacherFeedbackContents.renderContents} />
+                                        </>
+                                    )}
+                                </>
+                            ) : (
+                                <TeacherFeedbackWriter
+                                    deltaContents={teacherFeedbackContents.deltaContents}
+                                    actionUpdateClick={actionUpdateTeacherFeedback}
+                                />
+                            )}
                         </div>
-
-                        {sessions.userType === 'students' ? (
-                            <TeacherFeedbackViewer contents={teacherFeedbackContents.renderContents} />
-                        ) : (
-                            <TeacherFeedbackWriter
-                                deltaContents={teacherFeedbackContents.deltaContents}
-                                actionUpdateClick={actionUpdateTeacherFeedback}
-                            />
-                        )}
                     </section>
                 </div>
             </ClassWrapper>
