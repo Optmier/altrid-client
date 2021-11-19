@@ -1,20 +1,14 @@
-import {
-    Button,
-    Switch,
-    IconButton,
-    OutlinedInput,
-    withStyles,
-    FormControlLabel,
-    makeStyles,
-    TextField,
-    Collapse,
-} from '@material-ui/core';
+import { Switch, IconButton, OutlinedInput, withStyles, FormControlLabel, makeStyles, TextField, Collapse } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
 import CloseIcon from '@material-ui/icons/Close';
 import { useSelector } from 'react-redux';
 import RestrictWrapper from '../essentials/RestrictWrapper';
+import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
+import BulbIcon from '../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
+import DrawerActions from '../../AltridUI/Drawer/DrawerActions';
+import Button from '../../AltridUI/Button/Button';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -53,9 +47,7 @@ const TitleContainer = styled.div`
 const FormBox = styled.div`
     margin-top: 48px;
 `;
-const SelectorsContainer = styled.div`
-    margin-top: 16px;
-`;
+const SelectorsContainer = styled.div``;
 const CreateButtonContainer = styled.div`
     display: flex;
     justify-content: center;
@@ -170,7 +162,7 @@ const SeletionInput = withStyles((theme) => ({
         fontFamily: 'Noto Sans CJK KR',
         fontSize: '1rem',
         fontWeight: 600,
-        minHeight: 70,
+        // minHeight: 70,
         padding: '0 24px',
 
         '&:hover': {
@@ -375,15 +367,19 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
         <>
             <Root ref={rootRef} className="create-new-problem-root">
                 <TitleContainer className="title">
-                    <h2>화상 강의 생성하기</h2>
-                    <CloseIconRoot>
-                        <CloseIcon onClick={handleClose} style={{ cursor: 'pointer' }} />
-                    </CloseIconRoot>
+                    <svg onClick={handleClose} width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="48" height="48" rx="16" fill="#F6F8F9" />
+                        <path
+                            d="M24 22.5862L28.95 17.6362L30.364 19.0502L25.414 24.0002L30.364 28.9502L28.95 30.3642L24 25.4142L19.05 30.3642L17.636 28.9502L22.586 24.0002L17.636 19.0502L19.05 17.6362L24 22.5862Z"
+                            fill="#77818B"
+                        />
+                    </svg>
                 </TitleContainer>
 
                 <FormBox>
-                    <RestrictWrapper type="default" restricted={videoLecture} minWidth='300px'>
-                        <GroupBoxContents title="기본 정보">
+                    <RestrictWrapper type="default" restricted={videoLecture} minWidth="300px">
+                        <h2>화상강의를 생성하세요</h2>
+                        <DrawerGroupBox title="기본 정보" description="클래스 소개를 입력하세요" descriptionAdornment={BulbIcon}>
                             <SelectorsContainer>
                                 <SeletionInput
                                     size="small"
@@ -410,8 +406,8 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
                                     style={{ marginTop: 18 }}
                                 />
                             </SelectorsContainer>
-                        </GroupBoxContents>
-                        <GroupBoxContents
+                        </DrawerGroupBox>
+                        {/* <GroupBoxContents
                             title="날짜 및 시간"
                             style={{ marginTop: 28 }}
                             rightComponent={
@@ -420,32 +416,36 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
                                     <DrawerSwitch checked={formFields.hasStartDate} onChange={handleFormChange} name="hasStartDate" />
                                 </div>
                             }
+                        > */}
+                        <DrawerGroupBox
+                            title="날짜 및 시간"
+                            description="시작 날짜 및 종료 날짜를 정해주세요"
+                            descriptionAdornment={BulbIcon}
                         >
                             <SelectorsContainer style={{ padding: '0 8px' }}>
-                                <Collapse in={formFields.hasStartDate}>
-                                    <div
-                                        style={{
-                                            alignItems: 'center',
-                                            color: 'rgba(112, 112, 112, 0.8)',
-                                            display: 'flex',
-                                            fontWeight: 600,
+                                <div
+                                    style={{
+                                        alignItems: 'center',
+                                        color: 'rgba(112, 112, 112, 0.8)',
+                                        display: 'flex',
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    <p style={{ marginRight: 16, minWidth: '4rem' }}>시작 날짜</p>
+                                    <DateTextField
+                                        onChange={handleFormChange}
+                                        value={formFields.startDate}
+                                        id="startDate"
+                                        name="startDate"
+                                        type="datetime-local"
+                                        className={classes.textField}
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
                                         }}
-                                    >
-                                        <p style={{ marginRight: 16, minWidth: '4rem' }}>시작 날짜</p>
-                                        <DateTextField
-                                            onChange={handleFormChange}
-                                            value={formFields.startDate}
-                                            id="startDate"
-                                            name="startDate"
-                                            type="datetime-local"
-                                            className={classes.textField}
-                                            fullWidth
-                                            InputLabelProps={{
-                                                shrink: true,
-                                            }}
-                                        />
-                                    </div>
-                                </Collapse>
+                                    />
+                                </div>
+
                                 <div style={{ alignItems: 'center', color: 'rgba(112, 112, 112, 0.8)', display: 'flex', fontWeight: 600 }}>
                                     <p style={{ marginRight: 16, minWidth: '4rem' }}>종료 날짜</p>
                                     <DateTextField
@@ -462,19 +462,35 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
                                     />
                                 </div>
                             </SelectorsContainer>
-                        </GroupBoxContents>
-                        <GroupBoxContents title="강의 설정" style={{ marginTop: 28 }}>
+                        </DrawerGroupBox>
+
+                        <DrawerGroupBox title="강의 설정" description="시선흐름 여부를 설정해주세요" descriptionAdornment={BulbIcon}>
                             <SelectorsContainer style={{ padding: '0 8px' }}>
-                                <div style={{ alignItems: 'center', color: '#707070', display: 'flex', fontWeight: 500 }}>
-                                    <p style={{ marginRight: 16 }}>시선흐름 측정</p>
+                                <div
+                                    className="toggle"
+                                    style={{
+                                        display: 'flex',
+                                        backgroundColor: '#F6F8F9',
+                                        height: '56px',
+                                        borderRadius: '16px',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <p style={{ marginRight: 16, marginLeft: 16 }}>시선흐름 측정</p>
                                     <DrawerSwitch checked={formFields.hasEyetrack} onChange={handleFormChange} name="hasEyetrack" />
                                 </div>
                             </SelectorsContainer>
-                        </GroupBoxContents>
+                        </DrawerGroupBox>
+
                         <CreateButtonContainer>
-                            <CreateButton className="primary" size="large" variant="contained" onClick={handleCreate}>
+                            <DrawerActions>
+                                <Button variant="filled" colors="purple" onClick={handleCreate}>
+                                    생성하기
+                                </Button>
+                            </DrawerActions>
+                            {/* <CreateButton className="primary" size="large" variant="contained" onClick={handleCreate}>
                                 생성하기
-                            </CreateButton>
+                            </CreateButton>*/}
                         </CreateButtonContainer>
                     </RestrictWrapper>
                 </FormBox>

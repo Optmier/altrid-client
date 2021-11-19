@@ -75,6 +75,7 @@ $primaryColor: #13e2a1;
             }
         }
     }
+
     .drawer-selects {
         display: flex;
         & input[type='file'] {
@@ -95,6 +96,20 @@ $primaryColor: #13e2a1;
         & .drawer-select + .drawer-select {
             margin-left: 1rem;
         }
+        & .disabled {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #f6f8f9;
+            border-radius: 16px;
+            width: 333px;
+            height: 114px;
+            box-sizing: border-box;
+            padding: 1rem 2rem;
+            margin-right: 8px;
+        }
         & .drawer-select {
             cursor: pointer;
             display: flex;
@@ -102,17 +117,17 @@ $primaryColor: #13e2a1;
             align-items: center;
             justify-content: center;
             text-align: center;
-            background-color: #f6f7f9;
-            border-radius: 10px;
-            width: 50%;
-            height: 220px;
+            background-color: #f4f1fa;
+            border-radius: 16px;
+            width: 333px;
+            height: 114px;
             box-sizing: border-box;
-            padding: 1rem 2rem;
+            // padding: 1rem 2rem;
 
             & svg {
                 pointer-events: none;
-                width: 40px;
-                height: 40px;
+                width: 15px;
+                height: 14px;
                 margin-bottom: 1rem;
             }
             & h4 {
@@ -122,16 +137,16 @@ $primaryColor: #13e2a1;
             }
             & p {
                 pointer-events: none;
-                color: #4c8573;
+                color: #957fce;
                 margin: 0;
                 font-size: 0.75rem;
             }
         }
 
         & .drawer-select:hover {
-            background-color: #13e2a11f;
-            box-sizing: border-box;
-            border: 1.5px solid $primaryColor;
+            background-color: #ffffff;
+            // box-sizing: border-box;
+            border: 2px solid #3b1689;
         }
     }
     & .drawer-select-warn {
@@ -141,12 +156,16 @@ $primaryColor: #13e2a1;
     }
 
     & .drawer-toggle {
+        background: #f6f8f9;
+        border-radius: 16px;
+        height: 56px;
         display: flex;
         align-items: flex-start;
-        justify-content: flex-start;
+        justify-content: space-between;
         //padding: 0.75rem 1.5rem;
 
         & > span {
+            margin: auto 11px;
             width: 50%;
             display: flex;
             align-items: center;
@@ -158,6 +177,7 @@ $primaryColor: #13e2a1;
             }
 
             & .time-inputs {
+                background: #f6f8f9;
                 font-size: 1rem;
                 color: #969393;
                 display: flex;
