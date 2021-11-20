@@ -130,7 +130,7 @@ const ButtonRoot = styled.button`
             case 'medium':
                 return `${variant === 'outlined' || variant === 'mono' ? '6px' : '8px'} 16px`;
             case 'small':
-                return '3px 12px';
+                return `${variant === 'outlined' || variant === 'mono' ? '1px' : '3px'} 12px`;
             case 'xsmall':
                 return '2px 8px';
             default:
