@@ -61,7 +61,10 @@ const ContentsContainer = styled.div`
     }
 
     & span.voca-highlighted {
-        background-color: #dfdf0034;
+        background-color: #fff2d9;
+        border-radius: 4px;
+        margin: -2px;
+        padding: 2px;
     }
 `;
 const PassageContainer = styled.div`
