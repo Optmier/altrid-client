@@ -597,7 +597,20 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                                 <ItemIconArrow>
                                     <ItemRightIcon />
                                 </ItemIconArrow>
-                                {hasVideoLecture ? <div className="live-streaming-mark">LIVE</div> : null}
+                                {hasVideoLecture ? (
+                                    <div
+                                        className="live-streaming-mark"
+                                        style={{
+                                            display: 'flex',
+                                            marginRight: 8,
+                                            borderRadius: 8,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        LIVE
+                                    </div>
+                                ) : null}
                             </MenuItem>
                         </LeftNavItem>
                         {sessions.userType === 'students' ? null : (

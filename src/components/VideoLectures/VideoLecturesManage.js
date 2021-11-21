@@ -1,5 +1,5 @@
 import {
-    Button,
+    Button as MuiButton,
     Collapse,
     Dialog,
     DialogActions,
@@ -37,6 +37,11 @@ import { getServerDate } from '../../redux_modules/serverdate';
 import isMobile from '../../controllers/isMobile';
 import { CurrentVideoLectureCard, LogsVideoLectureCard, NoLecturesCard, ScheduledVideoLectureCard } from './ListCards';
 import CreateNewVideoLecture from './CreateNewVideoLecture';
+import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
+import AddCamstudyIcon from '../../AltridUI/Icons/AddCamstudyIcon';
+import Button from '../../AltridUI/Button/Button';
+import Groupbox from '../../AltridUI/GroupBox/Groupbox';
+import VideoLectureListItem from './components/VideoLectureListItem';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -337,10 +342,6 @@ const EdIconButton = withStyles((theme) => ({
     },
 }))(IconButton);
 
-const ContentsWrapper = styled.div`
-    width: 100%;
-`;
-
 const HeaderBox = styled.header`
     align-items: flex-end;
     border-bottom: 1px solid rgba(112, 112, 112, 0.7);
@@ -365,24 +366,15 @@ const HeaderBox = styled.header`
         cursor: pointer;
     }
 `;
-
-const GroupBoxContents = React.memo(function ({ title, rightComponent, onClick, children, ...rest }) {
-    return (
-        <div {...rest}>
-            <HeaderBox onClick={onClick}>
-                <h5 className="title">{title}</h5>
-                <div className="right-comp">{rightComponent}</div>
-            </HeaderBox>
-            {children}
-        </div>
-    );
-});
-
-GroupBoxContents.defaultProps = {
-    title: '제목',
-    rightComponent: <></>,
-    onClick: undefined,
-};
+///////////////////////////////////////////////////////////////////////
+const HeaderContainer = styled.div`
+    display: flex;
+    width: 100%;
+`;
+const ContentsWrapper = styled.div`
+    margin-top: 32px;
+    width: 100%;
+`;
 
 function VideoLecturesManage({ match, history }) {
     const classNum = match.params.num;
@@ -596,95 +588,6 @@ function VideoLecturesManage({ match, history }) {
         }
     };
 
-    const ListSwitcher = (id) => {
-        switch (id) {
-            case 'ing':
-                return (
-                    <>
-                        <GroupBoxContents title="현재 진행 중인 강의">
-                            {currentVideoLectures.current.length ? (
-                                currentVideoLectures.current.map((d, i) => (
-                                    <CurrentVideoLectureCard
-                                        key={d.room_id}
-                                        number={i}
-                                        title={d.title}
-                                        description={d.description}
-                                        hasEyetrack={d.eyetrack}
-                                        startDate={new Date(d.start_at)}
-                                        endDate={new Date(d.end_at)}
-                                        totalParticipants={currentClass.currentStudentsNumber}
-                                        currentParticipants={d.liveCounts}
-                                        userType={sessions.userType}
-                                        serverDate={serverdate.datetime}
-                                        onEntranceClick={enterVideoLecture(d)}
-                                        onLectureCloseClick={closeVideoLecture(d)}
-                                    />
-                                ))
-                            ) : (
-                                <NoLecturesCard />
-                            )}
-                        </GroupBoxContents>
-                        <GroupBoxContents
-                            title="진행 예정인 강의"
-                            style={{ marginTop: 90 }}
-                            rightComponent={
-                                sessions.userType === 'students' ? null : (
-                                    <EdIconButton size="small" disableRipple onClick={closeMultipleVideoLectures}>
-                                        <DeleteIcon style={{ marginRight: 8 }} />
-                                        <span style={{ fontSize: '1rem', marginTop: 3 }}>선택 삭제</span>
-                                    </EdIconButton>
-                                )
-                            }
-                        >
-                            {currentVideoLectures.scheduled.length ? (
-                                currentVideoLectures.scheduled.map((d, i) => (
-                                    <ScheduledVideoLectureCard
-                                        key={d.room_id}
-                                        number={d.room_id}
-                                        title={d.title}
-                                        description={d.description}
-                                        hasEyetrack={d.eyetrack}
-                                        startDate={new Date(d.start_at)}
-                                        endDate={new Date(d.end_at)}
-                                        userType={sessions.userType}
-                                        serverDate={serverdate.datetime}
-                                        onCheckboxChanged={onScheduledCheckedChange}
-                                    />
-                                ))
-                            ) : (
-                                <NoLecturesCard message="예정된 강의가 없습니다." />
-                            )}
-                        </GroupBoxContents>
-                    </>
-                );
-            case 'done':
-                return (
-                    <>
-                        <GroupBoxContents title="완료된 화상 강의">
-                            <LogsVideoLectureCard />
-                            {currentVideoLectures.done.length ? (
-                                currentVideoLectures.done.map((d, i) => (
-                                    <LogsVideoLectureCard
-                                        key={d.room_id}
-                                        number={i}
-                                        title={d.title}
-                                        description={d.description}
-                                        hasEyetrack={d.eyetrack}
-                                        startDate={new Date(d.start_at)}
-                                        endDate={new Date(d.end_at)}
-                                    />
-                                ))
-                            ) : (
-                                <NoLecturesCard message="기록이 없습니다." />
-                            )}
-                        </GroupBoxContents>
-                    </>
-                );
-            default:
-                return <>렌더링 오류!</>;
-        }
-    };
-
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -707,6 +610,121 @@ function VideoLecturesManage({ match, history }) {
             }
         };
     }, []);
+
+    const headerMenus = [
+        {
+            mId: 0,
+            mName: '진행 중',
+        },
+        {
+            mId: 1,
+            mName: '진행 완료',
+        },
+    ];
+    const [menuStatus, setMenuStatus] = useState(0);
+    const actionClickHeaderMenuItem = (menuId) => {
+        setMenuStatus(menuId);
+    };
+
+    const renderContentsByMenu = (id) => {
+        switch (id) {
+            case 0:
+                return (
+                    <>
+                        <Groupbox title="현재 진행 중인 강의">
+                            {currentVideoLectures.current.length ? (
+                                <Grid container spacing={2}>
+                                    {currentVideoLectures.current.map((d, i) => (
+                                        <Grid item key={d.room_id} lg={6} md={12} sm={12} xs={12}>
+                                            <VideoLectureListItem
+                                                number={i}
+                                                title={d.title}
+                                                description={d.description}
+                                                hasEyetrack={d.eyetrack}
+                                                startDate={new Date(d.start_at)}
+                                                endDate={new Date(d.end_at)}
+                                                totalParticipants={currentClass.currentStudentsNumber}
+                                                currentParticipants={d.liveCounts}
+                                                status={0}
+                                                userType={sessions.userType}
+                                                serverDate={serverdate.datetime}
+                                                onEntranceClick={enterVideoLecture(d)}
+                                                onLectureCloseClick={closeVideoLecture(d)}
+                                            />
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            ) : (
+                                <NoLecturesCard />
+                            )}
+                        </Groupbox>
+                        <Groupbox
+                            title="진행 예정인 강의"
+                            // style={{ marginTop: 90 }}
+                            // rightComponent={
+                            //     sessions.userType === 'students' ? null : (
+                            //         <EdIconButton size="small" disableRipple onClick={closeMultipleVideoLectures}>
+                            //             <DeleteIcon style={{ marginRight: 8 }} />
+                            //             <span style={{ fontSize: '1rem', marginTop: 3 }}>선택 삭제</span>
+                            //         </EdIconButton>
+                            //     )
+                            // }
+                        >
+                            {currentVideoLectures.scheduled.length ? (
+                                <Grid container spacing={2}>
+                                    {currentVideoLectures.scheduled.map((d, i) => (
+                                        <Grid item key={d.room_id} lg={6} md={12} sm={12} xs={12}>
+                                            <VideoLectureListItem
+                                                number={i}
+                                                title={d.title}
+                                                description={d.description}
+                                                hasEyetrack={d.eyetrack}
+                                                startDate={new Date(d.start_at)}
+                                                endDate={new Date(d.end_at)}
+                                                status={1}
+                                                userType={sessions.userType}
+                                                serverDate={serverdate.datetime}
+                                                onLectureCloseClick={closeVideoLecture(d)}
+                                            />
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            ) : (
+                                <NoLecturesCard message="예정된 강의가 없습니다." />
+                            )}
+                        </Groupbox>
+                    </>
+                );
+            case 1:
+                return (
+                    <Groupbox title="완료된 화상 강의">
+                        {currentVideoLectures.done.length ? (
+                            <Grid container spacing={2}>
+                                {currentVideoLectures.done.map((d, i) => (
+                                    <Grid item key={d.idx} md={12} sm={12} xs={12}>
+                                        <VideoLectureListItem
+                                            key={d.room_id}
+                                            number={i}
+                                            title={d.title}
+                                            description={d.description}
+                                            hasEyetrack={d.eyetrack}
+                                            startDate={new Date(d.start_at)}
+                                            endDate={new Date(d.end_at)}
+                                            status={2}
+                                            userType={sessions.userType}
+                                        />
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        ) : (
+                            <NoLecturesCard message="기록이 없습니다." />
+                        )}
+                    </Groupbox>
+                );
+            default:
+                return <>렌더링 오류!</>;
+        }
+    };
 
     return (
         <>
@@ -823,7 +841,7 @@ function VideoLecturesManage({ match, history }) {
 
             <VideoLectureRoot>
                 <ClassWrapper col="col">
-                    <div className="class-share-header">
+                    {/* <div className="class-share-header">
                         <div className="left">
                             <div className="header-title">화상 강의</div>
                             <div className="header-menu">
@@ -844,8 +862,27 @@ function VideoLecturesManage({ match, history }) {
                                 </StyledButton>
                             )}
                         </div>
-                    </div>
-                    <ContentsWrapper>{ListSwitcher(ableState)}</ContentsWrapper>
+                    </div> */}
+                    <HeaderContainer>
+                        <HeaderMenu
+                            title="화상 강의"
+                            menuDatas={headerMenus}
+                            selectedMenuId={menuStatus}
+                            onItemClick={actionClickHeaderMenuItem}
+                            rightComponent={
+                                <Button
+                                    variant="filled"
+                                    sizes="medium"
+                                    colors="purple"
+                                    leftIcon={<AddCamstudyIcon />}
+                                    onClick={toggleDrawer(true)}
+                                >
+                                    새 화상강의 만들기
+                                </Button>
+                            }
+                        />
+                    </HeaderContainer>
+                    <ContentsWrapper>{renderContentsByMenu(menuStatus)}</ContentsWrapper>
                 </ClassWrapper>
             </VideoLectureRoot>
         </>

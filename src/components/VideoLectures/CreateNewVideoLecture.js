@@ -1,4 +1,4 @@
-import { Switch, IconButton, OutlinedInput, withStyles, FormControlLabel, makeStyles, TextField, Collapse } from '@material-ui/core';
+import { Switch, IconButton, OutlinedInput, withStyles, FormControlLabel, makeStyles, Collapse } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
@@ -9,6 +9,8 @@ import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
 import BulbIcon from '../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
 import DrawerActions from '../../AltridUI/Drawer/DrawerActions';
 import Button from '../../AltridUI/Button/Button';
+import TextField from '../../AltridUI/TextField/TextField';
+import CalendarIcon from '../../AltridUI/Icons/CalendarIcon';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -325,7 +327,7 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
     const [formFields, setFormFields] = useState({
         title: '',
         description: '',
-        hasStartDate: false,
+        hasStartDate: true,
         startDate: moment().format('YYYY-MM-DDTHH:mm'),
         endDate: moment().add('days', 1).format('YYYY-MM-DDTHH:mm'),
         hasEyetrack: false,
@@ -360,6 +362,7 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
     };
 
     const handleCreate = () => {
+        // console.log(formFields);
         onCreate(formFields);
     };
 
@@ -422,45 +425,54 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
                             description="시작 날짜 및 종료 날짜를 정해주세요"
                             descriptionAdornment={BulbIcon}
                         >
-                            <SelectorsContainer style={{ padding: '0 8px' }}>
-                                <div
+                            <SelectorsContainer>
+                                {/* <div
                                     style={{
                                         alignItems: 'center',
                                         color: 'rgba(112, 112, 112, 0.8)',
                                         display: 'flex',
                                         fontWeight: 600,
                                     }}
-                                >
-                                    <p style={{ marginRight: 16, minWidth: '4rem' }}>시작 날짜</p>
-                                    <DateTextField
-                                        onChange={handleFormChange}
-                                        value={formFields.startDate}
-                                        id="startDate"
-                                        name="startDate"
-                                        type="datetime-local"
-                                        className={classes.textField}
-                                        fullWidth
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                    />
-                                </div>
-
-                                <div style={{ alignItems: 'center', color: 'rgba(112, 112, 112, 0.8)', display: 'flex', fontWeight: 600 }}>
-                                    <p style={{ marginRight: 16, minWidth: '4rem' }}>종료 날짜</p>
-                                    <DateTextField
-                                        onChange={handleFormChange}
-                                        value={formFields.endDate}
-                                        id="endDate"
-                                        name="endDate"
-                                        type="datetime-local"
-                                        className={classes.textField}
-                                        fullWidth
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                    />
-                                </div>
+                                ><p style={{ marginRight: 16, minWidth: '4rem' }}>시작 날짜</p> */}
+                                <TextField
+                                    onChange={handleFormChange}
+                                    value={formFields.startDate}
+                                    label="시작 날짜"
+                                    id="startDate"
+                                    name="startDate"
+                                    type="datetime-local"
+                                    fullWidth
+                                    variant="filled"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                        endAdornment: <CalendarIcon style={{ position: 'absolute', right: 18 }} />,
+                                    }}
+                                />
+                                {/* </div> */}
+                                {/* <div style={{ alignItems: 'center', color: 'rgba(112, 112, 112, 0.8)', display: 'flex', fontWeight: 600 }}> */}
+                                {/* <p style={{ marginRight: 16, minWidth: '4rem' }}>종료 날짜</p> */}
+                                <TextField
+                                    onChange={handleFormChange}
+                                    value={formFields.endDate}
+                                    label="종료 날짜"
+                                    id="endDate"
+                                    name="endDate"
+                                    type="datetime-local"
+                                    fullWidth
+                                    variant="filled"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    InputProps={{
+                                        disableUnderline: true,
+                                        endAdornment: <CalendarIcon style={{ position: 'absolute', right: 18 }} />,
+                                    }}
+                                    style={{ marginTop: 16 }}
+                                />
+                                {/* </div> */}
                             </SelectorsContainer>
                         </DrawerGroupBox>
 
