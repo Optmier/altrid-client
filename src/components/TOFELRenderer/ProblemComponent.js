@@ -5,8 +5,12 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { OutlinedInput, TextField, withStyles } from '@material-ui/core';
 import StarredImage from '../../images/starred.png';
+import ScoringDetailsStarringIcon from '../../AltridUI/Icons/ScoringDetailsStarringIcon';
+import AssignmentsStarringIcon from '../../AltridUI/Icons/AssignmentsStarringIcon';
 
-const Root = styled.div``;
+const Root = styled.div`
+    position: relative;
+`;
 const ProblemNumber = styled.span`
     cursor: pointer;
     font-family: 'Times New Roman';
@@ -57,6 +61,23 @@ const UCOutlinedInput = withStyles((theme) => ({
         },
     },
 }))(OutlinedInput);
+
+const StarredButton = styled.button`
+    align-items: center;
+    background-color: #f4f1fa;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    & svg {
+        margin-top: -1px;
+    }
+`;
 
 function ProblemComponent({
     problemNumber,
@@ -109,6 +130,9 @@ function ProblemComponent({
                 {problemNumber}.
             </ProblemNumber>
             <TextsContainer ref={textContainerRef}>{HtmlParser(textForRender)}</TextsContainer>
+            <StarredButton>
+                <AssignmentsStarringIcon fillColor={starred ? undefined : '#BFC6CD'} />
+            </StarredButton>
             {type === 'short-answer' ? (
                 <SelectionsContainer>
                     <UCOutlinedInput

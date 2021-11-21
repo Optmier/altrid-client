@@ -23,7 +23,7 @@ import {
     FilledInput,
     FormControlLabel,
     InputAdornment,
-    TextField,
+    TextField as MuiTextField,
 } from '@material-ui/core';
 import Button from '../../AltridUI/Button/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -31,6 +31,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import HomeIcon from '@material-ui/icons/Home';
 import AltCheckedIcon from '../../AltridUI/Icons/AltCheckedIcon';
 import AltUncheckedIcon from '../../AltridUI/Icons/AltUncheckedIcon';
+import TextField from '../../AltridUI/TextField/TextField';
 import styled from 'styled-components';
 
 const StyleCheckbox = withStyles({
@@ -68,6 +69,23 @@ const AccordionSummary = withStyles({
         backgroundColor: ({ mark }) => (mark % 2 === 1 ? '#F6F8F9' : '#ffffff'),
         border: 'none',
         borderRadius: 8,
+        fontFamily: [
+            'inter',
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ],
+        fontSize: 18,
+        fontWeight: 700,
+        letterSpacing: '-0.02em',
+        lineHeight: '22px',
         marginBottom: -1,
         minHeight: 52,
         paddingLeft: 0,
@@ -107,7 +125,7 @@ const SummaryStudentAddress = styled.div`
     align-items: center;
     display: flex;
     flex-basis: 40%;
-    & svg {
+    font-weight: & svg {
         margin-right: 8px;
     }
 `;
@@ -119,8 +137,32 @@ const DetailsRoot = styled.div`
 const Notes = styled.div``;
 const ReportSelectContainer = styled.div`
     display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
 `;
-const ReportSelect = styled.select``;
+const ReportSelect = styled.select`
+    cursor: pointer;
+    background: url(/bg_images/Vector.png) no-repeat 92% 50%;
+    background-color: #f4f1fa;
+    min-height: 36px;
+    min-width: 128px;
+    padding: 8px 36px 8px 16px;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 36px;
+    color: #6c46a1;
+    letter-spacing: -0.02em;
+    line-height: 1.25rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+`;
 
 function StudentManage({ onChangeStudentSelection, match, history }) {
     const dispatch = useDispatch();
@@ -289,26 +331,29 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
                                     }
                                 />
                                 <SummaryStudentName>{studentDatas[key][0]['name']}</SummaryStudentName>
-                                <SummaryStudentPhone>
-                                    <PhoneIcon fontSize="inherit" />
-                                    {studentDatas[key][0]['phone'] ? studentDatas[key][0]['phone'] : '-'}
-                                </SummaryStudentPhone>
                                 <SummaryStudentAddress>
                                     <HomeIcon fontSize="inherit" />
                                     {studentDatas[key][0]['address'] ? studentDatas[key][0]['address'] : '-'}
                                 </SummaryStudentAddress>
+                                <SummaryStudentPhone>
+                                    <PhoneIcon fontSize="inherit" />
+                                    {studentDatas[key][0]['phone'] ? studentDatas[key][0]['phone'] : '-'}
+                                </SummaryStudentPhone>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <DetailsRoot>
                                     <Notes>
-                                        <FormControl variant="filled" fullWidth>
-                                            <InputLabel htmlFor="input-notes">특이사항 입력</InputLabel>
-                                            <FilledInput
-                                                id={'input-notes-id_' + key}
-                                                value={notes['notes-input-' + key]}
-                                                name={'notes-input-' + key}
-                                                onChange={onNotesInputChange(key)}
-                                                endAdornment={
+                                        <TextField
+                                            fullWidth
+                                            id={'input-notes-id_' + key}
+                                            value={notes['notes-input-' + key]}
+                                            variant="filled"
+                                            label="특이사항 입력"
+                                            name={'notes-input-' + key}
+                                            onChange={onNotesInputChange(key)}
+                                            InputProps={{
+                                                disableUnderline: true,
+                                                endAdornment: (
                                                     <InputAdornment position="end">
                                                         <MuiButton
                                                             onClick={() => {
@@ -318,9 +363,9 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
                                                             저장
                                                         </MuiButton>
                                                     </InputAdornment>
-                                                }
-                                            />
-                                        </FormControl>
+                                                ),
+                                            }}
+                                        />
                                     </Notes>
                                     <ReportSelectContainer>
                                         <ReportSelect name={key} onChange={handleSelectChange}>

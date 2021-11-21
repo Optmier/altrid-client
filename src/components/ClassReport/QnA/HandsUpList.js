@@ -22,6 +22,7 @@ import Button from '../../../AltridUI/Button/Button';
 import AltCheckedIcon from '../../../AltridUI/Icons/AltCheckedIcon';
 import AltUncheckedIcon from '../../../AltridUI/Icons/AltUncheckedIcon';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import AccordionArrowIcon from '../../../AltridUI/Icons/AccordionArrowIcon';
 
 const HandsUpListRoot = styled.div`
     display: flex;
@@ -61,43 +62,51 @@ const ColorLabel = styled.div`
         else return '#BFC6CD';
     }};
     border: none;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
+    border-radius: 16px;
+    margin-left: 2px;
     margin-right: 8px;
-    min-height: 52px;
-    opacity: 0.2;
-    width: 16px;
+    min-height: 44px;
+    /* opacity: 0.2; */
+    width: 8px;
 `;
 const SummaryTitle = styled.div`
     font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
     font-size: 1.1rem;
     font-weight: 700;
-    flex-basis: 33.33%;
+    flex-basis: 25%;
 `;
 const SummaryStudents = styled.div`
     align-items: center;
     color: rgba(0, 0, 0, 0.54);
-    display: inline-block;
+    display: inline-flex;
     font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
+    flex-basis: 55%;
+    overflow-x: auto;
+    margin-right: 8px;
 `;
 const StudentNameTag = styled.span`
-    background-color: #77818b;
-    border-radius: 20px;
-    color: #ffffff;
-    font-size: 0.8rem;
-    padding: 0 6px;
+    background-color: #f4f1fa;
+    border-radius: 32px;
+    color: #6c46a1;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.375rem;
+    padding: 3px 12px;
     & + span {
-        margin-left: 6px;
+        margin-left: 8px;
     }
 `;
-
+const SummaryShowProblemBtnContainer = styled.div`
+    margin-right: 36px;
+`;
 const DetailsRoot = styled.div`
     display: flex;
+    flex-direction: column;
     width: 100%;
     & .details-left {
         flex-basis: 66.67%;
@@ -165,12 +174,12 @@ const ActionButton = styled.button`
 const Accordion = withStyles({
     root: {
         boxShadow: 'none',
+        borderRadius: 8,
         '&:not(:first-child)': {
-            borderTopLeftRadius: 8,
-            borderTopRightRadius: 8,
+            borderRadius: 8,
         },
         '&:not(:last-child)': {
-            borderBottom: 0,
+            borderRadius: 8,
         },
         '&:before': {
             display: 'none',
@@ -185,20 +194,25 @@ const Accordion = withStyles({
 const AccordionSummary = withStyles({
     root: {
         backgroundColor: ({ mark }) => (mark % 2 === 1 ? '#F6F8F9' : '#ffffff'),
-        border: 'none',
+        borderTop: '2px solid transparent',
+        borderLeft: '2px solid transparent',
+        borderRight: '2px solid transparent',
         borderRadius: 8,
-        marginBottom: -1,
-        minHeight: 52,
+        margin: 0,
+        minHeight: 50,
         paddingLeft: 0,
         '&$expanded': {
-            minHeight: 52,
+            borderColor: '#6C46A1',
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+            minHeight: 50,
         },
     },
     content: {
         alignItems: 'center',
-        margin: 0,
+        margin: '-2px 0 0 -2px',
         '&$expanded': {
-            margin: 0,
+            margin: '-2px 0 0 -2px',
         },
     },
     expanded: {},
@@ -206,7 +220,15 @@ const AccordionSummary = withStyles({
 
 const AccordionDetails = withStyles((theme) => ({
     root: {
-        padding: theme.spacing(2),
+        borderBottom: '2px solid #6C46A1',
+        borderLeft: '2px solid #6C46A1',
+        borderRight: '2px solid #6C46A1',
+        borderBottomLeftRadius: 8,
+        borderBottomRightRadius: 8,
+        padding: 0,
+        '&$expanded': {
+            minHeight: 44,
+        },
     },
 }))(MuiAccordionDetails);
 
@@ -217,14 +239,51 @@ const WrapperRoot = styled.div`
 `;
 const BottomActions = styled.div`
     align-items: center;
+    background-color: #ffffff;
     box-shadow: inset 0px 1px 0px #e9edef;
     display: flex;
+    justify-content: center;
     margin-top: auto;
-    min-height: 72px;
+    min-height: 48px;
     padding: 0 48px;
 
-    & button + button {
+    /* & button + button {
         margin-left: 16px;
+    } */
+`;
+const BottomActionsInner = styled.div`
+    display: inherit;
+    justify-content: space-between;
+    max-width: 960px;
+    width: 100%;
+`;
+const DetailListCorret = styled.div`
+    background-color: #f0fff9;
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 22px;
+    padding: 9px 32px;
+    & div.name {
+    }
+    & div.value {
+        color: #008f58;
+    }
+`;
+const DetailListStudent = styled.div`
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 20px;
+    padding: 8px 32px;
+    & div.name {
+    }
+    & div.value {
+        color: ${({ isCorrect }) => (isCorrect ? '#008F58' : '#E11900')};
     }
 `;
 
@@ -396,7 +455,7 @@ function HandsUpList({ match }) {
                                       onChange={actionExpand(data[0].questionId)}
                                   >
                                       <AccordionSummary
-                                          expandIcon={<ExpandMoreIcon />}
+                                          expandIcon={<AccordionArrowIcon />}
                                           mark={idx}
                                           aria-controls={`${data[0].questionId}bh-content`}
                                           id={`${data[0].questionId}bh-header`}
@@ -426,30 +485,34 @@ function HandsUpList({ match }) {
                                                   </StudentNameTag>
                                               ))}
                                           </SummaryStudents>
+                                          <SummaryShowProblemBtnContainer>
+                                              <Button
+                                                  variant="mono"
+                                                  sizes="small"
+                                                  onClick={(e) => {
+                                                      e.stopPropagation();
+                                                      actionShowProblem(data[0].problemAbsIdx);
+                                                  }}
+                                              >
+                                                  문제보기
+                                              </Button>
+                                          </SummaryShowProblemBtnContainer>
                                       </AccordionSummary>
                                       <AccordionDetails>
                                           <DetailsRoot>
-                                              <div className="details-left">
-                                                  <div className="details-correct-answer">문제 정답: {data[0].correctAnswer}</div>
-                                                  <div className="details-student-answer">
-                                                      {data.map(({ studentName, studentAnswer }, idx) => (
-                                                          <p key={data[0].questionId + '-details-' + idx}>
-                                                              {studentName} 학생이 선택한 답:{' '}
-                                                              {studentAnswer === null ? '미선택' : studentAnswer}
-                                                          </p>
-                                                      ))}
-                                                  </div>
-                                              </div>
-                                              <div className="details-right">
-                                                  <button
-                                                      className="show-problem"
-                                                      onClick={() => {
-                                                          actionShowProblem(data[0].problemAbsIdx);
-                                                      }}
+                                              <DetailListCorret>
+                                                  <div className="name">문제 정답</div>
+                                                  <div className="value">{data[0].correctAnswer}</div>
+                                              </DetailListCorret>
+                                              {data.map(({ studentName, studentAnswer }, idx) => (
+                                                  <DetailListStudent
+                                                      key={data[0].questionId + '-details-' + idx}
+                                                      isCorrect={data[0].correctAnswer === studentAnswer}
                                                   >
-                                                      문제 보기
-                                                  </button>
-                                              </div>
+                                                      <div className="name">{studentName}</div>
+                                                      <div className="value">{studentAnswer === null ? '미응답' : studentAnswer}</div>
+                                                  </DetailListStudent>
+                                              ))}
                                           </DetailsRoot>
                                       </AccordionDetails>
                                   </Accordion>
@@ -460,32 +523,22 @@ function HandsUpList({ match }) {
                 </HandsUpListRoot>
             </ClassWrapper>
             <BottomActions>
-                {selectedIds && Object.keys(selectedIds).filter((k) => selectedIds[k]).length === handsUpList.length ? (
-                    <Button
-                        sizes="medium"
-                        variant="filled"
-                        colors="green"
-                        leftIcon={<CheckCircleIcon color="inherit" />}
-                        onClick={actionUnselectAll}
-                    >
-                        모두 해제
-                    </Button>
-                ) : (
-                    <Button
-                        sizes="medium"
-                        variant="default"
-                        colors="black"
-                        leftIcon={<CheckCircleIcon color="inherit" />}
-                        onClick={actionSelectAll}
-                    >
-                        모두 선택
-                    </Button>
-                )}
-                {teacherSelectionChanged ? (
-                    <Button sizes="medium" variant="filled" colors="purple" onClick={actionUpdateSelection}>
-                        선택 사항 업데이트
-                    </Button>
-                ) : null}
+                <BottomActionsInner>
+                    {selectedIds && Object.keys(selectedIds).filter((k) => selectedIds[k]).length === handsUpList.length ? (
+                        <Button sizes="small" variant="filled" colors="purple" onClick={actionUnselectAll}>
+                            모두 해제
+                        </Button>
+                    ) : (
+                        <Button sizes="small" variant="light" colors="purple" onClick={actionSelectAll}>
+                            모두 선택
+                        </Button>
+                    )}
+                    {teacherSelectionChanged ? (
+                        <Button sizes="small" variant="light" colors="green" onClick={actionUpdateSelection}>
+                            선택 사항 업데이트
+                        </Button>
+                    ) : null}
+                </BottomActionsInner>
             </BottomActions>
         </WrapperRoot>
     );

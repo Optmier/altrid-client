@@ -65,23 +65,6 @@ const TopInfoTag = styled.div`
         margin-left: 5px;
     }
 `;
-const ItemLeft = styled.div`
-    flex-basis: 70%;
-    margin-right: 16px;
-`;
-const ItemRight = styled.div`
-    align-items: center;
-    border-left: 1px solid #e2e2e2;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 16px;
-    width: 30%;
-
-    & button + button {
-        margin-top: 8px;
-    }
-`;
 const ItemMainInfoContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -176,7 +159,13 @@ function CamstudyListItem({
                 </TopInfoTag>
                 <TopInfoTag colors="purple">
                     <CardClockIcon />
-                    <span>34시간 남음</span>
+                    <span>
+                        {(() => {
+                            const diffHours = moment(sessionEndDate).diff(moment(), 'hours');
+                            return diffHours > 999 ? '999+' : diffHours;
+                        })()}
+                        시간 남음
+                    </span>
                 </TopInfoTag>
                 {publicState === 1 ? (
                     <TopInfoTag colors="yellow">

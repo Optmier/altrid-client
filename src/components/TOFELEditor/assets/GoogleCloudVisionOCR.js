@@ -1,6 +1,6 @@
 import {
     AppBar,
-    Button,
+    Button as MuiButton,
     CircularProgress,
     Dialog,
     DialogActions,
@@ -18,8 +18,9 @@ import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import CloseIcon from '@material-ui/icons/Close';
-import CaptureIcon from '@material-ui/icons/CenterFocusStrong';
-import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+import Button from '../../../AltridUI/Button/Button';
+import OCRSwapIcon from '../../../AltridUI/Icons/OCRSwapIcon';
+import OCRExtractIcon from '../../../AltridUI/Icons/OCRExtractIcon';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import 'cropperjs/dist/cropper.css';
@@ -27,9 +28,34 @@ import tip0Img from './tip0.png';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
+        backgroundColor: '#3B1689',
         position: 'relative',
+        height: 48,
+    },
+    toolBar: {
+        minHeight: 48,
+        '& button + button': {
+            marginLeft: 16,
+        },
     },
     title: {
+        fontFamily: [
+            'inter',
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ],
+        fontSize: '1.5rem',
+        fontWeight: 700,
+        letterSpacing: '-0.02em',
+        lineHeight: '1.75rem',
         marginLeft: theme.spacing(2),
         flex: 1,
     },
@@ -40,7 +66,6 @@ const useStyles = makeStyles((theme) => ({
         left: '50%',
         marginTop: -12,
         marginLeft: -12,
-
         '& svg': {
             margin: '0 !important',
         },
@@ -55,6 +80,8 @@ const useStyles = makeStyles((theme) => ({
 
 // 메인 컨테이너
 const MainContainer = styled.div`
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
     height: calc(100% - 106px);
 
     & .split {
@@ -62,26 +89,27 @@ const MainContainer = styled.div`
     }
 
     & .gutter {
-        background-color: #4f7bcc;
+        background-color: #e9edef;
         background-repeat: no-repeat;
         background-position: 50%;
-        box-shadow: 0px 0px 8px #00000029;
-        border-left: 1px solid #cccccc30;
-        border-right: 1px solid #cccccc30;
+        /* box-shadow: 0px 0px 8px #00000029; */
+        /* border-left: 1px solid #cccccc30; */
+        /* border-right: 1px solid #cccccc30; */
         transition: all 0.25s;
 
         &:hover {
-            background-color: #709ae9;
-            box-shadow: 0px 0px 10px #00000029;
+            background-color: #e9edef;
+            /* box-shadow: 0px 0px 10px #00000029; */
         }
 
         &:active {
-            background-color: #335eac;
+            background-color: #bfc6cd;
         }
     }
 
     & .gutter.gutter-vertical {
-        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
+        background-image: url('/bg_images/ic-gutter-horizontal.png');
+        background-size: contain;
         cursor: row-resize;
     }
 
@@ -101,10 +129,10 @@ const MainContainer = styled.div`
                 display: flex;
                 flex-direction: row;
                 height: 100%;
-                color: white;
+                color: #000;
                 font-size: 1.5rem;
                 font-weight: 700;
-                text-shadow: 0 0 12px black;
+                /* text-shadow: 0 0 12px black; */
 
                 & div.aria {
                     display: flex;
@@ -115,36 +143,37 @@ const MainContainer = styled.div`
                     transition: background-color 0.25s;
 
                     &.texts {
-                        background-color: #63990054;
+                        background-color: #f6f8f9ad;
                     }
 
                     &.problems {
-                        background-color: #a5000049;
+                        background-color: #f6f8f9ad;
                     }
                 }
             }
 
             & .gutter {
-                background-color: #4f7bcc;
+                background-color: #e9edef;
                 background-repeat: no-repeat;
                 background-position: 50%;
-                box-shadow: 0px 0px 8px #00000029;
-                border-left: 1px solid #cccccc30;
-                border-right: 1px solid #cccccc30;
+                /* box-shadow: 0px 0px 8px #00000029; */
+                /* border-left: 1px solid #cccccc30; */
+                /* border-right: 1px solid #cccccc30; */
                 transition: all 0.25s;
 
                 &:hover {
-                    background-color: #709ae9;
-                    box-shadow: 0px 0px 10px #00000029;
+                    background-color: #e9edef;
+                    /* box-shadow: 0px 0px 10px #00000029; */
                 }
 
                 &:active {
-                    background-color: #335eac;
+                    background-color: #bfc6cd;
                 }
             }
 
             & .gutter.gutter-horizontal {
-                background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+                background-image: url('/bg_images/ic-gutter-vertical.png');
+                background-size: contain;
                 cursor: col-resize;
             }
         }
@@ -164,90 +193,90 @@ const MainContainer = styled.div`
         & .editor {
             height: 100%;
             width: 50%;
+            & .quill {
+                & .ql-toolbar {
+                    border-color: #e9edef;
+                    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif,
+                        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+                    font-size: 18px;
+                    font-weight: 700;
+                    letter-spacing: -0.02em;
+                    line-height: 22px;
+                }
+                & .ql-container {
+                    border-color: #e9edef;
+                }
+            }
         }
     }
 `;
-
+const ActionsContainer = styled.div`
+    position: absolute;
+    z-index: 999;
+    & button + button {
+        margin-top: 8px;
+    }
+`;
 // 지문, 문제 영역 전환하기 버튼
 const SwapButton = styled.button`
     align-items: center;
-    background: #13e2a1;
-    box-shadow: 1px 2px 18px 2px #0000005c;
-    bottom: calc(6% + 52px);
-    border: none;
-    border-radius: 48px;
-    color: white;
-    cursor: pointer;
+    background-color: #ffffff;
+    border: 1px solid #e9edef;
+    border-radius: 50%;
     display: flex;
-    font-size: 1.1rem;
-    font-weight: 600;
     justify-content: center;
-    padding-top: 2px;
-    position: absolute;
-    height: 48px;
-    width: 12%;
-    max-width: 144px;
-    min-width: 128px;
+    padding: 0;
+    width: 56px;
+    height: 56px;
     transition: all 0.25s;
-    z-index: 999;
-
     &:hover {
-        background-color: #61e6bc;
+        background-color: #f6f8f9;
     }
-
     &:disabled {
         background: #7b718f;
         color: #bebcbc92;
         cursor: none;
         pointer-events: none;
     }
-
     & svg {
-        margin-top: -2px;
-        margin-right: 4px;
     }
 `;
 
 // 추출하기 버튼
 const SendButton = styled.button`
     align-items: center;
-    background: #6d2afa;
-    box-shadow: 1px 2px 18px 2px #0000005c;
-    bottom: 6%;
-    border: none;
-    border-radius: 48px;
-    color: white;
-    cursor: pointer;
+    background-color: #ffffff;
+    border: 1px solid #e9edef;
+    border-radius: 50%;
     display: flex;
-    font-size: 1.1rem;
-    font-weight: 600;
     justify-content: center;
-    padding-top: 2px;
-    position: absolute;
-    height: 48px;
-    width: 12%;
-    max-width: 144px;
-    min-width: 128px;
+    padding: 0;
+    width: 56px;
+    height: 56px;
     transition: all 0.25s;
-    z-index: 999;
-
     &:hover {
-        background-color: #874fff;
+        background-color: #f6f8f9;
     }
-
     &:disabled {
         background: #7b718f;
         color: #bebcbc92;
         cursor: none;
         pointer-events: none;
     }
-
     & svg {
-        margin-top: -2px;
-        margin-right: 4px;
     }
 `;
-
+const CloseButton = styled.button`
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin-left: 24px !important;
+    height: 24px;
+    width: 24px;
+`;
 // 이미지 작업 대화창 Transition
 const DialogTransition = React.forwardRef(function DialogTransition(props, ref) {
     return <Grow ref={ref} {...props} />;
@@ -456,8 +485,6 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
                     setCurrentImageWidth(mCanvas.width);
                     const editorTextsTitleArea = document.querySelector('.editor.texts > .quill > .ql-toolbar > .ql-formats');
                     const editorProblemsTitleArea = document.querySelector('.editor.problems > .quill > .ql-toolbar > .ql-formats');
-                    editorTextsTitleArea.style.fontWeight = 600;
-                    editorProblemsTitleArea.style.fontWeight = 600;
                     editorTextsTitleArea.style.paddingLeft = '6px';
                     editorProblemsTitleArea.style.paddingLeft = '6px';
                     editorTextsTitleArea.innerHTML = '지문 영역';
@@ -503,8 +530,8 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
      * @param {Array} sizes 분할 된 크기
      */
     const horizontalSplitOnDragStart = (sizes) => {
-        ariaTextsRef.current.style.backgroundColor = '#111b00ad';
-        ariaProblemsRef.current.style.backgroundColor = '#1b0000b3';
+        ariaTextsRef.current.style.backgroundColor = '#f6f8f9ad';
+        ariaProblemsRef.current.style.backgroundColor = '#f6f8f9ad';
     };
 
     /**
@@ -515,15 +542,15 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
         const [left, right] = sizes;
         setHorizontalSplitSizes([left, right]);
         if (left < 1) {
-            ariaProblemsRef.current.innerHTML = '문제 영역만 추출';
+            // ariaProblemsRef.current.innerHTML = '문제 영역만 추출';
         } else {
-            ariaProblemsRef.current.innerHTML = '문제 영역';
+            // ariaProblemsRef.current.innerHTML = '문제 영역';
         }
 
         if (right < 1) {
-            ariaTextsRef.current.innerHTML = '지문 영역만 추출';
+            // ariaTextsRef.current.innerHTML = '지문 영역만 추출';
         } else {
-            ariaTextsRef.current.innerHTML = '지문 영역';
+            // ariaTextsRef.current.innerHTML = '지문 영역';
         }
     };
 
@@ -728,19 +755,24 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
     const TaskDialog = (
         <Dialog fullScreen open={taskDialogOpenState} onClose={closeTaskDialog} TransitionComponent={DialogTransition}>
             <AppBar className={classes.appBar}>
-                <Toolbar>
-                    <IconButton edge="start" color="inherit" onClick={closeTaskDialog} aria-label="close">
-                        <CloseIcon />
-                    </IconButton>
+                <Toolbar className={classes.toolBar}>
                     <Typography variant="h6" className={classes.title}>
                         OCR 스마트 에디터
                     </Typography>
-                    <Button color="inherit" onClick={openCropDialog}>
+                    <Button colors="purple" sizes="small" variant="filled" onClick={openCropDialog}>
                         이미지 자르기
                     </Button>
-                    <Button color="inherit" disabled={!applyEnabled} onClick={applyOnClick}>
+                    <Button colors="purple" sizes="small" variant="filled" disabled={!applyEnabled} onClick={applyOnClick}>
                         {applyButtonText}
                     </Button>
+                    <CloseButton onClick={closeTaskDialog}>
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M4.99999 4.05781L8.29999 0.757812L9.24266 1.70048L5.94266 5.00048L9.24266 8.30048L8.29999 9.24315L4.99999 5.94315L1.69999 9.24315L0.757324 8.30048L4.05732 5.00048L0.757324 1.70048L1.69999 0.757812L4.99999 4.05781Z"
+                                fill="#3B1689"
+                            />
+                        </svg>
+                    </CloseButton>
                 </Toolbar>
             </AppBar>
 
@@ -748,7 +780,7 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
                 <Split
                     className="split"
                     direction="vertical"
-                    gutterSize={9}
+                    gutterSize={12}
                     minSize={[200, 144]}
                     snapOffset={10}
                     sizes={verticalSplitSizes}
@@ -765,19 +797,21 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
                             setImageTaskAreaFocused(true);
                         }}
                     >
-                        <SwapButton onClick={swapArea} disabled={detectionDataLoading}>
-                            <SwapHorizIcon />
-                            영역 바꾸기
-                        </SwapButton>
-                        <SendButton onClick={() => callGoogleVisionTextDetectionAPI(isImgChanged)} disabled={detectionDataLoading}>
-                            <CaptureIcon />
-                            추출하기
-                            {detectionDataLoading && <CircularProgress size={24} className={classes.sendButtonProgress} />}
-                        </SendButton>
+                        <ActionsContainer>
+                            <SwapButton onClick={swapArea} disabled={detectionDataLoading}>
+                                <OCRSwapIcon />
+                                {/* 영역 바꾸기 */}
+                            </SwapButton>
+                            <SendButton onClick={() => callGoogleVisionTextDetectionAPI(isImgChanged)} disabled={detectionDataLoading}>
+                                <OCRExtractIcon />
+                                {/* 추출하기 */}
+                                {detectionDataLoading && <CircularProgress size={24} className={classes.sendButtonProgress} />}
+                            </SendButton>
+                        </ActionsContainer>
                         <div className="adjustment-container" ref={imageAdjustmentCoreRef}>
                             <Split
                                 className="split"
-                                gutterSize={9}
+                                gutterSize={7}
                                 minSize={0}
                                 snapOffset={100}
                                 sizes={horizontalSplitSizes}
