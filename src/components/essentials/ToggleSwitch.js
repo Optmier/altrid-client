@@ -11,19 +11,19 @@ const StyleToggle = styled.div`
     & .toggle-on-ment {
         font-size: 14px;
         font-weight: 500;
-        color: white;
+        color: black;
         margin-left: 8px;
     }
     & .toggle-on-ment-right {
         font-size: 14px;
         font-weight: 500;
-        color: white;
+        color: black;
         margin-right: 8px;
     }
     & .toggle-off-ment {
         font-size: 14px;
         font-weight: 500;
-        color: white;
+        color: black;
         margin-left: 8px;
     }
     & .toggle-off-ment-right {

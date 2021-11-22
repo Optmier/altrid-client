@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import CardShare from './CardShare';
 import CardLists from '../essentials/CardLists';
 import CardRoot from '../essentials/CardRoot';
-import { Drawer } from '@material-ui/core';
+import { Drawer, Grid } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
 // import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,6 +16,7 @@ import styled from 'styled-components';
 import ClassWrapper from '../essentials/ClassWrapper';
 import TypeBanner from '../essentials/TypeBanner';
 import moment from 'moment-timezone';
+import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 
 const GoDraftDiv = styled.div`
     margin-top: 100px;
@@ -67,6 +68,13 @@ const ButtonAble = styled.button`
     color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
     border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
 `;
+const HeaderContainer = styled.div`
+    display: flex;
+    width: 100%;
+`;
+const WarningsContainer = styled.div`
+    margin-top: 16px;
+`;
 const AssigmentWarning = styled.div`
     font-size: 1.125rem;
     font-weight: 400;
@@ -110,6 +118,10 @@ function Share({ match, history }) {
         ing: false,
         done: false,
     });
+    const [menuStatus, setMenuStatus] = useState(1);
+    const actionClickHeaderMenuItem = (menuId) => {
+        setMenuStatus(menuId);
+    };
 
     const handleShareCardList = useCallback(
         (e) => {
@@ -182,8 +194,8 @@ function Share({ match, history }) {
                 </ClassWrapper>
             ) : (
                 <div className="class-section-root">
-                    <ClassWrapper>
-                        <div className="class-share-header">
+                    <ClassWrapper col>
+                        {/* <div className="class-share-header">
                             <div className="header-title">과제 게시판</div>
                             <div className="header-menu">
                                 <ButtonAble name="total" able={ableState['total']} value={ableState['total']} onClick={handleShareCardList}>
@@ -196,13 +208,32 @@ function Share({ match, history }) {
                                     진행 완료({shareDatas.length - cnt})
                                 </ButtonAble>
                             </div>
-                        </div>
-                    </ClassWrapper>
+                            
+                        </div> */}
 
-                    <div className="class-draft-card">
-                        <CardLists
-                            upperDeck={
-                                sessions.userType === 'students' ? (
+                        <HeaderContainer>
+                            <HeaderMenu
+                                title="과제 게시판"
+                                menuDatas={[
+                                    {
+                                        mId: 1,
+                                        mName: '진행 중',
+                                        mCounts: cnt,
+                                    },
+                                    {
+                                        mId: 2,
+                                        mName: '완료됨',
+                                        mCounts: shareDatas.length - cnt,
+                                    },
+                                ]}
+                                selectedMenuId={menuStatus}
+                                onItemClick={actionClickHeaderMenuItem}
+                            />
+                        </HeaderContainer>
+
+                        <div className="class-draft-card">
+                            <WarningsContainer>
+                                {sessions.userType === 'students' ? (
                                     <AssigmentWarning>
                                         제한시간이 있는 과제의 풀이 기회는 <span>단 한번</span>이며, 제한시간이 없는 과제는 풀이 중
                                         <span> 임시저장 후</span> 이어풀기가 가능합니다.
@@ -214,35 +245,38 @@ function Share({ match, history }) {
                                         학생이
                                         <b> 재풀이 요청</b>을 한다면, 과제 리포트 페이지에서 <b>결과 초기화</b>가 가능합니다.
                                     </AssigmentWarning>
-                                )
-                            }
-                        >
-                            {(sessions.userType === 'students' && tries) || sessions.userType !== 'students'
-                                ? Object.keys(shareDatas)
-                                      .filter((i) =>
-                                          ableState['total']
-                                              ? i
-                                              : ableState['ing']
-                                              ? new Date(shareDatas[i]['due_date']).getTime() > datetime
-                                              : new Date(shareDatas[i]['due_date']).getTime() <= datetime,
-                                      )
-                                      .map((key) => (
-                                          <CardRoot key={key} wider>
-                                              <CardShare
-                                                  testNum={shareDatas[key]['idx']}
-                                                  cardData={shareDatas[key]}
-                                                  tries={
-                                                      sessions.userType === 'students'
-                                                          ? tries.find((o) => o.idx === shareDatas[key]['idx']).tries
-                                                          : 0
-                                                  }
-                                                  totalStudents={currentClass.currentStudentsNumber}
-                                              />
-                                          </CardRoot>
-                                      ))
-                                : null}
-                        </CardLists>
-                    </div>
+                                )}
+                            </WarningsContainer>
+                            <Grid container spacing={2}>
+                                {(sessions.userType === 'students' && tries) || sessions.userType !== 'students'
+                                    ? Object.keys(shareDatas)
+                                          .filter((i) =>
+                                              menuStatus === 0
+                                                  ? i
+                                                  : menuStatus === 1
+                                                  ? new Date(shareDatas[i]['due_date']).getTime() > datetime
+                                                  : new Date(shareDatas[i]['due_date']).getTime() <= datetime,
+                                          )
+                                          .map((key) => (
+                                              //   <CardRoot key={key} wider>
+                                              <Grid key={key} item md={6} sm={12} xs={12} zeroMinWidth>
+                                                  <CardShare
+                                                      testNum={shareDatas[key]['idx']}
+                                                      cardData={shareDatas[key]}
+                                                      tries={
+                                                          sessions.userType === 'students'
+                                                              ? tries.find((o) => o.idx === shareDatas[key]['idx']).tries
+                                                              : 0
+                                                      }
+                                                      totalStudents={currentClass.currentStudentsNumber}
+                                                  />
+                                              </Grid>
+                                              //   </CardRoot>
+                                          ))
+                                    : null}
+                            </Grid>
+                        </div>
+                    </ClassWrapper>
                 </div>
             )}
         </>

@@ -183,6 +183,7 @@ const ButtonRoot = styled.button`
 const Contents = styled.span`
     align-items: center;
     display: inherit;
+    pointer-events: none;
     /* margin-bottom: -3px; */
 
     & .MuiCircularProgress-root {

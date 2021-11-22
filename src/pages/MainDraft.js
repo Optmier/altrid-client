@@ -31,6 +31,7 @@ import Box from '@material-ui/core/Box';
 import CardPopOver from '../../src/components/essentials/CardPopOver';
 import ClassDialogDelete from '../components/essentials/ClassDialogDelete';
 import * as $ from 'jquery';
+import { Helmet } from 'react-helmet';
 
 const Item = styled.div`
     width: 384px;
@@ -394,6 +395,13 @@ function MainDraft({ match, cardData, history }) {
     if (errorState) return <Error />;
     return (
         <>
+            <Helmet>
+                <style>{`
+                    main#main {
+                        background-color: #ffffff;
+                    }
+            `}</style>
+            </Helmet>
             <ClassDialogDelete ver="draft" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
             <CardPopOver
                 // contents_data={cardData['contents_data']}

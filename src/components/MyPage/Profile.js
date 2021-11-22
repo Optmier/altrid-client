@@ -37,7 +37,7 @@ const Profile_Header = styled.div`
 const Profile_Main = styled.div`
     margin: 0 auto;
     max-width: 592px;
-    margin-top: 70px;
+    margin-top: 0px;
     margin-bottom: 70px;
     & canvas {
         display: none;
@@ -107,7 +107,7 @@ const Profile_Main = styled.div`
         margin-top: 16px;
     }
     & .save-button {
-        margin-bottom: 220px;
+        margin-bottom: 92px;
         margin-top: 32px;
         display: flex;
         justify-content: space-between;
