@@ -131,62 +131,6 @@ function EyeTrackBox({
         }
     };
 
-    const [chart, setchart] = useState({
-        series: [
-            {
-                name: '재현 학생',
-                data: [200],
-            },
-            {
-                name: '반 평균',
-                data: [250],
-            },
-        ],
-        options: {
-            chart: {
-                width: '100%',
-                height: '100%',
-                type: 'bar',
-            },
-            dataLabels: {
-                enabled: false,
-            },
-
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '55%',
-                    endingShape: 'rounded',
-                },
-            },
-            title: {},
-            colors: ['#351e85', '#68dea6'],
-            markers: {
-                size: 0,
-            },
-            tooltip: {
-                y: {
-                    formatter: function (val) {
-                        return val;
-                    },
-                },
-            },
-            xaxis: {
-                // categories: ['평균 응시속도'],
-            },
-            yaxis: {
-                show: true,
-                //     title: {
-                //         text: '번',
-                //     },
-                // },
-                // legend: {
-                //     show: true,
-                // },
-            },
-        },
-    });
-
     useEffect(() => {
         Axios.get(`${apiUrl}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
             params: {
@@ -195,6 +139,7 @@ function EyeTrackBox({
             withCredentials: true,
         })
             .then((res) => {
+                console.log(res);
                 if (res.data) {
                     let unparsedEyetrackData = res.data.eyetrack_data;
                     let parsedData = null;

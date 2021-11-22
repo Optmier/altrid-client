@@ -25,7 +25,7 @@ function Dday(props) {
     const [New_day, setNew] = useState('');
     const [open, setopen] = useState(false);
     const [title, settitle] = useState('일정');
-    const [init, setinit] = useState(0);
+    const [init, setinit] = useState('');
     const [test, settest] = useState(new Date());
     const classNum = props.classNum;
     const classes = useStyles();
@@ -49,7 +49,10 @@ function Dday(props) {
 
     useEffect(() => {
         new DashboardDDay(classNum, (msg, res) => {
-            console.log(res.value);
+            // console.log(res.value);
+            if (!res.value) {
+                return;
+            }
             setNew(res.value);
             var diff = Math.abs(new Date(New_day).getTime() - today.getTime());
             diff = Math.ceil(diff / (1000 * 3600 * 24));
@@ -59,8 +62,8 @@ function Dday(props) {
 
     return (
         <div className="d_day">
-            {init === null ? (
-                <span onClick={handleOpen}>디데이 설정하러 가기</span>
+            {New_day === '' ? (
+                <span onClick={handleOpen}>나만의 디데이 설정하러 가기</span>
             ) : (
                 <div onClick={handleOpen}>
                     {title} 까지 D - {init} 일 남았습니다.

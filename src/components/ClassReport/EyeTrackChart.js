@@ -306,6 +306,8 @@ function EyeTrackChart({
             },
         },
     });
+
+    console.log(activedNum);
     useEffect(() => {
         Axios.get(`${apiUrl}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
             params: {
@@ -314,6 +316,7 @@ function EyeTrackChart({
             withCredentials: true,
         })
             .then((res) => {
+                console.log(res);
                 if (res.data) {
                     let unparsedEyetrackData = res.data.eyetrack_data;
                     let parsedData = null;
