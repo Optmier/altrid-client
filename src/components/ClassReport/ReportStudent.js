@@ -1072,7 +1072,19 @@ function ReportStudent({ history, match }) {
                         <div className="white-box ment-ai">
                             <div className="ment-ai-col">
                                 {currentStudentData && patternDatas.length ? (
-                                    <EyeTrackChart />
+                                    <EyeTrackChart
+                                        hasEyetrack={currentStudentData.eyetrack}
+                                        eyetrackData={currentStudentData.eyetrack_data}
+                                        contentsData={currentStudentData.contents_data}
+                                        patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
+                                        totalStudentsDatas={studentsData.filter((d) => d.submitted)}
+                                        currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
+                                        userId={queryUserId}
+                                        activedNum={activedNum}
+                                        stdName={stdName}
+                                        answerChangedProblems={answerChangedProblems}
+                                        aftChangedFaileds={aftChangedFaileds}
+                                    />
                                 ) : (
                                     <p>시선추적이 포함되지 않은 과제입니다.</p>
                                 )}
