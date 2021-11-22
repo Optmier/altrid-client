@@ -22,6 +22,36 @@
             font-size: 1rem;
         }
     }
+    & .class-copy {
+        margin-bottom: 41px;
+        display: flex;
+        background-color: #ffffff;
+        border: 2px solid #3b1689;
+        box-sizing: border-box;
+        border-radius: 16px;
+        width: 951px;
+        height: 56px;
+        align-items: center;
+        padding: 0px 10px;
+        & p {
+            font-size: 18px;
+            margin-left: 44px;
+            margin-right: 39px;
+        }
+        & input {
+            font-weight: bold;
+            width: 140px;
+            font-size: 24px;
+        }
+        & button {
+            background: #f4f1fa;
+            border-radius: 104px;
+            padding: 3px 12px;
+            color: #6c46a1;
+            font-weight: bold;
+            font-size: 18px;
+        }
+    }
 
     & .manage-inputs + .manage-inputs {
         margin-top: 49px;

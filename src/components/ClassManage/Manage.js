@@ -412,6 +412,12 @@ function Manage({ match, history }) {
                                 <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
                                 <div className="class-manage-root" style={{ width: '100%' }}>
                                     <div>
+                                        <div className="class-copy">
+                                            <p>클래스 초대 코드</p>
+                                            <input readOnly type="text" defaultValue={codeState} ref={textCopy}></input>
+                                            <button onClick={handleCopy}>복사하기</button>
+                                        </div>
+
                                         <div className="manage-inputs">
                                             <h3>클래스 소개</h3>
 
@@ -432,6 +438,7 @@ function Manage({ match, history }) {
                                             </div>
 
                                             <input
+                                                style={{ backgroundColor: '#ffffff' }}
                                                 className={classNames('default', inputError ? 'error' : '')}
                                                 type="text"
                                                 name="entry_new_name"
@@ -441,6 +448,7 @@ function Manage({ match, history }) {
                                                 value={inputState['entry_new_name']}
                                             />
                                             <textarea
+                                                style={{ backgroundColor: '#ffffff' }}
                                                 className="default"
                                                 type="text"
                                                 name="entry_new_description"
