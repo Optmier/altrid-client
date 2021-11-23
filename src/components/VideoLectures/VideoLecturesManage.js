@@ -618,7 +618,7 @@ function VideoLecturesManage({ match, history }) {
         },
         {
             mId: 1,
-            mName: '진행 완료',
+            mName: '완료됨',
         },
     ];
     const [menuStatus, setMenuStatus] = useState(0);
@@ -841,28 +841,6 @@ function VideoLecturesManage({ match, history }) {
 
             <VideoLectureRoot>
                 <ClassWrapper col="col">
-                    {/* <div className="class-share-header">
-                        <div className="left">
-                            <div className="header-title">화상 강의</div>
-                            <div className="header-menu">
-                                <ButtonAble name="ing" able={ableState === 'ing'} value={ableState} onClick={handleTopMenuClick}>
-                                    진행 중
-                                </ButtonAble>
-                                {sessions.userType === 'students' ? null : (
-                                    <ButtonAble name="done" able={ableState === 'done'} value={ableState} onClick={handleTopMenuClick}>
-                                        진행 완료
-                                    </ButtonAble>
-                                )}
-                            </div>
-                        </div>
-                        <div className="right">
-                            {sessions.userType === 'students' ? null : (
-                                <StyledButton className="video-lecture sub" onClick={toggleDrawer(true)}>
-                                    <AddCircleOutlineIcon fontSize="small" />새 화상 강의 만들기
-                                </StyledButton>
-                            )}
-                        </div>
-                    </div> */}
                     <HeaderContainer>
                         <HeaderMenu
                             title="화상 강의"
@@ -877,7 +855,7 @@ function VideoLecturesManage({ match, history }) {
                                     leftIcon={<AddCamstudyIcon />}
                                     onClick={toggleDrawer(true)}
                                 >
-                                    새 화상강의 만들기
+                                    새 화상 강의
                                 </Button>
                             }
                         />

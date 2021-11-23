@@ -73,7 +73,7 @@ function Dday(props) {
     useEffect(() => {
         new DashboardDDay(classNum, (msg, res) => {
             // console.log(res.value);
-            if (!res.value) {
+            if (!res || !res.value) {
                 return;
             }
             const obj = JSON.parse(res.value);
@@ -91,7 +91,7 @@ function Dday(props) {
     return (
         <div style={{ color: '#3B1689', fontWeight: 'bold' }} className="d_day">
             {New_day === '' ? (
-                <span onClick={handleOpen}>나만의 디데이 설정하러 가기</span>
+                <span onClick={handleOpen}>나만의 디데이를 설정해 보세요!</span>
             ) : (
                 <div onClick={handleOpen}>
                     {event} 까지 D - {init} 일 남았습니다.

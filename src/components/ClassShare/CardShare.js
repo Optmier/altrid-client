@@ -23,6 +23,9 @@ import Error from '../../pages/Error';
 import TooltipCard from '../essentials/TooltipCard';
 import CardPopOverShare from '../essentials/CardPopOverShare';
 import StudentState from './StudentState';
+import styled from 'styled-components';
+import CardEyetrackIcon from '../../AltridUI/Icons/CardEyetrackIcon';
+import CardTypeCheckIcon from '../../AltridUI/Icons/CardTypeCheckIcon';
 
 const pad = (n, width) => {
     n = n + '';
@@ -114,6 +117,89 @@ const HtmlTooltip2 = withStyles((theme) => ({
         },
     },
 }))(Tooltip);
+
+const CardRoot = styled.div`
+    background-color: #ffffff;
+    cursor: pointer;
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+`;
+
+const CardHeader = styled.div`
+    background-color: ${({ checked }) => (checked ? '#F0FFF9 !important' : '#E9EDEF !important')};
+    border-top-left-radius: 32px !important;
+    border-top-right-radius: 32px !important;
+`;
+const ItemTopInfoTagContaier = styled.div`
+    align-items: center;
+    display: flex;
+`;
+const TopInfoTag = styled.div`
+    align-items: center;
+    background-color: ${({ colors }) => {
+        switch (colors) {
+            case 'blue':
+                return '#D4E2FC';
+            case 'yellow':
+                return '#FFF2D9';
+            case 'purple':
+                return '#E3DDF2';
+            default:
+                return '#ffffff';
+        }
+    }};
+    color: ${({ colors }) => {
+        switch (colors) {
+            case 'blue':
+                return '#174291';
+            case 'yellow':
+                return '#997328';
+            case 'purple':
+                return '#3B1689';
+            default:
+                return '#000000';
+        }
+    }};
+    border-radius: 8px;
+    display: flex;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 16px;
+    padding: 4px 6px;
+    text-align: center;
+    & + & {
+        margin-left: 4px;
+    }
+    & span {
+        margin-left: 5px;
+    }
+`;
+const CardMainInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+const AssignmentTitle = styled.div`
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 28px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 92%;
+    white-space: nowrap;
+`;
+const AssignmentDescription = styled.div`
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 22px;
+    margin-top: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 92%;
+    white-space: nowrap;
+`;
 
 function CardShare({ testNum, cardData, tries, totalStudents, history, match }) {
     let path = history.location.pathname;
@@ -371,19 +457,34 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                 timeLimit={cardData['time_limit']}
             />
 
-            <div className="class-card-root">
-                <div
+            <CardRoot className="class-card-root">
+                <CardHeader
+                    checked={toggleState['checked']}
                     className={classNames(
                         { 'class-card-header': !toggleState['checked'] },
                         { 'class-card-header-on': toggleState['checked'] },
                         'class-card-wrapper',
                     )}
                 >
-                    <TooltipCard title={cardData['title']}>
+                    {/* <TooltipCard title={cardData['title']}>
                         <div className="card-title-p" style={{ width: 'calc(100% - 150px)' }}>
                             {cardData['title']}
                         </div>
-                    </TooltipCard>
+                    </TooltipCard> */}
+                    <ItemTopInfoTagContaier>
+                        {parseInt(cardData['eyetrack']) ? (
+                            <TopInfoTag colors="blue">
+                                <CardEyetrackIcon />
+                                <span>시선흐름 분석 포함</span>
+                            </TopInfoTag>
+                        ) : null}
+                        {assignmentTypeState >= 100 ? (
+                            <TopInfoTag colors="purple">
+                                <CardTypeCheckIcon />
+                                <span>유형별 분석 가능</span>
+                            </TopInfoTag>
+                        ) : null}
+                    </ItemTopInfoTagContaier>
                     <span className="card-option">
                         {sessions.userType === 'students' ? (
                             <>
@@ -409,25 +510,28 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
                                 >
-                                    <circle cx="2.5" cy="2.5" r="2.5" fill="white" />
-                                    <circle cx="16.5" cy="2.5" r="2.5" fill="white" />
-                                    <circle cx="9.5" cy="2.5" r="2.5" fill="white" />
+                                    <circle cx="2.5" cy="2.5" r="2.5" fill="#171717b3" />
+                                    <circle cx="16.5" cy="2.5" r="2.5" fill="#171717b3" />
+                                    <circle cx="9.5" cy="2.5" r="2.5" fill="#171717b3" />
                                 </svg>
                             </div>
                         )}
                     </span>
-                </div>
+                </CardHeader>
 
                 <div className="class-card-flex class-card-wrapper" onClick={handleCardClick}>
                     <div className="class-card-top">
                         <div className="class-card-left">
                             <div className="class-card-contents ">
                                 <div className="contents-block">
-                                    <div className="card-item">
-                                        <TooltipCard title={cardData['description']}>
-                                            <div className="card-subTitle-p">{cardData['description']}</div>
+                                    <CardMainInfo>
+                                        <TooltipCard title={cardData['title']}>
+                                            <AssignmentTitle>{cardData['title']}</AssignmentTitle>
                                         </TooltipCard>
-                                    </div>
+                                        <TooltipCard title={cardData['description']}>
+                                            <AssignmentDescription>{cardData['description']}</AssignmentDescription>
+                                        </TooltipCard>
+                                    </CardMainInfo>
                                 </div>
 
                                 <div className="contents-block">
@@ -502,14 +606,14 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                         </div>
                     </div>
 
-                    <div className="class-card-bottom">
+                    {/* <div className="class-card-bottom">
                         {sessions.userType === 'students' ? null : (
                             <IsPresence type={'analysis'} able={assignmentTypeState} align="left" fontSize="0.85rem" />
                         )}
                         <IsPresence type={'eye'} able={parseInt(cardData['eyetrack'])} align="left" fontSize="0.85rem" />
-                    </div>
+                    </div> */}
                 </div>
-            </div>
+            </CardRoot>
         </>
     );
 }

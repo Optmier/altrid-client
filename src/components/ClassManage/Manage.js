@@ -42,15 +42,23 @@ const WrapperRoot = styled.div``;
 
 const BottomActions = styled.div`
     align-items: center;
+    background-color: #ffffff;
     box-shadow: inset 0px 1px 0px #e9edef;
     display: flex;
+    justify-content: center;
     margin-top: auto;
     min-height: 72px;
     padding: 0 48px;
 
-    & button + button {
+    /* & button + button {
         margin-left: 16px;
-    }
+    } */
+`;
+const BottomActionsInner = styled.div`
+    display: inherit;
+    justify-content: space-between;
+    max-width: 960px;
+    width: 100%;
 `;
 
 const CreateButton = withStyles((theme) => ({
@@ -277,6 +285,7 @@ function Manage({ match, history }) {
     /** 수정, 삭제하기 버튼 */
     const handleButton = (e) => {
         const $target = $(e.target);
+        const { name } = e.target;
 
         if (!inputState['entry_new_name'].trim()) {
             setInputError(true);
@@ -285,12 +294,12 @@ function Manage({ match, history }) {
             setInputError(false);
         }
 
-        let name = '';
-        if ($target.parents('.button-modify').length !== 0 || $target.attr('class').includes('button-modify')) {
-            name = 'modify';
-        } else if ($target.parents('.button-delete').length !== 0 || $target.attr('class').includes('button-delete')) {
-            name = 'delete';
-        }
+        // let name = '';
+        // if ($target.parents('.button-modify').length !== 0 || $target.attr('class').includes('button-modify')) {
+        //     name = 'modify';
+        // } else if ($target.parents('.button-delete').length !== 0 || $target.attr('class').includes('button-delete')) {
+        //     name = 'delete';
+        // }
         if (name === 'modify') {
             let daysArr = [];
             Object.keys(buttonAble)
@@ -501,7 +510,7 @@ function Manage({ match, history }) {
                                         </div>
                                     </div>
 
-                                    <div className="manage-footer">
+                                    {/* <div className="manage-footer">
                                         <CreateButton
                                             className="button-delete critical"
                                             size="large"
@@ -522,7 +531,7 @@ function Manage({ match, history }) {
                                         >
                                             수정하기
                                         </CreateButton>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </>
                         ) : selectedMenu === 0 ? (
@@ -532,23 +541,47 @@ function Manage({ match, history }) {
                 </div>
             </ClassWrapper>
             <BottomActions>
-                {selectedMenu === 2 ? (
-                    <>
-                        {Object.keys(toDeleteStudentData).filter((i) => toDeleteStudentData[i] === true).length ? (
+                <BottomActionsInner>
+                    {selectedMenu === 2 ? (
+                        <>
+                            {Object.keys(toDeleteStudentData).filter((i) => toDeleteStudentData[i] === true).length ? (
+                                <Button
+                                    sizes="medium"
+                                    colors="red"
+                                    variant="light"
+                                    leftIcon={<DeleteIcon fontSize="inherit" color="inherit" />}
+                                    onClick={actionDeleteStudents}
+                                >
+                                    선택 삭제
+                                </Button>
+                            ) : null}
+                        </>
+                    ) : selectedMenu === 1 ? (
+                        <>
                             <Button
                                 sizes="medium"
                                 colors="red"
                                 variant="light"
+                                name="delete"
                                 leftIcon={<DeleteIcon fontSize="inherit" color="inherit" />}
-                                onClick={actionDeleteStudents}
+                                disabled={!createButtonEnabled}
+                                onClick={handleButton}
                             >
-                                선택 삭제
+                                삭제하기
                             </Button>
-                        ) : null}
-                    </>
-                ) : selectedMenu === 1 ? (
-                    <></>
-                ) : null}
+                            <Button
+                                sizes="medium"
+                                colors="purple"
+                                variant="light"
+                                name="modify"
+                                disabled={!createButtonEnabled}
+                                onClick={handleButton}
+                            >
+                                수정하기
+                            </Button>
+                        </>
+                    ) : null}
+                </BottomActionsInner>
             </BottomActions>
         </WrapperRoot>
     );

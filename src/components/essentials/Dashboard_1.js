@@ -431,6 +431,8 @@ function Dashboard_1({ match }) {
             },
         },
     });
+    // 클래스 정보
+    const [classInfo, setClassInfo] = useState({ class_code: '', class_day: '', name: '', description: '' });
 
     useEffect(() => {
         Axios.get(`${apiUrl}/meeting-room/livelecture`, { withCredentials: true })
@@ -457,8 +459,13 @@ function Dashboard_1({ match }) {
 
     useEffect(() => {
         Axios.get(`${apiUrl}/meeting-room`, { params: { classNumber: classNum }, withCredentials: true })
+            .then((result) => {})
+            .catch((err) => console.log(err));
+        // 클래스 정보 가져오기
+        Axios.get(`${apiUrl}/classes/infos/${classNum}`, { withCredentials: true })
             .then((result) => {
-                // console.log(result);
+                if (!result || !result.data) return;
+                setClassInfo({ ...classInfo, ...result.data });
             })
             .catch((err) => console.log(err));
     }, []);
@@ -466,6 +473,7 @@ function Dashboard_1({ match }) {
     useEffect(() => {
         Axios.get(`${apiUrl}/assignment-actived/${num}`, { withCredentials: true })
             .then((result) => {
+                console.log(result.data);
                 setassignment(result.data);
             })
             .catch((err) => console.log(err));
@@ -558,7 +566,7 @@ function Dashboard_1({ match }) {
                                 fill="#AEFFE0"
                             />
                         </svg>
-                        <h2>반갑습니다 {sessions.userName} 님</h2>
+                        <h2>{classInfo.name} 클래스 입니다.</h2>
                         <Dday classNum={num} />
                     </div>
                     <div className="right">
@@ -575,9 +583,13 @@ function Dashboard_1({ match }) {
                                         {meetingroom.length !== 0 ? (
                                             <>
                                                 <p>현재 강의가 진행 중이니 입장해주세요 </p>
-                                                <Link to={`/class/${num}/vid-lecture`}>
-                                                    <button className="input">입장하기</button>
-                                                </Link>
+                                                <div className="gobutton">
+                                                    <Link to={`/class/${num}/vid-lecture`}>
+                                                        <Button fullWidth colors="purple" variant="filled">
+                                                            강의실로 이동
+                                                        </Button>
+                                                    </Link>
+                                                </div>
                                             </>
                                         ) : (
                                             <>
@@ -585,7 +597,7 @@ function Dashboard_1({ match }) {
                                                 <div className="gobutton">
                                                     <Link to={`/class/${num}/vid-lecture`}>
                                                         <Button fullWidth colors="purple" variant="filled">
-                                                            강의실로 입장하기
+                                                            강의실로 이동
                                                         </Button>
                                                     </Link>
                                                 </div>
@@ -609,7 +621,7 @@ function Dashboard_1({ match }) {
                                         <div className="gobutton">
                                             <Link to={`/class/${num}/cam-study`}>
                                                 <Button colors="purple" fullWidth variant="filled">
-                                                    입장하기
+                                                    캠 스터디 목록
                                                 </Button>
                                             </Link>
                                         </div>
@@ -622,9 +634,11 @@ function Dashboard_1({ match }) {
                                         <h3>오늘의 단어</h3>
                                         {!word ? <h4>단어가 없습니다.</h4> : <h1 onClick={ClickCard}>{flip ? korean : word}</h1>}
 
-                                        <Link to={`/class/${num}/learning-vocas`}>
-                                            <p>더 많은 단어 학습하기</p>
-                                        </Link>
+                                        {word ? (
+                                            <Link to={`/class/${num}/learning-vocas`}>
+                                                <p>더 많은 단어 학습하기</p>
+                                            </Link>
+                                        ) : null}
                                     </div>
                                 </Item>
                             </Grid>

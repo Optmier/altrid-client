@@ -42,7 +42,8 @@ const LeftNavRoot = styled.div`
     justify-content: space-between;
     padding: 32px;
     position: fixed;
-    height: 100%;
+    height: calc(100% - 64px);
+    overflow: auto;
     width: 392px;
     transition: all 0.4s;
     z-index: 1299;

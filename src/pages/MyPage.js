@@ -9,6 +9,7 @@ import Profile from '../components/MyPage/Profile';
 import Plans from '../components/MyPage/Plans';
 import DeleteAccount from '../components/MyPage/DeleteAccount';
 import { useSelector } from 'react-redux';
+import { Helmet } from 'react-helmet';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -50,6 +51,13 @@ function MyPage({ match }) {
 
     return (
         <>
+            <Helmet>
+                <style>{`
+                    main#main {
+                        background-color: #ffffff;
+                    }
+            `}</style>
+            </Helmet>
             {/* <LeftNavMyPage /> */}
 
             {/* <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} /> */}

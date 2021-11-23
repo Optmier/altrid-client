@@ -28,6 +28,7 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import AccountPopOver from '../components/essentials/AccountPopOver';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const Item = styled.div``;
 
@@ -275,6 +276,13 @@ function Main({ history }) {
 
     return (
         <>
+            <Helmet>
+                <style>{`
+                    main#main {
+                        background-color: #ffffff;
+                    }
+            `}</style>
+            </Helmet>
             <Drawer
                 anchor="right"
                 open={openCreateNewDrawer}

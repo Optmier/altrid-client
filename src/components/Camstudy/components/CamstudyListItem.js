@@ -78,6 +78,10 @@ const Title = styled.div`
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    white-space: nowrap;
 `;
 const Description = styled.div`
     color: #000000;
@@ -85,6 +89,10 @@ const Description = styled.div`
     font-size: 1rem;
     letter-spacing: -0.02em;
     line-height: 1.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    white-space: nowrap;
 `;
 const CreatorName = styled.div``;
 const ItemActionsContainer = styled.div`
