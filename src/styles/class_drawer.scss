@@ -93,6 +93,40 @@ $primaryColor: #13e2a1;
             pointer-events: none;
         }
 
+        & .prepare {
+            margin-right: 1rem;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #f6f8f9;
+            border-radius: 16px;
+            width: 333px;
+            height: 114px;
+            box-sizing: border-box;
+            // padding: 1rem 2rem;
+
+            & svg {
+                pointer-events: none;
+                width: 15px;
+                height: 14px;
+                margin-bottom: 1rem;
+            }
+            & h4 {
+                pointer-events: none;
+                margin: 0 0 0.2rem 0;
+                font-size: 0.9rem;
+            }
+            & p {
+                pointer-events: none;
+                color: gray;
+                margin: 0;
+                font-size: 0.75rem;
+            }
+        }
+
         & .drawer-select + .drawer-select {
             margin-left: 1rem;
         }

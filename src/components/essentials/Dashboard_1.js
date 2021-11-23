@@ -458,7 +458,7 @@ function Dashboard_1({ match }) {
     useEffect(() => {
         Axios.get(`${apiUrl}/meeting-room`, { params: { classNumber: classNum }, withCredentials: true })
             .then((result) => {
-                console.log(result);
+                // console.log(result);
             })
             .catch((err) => console.log(err));
     }, []);
@@ -502,7 +502,7 @@ function Dashboard_1({ match }) {
     useEffect(() => {
         Axios.get(`${apiUrl}/calendar-events/my/${num}/current`, { withCredentials: true })
             .then((result) => {
-                console.log(result.data);
+                // console.log(result.data);
                 settodo(result.data);
             })
             .catch((err) => console.log(err));

@@ -122,6 +122,19 @@ const Container = styled.div`
     & .fc table {
         background-color: #ffffff;
     }
+    & .fc-icon-chevron-left {
+        color: #3b1689;
+    }
+    & .fc-icon-chevron-right {
+        color: #3b1689;
+    }
+    & .fc-icon-chevron-left:hover,
+    .fc-icon-chevron-right:hover {
+        color: white;
+    }
+    & .fc-event-title {
+        color: black;
+    }
 `;
 
 const Modal_Style = styled.div`

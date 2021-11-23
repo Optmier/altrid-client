@@ -619,49 +619,50 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                                         />
 
                                         <StyleLabel
-                                            clicked={selectState}
-                                            className={fileCreation ? 'disabled' : 'drawer-select'}
-                                            htmlFor={fileCreation ? null : 'file-click'}
+                                            // clicked={selectState}
+                                            className={fileCreation ? 'disabled' : 'prepare'}
+                                            // className={fileCreation ? 'disabled' : 'disabled'}
+                                            // htmlFor={fileCreation ? null : 'file-click'}
                                         >
                                             <>
                                                 <RestricRoute_1
-                                                    onClick={() => {
-                                                        setupload(true);
-                                                    }}
+                                                    // onClick={() => {
+                                                    //     setupload(true);
+                                                    // }}
                                                     type="default"
                                                     restricted={fileCreation}
                                                 >
                                                     {upload ? (
                                                         <>
-                                                            <svg
+                                                            {/* <svg
                                                                 width="15"
                                                                 height="14"
                                                                 viewBox="0 0 15 14"
-                                                                fill="none"
+                                                                fill="black"
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                             >
                                                                 <path
                                                                     d="M7.50016 13.6663C3.81816 13.6663 0.833496 10.6817 0.833496 6.99967C0.833496 3.31767 3.81816 0.333008 7.50016 0.333008C11.1822 0.333008 14.1668 3.31767 14.1668 6.99967C14.1668 10.6817 11.1822 13.6663 7.50016 13.6663ZM6.8355 9.66634L11.5488 4.95234L10.6062 4.00967L6.8355 7.78101L4.9495 5.89501L4.00683 6.83767L6.8355 9.66634Z"
                                                                     fill="#3B1689"
                                                                 />
-                                                            </svg>
+                                                            </svg> */}
                                                             <h4>과제 파일 업로드하기</h4>
                                                             <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <svg
+                                                            {/* <svg
                                                                 width="15"
                                                                 height="14"
                                                                 viewBox="0 0 15 14"
-                                                                fill="none"
+                                                                fill="black"
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                             >
                                                                 <path
                                                                     d="M7.50016 13.6663C3.81816 13.6663 0.833496 10.6817 0.833496 6.99967C0.833496 3.31767 3.81816 0.333008 7.50016 0.333008C11.1822 0.333008 14.1668 3.31767 14.1668 6.99967C14.1668 10.6817 11.1822 13.6663 7.50016 13.6663ZM7.50016 12.333C8.91465 12.333 10.2712 11.7711 11.2714 10.7709C12.2716 9.77072 12.8335 8.41416 12.8335 6.99967C12.8335 5.58519 12.2716 4.22863 11.2714 3.22844C10.2712 2.22824 8.91465 1.66634 7.50016 1.66634C6.08567 1.66634 4.72912 2.22824 3.72893 3.22844C2.72873 4.22863 2.16683 5.58519 2.16683 6.99967C2.16683 8.41416 2.72873 9.77072 3.72893 10.7709C4.72912 11.7711 6.08567 12.333 7.50016 12.333V12.333Z"
                                                                     fill="#3B1689"
                                                                 />
-                                                            </svg>
+                                                            </svg> */}
                                                             <h4>과제 파일 업로드하기</h4>
                                                             <p>hwp, word, pdf 파일을 올려주시면, 과제를 생성해드립니다.</p>
                                                         </>

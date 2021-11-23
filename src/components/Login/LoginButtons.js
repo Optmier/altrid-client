@@ -6,12 +6,11 @@ import SimbolLoginWithKakao from '../../images/logos/simbol_login_with_kakao.svg
 import styled from 'styled-components';
 
 const AuthButtonsRoot = styled.div`
-    width: 280px;
-
+    margin: 0 auto;
+    width: 384px;
     & .button-auth {
-        border: 1px solid #e0e0e0;
-        border-radius: 4px !important;
-        box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 2px 0px, rgba(0, 0, 0, 0.24) 0px 0px 1px 0px;
+        border-radius: 32px !important;
+
         color: #909090;
         cursor: pointer;
         font-size: 16px !important;
@@ -21,6 +20,8 @@ const AuthButtonsRoot = styled.div`
         justify-content: center;
 
         &.google {
+            background: #f2f5fe;
+            border-radius: 32px !important;
             & div {
                 margin-left: 10px;
                 margin-right: -24px !important;
@@ -66,7 +67,7 @@ function LoginButtons({ onSuccessGoogleAuth, onFailedGoogleAuth, onSuccessKakaoA
                 <GoogleLogin
                     className="button-auth google"
                     clientId={googleAuthClientId}
-                    buttonText={'구글 계정으로 로그인'}
+                    buttonText={'구글로 시작하기'}
                     onSuccess={onSuccessGoogleAuth}
                     onFailure={onFailedGoogleAuth}
                     cookiePolicy={'single_host_origin'}
@@ -76,7 +77,7 @@ function LoginButtons({ onSuccessGoogleAuth, onFailedGoogleAuth, onSuccessKakaoA
                     <KakaoLogin
                         className="button-auth kakao"
                         jsKey={kakaoAuthJSKey}
-                        buttonText={'카카오 계정으로 로그인'}
+                        buttonText={'카카오로 시작하기'}
                         getProfile
                         onSuccess={onSuccessKakaoAuth}
                         onFailure={onFailedKakaoAuth}

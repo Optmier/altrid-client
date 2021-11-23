@@ -32,8 +32,8 @@ export default class DashboardDDay {
                 callback('falied', err);
             });
     }
-    save(dateStr, callback = function (resultMessage: string, response: object) {}) {
-        Axios.patch(`${apiUrl}/personal-settings/my/${this.classNumber}/dday`, { value: dateStr }, { withCredentials: true })
+    save(dateStr, title, callback = function (resultMessage: string, response: object) {}) {
+        Axios.patch(`${apiUrl}/personal-settings/my/${this.classNumber}/dday`, { value: dateStr, title }, { withCredentials: true })
             .then((res) => {
                 callback('success', res);
             })

@@ -21,31 +21,54 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Dday(props) {
-    const [today, setdate] = useState(new Date());
-    const [New_day, setNew] = useState('');
-    const [open, setopen] = useState(false);
-    const [title, settitle] = useState('일정');
+    const [today, setdate] = useState(new Date()); // 오늘 날짜
+    const [New_day, setNew] = useState(''); // db에 저장되고 불러와지는 DDay 날짜
+    const [open, setopen] = useState(false); // 다이얼로그 state
+    const [title, settitle] = useState('');
     const [init, setinit] = useState('');
-    const [test, settest] = useState(new Date());
+    const [test, settest] = useState('');
+    const [day, setday] = useState(new Date());
+    const [eventday, seteventday] = useState('');
+    const [event, setevent] = useState('일정');
     const classNum = props.classNum;
+    const [saving, setsave] = useState({
+        title: '',
+        date: '',
+    });
     const classes = useStyles();
     const handleOpen = () => {
         setopen(true);
     };
 
     const save = new DashboardDDay(classNum, (msg, res) => {
-        // console.log(msg, res);
+        // console.log(res);
     });
 
-    const handleClose = () => {
-        setNew(test);
+    const justclose = () => {
         setopen(false);
-        save.save(test);
-        // save.save({
-        //     title: title,
-        //     date: test,
-        // });
     };
+    const handleClose = () => {
+        setopen(false);
+
+        setsave({
+            ...saving,
+            title: title,
+            date: New_day,
+        });
+        // console.log(saave);
+        // settest(saave);
+        alert('D-day가 설정되었습니다.');
+        setevent(title);
+        var diff = Math.abs(new Date(New_day).getTime() - today.getTime());
+        diff = Math.ceil(diff / (1000 * 3600 * 24));
+        setinit(diff);
+        const saveDB = JSON.stringify({
+            title: JSON.stringify(title),
+            date: JSON.stringify(New_day),
+        });
+        save.save(saveDB);
+    };
+    window.test = saving;
 
     useEffect(() => {
         new DashboardDDay(classNum, (msg, res) => {
@@ -53,47 +76,41 @@ function Dday(props) {
             if (!res.value) {
                 return;
             }
-            setNew(res.value);
-            var diff = Math.abs(new Date(New_day).getTime() - today.getTime());
+            const obj = JSON.parse(res.value);
+            setevent(obj.title);
+            setNew(obj.date);
+            // console.log(event);
+            // console.log(new Date(obj.date));
+            // console.log(New_day);
+            var diff = Math.abs(new Date(obj.date).getTime() - today.getTime());
             diff = Math.ceil(diff / (1000 * 3600 * 24));
             setinit(diff);
         });
-    }, [New_day]);
+    }, []);
 
     return (
-        <div className="d_day">
+        <div style={{ color: '#3B1689', fontWeight: 'bold' }} className="d_day">
             {New_day === '' ? (
                 <span onClick={handleOpen}>나만의 디데이 설정하러 가기</span>
             ) : (
                 <div onClick={handleOpen}>
-                    {title} 까지 D - {init} 일 남았습니다.
+                    {event} 까지 D - {init} 일 남았습니다.
                 </div>
             )}
 
-            <Dialog open={open} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+            <Dialog open={open} onClose={justclose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
                 <DialogContent>
                     <input type="text" value={title} placeholder="일정 제목 입력하기" onChange={(e) => settitle(e.target.value)} />
-                    {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DatePicker
-                            label="날짜를 선택해주세요"
-                            type="datetime-local"
-                            value={test}
-                            onChange={(newValue) => {
-                                settest(newValue);
-                            }}
-                            minDate={today}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </LocalizationProvider> */}
                     <form className={classes.container} noValidate>
                         <TextField
                             id="date"
                             // label="Dday"
                             type="date"
-                            defaultValue={test}
+                            defaultValue={New_day}
                             className={classes.TextField}
                             onChange={(e) => {
-                                settest(e.target.value);
+                                setNew(e.target.value);
+                                console.log(day);
                             }}
                         />
                     </form>
