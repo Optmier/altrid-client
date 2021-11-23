@@ -72,6 +72,38 @@ const CreateButton = withStyles((theme) => ({
     },
 }))(Button);
 
+const CategorySelect = styled.select`
+    cursor: pointer;
+    background: url(/bg_images/Vector.png) no-repeat 92% 50%;
+    background-color: #f6f7f9;
+    width: 100%;
+    min-height: 40px;
+    padding: 0 0.8rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    border: none;
+    /* border: 1px solid rgba(112, 112, 112, 0.79); */
+    border-radius: 10px;
+    color: #000;
+    font-weight: 500;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+
+    &.small {
+        width: 120px;
+    }
+
+    &.tiny {
+        width: 90px;
+        height: 32px;
+        min-height: initial;
+    }
+`;
+
 //ver : draft(생성), modify(수정)
 function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     /** redux-state */
@@ -162,6 +194,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         title: ver === 'draft' ? '' : cardData['title'],
         description: ver === 'draft' ? '' : cardData['description'],
     });
+    const [selectedSubject, setSelectedSubject] = useState(ver === 'draft' ? 0 : cardData['subject']);
     const [inputsError, setInputsError] = useState({
         title_error: '',
         description_error: '',
@@ -300,7 +333,9 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                 };
 
                 setDateDialogopen(false);
-                dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, activedDirect));
+                dispatch(
+                    postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, activedDirect, selectedSubject),
+                );
             } else if (!due_date) {
                 alert('과제 기한 변경은 필수사항 입니다.');
             } else if (!selectClassState) {
@@ -361,7 +396,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         //5. axios 작업
         if (ver === 'draft') {
             if (name === 'drawer-draft') {
-                dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData));
+                dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, null, selectedSubject));
 
                 handleClose(e);
             } else if (name === 'drawer-share') {
@@ -372,9 +407,15 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                 }
             }
         } else if (ver === 'modify') {
-            dispatch(patchDraft(cardData, inputs, timeInputs, toggleState, contentsData));
+            dispatch(patchDraft(cardData, inputs, timeInputs, toggleState, contentsData, selectedSubject));
             handleClose(e);
         }
+    };
+
+    const actionChangeSubject = ({ target }) => {
+        const { value } = target;
+        console.log(value);
+        setSelectedSubject(parseInt(value));
     };
 
     return (
@@ -384,6 +425,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                     <TOFELEditor
                         mode
                         datas={contentsData}
+                        subject={selectedSubject}
                         onChange={handleChangeContents}
                         onClose={handleEditDialogClose}
                         onEditFinish={handleEditFinished}
