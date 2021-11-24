@@ -70,7 +70,7 @@ const LimitFuncWrapper = styled.div`
     justify-content: center;
     width: 95%;
     height: 95%;
-    background: #f6f7f93d;
+    background: #ffffff3c;
     font-size: 1.2rem;
     font-weight: 500;
     z-index: 1000;
@@ -87,9 +87,9 @@ const LimitFuncWrapper = styled.div`
     }
 `;
 
-function StudentTypeScore({ enabled, current, total, typeSelectState, handleTypeSelect, achieveValue }) {
+function StudentTypeScore({ enabled, subject, current, total, typeSelectState, handleTypeSelect, achieveValue }) {
     const [sortedEnableCategories] = useState(enabled.sort((a, b) => a.category - b.category));
-
+    console.log(sortedEnableCategories);
     return (
         <div className="white-box">
             <StyleStudentTypeScore>
@@ -113,6 +113,7 @@ function StudentTypeScore({ enabled, current, total, typeSelectState, handleType
                     {typeSelectState === '0' ? (
                         current ? (
                             <RadarChart
+                                subject={subject}
                                 currentObjs={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))}
                                 averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
                             />
@@ -129,11 +130,16 @@ function StudentTypeScore({ enabled, current, total, typeSelectState, handleType
                                     </svg>
                                     과제를 더 다양한 문제로 만들어주세요!
                                 </LimitFuncWrapper>
-                                <RadarChart averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))} />
+                                <RadarChart
+                                    isDummy
+                                    subject={subject}
+                                    averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
+                                />
                             </>
                         )
                     ) : current ? (
                         <ColumnChart
+                            subject={subject}
                             currentObjs={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))}
                             averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
                         />
@@ -150,7 +156,11 @@ function StudentTypeScore({ enabled, current, total, typeSelectState, handleType
                                 </svg>
                                 과제를 더 다양한 문제로 만들어주세요!
                             </LimitFuncWrapper>
-                            <ColumnChart averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))} />
+                            <ColumnChart
+                                isDummy
+                                subject={subject}
+                                averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
+                            />
                         </>
                     )}
                 </div>

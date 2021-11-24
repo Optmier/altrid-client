@@ -1,11 +1,27 @@
 import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
+import CategorySelector from '../../controllers/CategorySelector';
 
-function ColumnChartProblem({ datas }) {
+const randomArrSet = (array, length = array.length) => {
+    if (length > array.length) return array;
+    const newArray = [];
+    for (let i = 0; i < length; i++) {
+        const max = Math.floor(array.length);
+        const randomIdx = Math.floor(Math.random() * max);
+        newArray.push(array.splice(randomIdx, 1));
+    }
+    return newArray;
+};
+
+function ColumnChartProblem({ datas, subject }) {
     let state = {};
     let [categorySorted, setCategorySorted] = useState(datas ? datas.sort((a, b) => a.category - b.category) : null);
-    let dummyDatas = ['문장요약', '세부정보찾기', '어휘', '지시대상', '추론', '문장삽입', '정보분류'];
+    const categories = CategorySelector(subject);
+    let dummyDatas = randomArrSet(
+        categories.filter((d) => d.eng !== 'Others').map((d) => d.name),
+        6,
+    );
     state = {
         series: [
             {
@@ -34,7 +50,12 @@ function ColumnChartProblem({ datas }) {
                 colors: ['transparent'],
             },
             xaxis: {
-                categories: datas ? categorySorted.map((v) => ProblemCategories.filter((i) => i.id === v.category)[0].name) : dummyDatas,
+                categories: datas
+                    ? categorySorted.map((v) => {
+                          const filtered = categories.filter((i) => i.id === v.category);
+                          return filtered.length ? filtered[0].name : '{과목 유형 불일치}';
+                      })
+                    : dummyDatas,
             },
             yaxis: {
                 min: 0,
@@ -60,5 +81,10 @@ function ColumnChartProblem({ datas }) {
         </div>
     );
 }
+
+ColumnChartProblem.defaultProps = {
+    datas: [0],
+    subject: 1,
+};
 
 export default ColumnChartProblem;

@@ -98,7 +98,7 @@ export const postActived = (cardData, num, due_date) => async (dispatch) => {
     dispatch({ type: POST_ACTIVED }); // 요청이 시작됨
 
     try {
-        const { idx, title, time_limit, description, eyetrack, contents_data, file_url } = cardData;
+        const { idx, title, time_limit, description, subject, eyetrack, contents_data, file_url } = cardData;
         const class_number = num;
         await Axios.post(
             `${apiUrl}/assignment-actived`,
@@ -107,6 +107,7 @@ export const postActived = (cardData, num, due_date) => async (dispatch) => {
                 class_number: class_number,
                 title: title,
                 description: description,
+                subject: subject,
                 time_limit: time_limit,
                 eyetrack: eyetrack,
                 contents_data: JSON.stringify(contents_data),

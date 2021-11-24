@@ -17,6 +17,7 @@ import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
+import CSATCategories from '../TOFELEditor/CSATCategories';
 import TypeBanner from '../essentials/TypeBanner';
 import { useSelector, useDispatch } from 'react-redux';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
@@ -31,6 +32,7 @@ import { Link } from '@material-ui/core';
 import Groupbox from '../../AltridUI/GroupBox/Groupbox';
 import Button from '../../AltridUI/Button/Button';
 import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
+import CategorySelector from '../../controllers/CategorySelector';
 
 const pad = (n, width) => {
     n = n + '';
@@ -50,7 +52,7 @@ const LimitFuncWrapper = styled.div`
     justify-content: center;
     width: 95%;
     height: 95%;
-    background: #f6f7f93d;
+    background: #ffffff3c;
     font-size: 1.2rem;
     font-weight: 500;
     z-index: 1000;
@@ -91,6 +93,8 @@ function ReportClass({ match, history }) {
     const [title, setTitle] = useState('');
     // 과제 한 줄 설명
     const [description, setDescription] = useState('');
+    // 과제 과목
+    const [subject, setSubject] = useState(1);
     // 시선흐름 측정 여부
     const [eyetrack, setEyetrack] = useState(false);
     // 문항 수
@@ -422,9 +426,11 @@ function ReportClass({ match, history }) {
 
     useEffect(() => {
         if (!mainReportData) return;
+        console.log(mainReportData);
 
         setTitle(mainReportData.title);
         setDescription(mainReportData.description);
+        setSubject(mainReportData.subject);
         setEyetrack(mainReportData.eyetrack);
         setTimeLimit(mainReportData.time_limit);
         setStartDate(moment(mainReportData.created).format('MM.DD HH:mm'));
@@ -645,7 +651,7 @@ function ReportClass({ match, history }) {
                                 <div>
                                     <span>가장 취약한 영역 </span>
                                     {
-                                        ProblemCategories.filter(
+                                        CategorySelector(subject).filter(
                                             (p) =>
                                                 p.id ===
                                                 achievesForTypes.allExists
@@ -673,7 +679,7 @@ function ReportClass({ match, history }) {
                                 <span style={{ color: '#4D5C6A' }}>가장 취약한 영역 </span>
                                 <div style={{ color: '#FF6937' }}>
                                     {
-                                        ProblemCategories.filter(
+                                        CategorySelector(subject).filter(
                                             (p) =>
                                                 p.id ===
                                                 achievesForTypes.allExists
@@ -702,14 +708,13 @@ function ReportClass({ match, history }) {
                             </div>
                         </div>
                         <div className="graph-box">
-                            {achievesForTypes.value >= 100 ? (
-                                selectState === '0' ? (
-                                    <ColumnChartProblem datas={avgScoresOfNumber} />
-                                ) : (
-                                    <ColumnChartType
-                                        datas={achievesForTypes.allExists.map((e) => ({ ...e, score: averageScoresOfType[e.category] }))}
-                                    />
-                                )
+                            {selectState === '0' ? (
+                                <ColumnChartProblem datas={avgScoresOfNumber} />
+                            ) : achievesForTypes.value >= 100 ? (
+                                <ColumnChartType
+                                    datas={achievesForTypes.allExists.map((e) => ({ ...e, score: averageScoresOfType[e.category] }))}
+                                    subject={subject}
+                                />
                             ) : (
                                 <>
                                     <LimitFuncWrapper>
@@ -723,7 +728,7 @@ function ReportClass({ match, history }) {
                                         </svg>
                                         과제를 더 다양한 문제로 만들어주세요!
                                     </LimitFuncWrapper>
-                                    <ColumnChartType datas={0} />
+                                    <ColumnChartType datas={0} subject={subject} />
                                 </>
                             )}
                         </div>

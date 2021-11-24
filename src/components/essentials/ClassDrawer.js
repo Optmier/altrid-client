@@ -78,7 +78,7 @@ const CategorySelect = styled.select`
     background-color: #f6f7f9;
     width: 100%;
     min-height: 40px;
-    padding: 0 0.8rem;
+    padding: 1.2rem 1.3rem;
     font-family: inherit;
     font-size: 0.8rem;
     border: none;
@@ -92,6 +92,7 @@ const CategorySelect = styled.select`
     -moz-appearance: none;
     appearance: none;
     outline: none;
+    margin-bottom: 16px;
 
     &.small {
         width: 120px;
@@ -468,10 +469,20 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                             <>
                                 <DrawerGroupBox
                                     title="과제 필수 정보 "
-                                    description="과제 소개를 입력해주세요"
+                                    description="과목, 이름, 설명을 입력해주세요"
                                     descriptionAdornment={BulbIcon}
                                 >
                                     <div className="drawer-inputs">
+                                        <CategorySelect
+                                            labelId="subject-label"
+                                            id="subject"
+                                            defaultValue={selectedSubject}
+                                            onChange={actionChangeSubject}
+                                            label="subject"
+                                        >
+                                            <option value={0}>수능 독해</option>
+                                            <option value={1}>TOFEL Reading</option>
+                                        </CategorySelect>
                                         <div className="drawer-input">
                                             <input
                                                 name="title"
@@ -814,20 +825,15 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                     {ver === 'draft' ? (
                         <>
                             <DrawerActions>
-                                <Button variant="filled" colors="purple" onClick={onDrawerErrorCheck}>
+                                <Button variant="filled" colors="purple" name="drawer-draft" onClick={onDrawerErrorCheck}>
                                     생성하기
                                 </Button>
                             </DrawerActions>
                         </>
                     ) : (
-                        <CreateButton
-                            className="drawer-button primary"
-                            name="drawer-share"
-                            variant="contained"
-                            onClick={onDrawerErrorCheck}
-                        >
+                        <Button name="drawer-share" variant="filled" colors="purple" onClick={onDrawerErrorCheck}>
                             수정하기
-                        </CreateButton>
+                        </Button>
                     )}
                 </div>
             </div>

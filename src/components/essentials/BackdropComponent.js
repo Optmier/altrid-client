@@ -3,11 +3,10 @@ import React, { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
-        zIndex: 9996 + 1,
+        zIndex: 10,
         color: '#2d106b',
-        backgroundColor: '#f7f9f8',
-        marginLeft: '240px',
-        marginTop: '100px',
+        position: 'absolute',
+        backgroundColor: '#ffffff',
     },
     blind: {
         width: '100%',
@@ -15,11 +14,11 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         left: 0,
         top: 0,
-        zIndex: 9996,
+        zIndex: 9999,
     },
 }));
 
-function BackdropComponent({ open, blind, disableShrink }) {
+function BackdropComponent({ open, blind, disableShrink, children }) {
     const classes = useStyles();
 
     return (
@@ -28,6 +27,7 @@ function BackdropComponent({ open, blind, disableShrink }) {
             <Backdrop className={classes.backdrop} open={open}>
                 <CircularProgress disableShrink={disableShrink} color="inherit" />
             </Backdrop>
+            {open ? null : children}
         </>
     );
 }
