@@ -16,6 +16,9 @@ import Leaderboard from '../ClassStudentManage/Leaderboard';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 import Button from '../../AltridUI/Button/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
+import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
+import BulbIcon from '../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
+import InnerPageBottomActions from '../../AltridUI/OtherContainers/InnerPageBottomActions';
 
 const CopyButton = styled.div`
     pointer-events: ${(props) => (props.state ? 'none' : 'all')};
@@ -40,27 +43,6 @@ const ButtonAble = styled.button`
 
 const WrapperRoot = styled.div``;
 
-const BottomActions = styled.div`
-    align-items: center;
-    background-color: #ffffff;
-    box-shadow: inset 0px 1px 0px #e9edef;
-    display: flex;
-    justify-content: center;
-    margin-top: auto;
-    min-height: 72px;
-    padding: 0 48px;
-
-    /* & button + button {
-        margin-left: 16px;
-    } */
-`;
-const BottomActionsInner = styled.div`
-    display: inherit;
-    justify-content: space-between;
-    max-width: 960px;
-    width: 100%;
-`;
-
 const CreateButton = withStyles((theme) => ({
     root: {
         borderRadius: '104px',
@@ -78,6 +60,97 @@ const CreateButton = withStyles((theme) => ({
         },
     },
 }))(Button);
+
+const ClassCopyRoot = styled.div`
+    align-items: center;
+    background-color: #ffffff;
+    border: 2px solid #3b1689;
+    border-radius: 16px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: flex-start;
+    padding: 14px 44px;
+    margin-bottom: 40px;
+    @media all and (max-width: 530px) {
+        padding: 12px 16px;
+        justify-content: space-between;
+    }
+`;
+const CodeContainer = styled.div`
+    align-items: center;
+    display: flex;
+    @media all and (max-width: 530px) {
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+    }
+`;
+const ClassCopyTitle = styled.p`
+    font-size: 18px;
+    line-height: 22px;
+    @media all and (max-width: 530px) {
+        font-size: 14px;
+        line-height: 18px;
+    }
+`;
+const ClassCopyInput = styled.input`
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 28px;
+    margin-left: 40px;
+    width: 140px;
+    @media all and (max-width: 530px) {
+        font-size: 18px;
+        line-height: 22px;
+        margin: 0;
+    }
+`;
+
+const ManageInputsContainer = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    & input {
+        background-color: #ffffff;
+        border: none;
+        border-radius: 16px;
+        box-sizing: border-box;
+        color: #707070;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 2.625rem;
+        width: 100%;
+        height: 60px;
+        outline: none;
+        padding: 0px 30px;
+    }
+    & textarea {
+        margin-top: 16px;
+        background-color: #ffffff;
+        border: none;
+        border-radius: 16px;
+        box-sizing: border-box;
+        color: #707070;
+        font-family: inherit;
+        font-size: 1rem;
+        resize: vertical;
+        background-color: #f6f8f9;
+        font-weight: 400;
+        line-height: 1.25;
+        width: 100%;
+        height: 264px;
+        outline: none;
+        padding: 20px 30px;
+        resize: none;
+    }
+    & div.form-buttons {
+        display: flex;
+        width: 100%;
+    }
+`;
 
 function Manage({ match, history }) {
     const textCopy = useRef();
@@ -367,7 +440,7 @@ function Manage({ match, history }) {
         },
     ];
 
-    const [selectedMenu, setSelectedMenu] = useState(0);
+    const [selectedMenu, setSelectedMenu] = useState(1);
     const [toDeleteStudentData, setToDeleteStudentData] = useState({});
 
     const actionChangeStudentsSelection = (data) => {
@@ -400,19 +473,19 @@ function Manage({ match, history }) {
     return (
         <WrapperRoot>
             <ClassWrapper>
-                <div className="class-section-root" style={{ width: '100%', height: 'calc(100vh - 167px)' }}>
-                    <div className="class-share-header">
-                        <HeaderMenu
-                            fullWidth
-                            title="학생 및 클래스"
-                            menuDatas={menuDatas}
-                            selectedMenuId={selectedMenu}
-                            onItemClick={(id) => {
-                                setSelectedMenu(id);
-                            }}
-                        />
-                    </div>
-                    <div className="test">
+                <div className="class-section-root" style={{ width: '100%', height: 'calc(100vh - 167px)', overflow: 'auto' }}>
+                    {/* <div className="class-share-header"> */}
+                    <HeaderMenu
+                        fullWidth
+                        title="학생 및 클래스"
+                        menuDatas={menuDatas}
+                        selectedMenuId={selectedMenu}
+                        onItemClick={(id) => {
+                            setSelectedMenu(id);
+                        }}
+                    />
+                    {/* </div> */}
+                    <div className="test" style={{ marginBottom: 32, marginTop: 24 }}>
                         {selectedMenu === 2 ? (
                             <StudentManage onChangeStudentSelection={actionChangeStudentsSelection} />
                         ) : selectedMenu === 1 ? (
@@ -421,93 +494,76 @@ function Manage({ match, history }) {
                                 <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
                                 <div className="class-manage-root" style={{ width: '100%' }}>
                                     <div>
-                                        <div className="class-copy">
-                                            <p>클래스 초대 코드</p>
-                                            <input readOnly type="text" defaultValue={codeState} ref={textCopy}></input>
-                                            <button onClick={handleCopy}>복사하기</button>
-                                        </div>
+                                        <ClassCopyRoot>
+                                            <CodeContainer>
+                                                <ClassCopyTitle>클래스 초대 코드</ClassCopyTitle>
+                                                <ClassCopyInput readOnly type="text" defaultValue={codeState} ref={textCopy} />
+                                            </CodeContainer>
+                                            <Button variant="light" sizes="small" colors="purple" onClick={handleCopy}>
+                                                복사하기
+                                            </Button>
+                                        </ClassCopyRoot>
 
-                                        <div className="manage-inputs">
-                                            <h3>클래스 소개</h3>
+                                        <DrawerGroupBox
+                                            title="클래스 소개"
+                                            description="클래스 이름 및 소개를 입력해 주세요"
+                                            descriptionAdornment={BulbIcon}
+                                        >
+                                            <ManageInputsContainer>
+                                                <input
+                                                    style={{ backgroundColor: '#ffffff' }}
+                                                    className={classNames('default', inputError ? 'error' : '')}
+                                                    type="text"
+                                                    name="entry_new_name"
+                                                    id="entry_new_name"
+                                                    placeholder="클래스 이름"
+                                                    onChange={handleInputChange}
+                                                    value={inputState['entry_new_name']}
+                                                />
+                                                <textarea
+                                                    style={{ backgroundColor: '#ffffff' }}
+                                                    className="default"
+                                                    type="text"
+                                                    name="entry_new_description"
+                                                    id="entry_new_description"
+                                                    placeholder="클래스 한줄 설명"
+                                                    onChange={handleInputChange}
+                                                    value={inputState['entry_new_description']}
+                                                />
+                                            </ManageInputsContainer>
+                                        </DrawerGroupBox>
 
-                                            <div className="class-discription">
-                                                <svg
-                                                    width="12"
-                                                    height="15"
-                                                    viewBox="0 0 12 15"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path
-                                                        d="M3.29348 11C3.09548 10.1513 2.20215 9.45732 1.83549 8.99998C1.20761 8.21551 0.814117 7.26963 0.700328 6.27129C0.586539 5.27296 0.757085 4.26279 1.19232 3.35715C1.62756 2.4515 2.30977 1.68723 3.16039 1.15237C4.011 0.617512 4.99541 0.333824 6.00021 0.333984C7.005 0.334145 7.98932 0.61815 8.83976 1.15328C9.6902 1.68841 10.3722 2.4529 10.8071 3.35869C11.2421 4.26447 11.4123 5.27469 11.2982 6.27299C11.1841 7.27129 10.7903 8.21705 10.1622 9.00132C9.79548 9.45798 8.90348 10.152 8.70548 11H3.29282H3.29348ZM8.66615 12.3333V13C8.66615 13.3536 8.52568 13.6927 8.27563 13.9428C8.02558 14.1928 7.68644 14.3333 7.33282 14.3333H4.66615C4.31253 14.3333 3.97339 14.1928 3.72334 13.9428C3.47329 13.6927 3.33282 13.3536 3.33282 13V12.3333H8.66615ZM6.66615 5.66998V2.99998L3.66615 7.00332H5.33282V9.66998L8.33282 5.66998H6.66615V5.66998Z"
-                                                        fill="#FFC043"
-                                                    />
-                                                </svg>
-                                                &nbsp; 클래스 소개를 입력해주세요.
-                                            </div>
-
-                                            <input
-                                                style={{ backgroundColor: '#ffffff' }}
-                                                className={classNames('default', inputError ? 'error' : '')}
-                                                type="text"
-                                                name="entry_new_name"
-                                                id="entry_new_name"
-                                                placeholder="클래스 이름"
-                                                onChange={handleInputChange}
-                                                value={inputState['entry_new_name']}
-                                            />
-                                            <textarea
-                                                style={{ backgroundColor: '#ffffff' }}
-                                                className="default"
-                                                type="text"
-                                                name="entry_new_description"
-                                                id="entry_new_description"
-                                                placeholder="클래스 한줄 설명"
-                                                onChange={handleInputChange}
-                                                value={inputState['entry_new_description']}
-                                            />
-                                        </div>
-                                        <div className="manage-inputs">
-                                            <h3>수업 요일</h3>
-                                            <div className="class-discription">
-                                                <svg
-                                                    width="12"
-                                                    height="15"
-                                                    viewBox="0 0 12 15"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path
-                                                        d="M3.29348 11C3.09548 10.1513 2.20215 9.45732 1.83549 8.99998C1.20761 8.21551 0.814117 7.26963 0.700328 6.27129C0.586539 5.27296 0.757085 4.26279 1.19232 3.35715C1.62756 2.4515 2.30977 1.68723 3.16039 1.15237C4.011 0.617512 4.99541 0.333824 6.00021 0.333984C7.005 0.334145 7.98932 0.61815 8.83976 1.15328C9.6902 1.68841 10.3722 2.4529 10.8071 3.35869C11.2421 4.26447 11.4123 5.27469 11.2982 6.27299C11.1841 7.27129 10.7903 8.21705 10.1622 9.00132C9.79548 9.45798 8.90348 10.152 8.70548 11H3.29282H3.29348ZM8.66615 12.3333V13C8.66615 13.3536 8.52568 13.6927 8.27563 13.9428C8.02558 14.1928 7.68644 14.3333 7.33282 14.3333H4.66615C4.31253 14.3333 3.97339 14.1928 3.72334 13.9428C3.47329 13.6927 3.33282 13.3536 3.33282 13V12.3333H8.66615ZM6.66615 5.66998V2.99998L3.66615 7.00332H5.33282V9.66998L8.33282 5.66998H6.66615V5.66998Z"
-                                                        fill="#FFC043"
-                                                    />
-                                                </svg>
-                                                &nbsp; 수업 요일을 모두 선택해주세요. 중복선택이 가능합니다.
-                                            </div>
-                                            <div className="form-buttons">
-                                                <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
-                                                    월
-                                                </FormButton>
-                                                <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
-                                                    화
-                                                </FormButton>
-                                                <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
-                                                    수
-                                                </FormButton>
-                                                <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
-                                                    목
-                                                </FormButton>
-                                                <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
-                                                    금
-                                                </FormButton>
-                                                <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
-                                                    토
-                                                </FormButton>
-                                                <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
-                                                    일
-                                                </FormButton>
-                                            </div>
-                                        </div>
+                                        <DrawerGroupBox
+                                            title="수업 요일"
+                                            description="수업을 하시는 요일을 모두 선택해주세요."
+                                            descriptionAdornment={BulbIcon}
+                                        >
+                                            <ManageInputsContainer>
+                                                <div className="form-buttons">
+                                                    <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
+                                                        월
+                                                    </FormButton>
+                                                    <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
+                                                        화
+                                                    </FormButton>
+                                                    <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
+                                                        수
+                                                    </FormButton>
+                                                    <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
+                                                        목
+                                                    </FormButton>
+                                                    <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
+                                                        금
+                                                    </FormButton>
+                                                    <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
+                                                        토
+                                                    </FormButton>
+                                                    <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
+                                                        일
+                                                    </FormButton>
+                                                </div>
+                                            </ManageInputsContainer>
+                                        </DrawerGroupBox>
                                     </div>
 
                                     {/* <div className="manage-footer">
@@ -540,49 +596,47 @@ function Manage({ match, history }) {
                     </div>
                 </div>
             </ClassWrapper>
-            <BottomActions>
-                <BottomActionsInner>
-                    {selectedMenu === 2 ? (
-                        <>
-                            {Object.keys(toDeleteStudentData).filter((i) => toDeleteStudentData[i] === true).length ? (
-                                <Button
-                                    sizes="medium"
-                                    colors="red"
-                                    variant="light"
-                                    leftIcon={<DeleteIcon fontSize="inherit" color="inherit" />}
-                                    onClick={actionDeleteStudents}
-                                >
-                                    선택 삭제
-                                </Button>
-                            ) : null}
-                        </>
-                    ) : selectedMenu === 1 ? (
-                        <>
+            <InnerPageBottomActions>
+                {selectedMenu === 2 ? (
+                    <>
+                        {Object.keys(toDeleteStudentData).filter((i) => toDeleteStudentData[i] === true).length ? (
                             <Button
                                 sizes="medium"
                                 colors="red"
                                 variant="light"
-                                name="delete"
                                 leftIcon={<DeleteIcon fontSize="inherit" color="inherit" />}
-                                disabled={!createButtonEnabled}
-                                onClick={handleButton}
+                                onClick={actionDeleteStudents}
                             >
-                                삭제하기
+                                선택 삭제
                             </Button>
-                            <Button
-                                sizes="medium"
-                                colors="purple"
-                                variant="light"
-                                name="modify"
-                                disabled={!createButtonEnabled}
-                                onClick={handleButton}
-                            >
-                                수정하기
-                            </Button>
-                        </>
-                    ) : null}
-                </BottomActionsInner>
-            </BottomActions>
+                        ) : null}
+                    </>
+                ) : selectedMenu === 1 ? (
+                    <>
+                        <Button
+                            sizes="medium"
+                            colors="red"
+                            variant="light"
+                            name="delete"
+                            leftIcon={<DeleteIcon fontSize="inherit" color="inherit" />}
+                            disabled={!createButtonEnabled}
+                            onClick={handleButton}
+                        >
+                            삭제하기
+                        </Button>
+                        <Button
+                            sizes="medium"
+                            colors="purple"
+                            variant="light"
+                            name="modify"
+                            disabled={!createButtonEnabled}
+                            onClick={handleButton}
+                        >
+                            수정하기
+                        </Button>
+                    </>
+                ) : null}
+            </InnerPageBottomActions>
         </WrapperRoot>
     );
 }

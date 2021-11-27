@@ -39,7 +39,7 @@ import {
 } from './ReportStudent/TeacherFeedback';
 import CommChart from './CommChart';
 import ScoringResults from './ReportStudent/ScoringResults';
-import Groupbox from '../../AltridUI/GroupBox/Groupbox';
+import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import Button from '../../AltridUI/Button/Button';
 import EyeTrackChart from './EyeTrackChart';
 import CategorySelector from '../../controllers/CategorySelector';
@@ -862,7 +862,7 @@ function ReportStudent({ history, match }) {
                         </section>
 
                         <section className="student-report-progress">
-                            <Groupbox
+                            <GroupBox
                                 title="문제별 채점 결과"
                                 rightComponent={
                                     <>
@@ -914,7 +914,7 @@ function ReportStudent({ history, match }) {
                         </section>
 
                         <section className="student-report-timetrack">
-                            <Groupbox title="문제별 시간 분석" />
+                            <GroupBox title="문제별 시간 분석" />
                             {currentStudentData && patternDatas.length ? (
                                 <TimeTrackBox
                                     data={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
@@ -926,7 +926,7 @@ function ReportStudent({ history, match }) {
 
                         {sessions.userType === 'students' && achievesForTypes.value < 100 ? null : (
                             <section className="student-report-type-analysis">
-                                <Groupbox
+                                <GroupBox
                                     title="유형별 분석"
                                     // rightComponent={
                                     //     sessions.userType === 'students' ? null : (
@@ -1045,7 +1045,7 @@ function ReportStudent({ history, match }) {
 
                         <Element name="analyze_page_start"></Element>
                         <section className="student-report-observe">
-                            <Groupbox title="시선 흐름 및 패턴 분석" />
+                            <GroupBox title="시선 흐름 및 패턴 분석" />
                             {/* 시선 흐름 및 패턴 분석
                             <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1081,7 +1081,7 @@ function ReportStudent({ history, match }) {
                         </section>
 
                         <section className="AI-comment">
-                            <Groupbox title="AI-Comment" />
+                            <GroupBox title="AI-Comment" />
 
                             <div className="white-box ment-ai">
                                 <div className="ment-ai-col">
@@ -1113,7 +1113,7 @@ function ReportStudent({ history, match }) {
                         </section>
 
                         <section className="student-report-observe">
-                            <Groupbox title="선생님 피드백" />
+                            <GroupBox title="선생님 피드백" />
                             {/* <div className="observe-header">
                             선생님 피드백
                             {/* <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">

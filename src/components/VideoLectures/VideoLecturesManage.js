@@ -40,7 +40,7 @@ import CreateNewVideoLecture from './CreateNewVideoLecture';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 import AddCamstudyIcon from '../../AltridUI/Icons/AddCamstudyIcon';
 import Button from '../../AltridUI/Button/Button';
-import Groupbox from '../../AltridUI/GroupBox/Groupbox';
+import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import VideoLectureListItem from './components/VideoLectureListItem';
 
 const useStyles = makeStyles((theme) => ({
@@ -631,7 +631,7 @@ function VideoLecturesManage({ match, history }) {
             case 0:
                 return (
                     <>
-                        <Groupbox title="현재 진행 중인 강의">
+                        <GroupBox title="현재 진행 중인 강의">
                             {currentVideoLectures.current.length ? (
                                 <Grid container spacing={2}>
                                     {currentVideoLectures.current.map((d, i) => (
@@ -657,8 +657,8 @@ function VideoLecturesManage({ match, history }) {
                             ) : (
                                 <NoLecturesCard />
                             )}
-                        </Groupbox>
-                        <Groupbox
+                        </GroupBox>
+                        <GroupBox
                             title="진행 예정인 강의"
                             // style={{ marginTop: 90 }}
                             // rightComponent={
@@ -692,12 +692,12 @@ function VideoLecturesManage({ match, history }) {
                             ) : (
                                 <NoLecturesCard message="예정된 강의가 없습니다." />
                             )}
-                        </Groupbox>
+                        </GroupBox>
                     </>
                 );
             case 1:
                 return (
-                    <Groupbox title="완료된 화상 강의">
+                    <GroupBox title="완료된 화상 강의">
                         {currentVideoLectures.done.length ? (
                             <Grid container spacing={2}>
                                 {currentVideoLectures.done.map((d, i) => (
@@ -719,7 +719,7 @@ function VideoLecturesManage({ match, history }) {
                         ) : (
                             <NoLecturesCard message="기록이 없습니다." />
                         )}
-                    </Groupbox>
+                    </GroupBox>
                 );
             default:
                 return <>렌더링 오류!</>;

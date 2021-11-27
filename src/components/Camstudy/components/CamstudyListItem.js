@@ -15,9 +15,11 @@ const ItemRoot = styled.div`
     font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
     padding: 25px 32px;
-
     & + & {
         margin-top: 16px;
+    }
+    @media all and (max-width: 799px) {
+        padding: 24px 16px;
     }
 `;
 const ItemTopInfoTagContaier = styled.div`
@@ -100,6 +102,7 @@ const ItemActionsContainer = styled.div`
     display: flex;
     justify-content: flex-start;
     margin-top: 32px;
+    overflow: auto;
     width: 100%;
     & button + button {
         margin-left: 8px;

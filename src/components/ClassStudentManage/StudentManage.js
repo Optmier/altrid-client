@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-computed-key */
 import React, { useState, useEffect } from 'react';
 import ClassWrapper from '../essentials/ClassWrapper';
 import '../../styles/student_manage_page.scss';
@@ -13,7 +14,7 @@ import Axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import TooltipCard from '../essentials/TooltipCard';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getPlanInfo } from '../../redux_modules/planInfo';
 import {
     Accordion as MuiAccordion,
@@ -33,6 +34,7 @@ import AltCheckedIcon from '../../AltridUI/Icons/AltCheckedIcon';
 import AltUncheckedIcon from '../../AltridUI/Icons/AltUncheckedIcon';
 import TextField from '../../AltridUI/TextField/TextField';
 import styled from 'styled-components';
+import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 
 const StyleCheckbox = withStyles({
     root: {
@@ -51,14 +53,31 @@ const Accordion = withStyles({
             borderTopLeftRadius: 8,
             borderTopRightRadius: 8,
         },
+        '&:last-child': {
+            borderBottomLeftRadius: 8,
+            borderBottomRightRadius: 8,
+        },
         '&:not(:last-child)': {
             borderBottom: 0,
+            borderBottomLeftRadius: 8,
+            borderBottomRightRadius: 8,
         },
         '&:before': {
             display: 'none',
         },
         '&$expanded': {
             margin: 'auto',
+        },
+        '& + &': {
+            marginTop: 2,
+            ['@media all and (min-width: 800px) and (max-width: 1191px)']: {
+                marginTop: 8,
+            },
+        },
+        ['@media all and (max-width: 799px)']: {
+            '& + &': {
+                marginTop: 8,
+            },
         },
     },
     expanded: {},
@@ -91,13 +110,41 @@ const AccordionSummary = withStyles({
         paddingLeft: 0,
         '&$expanded': {
             minHeight: 52,
+            backgroundColor: '#ffffff',
+        },
+        ['@media all and (min-width: 800px) and (max-width: 1191px)']: {
+            backgroundColor: ({ leftnavstate }) => (leftnavstate === 'true' ? '#ffffff' : null),
+            paddingRight: ({ leftnavstate }) => (leftnavstate === 'true' ? 0 : null),
+        },
+        ['@media all and (max-width: 799px)']: {
+            backgroundColor: '#ffffff !important',
+            paddingRight: 0,
         },
     },
     content: {
         alignItems: 'center',
         margin: '0 18px',
+        color: '#11171C',
+        ['@media all and (min-width: 800px) and (max-width: 1191px)']: {
+            flexDirection: ({ leftnavstate }) => (leftnavstate === 'true' ? 'column' : null),
+            padding: ({ leftnavstate }) => (leftnavstate === 'true' ? '16px 0' : null),
+        },
+        ['@media all and (max-width: 799px)']: {
+            flexDirection: 'column',
+            padding: '14px 0',
+        },
         '&$expanded': {
             margin: '0 18px',
+        },
+    },
+    expandIcon: {
+        right: 16,
+        top: 4,
+        ['@media all and (min-width: 800px) and (max-width: 1191px)']: {
+            position: ({ leftnavstate }) => (leftnavstate === 'true' ? 'absolute' : null),
+        },
+        ['@media all and (max-width: 799px)']: {
+            position: 'absolute',
         },
     },
     expanded: {},
@@ -106,27 +153,123 @@ const AccordionSummary = withStyles({
 const AccordionDetails = withStyles((theme) => ({
     root: {
         padding: theme.spacing(2),
+        ['@media all and (min-width: 800px) and (max-width: 1191px)']: {
+            paddingTop: ({ leftnavstate }) => (leftnavstate === 'true' ? 0 : null),
+        },
+        ['@media all and (max-width: 799px)']: {
+            paddingTop: 0,
+        },
     },
 }))(MuiAccordionDetails);
 
+const StudentNameWrapper = styled.div`
+    align-items: center;
+    display: flex;
+    flex-basis: 27%;
+    @media all and (min-width: 800px) and (max-width: 1191px) {
+        align-self: ${({ leftnavstate }) => (leftnavstate ? 'flex-start' : null)};
+    }
+    @media all and (max-width: 799px) {
+        align-self: flex-start;
+    }
+`;
+const StudentInfoWrapper = styled.div`
+    align-items: center;
+    display: flex;
+    flex-basis: 73%;
+    @media all and (min-width: 800px) and (max-width: 1191px) {
+        font-size: ${({ leftnavstate }) => (leftnavstate ? '16px' : null)};
+        font-weight: ${({ leftnavstate }) => (leftnavstate ? 400 : null)};
+        line-height: ${({ leftnavstate }) => (leftnavstate ? '20px' : null)};
+        flex-direction: ${({ leftnavstate }) => (leftnavstate ? 'column' : null)};
+        width: ${({ leftnavstate }) => (leftnavstate ? '100%' : null)};
+    }
+    @media all and (max-width: 799px) {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 20px;
+        flex-direction: column;
+        width: 100%;
+    }
+`;
+
 const SummaryStudentName = styled.div`
     flex-basis: 25%;
-    margin-left: 29px;
+    justify-content: center;
+    /* margin-left: 29px; */
 `;
 const SummaryStudentPhone = styled.div`
     align-items: center;
     display: flex;
     flex-basis: 24%;
+    margin-left: 8px;
     & svg {
         margin-right: 8px;
+    }
+    & p {
+        display: none;
+    }
+    @media all and (min-width: 800px) and (max-width: 1191px) {
+        justify-content: ${({ leftnavstate }) => (leftnavstate ? 'space-between' : null)};
+        margin-left: ${({ leftnavstate }) => (leftnavstate ? 0 : null)};
+        padding: ${({ leftnavstate }) => (leftnavstate ? '4px 0' : null)};
+        width: ${({ leftnavstate }) => (leftnavstate ? '100%' : null)};
+        & svg {
+            display: ${({ leftnavstate }) => (leftnavstate ? 'none' : null)};
+        }
+        & p {
+            display: ${({ leftnavstate }) => (leftnavstate ? 'initial' : null)};
+        }
+    }
+    @media all and (max-width: 799px) {
+        justify-content: space-between;
+        margin-left: 0;
+        padding: 4px 0;
+        width: 100%;
+        & svg {
+            display: none;
+        }
+        & p {
+            display: initial;
+        }
     }
 `;
 const SummaryStudentAddress = styled.div`
     align-items: center;
     display: flex;
-    flex-basis: 40%;
-    font-weight: & svg {
+    flex-basis: 62%;
+    font-weight: 700;
+    & svg {
         margin-right: 8px;
+    }
+    & p {
+        display: none;
+    }
+    @media all and (min-width: 800px) and (max-width: 1191px) {
+        box-shadow: ${({ leftnavstate }) => (leftnavstate ? 'inset 0px -1px 0px #E9EDEF' : null)};
+        font-weight: ${({ leftnavstate }) => (leftnavstate ? 400 : null)};
+        justify-content: ${({ leftnavstate }) => (leftnavstate ? 'space-between' : null)};
+        padding: ${({ leftnavstate }) => (leftnavstate ? '4px 0' : null)};
+        width: ${({ leftnavstate }) => (leftnavstate ? '100%' : null)};
+        & svg {
+            display: ${({ leftnavstate }) => (leftnavstate ? 'none' : null)};
+        }
+        & p {
+            display: ${({ leftnavstate }) => (leftnavstate ? 'initial' : null)};
+        }
+    }
+    @media all and (max-width: 799px) {
+        box-shadow: inset 0px -1px 0px #e9edef;
+        font-weight: 400;
+        justify-content: space-between;
+        padding: 4px 0;
+        width: 100%;
+        & svg {
+            display: none;
+        }
+        & p {
+            display: initial;
+        }
     }
 `;
 const DetailsRoot = styled.div`
@@ -144,9 +287,12 @@ const ReportSelect = styled.select`
     cursor: pointer;
     background: url(/bg_images/Vector.png) no-repeat 92% 50%;
     background-color: #f4f1fa;
+    display: inline-block;
     min-height: 36px;
     min-width: 128px;
-    padding: 8px 36px 8px 16px;
+    max-width: 320px;
+    width: 50%;
+    padding: 8px 38px 8px 16px;
     font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
     font-size: 1rem;
@@ -162,10 +308,13 @@ const ReportSelect = styled.select`
     -moz-appearance: none;
     appearance: none;
     outline: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `;
 
 function StudentManage({ onChangeStudentSelection, match, history }) {
     const dispatch = useDispatch();
+    const { leftNavGlobal } = useSelector((state) => state.RdxGlobalLeftNavState);
 
     const { num } = match.params;
 
@@ -288,7 +437,7 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
     return (
         <div className="class-student-manage-root" style={{ width: '100%' }}>
             <div className="manage-inputs">
-                <div className="manage-inputs-header">
+                {/* <div className="manage-inputs-header">
                     <div className="header-left">
                         수강 학생 <span>({Object.keys(studentDatas).length}명)</span>
                     </div>
@@ -303,47 +452,68 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
                         </svg>
                         선택 삭제
                     </div>
-                </div>
-                <div className="" style={{ width: '100%' }}>
+                </div> */}
+                <GroupBox
+                    fullWidth
+                    title={
+                        <>
+                            수강 학생 <span style={{ color: '#3AE2A1' }}>{Object.keys(studentDatas).length}</span>
+                        </>
+                    }
+                >
                     {Object.keys(studentDatas).map((key, idx) => (
-                        <Accordion key={key} expanded={expanded === key} onChange={actionExpand(key)}>
+                        <Accordion
+                            key={key}
+                            expanded={expanded === key}
+                            leftnavstate={(window.innerWidth > 902 && leftNavGlobal) + ''}
+                            onChange={actionExpand(key)}
+                        >
                             <AccordionSummary
+                                leftnavstate={(window.innerWidth > 902 && leftNavGlobal) + ''}
                                 expandIcon={<ExpandMoreIcon />}
                                 mark={idx}
                                 aria-controls={`${key}bh-content`}
                                 id={`${key}bh-header`}
                             >
-                                <FormControlLabel
-                                    aria-label={'select_' + key}
-                                    onClick={(event) => event.stopPropagation()}
-                                    onFocus={(event) => event.stopPropagation()}
-                                    control={
-                                        <Checkbox
-                                            disableRipple
-                                            disableTouchRipple
-                                            disableFocusRipple
-                                            color="default"
-                                            icon={<AltUncheckedIcon />}
-                                            checkedIcon={<AltCheckedIcon />}
-                                            name={key}
-                                            onChange={handleChange}
-                                        />
-                                    }
-                                />
-                                <SummaryStudentName>{studentDatas[key][0]['name']}</SummaryStudentName>
-                                <SummaryStudentAddress>
-                                    <HomeIcon fontSize="inherit" />
-                                    {studentDatas[key][0]['address'] ? studentDatas[key][0]['address'] : '-'}
-                                </SummaryStudentAddress>
-                                <SummaryStudentPhone>
-                                    <PhoneIcon fontSize="inherit" />
-                                    {studentDatas[key][0]['phone'] ? studentDatas[key][0]['phone'] : '-'}
-                                </SummaryStudentPhone>
+                                <StudentNameWrapper leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
+                                    <FormControlLabel
+                                        aria-label={'select_' + key}
+                                        onClick={(event) => event.stopPropagation()}
+                                        onFocus={(event) => event.stopPropagation()}
+                                        control={
+                                            <Checkbox
+                                                disableRipple
+                                                disableTouchRipple
+                                                disableFocusRipple
+                                                color="default"
+                                                icon={<AltUncheckedIcon />}
+                                                checkedIcon={<AltCheckedIcon />}
+                                                name={key}
+                                                onChange={handleChange}
+                                            />
+                                        }
+                                    />
+                                    <SummaryStudentName>{studentDatas[key][0]['name']}</SummaryStudentName>
+                                </StudentNameWrapper>
+                                <StudentInfoWrapper leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
+                                    <SummaryStudentAddress leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
+                                        <HomeIcon fontSize="inherit" />
+                                        <p>주소</p>
+                                        {studentDatas[key][0]['address'] ? studentDatas[key][0]['address'] : '-'}
+                                    </SummaryStudentAddress>
+                                    <SummaryStudentPhone leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
+                                        <PhoneIcon fontSize="inherit" />
+                                        <p>연락처</p>
+                                        {studentDatas[key][0]['phone'] ? studentDatas[key][0]['phone'] : '-'}
+                                    </SummaryStudentPhone>
+                                </StudentInfoWrapper>
                             </AccordionSummary>
-                            <AccordionDetails>
+                            <AccordionDetails leftnavstate={(window.innerWidth > 902 && leftNavGlobal) + ''}>
                                 <DetailsRoot>
                                     <Notes>
                                         <TextField
+                                            multiline
+                                            minRows={4}
                                             fullWidth
                                             id={'input-notes-id_' + key}
                                             value={notes['notes-input-' + key]}
@@ -379,14 +549,14 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
                                                 ))}
                                         </ReportSelect>
                                         <Button sizes="medium" colors="purple" name={key} onClick={handleMoveReport}>
-                                            리포트 바로가기
+                                            리포트 보기
                                         </Button>
                                     </ReportSelectContainer>
                                 </DetailsRoot>
                             </AccordionDetails>
                         </Accordion>
                     ))}
-                </div>
+                </GroupBox>
             </div>
         </div>
     );

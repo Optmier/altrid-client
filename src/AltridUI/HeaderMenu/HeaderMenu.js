@@ -36,6 +36,10 @@ const HeaderTitle = styled.div`
     letter-spacing: -0.03em;
     line-height: ${({ type }) => (type === 1 ? '3.75rem' : '3.25rem')};
     text-align: ${({ type }) => (type === 1 ? 'center' : null)};
+    @media all and (max-width: 799px) {
+        font-size: 1.75rem;
+        line-height: 2rem;
+    }
 `;
 const MenuItem = styled.button`
     background-color: ${(props) => (props['m-selected'] ? '#3B1689' : 'transparent')};

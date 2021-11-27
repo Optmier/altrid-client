@@ -23,6 +23,7 @@ import LearningVocas from '../components/LearningVocas/LearningVocas';
 import CamStudyMainLists from '../components/Camstudy/CamStudyMainLists';
 import Dashboard_1 from '../components/essentials/Dashboard_1';
 import DashboardDDay from '../controllers/DashboardDDay.js';
+import { setLeftNavStateGlobal } from '../redux_modules/leftNavStateGlobal';
 
 const SlideWrapper = styled.div`
     position: relative;
@@ -104,6 +105,10 @@ function Class({ match }) {
     const handleLeftNav = () => {
         setLeftNavState(!leftNavState);
     };
+
+    useEffect(() => {
+        dispatch(setLeftNavStateGlobal(leftNavState));
+    }, [leftNavState]);
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;

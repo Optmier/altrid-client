@@ -14,8 +14,12 @@ const GroupBoxMain = styled.div`
 `;
 const Title = styled.div`
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.75rem;
+    @media all and (max-width: 799px) {
+        font-size: 1.25rem;
+        line-height: 1.5rem;
+    }
 `;
 const Description = styled.div`
     font-size: 1.125rem;

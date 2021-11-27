@@ -29,7 +29,7 @@ import { changeParams } from '../../redux_modules/params';
 import { withRouter } from 'react-router-dom';
 import { SecondsToHoursAndMinutes } from '../essentials/TimeChange';
 import { Link } from '@material-ui/core';
-import Groupbox from '../../AltridUI/GroupBox/Groupbox';
+import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import Button from '../../AltridUI/Button/Button';
 import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
 import CategorySelector from '../../controllers/CategorySelector';
@@ -568,7 +568,7 @@ function ReportClass({ match, history }) {
                         </div> */}
                     </section>
                     <section className="class-report-progress">
-                        <Groupbox
+                        <GroupBox
                             title="채점 결과 요약"
                             rightComponent={
                                 <Link href={`${match.url}/hands-up`}>
@@ -582,7 +582,7 @@ function ReportClass({ match, history }) {
                     </section>
 
                     <section className="class-report-graph">
-                        <Groupbox title="점수 비교 그래프"></Groupbox>
+                        <GroupBox title="점수 비교 그래프"></GroupBox>
                         {achievesForTypes.value >= 100 ? (
                             <div style={{ display: 'flex', alignItems: 'center' }} className="descrition">
                                 <svg
@@ -739,7 +739,7 @@ function ReportClass({ match, history }) {
             <CardLists
                 upperDeck={
                     <>
-                        <Groupbox
+                        <GroupBox
                             title="학생별 리포트"
                             rightComponent={
                                 <select
@@ -761,7 +761,7 @@ function ReportClass({ match, history }) {
                                     <option value="3">소요시간 순</option>
                                 </select>
                             }
-                        ></Groupbox>
+                        ></GroupBox>
                     </>
                 }
             >
