@@ -58,6 +58,10 @@ const AuthButtonsRoot = styled.div`
             opacity: 0.9;
         }
     }
+    @media (min-width: 0px) and (max-width: 480px) {
+        max-width: 278px;
+        width: 100%;
+    }
 `;
 
 function LoginButtons({ onSuccessGoogleAuth, onFailedGoogleAuth, onSuccessKakaoAuth, onFailedKakaoAuth, ...rest }) {

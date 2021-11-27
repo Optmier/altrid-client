@@ -26,15 +26,33 @@ const Profile_Header = styled.div`
         align-items: center;
         text-align: center;
         justify-content: space-between;
-        height: 260px;
+        max-height: 260px;
         & .test {
             width: 20%;
         }
-        & .name {
+        @media (min-width: 0px) and (max-width: 480px) {
+            display: block;
+            padding: 0 16px;
+            text-align: left;
+            height: 100px;
+
+            /* & .name {
+                text-align: left;
+            } */
+        }
+        & .icon {
+            & img {
+                max-width: 322px;
+                max-height: 227px;
+                @media (min-width: 0px) and (max-width: 480px) {
+                    display: none;
+                }
+            }
         }
     }
 `;
 const Profile_Main = styled.div`
+    padding: 0 16px;
     margin: 0 auto;
     max-width: 592px;
     margin-top: 0px;
@@ -51,6 +69,11 @@ const Profile_Main = styled.div`
         padding-left: 16px;
     }
     & .Profile-option {
+        @media (min-width: 0px) and (max-width: 480px) {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
         & img {
             border-radius: 50%;
         }
@@ -63,6 +86,10 @@ const Profile_Main = styled.div`
             display: flex;
             align-items: center;
             margin-left: 32px;
+            @media (min-width: 0px) and (max-width: 480px) {
+                margin-top: 10px;
+                margin-left: 0px;
+            }
             & .input-upload {
                 margin-right: 8px;
             }
@@ -72,16 +99,17 @@ const Profile_Main = styled.div`
                 border: 1.5px solid #6c46a1;
                 box-sizing: border-box;
                 border-radius: 104px;
-                width: 110px;
-                height: 24px;
+                max-width: 110px;
+                height: 28px;
                 padding: 3px 12px;
                 background: #ffffff;
             }
             & .image-delete {
                 background: #ffefed;
                 border-radius: 104px;
+                box-sizing: border-box;
                 color: #ab1300;
-                width: 110px;
+                max-width: 110px;
                 height: 28px;
                 & svg {
                     margin-right: 9px;
@@ -114,7 +142,7 @@ const Profile_Main = styled.div`
         & .delete {
             color: #ab1300;
             background: #ffefed;
-            width: 90px;
+            max-width: 90px;
             height: 28px;
             border-radius: 104px;
             padding: 3px 12px;
@@ -123,7 +151,7 @@ const Profile_Main = styled.div`
             color: #ffffff;
             background: #3b1689;
             border-radius: 104px;
-            width: 81px;
+            max-width: 81px;
             height: 46px;
             padding: 12px 24px;
         }
@@ -300,7 +328,7 @@ function Profile({ history }) {
                         <h1>프로필 설정</h1>
                     </div>
                     <div className="icon">
-                        <img width="322px" height="227px" src={icon} alt="pofile_icon" />
+                        <img src={icon} alt="pofile_icon" />
                     </div>
                 </div>
             </Profile_Header>

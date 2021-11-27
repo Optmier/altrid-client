@@ -40,6 +40,9 @@ const Container = styled.div`
         height: auto;
         margin: 40px 0;
         overflow: hidden;
+        @media (min-width: 0px) and (max-width: 480px) {
+            width: 100%;
+        }
     }
     & .Todo {
         box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);

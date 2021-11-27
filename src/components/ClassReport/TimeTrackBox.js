@@ -31,6 +31,7 @@ const StyleTimeTrackWrapper = styled.div`
             font-size: 1.18rem;
             font-weight: 500;
             color: #707070;
+
             & .purple-time {
                 font-weight: bold;
                 font-size: 48px;
@@ -38,6 +39,10 @@ const StyleTimeTrackWrapper = styled.div`
                 text-align: center;
                 color: #6c46a1;
                 margin-bottom: 8px;
+
+                @media (min-width: 0px) and (max-width: 480px) {
+                    font-size: 28px;
+                }
             }
             & .subtitle {
                 font-weight: normal;
@@ -56,6 +61,12 @@ const StyleTimeTrackWrapper = styled.div`
         & .time-header-col + .time-header-col {
             border-left: #7070704e 1px solid;
             padding-left: 32px;
+        }
+        @media (min-width: 0px) and (max-width: 480px) {
+            & .time-box {
+                display: flex;
+                flex-direction: row;
+            }
         }
     }
 

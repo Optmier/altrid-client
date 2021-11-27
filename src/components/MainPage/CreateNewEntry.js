@@ -30,13 +30,21 @@ const FormButton = styled.button`
     background-color: ${(props) => (props.able ? '#FFFFFF' : '#F4F1FA')};
     color: ${(props) => (props.able ? '#3B1689' : '#3B1689')};
     border: ${(props) => (props.able ? '2px solid #3B1689' : 'none')};
-    width: 70px;
-    height: 54px;
+    /* width: 100%; */
+    max-width: 70px;
+
+    max-height: 54px;
     border-radius: 11px;
     font-size: 1rem;
     font-weight: 500;
     padding: 14px 24px;
-    margin: 0 4px;
+    margin: 8px 4px;
+    @media (min-width: 0px) and (max-width: 480px) {
+        max-width: 40px;
+        width: 100%;
+        padding: 14px 8px;
+        /* margin: 0 2px; */
+    }
 `;
 
 function CreateNewEntry({ history, handleClose }) {
@@ -183,7 +191,7 @@ function CreateNewEntry({ history, handleClose }) {
             </svg>
             <div className="drawer-header">
                 <div className="title">
-                    <h2 style={{ marginTop: '48px' }}>클래스를 생성하여 시작해보세요 :)</h2>
+                    <h2>클래스를 생성하여 시작해보세요 :)</h2>
                 </div>
                 {/* <div className="close-icon" onClick={handleClose}>
                     <CloseIcon />

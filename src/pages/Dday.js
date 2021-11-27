@@ -29,7 +29,7 @@ function Dday(props) {
     const [test, settest] = useState('');
     const [day, setday] = useState(new Date());
     const [eventday, seteventday] = useState('');
-    const [event, setevent] = useState('일정');
+    const [event, setevent] = useState('');
     const classNum = props.classNum;
     const [saving, setsave] = useState({
         title: '',
@@ -63,8 +63,8 @@ function Dday(props) {
         diff = Math.ceil(diff / (1000 * 3600 * 24));
         setinit(diff);
         const saveDB = JSON.stringify({
-            title: JSON.stringify(title),
-            date: JSON.stringify(New_day),
+            title: title,
+            date: New_day,
         });
         save.save(saveDB);
     };
@@ -90,8 +90,8 @@ function Dday(props) {
 
     return (
         <div style={{ color: '#3B1689', fontWeight: 'bold' }} className="d_day">
-            {New_day === '' ? (
-                <span onClick={handleOpen}>나만의 디데이를 설정해 보세요!</span>
+            {event === '' ? (
+                <p onClick={handleOpen}>나만의 디데이를 설정해 보세요!</p>
             ) : (
                 <div onClick={handleOpen}>
                     {event} 까지 D - {init} 일 남았습니다.

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import HeaderBar from '../components/essentials/HeaderBar';
 import { Element } from 'react-scroll';
-import { Drawer, Divider, Button } from '@material-ui/core';
+import { Drawer } from '@material-ui/core';
 import '../styles/main_page.scss';
 import CardRoot from '../components/essentials/CardRoot';
 import CardLists from '../components/essentials/CardLists';
@@ -29,10 +29,44 @@ import Box from '@material-ui/core/Box';
 import AccountPopOver from '../components/essentials/AccountPopOver';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import Button from '../AltridUI/Button/Button';
+import Groupbox from '../AltridUI/GroupBox/Groupbox';
+import { AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
+import { ExpandMore } from '@material-ui/icons';
+import { withStyles } from '@material-ui/core/styles';
+import MuiAccordion from '@material-ui/core/Accordion';
+
+const Accordion = withStyles({
+    root: {
+        border: '1px solid rgba(0, 0, 0, .125)',
+        boxShadow: 'none',
+        backgroundColor: '#F6F8F9',
+        '&:not(:last-child)': {
+            borderBottom: '1px solid #F6F8F9',
+        },
+        '&:before': {
+            display: 'none',
+        },
+        '&$expanded': {
+            margin: 'auto',
+        },
+    },
+    expanded: {},
+})(MuiAccordion);
 
 const Item = styled.div``;
-
-const HeaderSection = styled.header``;
+const Mainpage = styled.div`
+    overflow-x: hidden;
+`;
+const HeaderSection = styled.div`
+    & .GoLink {
+        margin-bottom: 40px;
+        display: none;
+        @media (min-width: 0px) and (max-width: 590px) {
+            display: block;
+        }
+    }
+`;
 const MainSection = styled.main``;
 const FooterSection = styled.footer``;
 
@@ -41,7 +75,17 @@ const MainHeader = styled.div`
     margin-bottom: 24px;
     max-width: 1216px;
     margin: auto;
-
+    @media (min-width: 0px) and (max-width: 480px) {
+        & h3 {
+            padding: 0 16px;
+        }
+    }
+    & .addclass {
+        padding: 0 16px;
+        @media (min-width: 0px) and (max-width: 480px) {
+            padding: 0 16px;
+        }
+    }
     & .header {
         height: 80px;
         display: flex;
@@ -95,6 +139,7 @@ const MainHeader = styled.div`
         align-items: center;
         height: 260px;
         margin-bottom: 16px;
+        padding: 0 16px;
 
         & h2 {
             font-weight: 700;
@@ -102,6 +147,28 @@ const MainHeader = styled.div`
             line-height: 60px;
             margin-bottom: 8px;
             margin-top: 16px;
+            @media (min-width: 0px) and (max-width: 480px) {
+                line-height: 45px;
+            }
+        }
+        img {
+            width: 100%;
+            max-width: 339px;
+            max-height: 260px;
+        }
+        @media (min-width: 0px) and (max-width: 480px) {
+            padding: 0 16px;
+            & h2 {
+                font-size: 28px;
+            }
+            & img {
+                width: 100%;
+                max-width: 230px;
+                max-height: 200px;
+            }
+            & h3 {
+                padding: 0 16px;
+            }
         }
     }
 `;
@@ -116,6 +183,10 @@ const CardSection = styled.div`
     margin-bottom: 24px;
 
     & .card {
+        padding: 0 16px;
+        @media (min-width: 0px) and (max-width: 480px) {
+            padding: 0 16px;
+        }
         & .Add-Class {
             display: flex;
             flex-direction: column;
@@ -188,14 +259,16 @@ const Info = styled.div`
     max-width: 1216px;
     margin: 0 auto;
     margin-top: 32px;
-
+    @media (min-width: 0px) and (max-width: 480px) {
+        padding: 0 16px;
+    }
     & .Info-total {
         margin-bottom: 80px;
         padding: 36px 40px;
         display: flex;
         align-items: center;
 
-        height: 124px;
+        /* height: 124px; */
         background: #f6f8f9;
         border: 1px solid #bfc6cd;
         box-sizing: border-box;
@@ -205,17 +278,28 @@ const Info = styled.div`
         }
         & .Info-Word {
             margin-left: 23px;
+
+            @media (min-width: 0px) and (max-width: 480px) {
+                padding: 12px 0;
+            }
             & .Info-Top {
                 font-weight: bold;
                 font-size: 24px;
                 line-height: 28px;
                 letter-spacing: -0.02em;
+                @media (min-width: 0px) and (max-width: 480px) {
+                    font-size: 20px;
+                }
             }
             & .Info-Bottom {
                 font-size: 18px;
                 line-height: 22px;
                 letter-spacing: -0.02em;
                 margin-top: 8px;
+
+                @media (min-width: 0px) and (max-width: 480px) {
+                    font-size: 16px;
+                }
             }
         }
     }
@@ -274,8 +358,10 @@ function Main({ history }) {
         fetchCardData();
     }, []);
 
+    window.test = sessions.userType;
+
     return (
-        <>
+        <Mainpage>
             <Helmet>
                 <style>{`
                     main#main {
@@ -306,7 +392,26 @@ function Main({ history }) {
             </Drawer>
             <HeaderSection>
                 <HeaderBar />
+                <div className="GoLink">
+                    {sessions.userType === 'teachers' ? (
+                        <Accordion>
+                            <AccordionSummary expandIcon={<ExpandMore />}>
+                                <Typography>클래스</Typography>
+                            </AccordionSummary>
+                            {/* <AccordionDetails>
+                                <Link to="/">클래스</Link>
+                            </AccordionDetails> */}
+                            <AccordionDetails>
+                                <Link to="/main-draft">과제</Link>
+                            </AccordionDetails>
+                            <AccordionDetails>
+                                <Link to="/pricing">이용권 구매하기</Link>
+                            </AccordionDetails>
+                        </Accordion>
+                    ) : null}
+                </div>
             </HeaderSection>
+
             <MainSection>
                 <MainHeader>
                     <div className="greeting">
@@ -324,18 +429,32 @@ function Main({ history }) {
                             )}
                         </div>
                         <div className="right">
-                            <img width="339px" height="260px" src={icon_image} alt="dashboard_icons"></img>
+                            <img src={icon_image} alt="dashboard_icons"></img>
                         </div>
                     </div>
-
-                    <h3>{sessions.userName}님의 클래스 </h3>
+                    <div className="addclass">
+                        <Groupbox
+                            title={`${sessions.userName}님의 클래스`}
+                            rightComponent={
+                                sessions.userType === 'teachers' ? (
+                                    <Button colors="purple" onClick={toggleDrawer(true)}>
+                                        클래스 생성하기
+                                    </Button>
+                                ) : (
+                                    <Button colors="purple" onClick={toggleAddTeacherDrawer(true)}>
+                                        클래스 입장하기
+                                    </Button>
+                                )
+                            }
+                        />
+                    </div>
                 </MainHeader>
 
                 <CardSection>
                     <div className="card">
                         <Box sx={{ flexGrow: 1 }}>
                             <Grid container spacing={4}>
-                                <Grid item xs={4}>
+                                {/* <Grid item xs={12} sm={4}>
                                     <Item>
                                         {sessions.userType === 'teachers' ? (
                                             <div onClick={toggleDrawer(true)} className="cards Add-Class">
@@ -373,11 +492,11 @@ function Main({ history }) {
                                             </div>
                                         )}
                                     </Item>
-                                </Grid>
+                                </Grid> */}
 
                                 {cardDatas.map(
                                     ({ idx, name, class_count, max_due_date, description, class_day, teacher_name, num_of_students }) => (
-                                        <Grid key={idx} item xs={4}>
+                                        <Grid key={idx} item xs={12} sm={6} md={4}>
                                             <Item
                                                 onClick={() => {
                                                     sessions.userType === 'students'
@@ -497,7 +616,7 @@ function Main({ history }) {
                     <Footer />
                 </FooterSection>
             )}
-        </>
+        </Mainpage>
     );
 }
 
