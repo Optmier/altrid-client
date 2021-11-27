@@ -437,9 +437,7 @@ function LoginCandidated({ history }) {
     return (
         <>
             <header className={'header-bar'}>
-                <div className="container left">
-                    <img src={LogoWhite} alt="logo" />
-                </div>
+                <div className="container left">{/* <img src={LogoWhite} alt="logo" /> */}</div>
                 <div className="container center"></div>
                 <div className="container right"></div>
             </header>

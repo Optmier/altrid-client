@@ -3,7 +3,7 @@ import CardDraft from '../components/ClassDraft/AssignmentDraft';
 import CardAddNew from '../components/essentials/CardAddNew';
 import CardLists from '../components/essentials/CardLists';
 import CardRoot from '../components/essentials/CardRoot';
-import { Drawer } from '@material-ui/core';
+import { AccordionDetails, AccordionSummary, Drawer, Typography } from '@material-ui/core';
 import ClassDrawer from '../components/essentials/ClassDrawer';
 // import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import moment from 'moment';
@@ -32,6 +32,37 @@ import CardPopOver from '../../src/components/essentials/CardPopOver';
 import ClassDialogDelete from '../components/essentials/ClassDialogDelete';
 import * as $ from 'jquery';
 import { Helmet } from 'react-helmet';
+import { ExpandMore } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
+import Groupbox from '../AltridUI/GroupBox/Groupbox';
+import Button from '../AltridUI/Button/Button';
+import { withStyles } from '@material-ui/core/styles';
+import MuiAccordion from '@material-ui/core/Accordion';
+
+const Accordion = withStyles({
+    root: {
+        border: '1px solid rgba(0, 0, 0, .125)',
+        boxShadow: 'none',
+        backgroundColor: '#F6F8F9',
+        '&:not(:last-child)': {
+            borderBottom: '1px solid #F6F8F9',
+        },
+        '&:before': {
+            display: 'none',
+        },
+        '&$expanded': {
+            margin: 'auto',
+        },
+    },
+    expanded: {},
+})(MuiAccordion);
+
+const GoLink = styled.div`
+    display: none;
+    @media (min-width: 0px) and (max-width: 480px) {
+        display: block;
+    }
+`;
 
 const Item = styled.div`
     width: 384px;
@@ -67,6 +98,7 @@ const Main_header = styled.div`
         align-items: center;
         height: 260px;
         margin-bottom: 16px;
+        padding: 0 16px;
 
         & h2 {
             font-weight: 700;
@@ -74,6 +106,33 @@ const Main_header = styled.div`
             line-height: 60px;
             margin-bottom: 8px;
             margin-top: 16px;
+            @media (min-width: 0px) and (max-width: 480px) {
+                line-height: 45px;
+            }
+        }
+        img {
+            width: 100%;
+            max-width: 339px;
+            max-height: 260px;
+        }
+        & h3 {
+            @media (min-width: 0px) and (max-width: 585px) {
+                display: none;
+            }
+        }
+        @media (min-width: 0px) and (max-width: 480px) {
+            padding: 0 16px;
+            & h2 {
+                font-size: 28px;
+            }
+            & img {
+                width: 100%;
+                max-width: 230px;
+                max-height: 200px;
+            }
+            & h3 {
+                /* padding: 0 16px;  */
+            }
         }
     }
 `;
@@ -82,113 +141,40 @@ const CardSection = styled.div`
         'Segoe UI Emoji', 'Segoe UI Symbol';
     max-width: 1216px;
     margin: 0 auto;
+    padding: 0 16px;
+    display: flex;
+    flex-wrap: wrap;
+    /* font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol';
+    max-width: 1216px;
+    margin: 0 auto;
     margin-top: 24px;
     margin-bottom: 24px;
     display: flex;
     flex-wrap: wrap;
+
+    @media (min-width: 0px) and (max-width: 480px) {
+        margin: 0 auto;
+        max-width: 480px;
+    }
     & .newcard {
         width: 364px;
-    }
-
-    /* & .draft-cards {
-            color: black;
-            min-height: 248px;
-            background: #ffffff;
-            border: 1px solid #e9edef;
-            border-radius: 32px;
-            box-shadow: none;
-
-            & .check-list {
-                display: flex;
-                align-items: center;
-                align-content: center;
-                margin-bottom: 8px;
-                & .option {
-                    margin-left: 4px;
-                }
-                & .eyetracker {
-                    & p {
-                        margin-left: 5px;
-                    }
-                    display: flex;
-                    background: #d4e2fc;
-                    padding: 4px 6px;
-                    border-radius: 8px;
-                    margin-right: 8px;
-                    align-items: center;
-                }
-                & .possible {
-                    & p {
-                        margin-left: 5px;
-                    }
-                    background: #e3ddf2;
-                    border-radius: 8px;
-                    display: flex;
-                    padding: 4px 6px;
-                    align-items: center;
-                }
-            }
-
-            & span {
-                font-size: 16px;
-                font-weight: bold;
-                line-height: 20px;
-            }
-
-            & .title {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                font-weight: bold;
-                font-size: 24px;
-                height: 28px;
-            }
-            & .description {
-                height: 22px;
-                font-weight: bold;
-                white-space: nowrap;
-                font-size: 18px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                margin-top: 8px;
-                margin-bottom: 16px;
-            }
-            & .time-limit {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 4px;
-            }
-            & .num {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 4px;
-            }
-            & .update {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 4px;
-            }
-            & .count {
-                display: flex;
-                justify-content: space-between;
-                padding-bottom: 8px;
-            }
-        } */
+    } */
 `;
-
 const Info = styled.div`
-    margin: 0 auto;
     max-width: 1216px;
-    margin-top: 118px;
-    margin-bottom: 32px;
-
+    margin: 0 auto;
+    margin-top: 32px;
+    @media (min-width: 0px) and (max-width: 480px) {
+        padding: 0 16px;
+    }
     & .Info-total {
         margin-bottom: 80px;
         padding: 36px 40px;
         display: flex;
         align-items: center;
 
-        height: 124px;
+        /* height: 124px; */
         background: #f6f8f9;
         border: 1px solid #bfc6cd;
         box-sizing: border-box;
@@ -198,17 +184,28 @@ const Info = styled.div`
         }
         & .Info-Word {
             margin-left: 23px;
+
+            @media (min-width: 0px) and (max-width: 480px) {
+                padding: 12px 0;
+            }
             & .Info-Top {
                 font-weight: bold;
                 font-size: 24px;
                 line-height: 28px;
                 letter-spacing: -0.02em;
+                @media (min-width: 0px) and (max-width: 480px) {
+                    font-size: 20px;
+                }
             }
             & .Info-Bottom {
                 font-size: 18px;
                 line-height: 22px;
                 letter-spacing: -0.02em;
                 margin-top: 8px;
+
+                @media (min-width: 0px) and (max-width: 480px) {
+                    font-size: 16px;
+                }
             }
         }
     }
@@ -394,7 +391,7 @@ function MainDraft({ match, cardData, history }) {
     if (isMobile) return <MobileBody />;
     if (errorState) return <Error />;
     return (
-        <>
+        <div style={{ overflowX: 'hidden' }}>
             <Helmet>
                 <style>{`
                     main#main {
@@ -418,6 +415,22 @@ function MainDraft({ match, cardData, history }) {
                 <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>
             <HeaderBar />
+            <GoLink>
+                <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMore />}>
+                        <Typography>과제</Typography>
+                    </AccordionSummary>
+                    {/* <AccordionDetails>
+                                <Link to="/">클래스</Link>
+                            </AccordionDetails> */}
+                    <AccordionDetails>
+                        <Link to="/">클래스</Link>
+                    </AccordionDetails>
+                    <AccordionDetails>
+                        <Link to="/pricing">이용권 구매하기</Link>
+                    </AccordionDetails>
+                </Accordion>
+            </GoLink>
             <Main_header>
                 <div className="greeting">
                     <div className="left">
@@ -435,12 +448,20 @@ function MainDraft({ match, cardData, history }) {
                         <img width="339px" height="260px" src={icon_image} alt="dashboard_icons"></img>
                     </div>
                 </div>
-                <h3>
-                    {sessions.userName} 선생님의 과제 {data.length} 개
-                </h3>
+                <div style={{ padding: '0 16px' }}>
+                    <Groupbox
+                        title={`${sessions.userName} 선생님의 과제 ${data.length}개`}
+                        rightComponent={
+                            <Button colors="purple" onClick={toggleDrawer(true)}>
+                                과제 생성하기
+                            </Button>
+                        }
+                    />
+                </div>
             </Main_header>
+
             <CardSection>
-                <Item>
+                {/* <Item>
                     <div onClick={toggleDrawer(true)} className="cards">
                         <div className="icon">
                             <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -454,12 +475,11 @@ function MainDraft({ match, cardData, history }) {
                             <p> 과제 생성 </p>
                         </div>
                     </div>
-                </Item>
-
+                </Item> */}
                 {Object.keys(data).map((i, idx) => (
-                    <CardRoot key={idx}>
+                    <Grid key={idx} item xs={12} sm={6} md={4}>
                         <CardDraft testNum={data[i]['idx']} cardData={data[i]} />
-                    </CardRoot>
+                    </Grid>
                 ))}
             </CardSection>
 
@@ -570,6 +590,18 @@ function MainDraft({ match, cardData, history }) {
                     </Box>
                 </div>
             </CardSection> */}
+            {/* {Object.keys(data).map((i, idx) => (
+                <CardRoot key={idx}>
+                    <CardDraft testNum={data[i]['idx']} cardData={data[i]} />
+                </CardRoot>
+            ))} */}
+            {/* <Mobile>
+                {Object.keys(data).map((i, idx) => (
+                    <Grid key={idx} xs={12} sm={6} xl={4}>
+                        <CardDraft testNum={data[i]['idx']} cardData={data[i]} />
+                    </Grid>
+                ))}
+            </Mobile> */}
             <Info>
                 <div className="Info-total">
                     <div className="Info-icon">
@@ -640,7 +672,7 @@ function MainDraft({ match, cardData, history }) {
                 </InfoBanner>
             </ClassWrapper> */}
             <Footer />
-        </>
+        </div>
     );
 }
 

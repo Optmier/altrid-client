@@ -8,6 +8,7 @@ const Foot = styled.div`
     display: flex;
     flex-direction: column;
     text-align: center;
+    overflow: hidden;
     & .contents {
         padding: 48px 144px;
         & .logo {
@@ -18,6 +19,7 @@ const Foot = styled.div`
             display: flex;
             align-items: center;
             justify-content: center;
+            white-space: nowrap;
             & .menu-info {
                 margin: 0px 20px;
             }
@@ -31,6 +33,7 @@ const Foot = styled.div`
             font-weight: 400px;
             & .info-more {
                 margin: 16px 20px;
+                white-space: nowrap;
             }
         }
     }
@@ -39,6 +42,52 @@ const Foot = styled.div`
         font-size: 14px;
         color: #4d5c6a;
         font-weight: 400px;
+        white-space: nowrap;
+    }
+
+    @media (min-width: 0px) and (max-width: 480px) {
+        max-width: 360px;
+        white-space: nowrap;
+
+        & .contents {
+            padding: 0 16px;
+
+            & .logo {
+                text-align: left;
+            }
+
+            & .menu {
+                align-items: flex-start;
+                & .menu-info {
+                    margin: 4px 0px;
+                }
+            }
+            & .info {
+                margin-top: 32px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+
+                margin-bottom: 4px;
+                & .info-more {
+                    margin: 4px 0px;
+                }
+            }
+        }
+        & .line {
+            display: none;
+        }
+        & .menu {
+            display: flex;
+            flex-direction: column;
+        }
+
+        & .adress {
+            margin: 0 auto;
+            text-align: left;
+            margin-top: 32px;
+            margin-bottom: 48px;
+        }
     }
 `;
 function Footer() {
@@ -85,20 +134,20 @@ function Footer() {
                     <div className="menu-info">
                         <a href="https://altridedge.com/"> ALTRID </a>{' '}
                     </div>
-                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="line" width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
                     </svg>
                     <div className="menu-info">
                         <a href="http://optmier.com/"> Optmier 소개 </a>{' '}
                     </div>
-                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="line" width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
                     </svg>
                     <div className="menu-info">
                         <a href="https://www.altridedge.com/customer-service/faq"> 고객센터 </a>
                     </div>
 
-                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="line" width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
                     </svg>
                     <div className="menu-info">
@@ -110,11 +159,11 @@ function Footer() {
                 </div>
                 <div className="info">
                     <div className="info-more">옵트미어(Optmier)</div>
-                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="line" width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
                     </svg>
                     <div className="info-more">대표 전광휘</div>
-                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="line" width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
                     </svg>
 
@@ -122,7 +171,7 @@ function Footer() {
                         전화<a href="tel:02-469-9703"> 02-469-9703</a>
                     </div>
 
-                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="line" width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
                     </svg>
 
@@ -130,7 +179,7 @@ function Footer() {
                         이메일 <a href="mailto:rikjeon94@optmier.com"> rikjeon94@optmier.com</a>
                     </div>
 
-                    <svg width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg className="line" width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
                     </svg>
 

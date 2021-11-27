@@ -23,39 +23,49 @@ import LaunchIcon from '@material-ui/icons/Launch';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 const AssignCard = styled.div`
-    & .class-card-root {
-        width: 384px;
+    & .assgin-class {
+        overflow-x: auto;
+        /* max-width: 384px; */
+        /* width: 100%; */
         height: 262px;
-        margin: 10px 10px;
+        flex-basis: 1%;
+        display: flex;
+        flex-direction: column;
+        padding: 32px 20px;
+        border: 1px solid #e9edef;
+        box-sizing: border-box;
+        border-radius: 32px;
+        margin: 8px 8px;
         & .card-subTitle-p {
             width: 230px;
             color: #000000;
             font-size: 18px;
             font-weight: bold;
             text-overflow: ellipsis;
-        }
-        & .class-card-header-on {
-            padding: 8px 24px;
-            border-radius: 50%;
-            background: #ffffff;
-            margin-top: 5px;
-        }
-        & .class-card-wrapper {
-            padding: 8px 24px;
+            white-space: nowrap;
+            margin-bottom: 16px;
         }
         & .check-list {
             display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            & .lists {
+                display: flex;
+                & p {
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    width: 100px;
+                    overflow: hidden;
+                }
+            }
             & .eyetracker {
-                margin-right: 8px;
                 display: flex;
                 align-items: center;
-                align-content: center;
-                background: #d4e2fc;
+                background-color: #d4e2fc;
                 border-radius: 8px;
                 padding: 4px 6px;
+                margin-right: 8px;
                 & p {
-                    color: #174291;
-                    margin-left: 4px;
                 }
             }
             & .possible {
@@ -70,7 +80,6 @@ const AssignCard = styled.div`
                     margin-left: 4px;
                 }
             }
-
             & .impossible {
                 margin-right: 8px;
                 display: flex;
@@ -83,10 +92,14 @@ const AssignCard = styled.div`
                 }
             }
         }
-    }
+        & .card-item {
+            display: flex;
+            justify-content: space-between;
 
-    & .card-item {
-        justify-content: space-between;
+            & .card-content-time {
+                display: flex;
+            }
+        }
     }
 `;
 
@@ -356,7 +369,7 @@ function AssignmentDraft({ cardData, match, history }) {
             <ClassDialogDelete ver="assignment" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
 
             {!cardData['contents_data'] ? (
-                <div className="class-card-root">
+                <div className="">
                     <div className="class-card-header class-card-wrapper">
                         <TooltipCard title={cardData['title']}>
                             <div className="card-title-p">{cardData['title']}</div>
@@ -377,9 +390,9 @@ function AssignmentDraft({ cardData, match, history }) {
                 </div>
             ) : (
                 <AssignCard>
-                    <div className="class-card-root">
-                        <div className="class-card-header-on class-card-wrapper">
-                            <div className="check-list">
+                    <div className="assgin-class">
+                        <div className="check-list">
+                            <div className="lists">
                                 {cardData['eyetrack'] ? (
                                     <div className="eyetracker">
                                         <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -415,6 +428,7 @@ function AssignmentDraft({ cardData, match, history }) {
                                     </div>
                                 )}
                             </div>
+
                             <span className="card-option" onClick={handleOptionClick} style={{ paddingLeft: '1rem' }}>
                                 <svg width="19" height="5" viewBox="0 0 19 5" fill="black" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="2.5" cy="2.5" r="2.5" fill="black" />
@@ -423,17 +437,18 @@ function AssignmentDraft({ cardData, match, history }) {
                                 </svg>
                             </span>
                         </div>
-                        <div className="class-card-wrapper">
+
+                        <div className="classnew">
                             <TooltipCard title={cardData['title']}>
                                 <div
                                     className="card-title-p"
-                                    style={{ width: 'calc(100% - 36px)', color: '#000000', fontWeight: ' bold', fontSize: '24px' }}
+                                    style={{ color: '#000000', fontWeight: ' bold', fontSize: '24px', overflowX: 'hidden' }}
                                 >
                                     {cardData['title']}
                                 </div>
                             </TooltipCard>
                         </div>
-                        <div className="class-card-contents class-card-wrapper" onClick={handlePreTest}>
+                        <div className="classnew" onClick={handlePreTest}>
                             <div className="contents-block">
                                 <div className="card-item">
                                     <TooltipCard title={cardData['description']}>

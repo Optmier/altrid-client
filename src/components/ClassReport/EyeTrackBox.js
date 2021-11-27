@@ -22,9 +22,16 @@ const StyleChartWrapper = styled.div`
 `;
 
 const Dataset = styled.div`
-    text-align: center;
-    margin-right: 15px;
-
+    /* margin: 0 auto; */
+    /* margin-right: 15px; */
+    display: flex;
+    justify-content: center;
+    @media (min-width: 0px) and (max-width: 480px) {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 0 auto;
+    }
     & span {
         margin-right: 20px;
     }
@@ -40,9 +47,10 @@ const AIcomment = styled.div`
 const Sentece = styled.div``;
 
 const Playerset = styled.div`
-    width: 950px;
+    /* width: 950px; */
     box-sizing: border-box;
-    padding: 0px 100px 0px 0px;
+    width: 100%;
+    /* padding: 0px 100px 0px 0px; */
 `;
 
 const Accordion = styled((props) => <MuiAccordion elevation={0} square {...props} />)(({ theme }) => ({
@@ -53,6 +61,17 @@ const StyleEyeTrackBox = styled.div`
     display: flex;
     flex-direction: column;
 
+    & .ment-ai-col {
+        /* display: flex;
+        flex-direction: row; */
+        @media (min-width: 0px) and (max-width: 480px) {
+            display: flex;
+            flex-direction: column;
+            & .line {
+                display: none;
+            }
+        }
+    }
     & .eyetrack-box {
         margin-bottom: 18px;
         font-weight: bold;
@@ -244,42 +263,48 @@ function EyeTrackBox({
 
             <div className="white-box">
                 {hasEyetrack && mEyetrackData ? (
-                    <div className="ment-ai-col">
+                    <div className="ment-ai-col ">
                         <Dataset>
-                            <span className="row-title">총 응시점 개수 </span>
-                            <TooltipCard title={`${fixations}개`}>
-                                <span className="row-desc">{fixations}개</span>
-                            </TooltipCard>
-                            <svg
-                                style={{ marginRight: '1rem' }}
-                                width="1"
-                                height="10"
-                                viewBox="0 0 1 10"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <line x1="0.5" x2="0.5" y2="10" stroke="#BFC6CD" />
-                            </svg>
-
-                            <span className="row-title">평균 응시 속도</span>
-                            <TooltipCard title={`${avgFixVels}px/s`}>
-                                <span className="row-desc">{avgFixVels}px/s</span>
-                            </TooltipCard>
-                            <svg
-                                style={{ marginRight: '1rem' }}
-                                width="1"
-                                height="10"
-                                viewBox="0 0 1 10"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <line x1="0.5" x2="0.5" y2="10" stroke="#BFC6CD" />
-                            </svg>
-
-                            <span className="row-title">재응시 횟수</span>
-                            <TooltipCard title={`${regressions}회`}>
-                                <span className="row-desc">{regressions}회</span>
-                            </TooltipCard>
+                            <div>
+                                <span className="row-title">총 응시점 개수 </span>
+                                <TooltipCard title={`${fixations}개`}>
+                                    <span className="row-desc">{fixations}개</span>
+                                </TooltipCard>
+                                <svg
+                                    className="line"
+                                    style={{ marginRight: '1rem' }}
+                                    width="1"
+                                    height="10"
+                                    viewBox="0 0 1 10"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <line x1="0.5" x2="0.5" y2="10" stroke="#BFC6CD" />
+                                </svg>
+                            </div>
+                            <div>
+                                <span className="row-title">평균 응시 속도</span>
+                                <TooltipCard title={`${avgFixVels}px/s`}>
+                                    <span className="row-desc">{avgFixVels}px/s</span>
+                                </TooltipCard>
+                                <svg
+                                    className="line"
+                                    style={{ marginRight: '1rem' }}
+                                    width="1"
+                                    height="10"
+                                    viewBox="0 0 1 10"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <line x1="0.5" x2="0.5" y2="10" stroke="#BFC6CD" />
+                                </svg>
+                            </div>
+                            <div>
+                                <span className="row-title">재응시 횟수</span>
+                                <TooltipCard title={`${regressions}회`}>
+                                    <span className="row-desc">{regressions}회</span>
+                                </TooltipCard>
+                            </div>
                         </Dataset>
                     </div>
                 ) : (

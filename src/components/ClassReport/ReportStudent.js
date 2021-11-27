@@ -873,37 +873,38 @@ function ReportStudent({ history, match }) {
                                 </>
                             }
                         />
-
-                        {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
-                            ? division(
-                                  currentStudentData.user_data.selections,
-                                  currentStudentData.contents_data.flatMap((m) => m.problemDatas),
-                                  15,
-                              ).map((arr, idx) => (
-                                  <Progress
-                                      mode
-                                      key={idx}
-                                      idx={idx}
-                                      selections={arr}
-                                      problemNumbers={999}
-                                      handsUp={handsUpList}
-                                      teacherSelected={teacherSelectedList}
-                                      onDoubleClick={progressDoubleClick}
-                                  />
-                              ))
-                            : null}
-                        <ScoringResults
-                            open={scoringResultsOpen}
-                            userData={currentStudentData.user_data.selections}
-                            handsUp={handsUpList}
-                            teacherSelected={teacherSelectedList}
-                            spentTime={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
-                            contentsData={currentStudentData.contents_data}
-                            actionClickHandsUpButton={progressDoubleClick}
-                            handleClose={() => {
-                                setScoringResultsOpen(false);
-                            }}
-                        />
+                        <div style={{ paddingBottom: '30px' }} className="progress">
+                            {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
+                                ? division(
+                                      currentStudentData.user_data.selections,
+                                      currentStudentData.contents_data.flatMap((m) => m.problemDatas),
+                                      15,
+                                  ).map((arr, idx) => (
+                                      <Progress
+                                          mode
+                                          key={idx}
+                                          idx={idx}
+                                          selections={arr}
+                                          problemNumbers={999}
+                                          handsUp={handsUpList}
+                                          teacherSelected={teacherSelectedList}
+                                          onDoubleClick={progressDoubleClick}
+                                      />
+                                  ))
+                                : null}
+                            <ScoringResults
+                                open={scoringResultsOpen}
+                                userData={currentStudentData.user_data.selections}
+                                handsUp={handsUpList}
+                                teacherSelected={teacherSelectedList}
+                                spentTime={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
+                                contentsData={currentStudentData.contents_data}
+                                actionClickHandsUpButton={progressDoubleClick}
+                                handleClose={() => {
+                                    setScoringResultsOpen(false);
+                                }}
+                            />
+                        </div>
                     </section>
 
                     <section className="student-report-timetrack">

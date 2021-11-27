@@ -118,9 +118,7 @@ function GuideMobileAppStore() {
                 `}</style>
             </Helmet>
             <AppStoreGuideRoot>
-                <Header>
-                    <img src={HeaderLogo} alt="logo" />
-                </Header>
+                <Header>{/* <img src={HeaderLogo} alt="logo" /> */}</Header>
                 <Main>
                     <h3>
                         알트리드 서비스를

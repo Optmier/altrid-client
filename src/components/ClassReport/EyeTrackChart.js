@@ -40,9 +40,10 @@ const AIcomment = styled.div`
 const Sentece = styled.div``;
 
 const Playerset = styled.div`
-    width: 950px;
+    /* width: 950px; */
     box-sizing: border-box;
-    padding: 0px 100px 0px 0px;
+    width: 100%;
+    /* padding: 0px 100px 0px 0px; */
 `;
 
 const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
@@ -409,7 +410,7 @@ function EyeTrackChart({
     }, [totalStudentsDatas]);
     console.log(chart1);
     return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', overflow: 'auto' }}>
             <Chart options={chart1.options} series={chart1.series} type="bar" height={'300px'} width={'150px'} />
             <Chart options={chart2.options} series={chart2.series} type="bar" height={'300px'} width={'150px'} />
             <Chart options={chart3.options} series={chart3.series} type="bar" height={'300px'} width={'150px'} />

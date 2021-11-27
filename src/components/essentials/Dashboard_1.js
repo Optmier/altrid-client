@@ -17,6 +17,7 @@ const Container = styled.div`
     margin: 0px auto;
     max-width: 1216px;
     margin-bottom: 160px;
+    padding: 0 16px;
     & .gobutton {
         margin-top: 68px;
     }
@@ -70,18 +71,34 @@ const Container = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
-        height: 260px;
+        max-height: 260px;
         margin-bottom: 16px;
 
         & h2 {
             font-weight: 700;
             font-size: 56px;
-            line-height: 60px;
+
             margin-bottom: 8px;
             margin-top: 16px;
+            @media (min-width: 0px) and (max-width: 520px) {
+                font-size: 28px;
+                /* white-space: pre-wrap; */
+            }
+            @media (min-width: 520px) and (max-width: 715px) {
+                font-size: 35px;
+            }
         }
 
-        & .left {
+        & .right {
+            & img {
+                max-width: 339px;
+                max-height: 260px;
+                @media (min-width: 0px) and (max-width: 520px) {
+                    max-width: 235px;
+                    width: 100%;
+                    max-height: 200px;
+                }
+            }
         }
     }
 
@@ -91,7 +108,7 @@ const Container = styled.div`
             padding: 0px 32px;
             min-height: 248px;
             border-radius: 32px;
-            background: #f6f8f9;
+            background: #ffffff;
             font-weight: bold;
             & .input {
                 margin-top: 68px;
@@ -106,7 +123,7 @@ const Container = styled.div`
         & .lecture {
             background: #f4f1fa;
             & h3 {
-                padding-top: 32px;
+                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
                 color: #3b1689;
@@ -121,11 +138,13 @@ const Container = styled.div`
             }
         }
         & .camstudy {
+            background-color: #d4e2fc;
+
             & h3 {
-                padding-top: 32px;
+                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
-                color: '#000000';
+                color: #5b91f5;
             }
 
             & p {
@@ -135,11 +154,12 @@ const Container = styled.div`
                 font-size: 18px;
                 line-height: 22px;
                 margin-top: 16px;
-                color: #000000;
+                color: #5b91f5;
             }
         }
         & .word {
             background: #fff3ef;
+            overflow: auto;
             & p {
                 color: #ff6937;
                 padding-top: 25px;
@@ -149,7 +169,7 @@ const Container = styled.div`
             }
             & h3 {
                 color: #ff6937;
-                padding-top: 32px;
+                padding-top: 16px;
             }
             & h1 {
                 margin-top: 34px;
@@ -168,8 +188,9 @@ const Container = styled.div`
             }
         }
         & .assignment {
+            overflow-x: auto;
             & h3 {
-                padding-top: 32px;
+                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
                 color: '#000000';
@@ -190,6 +211,7 @@ const Container = styled.div`
                     border-radius: 8px;
                     padding: 4px 8px;
                     color: #174291;
+                    white-space: nowrap;
                 }
                 & p {
                     margin-right: 16px;
@@ -212,48 +234,55 @@ const Container = styled.div`
             background: #ffffff;
             border: 1px solid #bfc6cd;
             background: #ffffff;
-            height: 198px;
-            padding-top: 32px;
+            /* height: 198px; */
+            padding-top: 16px;
 
             & p {
                 margin-top: 16px;
                 font-size: 24px;
-                line-height: 36px;
+                /* line-height: 36px; */
                 font-weight: 400;
             }
         }
         & .wordprogress {
+            background-color: #fffaf0;
             & h3 {
-                padding-top: 32px;
+                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
-                color: '#000000';
+                color: #ffcf70;
+                margin-bottom: 20px;
+                @media (min-width: 600px) and (max-width: 990px) {
+                    margin-bottom: 40px;
+                }
             }
 
             & p {
                 margin-top: 20px;
-                color: #000000;
+                color: #ffcf70#;
                 font-weight: bold;
                 font-size: 20px;
-
                 text-align: center;
             }
             & h4 {
                 padding-top: 60px;
                 font-size: 20px;
                 text-align: center;
+                color: #ffcf70;
             }
         }
         & .calendar {
-            height: 280px;
+            height: 260px;
+            background-color: #aeffe0;
             & h3 {
-                padding-top: 32px;
+                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
-                color: '#000000';
+                color: #3ae2a1;
             }
             & .todolist {
                 height: 120px;
+                color: #3ae2a1;
                 overflow-y: hidden;
                 & li {
                     padding-top: 10px;
@@ -264,12 +293,13 @@ const Container = styled.div`
                 }
             }
             & .gocalendar {
-                margin-top: 30px;
+                /* margin-top: 0px; */
             }
         }
         & .optimer {
+            overflow-x: auto;
             & h3 {
-                padding-top: 32px;
+                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
                 color: '#000000';
@@ -334,6 +364,7 @@ function Dashboard_1({ match }) {
             grid: {
                 padding: {
                     top: -10,
+                    width: '300px',
                 },
             },
             fill: {
@@ -466,6 +497,7 @@ function Dashboard_1({ match }) {
             .then((result) => {
                 if (!result || !result.data) return;
                 setClassInfo({ ...classInfo, ...result.data });
+                // console.log(result.data);
             })
             .catch((err) => console.log(err));
     }, []);
@@ -473,7 +505,7 @@ function Dashboard_1({ match }) {
     useEffect(() => {
         Axios.get(`${apiUrl}/assignment-actived/${num}`, { withCredentials: true })
             .then((result) => {
-                console.log(result.data);
+                // console.log(result.data);
                 setassignment(result.data);
             })
             .catch((err) => console.log(err));
@@ -539,13 +571,13 @@ function Dashboard_1({ match }) {
                         {
                             name: 'optimer',
                             data: [
-                                Math.floor(result.data.time_mon / 60 / 60),
-                                Math.floor(result.data.time_tue / 60 / 60),
-                                Math.floor(result.data.time_wed / 60 / 60),
-                                Math.floor(result.data.time_thu / 60 / 60),
-                                Math.floor(result.data.time_fri / 60 / 60),
-                                Math.floor(result.data.time_sat / 60 / 60),
-                                Math.floor(result.data.time_sun / 60 / 60),
+                                Math.floor((result.data.time_mon / 6000) % 60),
+                                Math.floor((result.data.time_mon / 6000) % 60),
+                                Math.floor((result.data.time_mon / 6000) % 60),
+                                Math.floor((result.data.time_mon / 6000) % 60),
+                                Math.floor((result.data.time_mon / 6000) % 60),
+                                Math.floor((result.data.time_mon / 6000) % 60),
+                                Math.floor((result.data.time_mon / 6000) % 60),
                             ],
                         },
                     ],
@@ -553,6 +585,8 @@ function Dashboard_1({ match }) {
             })
             .catch((err) => console.log(err));
     }, [sessions]);
+
+    window.test1 = classInfo;
 
     return (
         <>
@@ -570,13 +604,13 @@ function Dashboard_1({ match }) {
                         <Dday classNum={num} />
                     </div>
                     <div className="right">
-                        <img width="339px" height="260px" src={icon_image} alt="dashboard_icons"></img>
+                        <img src={icon_image} alt="dashboard_icons"></img>
                     </div>
                 </div>
                 <div className="dashboard">
                     <Box sx={{ flexGrow: 1 }}>
                         <Grid container spacing={4}>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} xl={4} sm={4}>
                                 <Item>
                                     <div className="card lecture">
                                         <h3>강의실</h3>
@@ -606,7 +640,7 @@ function Dashboard_1({ match }) {
                                     </div>
                                 </Item>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} xl={4} sm={4}>
                                 <Item>
                                     <div className="card camstudy">
                                         <h3>캠스터디</h3>
@@ -620,7 +654,7 @@ function Dashboard_1({ match }) {
                                         )}
                                         <div className="gobutton">
                                             <Link to={`/class/${num}/cam-study`}>
-                                                <Button colors="purple" fullWidth variant="filled">
+                                                <Button colors="blue" fullWidth variant="filled">
                                                     캠 스터디 목록
                                                 </Button>
                                             </Link>
@@ -628,7 +662,7 @@ function Dashboard_1({ match }) {
                                     </div>
                                 </Item>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} xl={4} sm={4}>
                                 <Item>
                                     <div className="card word">
                                         <h3>오늘의 단어</h3>
@@ -642,7 +676,7 @@ function Dashboard_1({ match }) {
                                     </div>
                                 </Item>
                             </Grid>
-                            <Grid item xs={8}>
+                            <Grid item xs={12} xl={8} sm={8}>
                                 <Item>
                                     <div className="card assignment">
                                         <h3>과제 현황</h3>
@@ -655,7 +689,7 @@ function Dashboard_1({ match }) {
                                                         ) > 0 ? (
                                                             <>
                                                                 <p className="dday">
-                                                                    D{' '}
+                                                                    D
                                                                     {Math.ceil(
                                                                         (today.getTime() - new Date(data.due_date).getTime()) /
                                                                             (1000 * 3600 * 24),
@@ -700,7 +734,7 @@ function Dashboard_1({ match }) {
                                     </div>
                                 </Item>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xl={4} xs={12} sm={4}>
                                 <Item>
                                     <div className="card wordprogress">
                                         <h3>단어 진행률</h3>
@@ -717,7 +751,7 @@ function Dashboard_1({ match }) {
                                     </div>
                                 </Item>
                             </Grid>
-                            <Grid item xs={8}>
+                            <Grid item xl={8} xs={12} sm={8}>
                                 <Item>
                                     <div className="card comment">
                                         <svg width="71" height="47" viewBox="0 0 71 47" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -730,7 +764,7 @@ function Dashboard_1({ match }) {
                                     </div>
                                 </Item>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={12} xl={4} sm={4}>
                                 <div className="card calendar">
                                     <h3>오늘의 일정</h3>
 
@@ -751,7 +785,7 @@ function Dashboard_1({ match }) {
                                     )}
                                     <div className="gocalendar">
                                         <Link to={`/class/${num}/calendar`}>
-                                            <Button fullWidth variant="outlined" color="black">
+                                            <Button fullWidth variant="filled" colors="green">
                                                 나의 일정 보러가기
                                             </Button>
                                         </Link>
@@ -761,7 +795,13 @@ function Dashboard_1({ match }) {
                             <Grid item xs={12}>
                                 <div className="card optimer">
                                     <h3>나의 학습 시간</h3>
-                                    <ReactApexChart options={optimer.options} series={optimer.series} type="bar" height={300} />
+                                    <ReactApexChart
+                                        style={{ overflow: 'hidden' }}
+                                        options={optimer.options}
+                                        series={optimer.series}
+                                        type="bar"
+                                        height={300}
+                                    />
                                 </div>
                             </Grid>
                         </Grid>

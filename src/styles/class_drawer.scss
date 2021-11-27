@@ -1,12 +1,15 @@
-$primaryColor: #13e2a1;
+// $primaryColor: #13e2a1;
 .class-drawer-root {
-    padding: 50px 80px 50px 80px;
-    height: 100%;
-    width: 540px;
+    max-width: 360px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    // justify-content: space-between;
+    padding: 72px 84px;
+    min-width: 100px;
+    max-width: 593px;
+    @media (min-width: 0px) and (max-width: 420px) {
+        padding: 20px;
+    }
 
     & .close-icon {
         cursor: pointer;
@@ -24,6 +27,11 @@ $primaryColor: #13e2a1;
 
     & .drawer-title {
         margin-bottom: 1.5rem;
+    }
+    & .class-drawer-block {
+        @media (min-width: 0px) and (max-width: 480px) {
+            max-width: 300px;
+        }
     }
     & .class-drawer-block + .class-drawer-block {
         margin-top: 2rem;
@@ -54,6 +62,9 @@ $primaryColor: #13e2a1;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
+        @media (min-width: 0px) and (max-width: 480px) {
+            max-width: 300px;
+        }
 
         & .drawer-input + .drawer-input {
             margin-top: 0.5rem;
@@ -64,6 +75,9 @@ $primaryColor: #13e2a1;
             flex-direction: column;
             align-items: flex-start;
             justify-content: flex-start;
+            // @media (min-width: 0) and (max-width: 480px) {
+            //     max-width: 300px;
+            // }
 
             & > input {
                 width: 100%;
@@ -95,15 +109,15 @@ $primaryColor: #13e2a1;
 
         & .prepare {
             margin-right: 1rem;
-
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
+            width: 100%;
             background-color: #f6f8f9;
             border-radius: 16px;
-            width: 333px;
+            max-width: 333px;
             height: 114px;
             box-sizing: border-box;
             // padding: 1rem 2rem;
@@ -138,11 +152,13 @@ $primaryColor: #13e2a1;
             text-align: center;
             background-color: #f6f8f9;
             border-radius: 16px;
-            width: 333px;
+            max-width: 333px;
+            width: 100%;
             height: 114px;
             box-sizing: border-box;
             padding: 1rem 2rem;
             margin-right: 8px;
+            padding: 1rem 2rem;
         }
         & .drawer-select {
             cursor: pointer;
@@ -153,10 +169,11 @@ $primaryColor: #13e2a1;
             text-align: center;
             background-color: #f4f1fa;
             border-radius: 16px;
-            width: 333px;
+            max-width: 333px;
+            width: 100%;
             height: 114px;
             box-sizing: border-box;
-            // padding: 1rem 2rem;
+            padding: 1rem 2rem;
 
             & svg {
                 pointer-events: none;
@@ -197,10 +214,13 @@ $primaryColor: #13e2a1;
         align-items: flex-start;
         justify-content: space-between;
         //padding: 0.75rem 1.5rem;
+        @media (min-width: 0px) and (max-width: 480px) {
+            max-width: 300px;
+        }
 
         & > span {
             margin: auto 11px;
-            width: 50%;
+            max-width: 50%;
             display: flex;
             align-items: center;
             justify-content: flex-start;

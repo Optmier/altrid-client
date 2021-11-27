@@ -21,6 +21,7 @@ import ShortUniqueId from 'short-unique-id';
 import HeaderBar from '../components/essentials/HeaderBar';
 import Switch from '../AltridUI/Switch/Switch';
 import HeaderMenu from '../AltridUI/HeaderMenu/HeaderMenu';
+import HeaderBarLogin from '../components/essentials/HeaderBarLogin';
 
 const LoginMain = styled.div`
     max-width: 672px;
@@ -29,39 +30,86 @@ const LoginMain = styled.div`
 
     & .LoginBox {
         margin-top: 93px;
-    }
+        @media (min-width: 0px) and (max-width: 480px) {
+            /* max-width: 328px; */
+            width: 100%;
+            padding: 0 16px;
+        }
+        & .SelectBox {
+            border: 1px solid #e9edef;
+            box-sizing: border-box;
+            max-width: 434px;
+            /* width: 100%; */
+            margin: 0 auto;
+            border-radius: 16px;
+            margin-top: 12px;
+            height: 100%;
+            max-height: 230px;
+            filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.1));
+            margin-bottom: 264px;
+            @media (min-width: 0px) and (max-width: 480px) {
+                margin: 0 auto;
 
-    & .SelectBox {
-        border: 1px solid #e9edef;
-        box-sizing: border-box;
-        width: 434px;
-        margin: 0 auto;
-        border-radius: 16px;
-        margin-top: 12px;
-        height: 230px;
-        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.1));
-        margin-bottom: 264px;
+                /* max-width: 328px; */
+                width: 100%;
 
-        & .radioselect {
-            margin-bottom: 32px;
-            & span {
-                & label {
-                    background-color: #f6f8f9;
-                    color: #9aa5af;
-                }
-                & input:checked + label {
-                    background-color: #200656;
-                    color: #ffffff;
-                    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+                max-height: 230px;
+                height: 100%;
+                margin-bottom: 128px;
+            }
+
+            & .radioselect {
+                margin-bottom: 32px;
+                & span {
+                    & label {
+                        width: 100%;
+                        max-width: 192px;
+                        background-color: #f6f8f9;
+                        color: #9aa5af;
+                        @media (min-width: 0px) and (max-width: 480px) {
+                            max-width: 139px;
+                            width: 100%;
+                        }
+                    }
+                    & input:checked + label {
+                        background-color: #200656;
+                        color: #ffffff;
+                        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+                    }
                 }
             }
         }
+        & .loginTab {
+            display: flex;
+            max-width: 384px;
+            max-height: 36px;
+        }
     }
-    & .loginTab {
-        display: flex;
-        width: 384px;
-        height: 36px;
-    }
+    /* @media (min-width: 0px) and (max-width: 480px) {
+        & .SelectBox {
+            margin: 0 auto;
+            padding-left: 16px;
+            max-width: 328px;
+            width: 100%auto;
+            padding-right: 16px;
+            height: 230px;
+
+            & .radioselect {
+                & span {
+                    & label,
+                    input {
+                        max-width: 139px;
+                        width: 100%;
+                    }
+                }
+            }
+        }
+        & h2 {
+            margin: 0 auto;
+            padding-left: 16px;
+            max-width: 328px;
+        }
+    } */
 `;
 
 const AddName = styled.div`
@@ -93,6 +141,21 @@ const AddName = styled.div`
         margin-top: 16px;
         font-size: 18px;
     }
+    @media (min-width: 0px) and (max-width: 480px) {
+        padding: 0 16px;
+        max-width: 328px;
+        width: 100%;
+        & h3 {
+            font-size: 32px;
+        }
+        & h5 {
+            font-size: 18px;
+            font-weight: normal;
+        }
+        & input {
+            width: 328px;
+        }
+    }
 `;
 
 const Make = styled.div`
@@ -112,6 +175,15 @@ const Make = styled.div`
         margin-bottom: 5px;
         padding: 16px;
     }
+
+    @media (min-width: 0px) and (max-width: 480px) {
+        & h3 {
+            font-size: 32px;
+        }
+        & input {
+            width: 328px;
+        }
+    }
 `;
 
 const CodeAcademy = styled.div`
@@ -128,6 +200,14 @@ const CodeAcademy = styled.div`
         border-radius: 16px;
         color: #3b1689;
         text-align: center;
+    }
+
+    @media (min-width: 0px) and (max-width: 480px) {
+        & .code {
+            max-width: 328px;
+            width: 100%;
+            padding: 0 16px;
+        }
     }
 `;
 
@@ -150,6 +230,12 @@ const RequestButton = styled.button`
     width: 126px;
     height: 45px;
     border-radius: 11px;
+
+    @media (min-width: 0px) and (max-width: 480px) {
+        width: 328px;
+        border-radius: 104px;
+        padding: 0 16px;
+    }
 `;
 
 function Login({ history }) {
@@ -613,7 +699,7 @@ function Login({ history }) {
             case 0:
                 return (
                     <>
-                        <HeaderBar />
+                        <HeaderBarLogin />
                         <LoginMain>
                             <div className="LoginBox">
                                 <svg width="71" height="47" viewBox="0 0 71 47" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -635,6 +721,9 @@ function Login({ history }) {
                                                 type="radio"
                                                 onChange={handleChangeUsertype}
                                                 checked={usertype === 'students'}
+                                                onClick={() => {
+                                                    setUsertype('students');
+                                                }}
                                                 value="students"
                                                 name="students"
                                                 id="students"
@@ -644,7 +733,7 @@ function Login({ history }) {
                                                     display: 'inline-block',
                                                     padding: '8px 4px',
                                                     // backgroundColor: '#F6F8F9',
-                                                    width: '192px',
+                                                    // width: '192px',
                                                 }}
                                                 htmlFor="students"
                                             >
@@ -657,6 +746,9 @@ function Login({ history }) {
                                                 type="radio"
                                                 onChange={handleChangeUsertype}
                                                 checked={usertype === 'teachers'}
+                                                onClick={() => {
+                                                    setUsertype('teachers');
+                                                }}
                                                 value="teachers"
                                                 name="teachers"
                                                 id="teachers"
@@ -666,7 +758,7 @@ function Login({ history }) {
                                                     display: 'inline-block',
                                                     padding: '8px 4px',
                                                     // backgroundColor: '#F6F8F9',
-                                                    width: '192px',
+                                                    // width: '192px',
                                                 }}
                                                 htmlFor="teachers"
                                             >
@@ -725,7 +817,7 @@ function Login({ history }) {
             case 1:
                 return (
                     <>
-                        <HeaderBar />
+                        <HeaderBarLogin />
                         <AddName>
                             {usertype === 'students' ? (
                                 <h3>학생의 이름을 정확히 입력해주세요</h3>
@@ -823,7 +915,7 @@ function Login({ history }) {
             case 2:
                 return (
                     <>
-                        <HeaderBar />
+                        <HeaderBarLogin />
                         <Make>
                             <div className="MakeAcdemy">
                                 <h3>
@@ -1011,7 +1103,7 @@ function Login({ history }) {
             case 3:
                 return (
                     <>
-                        <HeaderBar />
+                        <HeaderBarLogin />
                         <CodeAcademy>
                             <h3>{inputState['academy_name']}의 학원 코드는 </h3>
                             <div
@@ -1061,9 +1153,9 @@ function Login({ history }) {
     return (
         <>
             <header className={'header-bar'}>
-                <div className="container left">
+                {/* <div className="container left">
                     <img src={LogoWhite} alt="logo" />
-                </div>
+                </div> */}
                 <div className="container center"></div>
                 <div className="container right"></div>
             </header>
