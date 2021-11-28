@@ -22,6 +22,9 @@ const RootContainer = styled.div`
             border-bottom-right-radius: 11px;
         }
     }
+    @media all and (max-width: 799px) {
+        padding: 16px;
+    }
 `;
 // 피드백 에디터 액션 버튼 컨테이너 스타일
 const EditorActionsContainer = styled.div`
