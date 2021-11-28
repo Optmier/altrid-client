@@ -10,6 +10,7 @@ import Plans from '../components/MyPage/Plans';
 import DeleteAccount from '../components/MyPage/DeleteAccount';
 import { useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import '../styles/mypage.scss';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;

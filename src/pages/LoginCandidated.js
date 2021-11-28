@@ -6,12 +6,33 @@ import LoginButtons from '../components/Login/LoginButtons';
 import '../styles/logins.scss';
 import { apiUrl } from '../configs/configs';
 import { withRouter } from 'react-router-dom';
-import { Button, Link, withStyles } from '@material-ui/core';
+import { Link, withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import * as $ from 'jquery';
 import TeachersList from '../components/Login/TeachersList';
 import { $_loginDefault, $_loginStudent, $_loginTeacher } from '../configs/front_urls';
+import HeaderBarLogin from '../components/essentials/HeaderBarLogin';
+import styled from 'styled-components';
+import { Helmet } from 'react-helmet';
+import Button from '../AltridUI/Button/Button';
+import TextField from '../AltridUI/TextField/TextField';
 
+const MainContainer = styled.div`
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: calc(100vh - 360px);
+`;
+const LoginFormPaper = styled.section`
+    border: 1px solid #e9edef;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.1));
+    padding: 16px;
+    max-width: 320px;
+    width: 100%;
+`;
 const LoginDemoButton = withStyles((theme) => ({
     root: {
         color: 'white',
@@ -354,27 +375,30 @@ function LoginCandidated({ history }) {
                 return (
                     <div className="login-form" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                         <h4>{usertype === 'students' ? '학생' : '선생님'} 데모 로그인</h4>
-                        <input
+                        <TextField
+                            fullWidth
                             className={classNames('default', inputError.candidated_code ? 'error' : '')}
                             type="text"
                             name="candidated_code"
                             id="candidated_code"
-                            placeholder="데모 코드"
+                            label="데모 코드"
                             onChange={handleInputChange}
                             value={inputState['candidated_code']}
+                            variant="filled"
+                            InputProps={{ disableUnderline: true }}
                             style={{ marginTop: 16 }}
                         />
-                        <LoginDemoButton
+                        <Button
                             fullWidth
-                            variant="outlined"
+                            variant="filled"
                             onClick={() => {
                                 loginMethod(inputState['candidated_code'], inputState['candidated_code']);
                             }}
                             style={{ marginTop: 16 }}
-                            color="default"
+                            colors="purple"
                         >
                             로그인
-                        </LoginDemoButton>
+                        </Button>
                         <div className="usertype-change-link">
                             <Link color="inherit" onClick={handleChangeUsertype}>
                                 {usertype === 'students' ? '선생님' : '학생'} 데모 버전 보기
@@ -436,14 +460,22 @@ function LoginCandidated({ history }) {
     };
     return (
         <>
-            <header className={'header-bar'}>
-                <div className="container left">{/* <img src={LogoWhite} alt="logo" /> */}</div>
-                <div className="container center"></div>
-                <div className="container right"></div>
-            </header>
-            <main className={classNames('login-page', usertype === 'students' ? 'students' : 'teachers')}>
-                <section className="contents-root">{getContentsForStep(loginStep)}</section>
-            </main>
+            {/* <header className={'header-bar'}> */}
+            {/* <div className="container left"><img src={LogoWhite} alt="logo" /></div> */}
+            {/* <div className="container center"></div> */}
+            {/* <div className="container right"></div> */}
+            {/* </header> */}
+            <Helmet>
+                <style>{`
+                    main#main {
+                        background-color: #ffffff;
+                    }
+            `}</style>
+            </Helmet>
+            <HeaderBarLogin />
+            <MainContainer className={classNames('login-page', usertype === 'students' ? 'students' : 'teachers')}>
+                <LoginFormPaper className="contents-root">{getContentsForStep(loginStep)}</LoginFormPaper>
+            </MainContainer>
             <Footer />
         </>
     );
