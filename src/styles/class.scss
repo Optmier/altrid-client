@@ -439,6 +439,9 @@ $textGray: #706d6d;
             align-items: center;
             & .ment-ai-designed {
                 padding-left: 50px;
+                @media (min-width: 0px) and (max-width: 768px) {
+                    padding-left: 0;
+                }
             }
             & .ment-ai-col {
                 text-align: center;

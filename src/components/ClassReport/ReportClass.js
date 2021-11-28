@@ -549,7 +549,7 @@ function ReportClass({ match, history }) {
                             </div>
                             <div className="report-row">
                                 <span className="left-desc">제출한 학생</span>
-                                <span className="left-content tablet-responsive">
+                                <span className="left-content">
                                     <span>
                                         {studentsData.filter((s) => s.submitted).length} / {studentsData.length}
                                     </span>
