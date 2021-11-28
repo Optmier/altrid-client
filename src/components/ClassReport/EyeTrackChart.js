@@ -308,7 +308,7 @@ function EyeTrackChart({
         },
     });
 
-    console.log(activedNum);
+    // console.log(activedNum);
     useEffect(() => {
         Axios.get(`${apiUrl}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
             params: {
@@ -317,7 +317,7 @@ function EyeTrackChart({
             withCredentials: true,
         })
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 if (res.data) {
                     let unparsedEyetrackData = res.data.eyetrack_data;
                     let parsedData = null;
@@ -406,9 +406,9 @@ function EyeTrackChart({
                 },
             ],
         });
-        console.log(chart3);
+        // console.log(chart3);
     }, [totalStudentsDatas]);
-    console.log(chart1);
+    // console.log(chart1);
     return (
         <div style={{ display: 'flex', justifyContent: 'center', overflow: 'auto' }}>
             <Chart options={chart1.options} series={chart1.series} type="bar" height={'300px'} width={'150px'} />

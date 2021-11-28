@@ -2,6 +2,8 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import problemCategories from '../TOFELEditor/ProblemCategories';
 import styled from 'styled-components';
+import CategorySelector from '../../controllers/CategorySelector';
+import { makeStyles } from '@material-ui/styles';
 
 const StyleChartWrapper = styled.div`
     width: 100%;
@@ -10,24 +12,52 @@ const StyleChartWrapper = styled.div`
     justify-content: center;
 `;
 
-function RadarChart({ currentObjs, averageObjs }) {
+const ChartRoot = styled.div`
+    width: 100%;
+`;
+
+const useStyles = makeStyles({
+    root: {
+        alignItems: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+    },
+});
+
+const randomArrSet = (array, length = array.length) => {
+    if (length > array.length) return array;
+    const newArray = [];
+    for (let i = 0; i < length; i++) {
+        const max = Math.floor(array.length);
+        const randomIdx = Math.floor(Math.random() * max);
+        newArray.push(array.splice(randomIdx, 1));
+    }
+    return newArray;
+};
+
+function RadarChart({ isDummy, subject, currentObjs, averageObjs }) {
     let state = {};
+    const classes = useStyles();
+    const categories = CategorySelector(subject);
+    const dummyDatas = randomArrSet(
+        categories.filter((d) => d.eng !== 'Others').map((d) => d.name),
+        6,
+    );
 
     state = {
         series: [
             {
                 name: '학생 정답률',
-                data: currentObjs ? currentObjs.map((v) => Math.round(v.score * 100)) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                data: currentObjs ? currentObjs.map((v) => Math.round(v.score * 100)) : [0, 0, 0, 0, 0, 0],
             },
             {
                 name: '평균 정답률',
-                data: currentObjs ? averageObjs.map((v) => Math.round(v.score * 100)) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                data: currentObjs ? averageObjs.map((v) => Math.round(v.score * 100)) : [0, 0, 0, 0, 0, 0],
             },
         ],
         options: {
             chart: {
-                width: '100%',
-                height: '100%',
                 type: 'radar',
                 toolbar: {
                     show: false,
@@ -39,7 +69,7 @@ function RadarChart({ currentObjs, averageObjs }) {
 
             plotOptions: {
                 radar: {
-                    size: 110,
+                    // size: 100,
                     polygons: {
                         strokeColors: '#e9e9e9',
                         fill: {
@@ -61,7 +91,12 @@ function RadarChart({ currentObjs, averageObjs }) {
                 },
             },
             xaxis: {
-                categories: averageObjs.map((v) => problemCategories.filter((i) => i.id === v.category)[0].name),
+                categories: isDummy
+                    ? dummyDatas
+                    : averageObjs.map((v) => {
+                          const filtered = categories.filter((i) => i.id === v.category);
+                          return filtered.length ? filtered[0].name : '{과목 유형 불일치}';
+                      }),
                 // '기타',
             },
             yaxis: {
@@ -83,11 +118,16 @@ function RadarChart({ currentObjs, averageObjs }) {
     };
     return (
         <StyleChartWrapper>
-            <div id="chart">
-                <Chart options={state.options} series={state.series} type="radar" height={'325px'} width={'325px'} />
-            </div>
+            <ChartRoot id="chart">
+                <Chart className={classes.root} options={state.options} series={state.series} type="radar" height={350} />
+            </ChartRoot>
         </StyleChartWrapper>
     );
 }
+
+RadarChart.defaultProps = {
+    isDummy: false,
+    subject: 1,
+};
 
 export default RadarChart;

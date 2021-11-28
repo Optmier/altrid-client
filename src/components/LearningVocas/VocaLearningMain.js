@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ClassWrapper from '../essentials/ClassWrapper';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
-import Groupbox from '../../AltridUI/GroupBox/Groupbox';
+import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import Button from '../../AltridUI/Button/Button';
 import { FormControl, Grid, Input, InputAdornment, InputLabel, LinearProgress, MenuItem, Select, TextField } from '@material-ui/core';
 import { withRouter } from 'react-router';
@@ -39,12 +39,32 @@ const LearningSection = styled.div`
     flex-direction: column;
     justify-content: center;
     padding: 48px 56px;
+    @media all and (max-width: 799px) {
+        padding: 30px 32px;
+    }
+    @media all and (max-width: 799px) {
+        padding: 30px 32px;
+    }
 `;
 const GotoLearningContainer = styled.div`
     align-items: center;
     display: flex;
     margin-top: 8px;
     width: 100%;
+    @media all and (max-width: 799px) {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+`;
+const SelectNumbersGroup = styled.div`
+    align-items: center;
+    display: flex;
+    width: 100%;
+    max-width: 328px;
+    min-width: 160px;
+    @media all and (max-width: 799px) {
+        max-width: initial;
+    }
 `;
 const WordCountsSelect = styled.select`
     cursor: pointer;
@@ -108,6 +128,10 @@ const LearningProgressPercentage = styled.div`
     letter-spacing: -0.03em;
     color: #276ef1;
     margin-top: 8px;
+    @media all and (max-width: 799px) {
+        font-size: 1.75rem;
+        line-height: 2rem;
+    }
 `;
 const CompletedListDivider = styled.div`
     border-top: 2px solid #cbcbcb;
@@ -116,8 +140,6 @@ const CompletedListDivider = styled.div`
 `;
 const useStyles = makeStyles((theme) => ({
     selectBox: {
-        minWidth: 160,
-        maxWidth: 328,
         width: '100%',
     },
     customNumbersTextfield: {
@@ -139,6 +161,13 @@ const useStyles = makeStyles((theme) => ({
     totalProgress: {
         height: 16,
         marginTop: 8,
+    },
+    startButton: {
+        marginLeft: 8,
+        '@media all and (max-width: 799px)': {
+            marginLeft: 0,
+            marginTop: 8,
+        },
     },
 }));
 
@@ -303,56 +332,60 @@ function VocaLearningMain({ history, match }) {
             <ClassWrapper col="col">
                 <HeaderMenu title="단어 학습" menuDatas={headerMenus} selectedMenuId={menuStatus} onItemClick={actionClickHeaderMenuItem} />
                 <Contents>
-                    <Groupbox title="학습하기">
+                    <GroupBox title="학습하기">
                         <LearningSection>
                             <LearningProgressContainer>
                                 나의 단어 학습 진행률
                                 <LearningProgressPercentage>{totalProgress}%</LearningProgressPercentage>
                             </LearningProgressContainer>
                             <GotoLearningContainer>
-                                <FormControl className={classes.selectBox} variant="outlined">
-                                    {/* <InputLabel id="select-learning-numbers-label">학습할 단어 수 선택</InputLabel> */}
-                                    <WordCountsSelect
-                                        labelId="select-learning-numbers-label"
-                                        // label="학습할 단어 수 선택"
-                                        value={learningNumbersSelectValue}
-                                        onChange={actionOnChangeNumbersSelect}
-                                    >
-                                        <option value={0}>학습할 단어 수 선택</option>
-                                        <option value={10}>10</option>
-                                        <option value={20}>20</option>
-                                        <option value={30}>30</option>
-                                        <option value={50}>50</option>
-                                        <option value={100}>100</option>
-                                        <option value="custom">직접 입력하기</option>
-                                    </WordCountsSelect>
-                                </FormControl>
-                                {learningNumbersSelectValue === 'custom' ? (
-                                    // <FormControl className={classes.customNumbersTextfield}>
-                                    <CustomNumberField
-                                        variant="outlined"
-                                        type="number"
-                                        defaultValue={customNumbers}
-                                        onChange={actionChangeCustomNumbersField}
-                                    />
-                                ) : // </FormControl>
-                                null}
+                                <SelectNumbersGroup>
+                                    <FormControl className={classes.selectBox} variant="outlined">
+                                        {/* <InputLabel id="select-learning-numbers-label">학습할 단어 수 선택</InputLabel> */}
+                                        <WordCountsSelect
+                                            labelId="select-learning-numbers-label"
+                                            // label="학습할 단어 수 선택"
+                                            value={learningNumbersSelectValue}
+                                            onChange={actionOnChangeNumbersSelect}
+                                        >
+                                            <option value={0}>학습할 단어 수 선택</option>
+                                            <option value={10}>10</option>
+                                            <option value={20}>20</option>
+                                            <option value={30}>30</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                            <option value="custom">직접 입력하기</option>
+                                        </WordCountsSelect>
+                                    </FormControl>
+                                    {learningNumbersSelectValue === 'custom' ? (
+                                        // <FormControl className={classes.customNumbersTextfield}>
+                                        <CustomNumberField
+                                            variant="outlined"
+                                            type="number"
+                                            defaultValue={customNumbers}
+                                            onChange={actionChangeCustomNumbersField}
+                                        />
+                                    ) : // </FormControl>
+                                    null}
+                                </SelectNumbersGroup>
                                 <Button
+                                    className={classes.startButton}
                                     colors="purple"
                                     onClick={actionClickLearningStart}
-                                    disabled={learningNumbersSelectValue === '0'}
-                                    style={{ marginLeft: 8 }}
+                                    disabled={learningNumbersSelectValue == 0}
                                 >
                                     학습하기!
                                 </Button>
                             </GotoLearningContainer>
                         </LearningSection>
-                    </Groupbox>
-                    <Groupbox
+                    </GroupBox>
+                    <GroupBox
                         title="완료된 단어"
                         rightComponent={<CompletedListSearchbox onSearchboxChange={actionChangeCompletedSearchbox} />}
                         limited
-                        maxHeightCss="calc(100vh - 720px)"
+                        maxHeightCss="calc(100vh - 700px)"
+                        breakPoint={799}
+                        breakPointMaxHeightCss="calc(100vh - 600px)"
                         onScrollBottomEdge={actionScrollBottomEdge}
                     >
                         {completedList.map((d, i) => (
@@ -369,7 +402,7 @@ function VocaLearningMain({ history, match }) {
                                 />
                             </React.Fragment>
                         ))}
-                    </Groupbox>
+                    </GroupBox>
                 </Contents>
             </ClassWrapper>
         </LearningRoot>

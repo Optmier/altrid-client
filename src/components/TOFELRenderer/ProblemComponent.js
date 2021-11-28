@@ -11,6 +11,10 @@ import AssignmentsStarringIcon from '../../AltridUI/Icons/AssignmentsStarringIco
 const Root = styled.div`
     position: relative;
 `;
+const ProblemContainer = styled.div`
+    display: flex;
+    position: relative;
+`;
 const ProblemNumber = styled.span`
     cursor: pointer;
     font-family: 'Times New Roman';
@@ -18,26 +22,13 @@ const ProblemNumber = styled.span`
     line-height: 1.5rem;
     font-weight: 600;
     margin-right: 0.4rem;
-    margin-left: 0.3rem;
     position: relative;
     user-select: none;
-
-    & div.starred-mark {
-        background: url(${StarredImage});
-        background-position: center;
-        background-size: cover;
-        background-repeat: no-repeat;
-        position: absolute;
-        height: 2.2rem;
-        width: 2.2rem;
-        margin-top: -0.3rem;
-        margin-left: -0.4rem;
-        opacity: 0.9;
-    }
 `;
 const TextsContainer = styled.div`
     display: inline-flex;
     flex-direction: column;
+    margin-right: 30px;
 `;
 const SelectionsContainer = styled.div`
     margin-top: 20px;
@@ -80,6 +71,7 @@ const StarredButton = styled.button`
 `;
 
 function ProblemComponent({
+    vocas,
     problemNumber,
     category,
     type,
@@ -90,10 +82,11 @@ function ProblemComponent({
     currentSelection,
     onSelect,
     starred,
-    onProblemNumberDoubleClick,
+    onStarringClick,
 }) {
     const shortAnswerFieldRef = useRef();
     const textContainerRef = useRef();
+    const [renderTextContents, setRenderTextContents] = useState(null);
     const handleSelection = (id) => () => {
         onSelect(id, answer === id);
     };
@@ -103,8 +96,8 @@ function ProblemComponent({
         onSelect(value.toUpperCase(), answer === value.toUpperCase());
     };
 
-    const actionProblemNumberDoubleClick = () => {
-        onProblemNumberDoubleClick();
+    const actionClickStarring = () => {
+        onStarringClick();
     };
 
     useEffect(() => {
@@ -123,16 +116,51 @@ function ProblemComponent({
         shortAnswerFieldRef.current.value = currentSelection;
     }, [currentSelection]);
 
+    useEffect(() => {
+        // setRenderTextContents(textForRender);
+    }, [textForRender]);
+
+    const markWords = (words) => {
+        let replaceHtml = textForRender;
+        for (let word of words) {
+            const wordCases = [word.toLowerCase(), word.toUpperCase(), word.charAt(0).toUpperCase() + word.slice(1)];
+            for (let wc of wordCases) {
+                const replacement = new RegExp(`(?<!<[^>]*)\\b${wc}\\b`, 'g');
+                replaceHtml = replaceHtml.replace(replacement, `<span class="voca-highlighted">${wc}</span>`);
+            }
+        }
+        setRenderTextContents(HtmlParser(replaceHtml));
+    };
+
+    useEffect(() => {
+        if (!vocas.length) {
+            setRenderTextContents(HtmlParser(textForRender));
+            return;
+        }
+        markWords(vocas);
+    }, [vocas, textForRender]);
+
+    const SelectionWordRenderer = (string, words) => {
+        let replaceHtml = string;
+        for (let word of words) {
+            const wordCases = [word.toLowerCase(), word.toUpperCase(), word.charAt(0).toUpperCase() + word.slice(1)];
+            for (let wc of wordCases) {
+                const replacement = new RegExp(`(?<!<[^>]*)\\b${wc}\\b`, 'g');
+                replaceHtml = replaceHtml.replace(replacement, `<span class="voca-highlighted">${wc}</span>`);
+            }
+        }
+        return HtmlParser(replaceHtml);
+    };
+
     return (
         <Root>
-            <ProblemNumber className="problem-number" onDoubleClick={actionProblemNumberDoubleClick}>
-                {starred ? <div className="starred-mark"></div> : null}
-                {problemNumber}.
-            </ProblemNumber>
-            <TextsContainer ref={textContainerRef}>{HtmlParser(textForRender)}</TextsContainer>
-            <StarredButton>
-                <AssignmentsStarringIcon fillColor={starred ? undefined : '#BFC6CD'} />
-            </StarredButton>
+            <ProblemContainer>
+                <ProblemNumber className="problem-number">{problemNumber}.</ProblemNumber>
+                <TextsContainer ref={textContainerRef}>{renderTextContents}</TextsContainer>
+                <StarredButton>
+                    <AssignmentsStarringIcon fillColor={starred ? undefined : '#BFC6CD'} onClick={actionClickStarring} />
+                </StarredButton>
+            </ProblemContainer>
             {type === 'short-answer' ? (
                 <SelectionsContainer>
                     <UCOutlinedInput
@@ -154,7 +182,7 @@ function ProblemComponent({
                             ) : (
                                 <RadioButtonUncheckedIcon htmlColor="#757575" />
                             )}
-                            <p>{selections[1]}</p>
+                            <p>{SelectionWordRenderer(selections[1], vocas)}</p>
                         </Selection>
                     ) : null}
                     {selections[2] ? (
@@ -164,7 +192,7 @@ function ProblemComponent({
                             ) : (
                                 <RadioButtonUncheckedIcon htmlColor="#757575" />
                             )}
-                            <p>{selections[2]}</p>
+                            <p>{SelectionWordRenderer(selections[2], vocas)}</p>
                         </Selection>
                     ) : null}
                     {selections[3] ? (
@@ -174,7 +202,7 @@ function ProblemComponent({
                             ) : (
                                 <RadioButtonUncheckedIcon htmlColor="#757575" />
                             )}
-                            <p>{selections[3]}</p>
+                            <p>{SelectionWordRenderer(selections[3], vocas)}</p>
                         </Selection>
                     ) : null}
                     {selections[4] ? (
@@ -184,7 +212,7 @@ function ProblemComponent({
                             ) : (
                                 <RadioButtonUncheckedIcon htmlColor="#757575" />
                             )}
-                            <p>{selections[4]}</p>
+                            <p>{SelectionWordRenderer(selections[4], vocas)}</p>
                         </Selection>
                     ) : null}
                     {selections[5] ? (
@@ -194,7 +222,7 @@ function ProblemComponent({
                             ) : (
                                 <RadioButtonUncheckedIcon htmlColor="#757575" />
                             )}
-                            <p>{selections[5]}</p>
+                            <p>{SelectionWordRenderer(selections[5], vocas)}</p>
                         </Selection>
                     ) : null}
                 </SelectionsContainer>
@@ -218,6 +246,7 @@ ProblemComponent.defaultProps = {
     score: 0,
     currentSelection: 0,
     starred: false,
+    vocas: [],
     onSelect() {},
     onProblemNumberDoubleClick() {},
 };

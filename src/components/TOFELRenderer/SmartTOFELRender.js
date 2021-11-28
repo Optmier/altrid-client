@@ -307,7 +307,7 @@ function SmartTOFELRender({
         });
     };
 
-    const actionProblemNumberDoubleClick = () => {
+    const actionClickStarring = () => {
         setUserSelectionDatas(
             userSelectionDatas.map((data, idx) => (idx === currentProblemIdx ? { ...data, starred: !data.starred } : data)),
         );
@@ -380,7 +380,6 @@ function SmartTOFELRender({
                     // console.log(state);
                     return state;
                 });
-                console.log(userSelectionDatas[currentProblemIdx].starred);
             }
         } else {
             const arr = [];
@@ -408,13 +407,6 @@ function SmartTOFELRender({
             ...metadata,
             lastProblem: currentProblemIdx,
         });
-
-        for (let w of vocas) {
-            unmarkWords(w, document.querySelector('div.problems'));
-            setTimeout(() => {
-                markWords(w, document.querySelector('div.problems'));
-            });
-        }
     }, [currentProblemIdx]);
 
     useEffect(() => {
@@ -471,12 +463,10 @@ function SmartTOFELRender({
                 // console.log(selectedWord);
                 if (!vocas.find((v) => v === selectedWord)) {
                     addVocas(selectedWord);
-                    markWords(selectedWord, document.querySelector('div.passages'));
-                    markWords(selectedWord, document.querySelector('div.problems'));
+                    markWords(selectedWord, passagesRef.current);
                 } else {
                     removeVocas(selectedWord);
-                    unmarkWords(selectedWord, document.querySelector('div.passages'));
-                    unmarkWords(selectedWord, document.querySelector('div.problems'));
+                    unmarkWords(selectedWord, passagesRef.current);
                 }
             }
         };
@@ -501,12 +491,6 @@ function SmartTOFELRender({
             const replacement = new RegExp(`(?<!<[^>]*)\\b${wc}\\b`, 'g');
             if (ref.classList.contains('passages'))
                 contents.innerHTML = contents.innerHTML.replace(replacement, `<span class="voca-highlighted">${wc}</span>`);
-            else if (ref.classList.contains('problems')) {
-                const praghps = $(ref).children().find('p');
-                for (let p of praghps) {
-                    p.innerHTML = p.innerHTML.replace(replacement, `<span class="voca-highlighted">${wc}</span>`);
-                }
-            }
         }
     };
 
@@ -524,10 +508,10 @@ function SmartTOFELRender({
             document.querySelector('div.passages').innerHTML = passageForRender[pUUIDs.findIndex((d) => d === uid)];
             for (let w of vocas) {
                 setTimeout(() => {
-                    unmarkWords(w, document.querySelector('div.passages'));
+                    unmarkWords(w, passagesRef.current);
                 }, 1);
                 setTimeout(() => {
-                    markWords(w, document.querySelector('div.passages'));
+                    markWords(w, passagesRef.current);
                 }, 50);
             }
         }
@@ -590,6 +574,7 @@ function SmartTOFELRender({
                 <ProblemsContainer className="problems" ref={problemsRef}>
                     {problemDatas.length > 0 ? (
                         <ProblemComponent
+                            vocas={vocas}
                             problemNumber={currentProblemIdx + 1}
                             category={problemDatas[currentProblemIdx].category}
                             type={problemDatas[currentProblemIdx].type}
@@ -607,7 +592,7 @@ function SmartTOFELRender({
                             }
                             starred={userSelectionDatas[currentProblemIdx] ? userSelectionDatas[currentProblemIdx].starred : false}
                             onSelect={onSelectionSelected}
-                            onProblemNumberDoubleClick={actionProblemNumberDoubleClick}
+                            onStarringClick={actionClickStarring}
                         />
                     ) : null}
                 </ProblemsContainer>

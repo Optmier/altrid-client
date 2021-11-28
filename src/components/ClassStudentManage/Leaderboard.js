@@ -1,13 +1,24 @@
-import { Paper, TableHead, Table, TableBody, TableCell, TableContainer, TableRow, Tab } from '@material-ui/core';
+import {
+    Paper,
+    TableHead as MuiTableHead,
+    Table as MuiTable,
+    TableBody as MuiTableBody,
+    TableCell as MuiTableCell,
+    TableContainer as MuiTableContainer,
+    TableRow as MuiTableRow,
+    Tab,
+    withStyles,
+} from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { styled } from '@material-ui/styles';
+import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+const StyledTableRow = styled(MuiTableRow)(({ theme }) => ({
     '&:nth-of-type(even)': {
         backgroundColor: '#F6F8F9',
+        border: 0,
     },
     // hide last border
     '&:last-child td, &:last-child th': {
@@ -19,7 +30,7 @@ function createData(name: string, time: number, achive: number) {
     return { name, time, achive };
 }
 
-const row = [
+const dummyRow = [
     createData('jaehyeon', '541', '90.7'),
     createData('학생2', '342', '86.2'),
     createData('학생3', '111', '60.1'),
@@ -28,13 +39,100 @@ const row = [
     createData('학생6', '321', '85.3'),
 ];
 
+const TableContainer = withStyles((theme) => ({
+    root: {
+        color: '#11171C',
+        fontFamily: [
+            'inter',
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ],
+    },
+}))(MuiTableContainer);
+
+const Table = withStyles((theme) => ({
+    root: {
+        fontFamily: 'inherit',
+        fontSize: 18,
+        fontWeight: 400,
+        letterSpacing: '-0.02em',
+        lineHeight: '22px',
+    },
+}))(MuiTable);
+
+const TableHead = withStyles((theme) => ({
+    root: {
+        fontFamily: 'inherit',
+        fontSize: 14,
+        fontWeight: 'inherit',
+        letterSpacing: 'inherit',
+        lineHeight: '18px',
+    },
+}))(MuiTableHead);
+
+const TableRow = withStyles((theme) => ({
+    root: {
+        backgroundColor: ({ idx }) => (idx % 2 === 0 ? '#ffffff' : null),
+        borderRadius: 8,
+        fontFamily: 'inherit',
+        fontSize: 'inherit',
+        fontWeight: 'inherit',
+        letterSpacing: 'inherit',
+        lineHeight: 'inherit',
+        '& td:first-child': {
+            borderTopLeftRadius: 8,
+            borderBottomLeftRadius: 8,
+        },
+        '& td:last-child': {
+            borderTopRightRadius: 8,
+            borderBottomRightRadius: 8,
+        },
+    },
+}))(MuiTableRow);
+
+const TableCell = withStyles((theme) => ({
+    root: {
+        border: 'none',
+        fontFamily: 'inherit',
+        fontSize: 'inherit',
+        fontWeight: 'inherit',
+        letterSpacing: 'inherit',
+        lineHeight: 'inherit',
+    },
+}))(MuiTableCell);
+
+const TableBody = withStyles((theme) => ({
+    root: {
+        fontFamily: 'inherit',
+        fontSize: 18,
+        fontWeight: 400,
+        letterSpacing: '-0.02em',
+        lineHeight: '22px',
+    },
+}))(MuiTableBody);
+
+const NumberSpan = styled.span`
+    display: inline-block;
+    font-weight: 700;
+    color: ${({ idx }) => (idx === 0 ? '#3B1689' : null)};
+    width: 24px;
+`;
+
 function Leaderboard({ classNum }) {
-    const [row, setRow] = useState([]);
+    const [row, setRow] = useState([...dummyRow]);
     useEffect(() => {
         Axios.get(`${apiUrl}/optimer/${classNum}`, { withCredentials: true })
             .then((res) => {
                 if (!res.data || !res.data.length) return;
-                setRow(res.data.map((d) => createData(d.name, d.time_total)));
+                // setRow(res.data.map((d) => createData(d.name, d.time_total)));
             })
             .catch((err) => {
                 console.error(err);
@@ -44,26 +142,26 @@ function Leaderboard({ classNum }) {
     return (
         <div className="Leaderboard">
             <div className="class-manage-root" style={{ width: '100%' }}>
-                <div>
+                {/* <div>
                     <div className="manage-inputs">
                         <div className="manage-inputs-header">리더 보드</div>
                     </div>
-                </div>
+                </div> */}
                 <div className="score">
-                    <TableContainer component={Paper}>
+                    <TableContainer>
                         <Table sx={{ minwidth: 650 }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">순위</TableCell>
-                                    <TableCell align="center">학생 이름</TableCell>
-                                    <TableCell align="center">총 학습시간</TableCell>
+                                    <TableCell align="left">순위</TableCell>
+                                    <TableCell align="left">학생 이름</TableCell>
+                                    <TableCell align="right">총 학습시간</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {row.map((row, index) => (
-                                    <StyledTableRow key={index}>
-                                        <TableCell align="center">
-                                            {index + 1} 위 &nbsp;
+                                    <TableRow key={index} idx={index}>
+                                        <TableCell align="left">
+                                            <NumberSpan idx={index}>{index + 1}</NumberSpan>
                                             {index + 1 == 1 ? (
                                                 <svg
                                                     width="16"
@@ -107,9 +205,9 @@ function Leaderboard({ classNum }) {
                                                 </svg>
                                             ) : null}
                                         </TableCell>
-                                        <TableCell align="center">{row.name} 님</TableCell>
-                                        <TableCell align="center">{row.time} 분</TableCell>
-                                    </StyledTableRow>
+                                        <TableCell align="left">{row.name} 님</TableCell>
+                                        <TableCell align="right">{row.time} 분</TableCell>
+                                    </TableRow>
 
                                     // map 함수 function 으로 만들고
                                     // sort 를 먼저 한 다음 다시 map 함수를 사용?

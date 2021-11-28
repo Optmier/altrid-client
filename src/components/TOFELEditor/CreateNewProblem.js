@@ -6,6 +6,7 @@ import ReactQuill from 'react-quill';
 import { Button, Collapse, Grid, IconButton, InputAdornment, OutlinedInput, Tooltip, withStyles } from '@material-ui/core';
 import QuillEditorToolbarOption from './QuillEditorToolbarOption';
 import ProblemCategories from './ProblemCategories';
+import CSATCategories from './CSATCategories';
 import * as $ from 'jquery';
 import { Helmet } from 'react-helmet';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
@@ -285,7 +286,7 @@ SelectionBox.defaultProps = {
     onDelete() {},
 };
 
-function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
+function CreateNewProblem({ subject, problemDatas, handleClose, onCreate, editmode }) {
     const rootRef = useRef();
     const [createButtonEnabled, setCreateButtonEnabled] = useState(false);
     const [metadata, setMetadata] = useState(problemDatas);
@@ -460,6 +461,18 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
         $quillContainer.css({ 'min-height': '128px', 'max-height': '192px' });
         $quillContainer.find('.ql-editor').css({ 'min-height': '128px', 'max-height': '192px' });
     }, []);
+
+    const CategorySelector = (subject) => {
+        switch (subject) {
+            case 0:
+                return CSATCategories;
+            case 1:
+                return ProblemCategories;
+            default:
+                return ProblemCategories;
+        }
+    };
+
     return (
         <>
             <Helmet>
@@ -516,7 +529,7 @@ function CreateNewProblem({ problemDatas, handleClose, onCreate, editmode }) {
                                 <option value="" disabled>
                                     영역 선택
                                 </option>
-                                {ProblemCategories.map(({ id, name, eng, desc, nums }) => (
+                                {CategorySelector(subject).map(({ id, name, eng, desc, nums }) => (
                                     <option value={id} key={id}>
                                         {name}
                                     </option>

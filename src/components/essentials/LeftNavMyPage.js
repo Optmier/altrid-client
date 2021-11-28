@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import '../../styles/nav_left.scss';
 import { NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLeftNavStateGlobal } from '../../redux_modules/leftNavStateGlobal';
 
 const StyleLeftNav = styled.div`
     transition: all 0.4s;

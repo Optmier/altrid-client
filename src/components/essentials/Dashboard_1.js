@@ -12,6 +12,7 @@ import { apiUrl } from '../../configs/configs';
 import { Link } from 'react-router-dom';
 import ReactApexChart from 'react-apexcharts';
 import Button from '../../AltridUI/Button/Button';
+import { Helmet } from 'react-helmet';
 
 const Container = styled.div`
     margin: 0px auto;
@@ -590,6 +591,13 @@ function Dashboard_1({ match }) {
 
     return (
         <>
+            <Helmet>
+                <style>{`
+                    main#main {
+                        background-color: #ffffff;
+                    }
+            `}</style>
+            </Helmet>
             <HeaderBar />
             <Container>
                 <div className="greeting">

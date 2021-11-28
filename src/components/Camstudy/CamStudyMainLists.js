@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import Groupbox from '../../AltridUI/GroupBox/Groupbox';
+import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 import Button from '../../AltridUI/Button/Button';
 import ClassWrapper from '../essentials/ClassWrapper';
@@ -307,7 +307,7 @@ function CamStudyMainLists({ history, match }) {
                 return (
                     <>
                         {dataListInvited.length ? (
-                            <Groupbox title="초대됨">
+                            <GroupBox title="초대됨">
                                 {dataListInvited.length ? (
                                     <Grid container spacing={2}>
                                         {dataListInvited.map((d) => (
@@ -329,9 +329,9 @@ function CamStudyMainLists({ history, match }) {
                                         ))}
                                     </Grid>
                                 ) : null}
-                            </Groupbox>
+                            </GroupBox>
                         ) : null}
-                        <Groupbox title="내가 생성함">
+                        <GroupBox title="내가 생성함">
                             {dataListMine.length ? (
                                 <Grid container spacing={2}>
                                     {dataListMine.map((d) => (
@@ -355,13 +355,13 @@ function CamStudyMainLists({ history, match }) {
                                     ))}
                                 </Grid>
                             ) : null}
-                        </Groupbox>
+                        </GroupBox>
                     </>
                 );
             case 1:
                 return (
                     <>
-                        <Groupbox title="전체 목록">
+                        <GroupBox title="전체 목록">
                             {dataListTotal.length ? (
                                 <Grid container spacing={2}>
                                     {dataListTotal.map((d) => (
@@ -383,7 +383,7 @@ function CamStudyMainLists({ history, match }) {
                                     ))}
                                 </Grid>
                             ) : null}
-                        </Groupbox>
+                        </GroupBox>
                     </>
                 );
             default:

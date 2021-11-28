@@ -13,6 +13,7 @@ import classLists from './classLists';
 import planInfo, { watcher } from './planInfo';
 import RdxVocaLearnings from './vocaLearnings';
 import RdxOpTimerHelper from './optimerHelper';
+import RdxGlobalLeftNavState from './leftNavStateGlobal';
 
 const rootReducer = combineReducers({
     RdxSessions,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
     planInfo,
     RdxVocaLearnings,
     RdxOpTimerHelper,
+    RdxGlobalLeftNavState,
 });
 export function* rootSaga() {
     yield all([watcher()]); // all 은 배열 안의 여러 사가를 동시에 실행시켜줍니다.

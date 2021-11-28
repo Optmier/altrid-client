@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-computed-key */
 import {
     Accordion as MuiAccordion,
     AccordionDetails as MuiAccordionDetails,
@@ -24,8 +25,13 @@ import ScoringDetailsStarringIcon from '../../../AltridUI/Icons/ScoringDetailsSt
 import AccordionArrowIcon from '../../../AltridUI/Icons/AccordionArrowIcon';
 
 const TextsContentsRenderRoot = styled.div`
+    border: 1px solid transparent;
     min-width: 320px;
     overflow-x: auto;
+    @media all and (max-width: 640px) {
+        border-color: #e9edef;
+        border-radius: 8px;
+    }
 `;
 const TextsContentsTitle = styled.div`
     font-weight: 600;
@@ -104,46 +110,93 @@ const SummaryRoot = styled.div`
     line-height: 1.375rem;
     justify-content: space-between;
     width: 100%;
+    @media all and (max-width: 640px) {
+        flex-direction: column;
+    }
+`;
+const SummaryTextInfos = styled.div`
+    align-items: center;
+    display: flex;
+    width: 55%;
+    @media all and (max-width: 640px) {
+        align-self: flex-start;
+        width: 100%;
+    }
 `;
 const SummaryNoTitle = styled.div`
-    flex-basis: 11%;
+    flex-basis: 30%;
     width: 2.6rem;
+    @media all and (max-width: 640px) {
+        margin-right: auto;
+    }
+`;
+const SummarySpentTime = styled.div`
+    flex-basis: 40%;
+    width: 48px;
+    @media all and (max-width: 640px) {
+        flex-basis: 20%;
+    }
 `;
 const SummaryIsCorrect = styled.div`
     color: ${({ userAnswer, isCorrect }) => (!userAnswer ? '#4D5C6A' : isCorrect ? '#0CB573' : '#E11900')};
-    flex-basis: 13%;
-    text-align: left;
+    flex-basis: 30%;
     width: 2.7rem;
-`;
-const SummarySpentTime = styled.div`
-    flex-basis: 13%;
-    text-align: right;
-    width: 3rem;
+    @media all and (max-width: 640px) {
+        flex-basis: initial;
+        padding-right: 32px;
+        text-align: end;
+    }
 `;
 const SummaryIcons = styled.div`
-    flex-basis: 30%;
     align-items: center;
     display: flex;
     justify-content: flex-end;
-    width: 64px;
+    margin-left: auto;
+    margin-right: 32px;
+    width: 92px;
+    @media all and (max-width: 768px) {
+        align-self: flex-start;
+        margin-right: 16px;
+    }
+    @media all and (max-width: 640px) {
+        align-self: flex-start;
+        margin: 16px 0 8px 0;
+    }
 `;
 const SummaryIconStarred = styled.div`
     /* flex-basis: 33.33%; */
+    align-items: center;
+    display: flex;
     width: 2em;
 `;
 const SummaryIconHandsUp = styled.div`
     /* flex-basis: 66.66%; */
+    align-items: center;
+    display: flex;
     width: 2em;
 `;
 const SummaryIconTeacherSelected = styled.div`
     /* flex-basis: 99.99%; */
+    align-items: center;
+    display: flex;
     width: 2em;
 `;
 const SummaryActions = styled.div`
     justify-content: flex-end;
     width: 120px;
+    @media all and (max-width: 640px) {
+        display: none;
+    }
 `;
-
+const DetailActions = styled.div`
+    align-items: center;
+    display: none;
+    margin-top: 8px;
+    width: 100%;
+    @media all and (max-width: 640px) {
+        display: flex;
+    }
+`;
 const TopIconContainer = styled.div`
     display: flex;
     margin-bottom: 32px;
@@ -189,13 +242,18 @@ const AltDialog = withStyles((theme) => ({
         borderRadius: 16,
         maxWidth: 800,
         width: '100%',
+        '@media (min-width: 0) and (max-width: 640px)': {
+            borderRadius: 0,
+            margin: 0,
+            maxHeight: '100%',
+        },
     },
 }))(Dialog);
 
 const AltDialogTitle = withStyles((theme) => ({
     root: {
         padding: '48px 48px 0 48px',
-        '@media (min-width: 0) and (max-width: 540px)': {
+        '@media (min-width: 0) and (max-width: 640px)': {
             padding: '16px 16px 0 16px',
         },
     },
@@ -205,7 +263,7 @@ const AltDialogContent = withStyles((theme) => ({
     root: {
         padding: '0 48px 0 48px',
         marginTop: 32,
-        '@media (min-width: 0) and (max-width: 540px)': {
+        '@media (min-width: 0) and (max-width: 640px)': {
             padding: '0 16px 0 16px',
         },
     },
@@ -214,7 +272,7 @@ const AltDialogContent = withStyles((theme) => ({
 const AltDialogActions = withStyles((theme) => ({
     root: {
         padding: '13px 48px 13px 48px',
-        '@media (min-width: 0) and (max-width: 540px)': {
+        '@media (min-width: 0) and (max-width: 640px)': {
             padding: '13px 16px 13px 16px',
         },
     },
@@ -227,6 +285,10 @@ const TitleText = styled.div`
     font-weight: 700;
     letter-spacing: -0.03em;
     line-height: 3.25rem;
+    @media all and (max-width: 640px) {
+        font-size: 28px;
+        line-height: 32px;
+    }
 `;
 
 const Accordion = withStyles({
@@ -236,14 +298,28 @@ const Accordion = withStyles({
             borderTopLeftRadius: 8,
             borderTopRightRadius: 8,
         },
+        '&:last-child': {
+            borderBottomLeftRadius: 8,
+            borderBottomRightRadius: 8,
+        },
         '&:not(:last-child)': {
             borderBottom: 0,
+            borderBottomLeftRadius: 8,
+            borderBottomRightRadius: 8,
         },
         '&:before': {
             display: 'none',
         },
         '&$expanded': {
             margin: 'auto',
+        },
+        '& + &': {
+            marginTop: 2,
+        },
+        ['@media all and (max-width: 640px)']: {
+            '& + &': {
+                marginTop: 8,
+            },
         },
     },
     expanded: {},
@@ -255,21 +331,48 @@ const AccordionSummary = withStyles({
         borderTop: '2px solid transparent',
         borderLeft: '2px solid transparent',
         borderRight: '2px solid transparent',
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 8,
+        borderRadius: 8,
         marginBottom: 0,
         minHeight: 44,
         paddingLeft: 0,
         '&$expanded': {
             borderColor: '#6C46A1',
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
             minHeight: 44,
+        },
+        ['@media all and (max-width: 640px)']: {
+            backgroundColor: '#F6F8F9 !important',
+            paddingRight: 0,
+            '&$expanded': {
+                backgroundColor: '#ffffff !important',
+            },
         },
     },
     content: {
         alignItems: 'center',
         margin: '0 32px',
+        color: '#11171C',
         '&$expanded': {
             margin: '0 32px',
+        },
+        ['@media (min-width: 0) and (max-width: 768px)']: {
+            margin: '0 10px 0 16px',
+        },
+        ['@media all and (max-width: 640px)']: {
+            // flexDirection: 'column',
+            margin: 0,
+            padding: '16px 16px 8px 16px',
+            '&$expanded': {
+                margin: 0,
+            },
+        },
+    },
+    expandIcon: {
+        ['@media all and (max-width: 640px)']: {
+            right: 16,
+            top: 4,
+            position: 'absolute',
         },
     },
     expanded: {},
@@ -277,16 +380,19 @@ const AccordionSummary = withStyles({
 
 const AccordionDetails = withStyles((theme) => ({
     root: {
-        borderBottom: '2px solid',
-        borderLeft: '2px solid',
-        borderRight: '2px solid',
+        borderBottom: '2px solid #6C46A1',
+        borderLeft: '2px solid #6C46A1',
+        borderRight: '2px solid #6C46A1',
         borderBottomLeftRadius: 8,
         borderBottomRightRadius: 8,
-        borderColor: '#6C46A1',
         padding: theme.spacing(2),
         '&$expanded': {
             borderColor: '#6C46A1',
             minHeight: 44,
+        },
+        ['@media all and (max-width: 640px)']: {
+            flexDirection: 'column',
+            paddingTop: 0,
         },
     },
 }))(MuiAccordionDetails);
@@ -374,11 +480,14 @@ function ScoringResults({
                             id={`${d.uuid}bh-header`}
                         >
                             <SummaryRoot onClick={(e) => e.stopPropagation()}>
-                                <SummaryNoTitle>#{idx + 1}</SummaryNoTitle>
-                                <SummaryIsCorrect userAnswer={d.userAnswer} isCorrect={d.isCorrect}>
-                                    {!d.userAnswer ? '미응답' : d.isCorrect ? '정답' : '오답'}
-                                </SummaryIsCorrect>
-                                <SummarySpentTime>{d.spentTime === null ? '' : d.spentTime + '초'}</SummarySpentTime>
+                                <SummaryTextInfos>
+                                    <SummaryNoTitle>#{idx + 1}</SummaryNoTitle>
+                                    <SummarySpentTime>{d.spentTime === null ? '' : d.spentTime + '초'}</SummarySpentTime>
+                                    <SummaryIsCorrect userAnswer={d.userAnswer} isCorrect={d.isCorrect}>
+                                        {!d.userAnswer ? '미응답' : d.isCorrect ? '정답' : '오답'}
+                                    </SummaryIsCorrect>
+                                </SummaryTextInfos>
+
                                 <SummaryIcons>
                                     <SummaryIconHandsUp>
                                         <ScoringDetailsHandsUpIcon fillColor={d.handsUp ? '#6C46A1' : '#BFC6CD'} />
@@ -428,6 +537,22 @@ function ScoringResults({
                                     </QuestionContainer>
                                 </TextContentsBody>
                             </TextsContentsRenderRoot>
+                            <DetailActions>
+                                <Button
+                                    fullWidth
+                                    sizes="small"
+                                    colors="purple"
+                                    variant={d.handsUp ? 'filled' : 'light'}
+                                    leftIcon={
+                                        <ScoringDetailsHandsUpIcon fontSize="inherit" fillColor={d.handsUp ? '#ffffff' : '#6C46A1'} />
+                                    }
+                                    onClick={() => {
+                                        actionClickHandsUp(idx, d.handsUp, d.teacherSelected);
+                                    }}
+                                >
+                                    {d.handsUp ? '손 내리기' : '손 들기'}
+                                </Button>
+                            </DetailActions>
                         </AccordionDetails>
                     </Accordion>
                 ))}

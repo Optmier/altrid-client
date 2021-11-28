@@ -293,7 +293,7 @@ function LearningVocas({ history, match, children }) {
     // }, []);
     return (
         <>
-            <BackdropComponent open={isPending} blind={true} />
+            <BackdropComponent open={isPending} />
             {!finished ? (
                 learningDatas && learningDatas.length ? (
                     <TopProgressBar>

@@ -158,7 +158,7 @@ function EyeTrackBox({
             withCredentials: true,
         })
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 if (res.data) {
                     let unparsedEyetrackData = res.data.eyetrack_data;
                     let parsedData = null;

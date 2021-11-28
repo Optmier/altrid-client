@@ -10,12 +10,16 @@ const DrawerGrouBoxRoot = styled.div`
 const GroupBoxHeader = styled.div``;
 const GroupBoxMain = styled.div`
     margin-top: 16px;
-    min-height: 200px;
+    min-height: 32px;
 `;
 const Title = styled.div`
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.75rem;
+    @media all and (max-width: 799px) {
+        font-size: 1.25rem;
+        line-height: 1.5rem;
+    }
 `;
 const Description = styled.div`
     font-size: 1.125rem;

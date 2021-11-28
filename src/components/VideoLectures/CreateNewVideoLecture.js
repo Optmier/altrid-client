@@ -476,8 +476,8 @@ function CreateNewVideoLecture({ onCreate, handleClose }) {
                             </SelectorsContainer>
                         </DrawerGroupBox>
 
-                        <DrawerGroupBox title="강의 설정" description="시선흐름 여부를 설정해주세요" descriptionAdornment={BulbIcon}>
-                            <SelectorsContainer style={{ padding: '0 8px' }}>
+                        <DrawerGroupBox title="강의 설정" description="시선추적 여부를 설정해주세요" descriptionAdornment={BulbIcon}>
+                            <SelectorsContainer>
                                 <div
                                     className="toggle"
                                     style={{
