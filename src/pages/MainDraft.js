@@ -92,6 +92,19 @@ const Main_header = styled.div`
     max-width: 1216px;
     margin: 0 auto;
 
+    & .addclass {
+        @media (min-width: 0px) and (max-width: 480px) {
+            display: none;
+        }
+    }
+    & .MobileAdd {
+        padding: 0 16px;
+        display: none;
+        @media (min-width: 0px) and (max-width: 480px) {
+            display: block;
+        }
+    }
+
     & .greeting {
         display: flex;
         justify-content: space-between;
@@ -448,13 +461,37 @@ function MainDraft({ match, cardData, history }) {
                         <img width="339px" height="260px" src={icon_image} alt="dashboard_icons"></img>
                     </div>
                 </div>
-                <div style={{ padding: '0 16px' }}>
+                <div className="addclass" style={{ padding: '0 16px' }}>
                     <GroupBox
                         title={`${sessions.userName} 선생님의 과제 ${data.length}개`}
                         rightComponent={
                             <Button colors="purple" onClick={toggleDrawer(true)}>
                                 과제 생성하기
                             </Button>
+                        }
+                    />
+                </div>
+                <div className="MobileAdd">
+                    <GroupBox
+                        title={`${sessions.userName} 선생님의 과제 ${data.length}개`}
+                        rightComponent={
+                            <svg
+                                onClick={toggleDrawer(true)}
+                                width="32"
+                                height="32"
+                                viewBox="0 0 32 32"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M0 12C0 5.37258 5.37258 0 12 0H20C26.6274 0 32 5.37258 32 12V20C32 26.6274 26.6274 32 20 32H12C5.37258 32 0 26.6274 0 20V12Z"
+                                    fill="#F4F1FA"
+                                />
+                                <path
+                                    d="M9.33333 8.5H22.6667C22.8877 8.5 23.0996 8.5878 23.2559 8.74408C23.4122 8.90036 23.5 9.11232 23.5 9.33333V22.6667C23.5 22.8877 23.4122 23.0996 23.2559 23.2559C23.0996 23.4122 22.8877 23.5 22.6667 23.5H9.33333C9.11232 23.5 8.90036 23.4122 8.74408 23.2559C8.5878 23.0996 8.5 22.8877 8.5 22.6667V9.33333C8.5 9.11232 8.5878 8.90036 8.74408 8.74408C8.90036 8.5878 9.11232 8.5 9.33333 8.5V8.5ZM15.1667 15.1667H11.8333V16.8333H15.1667V20.1667H16.8333V16.8333H20.1667V15.1667H16.8333V11.8333H15.1667V15.1667Z"
+                                    fill="#3B1689"
+                                />
+                            </svg>
                         }
                     />
                 </div>
