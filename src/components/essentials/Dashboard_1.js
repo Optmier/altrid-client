@@ -106,10 +106,10 @@ const Container = styled.div`
     & .dashboard {
         margin: 0 auto;
         & .card {
-            padding: 0px 32px;
-            min-height: 248px;
+            padding: 32px 32px;
+            min-height: 190px;
             border-radius: 32px;
-            background: #ffffff;
+            background-color: #f6f8f9;
             font-weight: bold;
             & .input {
                 margin-top: 68px;
@@ -120,11 +120,13 @@ const Container = styled.div`
                 width: 320px;
                 height: 46px;
             }
+            @media (min-width: 600px) and (max-width: 990px) {
+                padding: 16px 16px;
+            }
         }
         & .lecture {
             background: #f4f1fa;
             & h3 {
-                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
                 color: #3b1689;
@@ -142,10 +144,9 @@ const Container = styled.div`
             background-color: #d4e2fc;
 
             & h3 {
-                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
-                color: #5b91f5;
+                color: #1e54b7;
             }
 
             & p {
@@ -170,13 +171,12 @@ const Container = styled.div`
             }
             & h3 {
                 color: #ff6937;
-                padding-top: 16px;
             }
             & h1 {
                 margin-top: 34px;
                 color: #ff6937;
                 font-weight: bold;
-                font-size: 56px;
+                /* font-size: 56px; */
                 line-height: 60px;
                 text-align: center;
                 cursor: pointer;
@@ -191,7 +191,6 @@ const Container = styled.div`
         & .assignment {
             overflow-x: auto;
             & h3 {
-                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
                 color: '#000000';
@@ -236,7 +235,6 @@ const Container = styled.div`
             border: 1px solid #bfc6cd;
             background: #ffffff;
             /* height: 198px; */
-            padding-top: 16px;
 
             & p {
                 margin-top: 16px;
@@ -248,10 +246,9 @@ const Container = styled.div`
         & .wordprogress {
             background-color: #fffaf0;
             & h3 {
-                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
-                color: #ffcf70;
+                color: #bc8b2c;
                 margin-bottom: 20px;
                 @media (min-width: 600px) and (max-width: 990px) {
                     margin-bottom: 40px;
@@ -260,7 +257,7 @@ const Container = styled.div`
 
             & p {
                 margin-top: 20px;
-                color: #ffcf70#;
+                color: #bc8b2c;
                 font-weight: bold;
                 font-size: 20px;
                 text-align: center;
@@ -269,21 +266,19 @@ const Container = styled.div`
                 padding-top: 60px;
                 font-size: 20px;
                 text-align: center;
-                color: #ffcf70;
+                color: #bc8b2c;
             }
         }
         & .calendar {
-            height: 260px;
             background-color: #aeffe0;
             & h3 {
-                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
-                color: #3ae2a1;
+                color: #008f58;
             }
             & .todolist {
                 height: 120px;
-                color: #3ae2a1;
+                color: #008f58;
                 overflow-y: hidden;
                 & li {
                     padding-top: 10px;
@@ -300,7 +295,6 @@ const Container = styled.div`
         & .optimer {
             overflow-x: auto;
             & h3 {
-                padding-top: 16px;
                 font-size: 24px;
                 line-height: 28px;
                 color: '#000000';
@@ -750,7 +744,12 @@ function Dashboard_1({ match }) {
                                             <h4>저장된 단어가 없습니다.</h4>
                                         ) : (
                                             <>
-                                                <ReactApexChart options={chart.options} series={chart.series} type="radialBar" />
+                                                <ReactApexChart
+                                                    options={chart.options}
+                                                    series={chart.series}
+                                                    type="radialBar"
+                                                    height={200}
+                                                />
                                                 <p>
                                                     {total.progress}/{total.total}
                                                 </p>

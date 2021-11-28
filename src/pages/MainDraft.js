@@ -34,7 +34,7 @@ import * as $ from 'jquery';
 import { Helmet } from 'react-helmet';
 import { ExpandMore } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
-import Groupbox from '../AltridUI/GroupBox/Groupbox';
+import GroupBox from '../AltridUI/GroupBox/GroupBox';
 import Button from '../AltridUI/Button/Button';
 import { withStyles } from '@material-ui/core/styles';
 import MuiAccordion from '@material-ui/core/Accordion';
@@ -449,7 +449,7 @@ function MainDraft({ match, cardData, history }) {
                     </div>
                 </div>
                 <div style={{ padding: '0 16px' }}>
-                    <Groupbox
+                    <GroupBox
                         title={`${sessions.userName} 선생님의 과제 ${data.length}개`}
                         rightComponent={
                             <Button colors="purple" onClick={toggleDrawer(true)}>

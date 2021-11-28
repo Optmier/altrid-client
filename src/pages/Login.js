@@ -22,6 +22,7 @@ import HeaderBar from '../components/essentials/HeaderBar';
 import Switch from '../AltridUI/Switch/Switch';
 import HeaderMenu from '../AltridUI/HeaderMenu/HeaderMenu';
 import HeaderBarLogin from '../components/essentials/HeaderBarLogin';
+import { Helmet } from 'react-helmet';
 
 const LoginMain = styled.div`
     max-width: 672px;
@@ -32,7 +33,7 @@ const LoginMain = styled.div`
         margin-top: 93px;
         @media (min-width: 0px) and (max-width: 480px) {
             /* max-width: 328px; */
-            width: 100%;
+            /* width: 100%; */
             padding: 0 16px;
         }
         & .SelectBox {
@@ -60,23 +61,6 @@ const LoginMain = styled.div`
 
             & .radioselect {
                 margin-bottom: 32px;
-                & span {
-                    & label {
-                        width: 100%;
-                        max-width: 192px;
-                        background-color: #f6f8f9;
-                        color: #9aa5af;
-                        @media (min-width: 0px) and (max-width: 480px) {
-                            max-width: 139px;
-                            width: 100%;
-                        }
-                    }
-                    & input:checked + label {
-                        background-color: #200656;
-                        color: #ffffff;
-                        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
-                    }
-                }
             }
         }
         & .loginTab {
@@ -110,6 +94,27 @@ const LoginMain = styled.div`
             max-width: 328px;
         }
     } */
+`;
+
+const RadioMenuGroup = styled.div`
+    & span {
+        & label {
+            width: 100%;
+            max-width: 184px;
+            background-color: #f6f8f9;
+            color: #9aa5af;
+            border-radius: 8px;
+            @media (min-width: 0px) and (max-width: 480px) {
+                max-width: 132px;
+                width: 100%;
+            }
+        }
+        & input:checked + label {
+            background-color: #200656;
+            color: #ffffff;
+            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+    }
 `;
 
 const AddName = styled.div`
@@ -715,56 +720,58 @@ function Login({ history }) {
                                 </h2>
                                 <div className="SelectBox">
                                     <div style={{ marginTop: '29px' }} className="radioselect">
-                                        <span>
-                                            <input
-                                                style={{ display: 'none' }}
-                                                type="radio"
-                                                onChange={handleChangeUsertype}
-                                                checked={usertype === 'students'}
-                                                onClick={() => {
-                                                    setUsertype('students');
-                                                }}
-                                                value="students"
-                                                name="students"
-                                                id="students"
-                                            />
-                                            <label
-                                                style={{
-                                                    display: 'inline-block',
-                                                    padding: '8px 4px',
-                                                    // backgroundColor: '#F6F8F9',
-                                                    // width: '192px',
-                                                }}
-                                                htmlFor="students"
-                                            >
-                                                학생
-                                            </label>
-                                        </span>
-                                        <span>
-                                            <input
-                                                style={{ display: 'none' }}
-                                                type="radio"
-                                                onChange={handleChangeUsertype}
-                                                checked={usertype === 'teachers'}
-                                                onClick={() => {
-                                                    setUsertype('teachers');
-                                                }}
-                                                value="teachers"
-                                                name="teachers"
-                                                id="teachers"
-                                            />
-                                            <label
-                                                style={{
-                                                    display: 'inline-block',
-                                                    padding: '8px 4px',
-                                                    // backgroundColor: '#F6F8F9',
-                                                    // width: '192px',
-                                                }}
-                                                htmlFor="teachers"
-                                            >
-                                                선생님
-                                            </label>
-                                        </span>
+                                        <RadioMenuGroup>
+                                            <span>
+                                                <input
+                                                    style={{ display: 'none' }}
+                                                    type="radio"
+                                                    onChange={handleChangeUsertype}
+                                                    checked={usertype === 'students'}
+                                                    onClick={() => {
+                                                        setUsertype('students');
+                                                    }}
+                                                    value="students"
+                                                    name="students"
+                                                    id="students"
+                                                />
+                                                <label
+                                                    style={{
+                                                        display: 'inline-block',
+                                                        padding: '8px 4px',
+                                                        // backgroundColor: '#F6F8F9',
+                                                        // width: '192px',
+                                                    }}
+                                                    htmlFor="students"
+                                                >
+                                                    학생
+                                                </label>
+                                            </span>
+                                            <span>
+                                                <input
+                                                    style={{ display: 'none' }}
+                                                    type="radio"
+                                                    onChange={handleChangeUsertype}
+                                                    checked={usertype === 'teachers'}
+                                                    onClick={() => {
+                                                        setUsertype('teachers');
+                                                    }}
+                                                    value="teachers"
+                                                    name="teachers"
+                                                    id="teachers"
+                                                />
+                                                <label
+                                                    style={{
+                                                        display: 'inline-block',
+                                                        padding: '8px 4px',
+                                                        // backgroundColor: '#F6F8F9',
+                                                        // width: '192px',
+                                                    }}
+                                                    htmlFor="teachers"
+                                                >
+                                                    선생님
+                                                </label>
+                                            </span>
+                                        </RadioMenuGroup>
                                         <LoginButtons
                                             onSuccessGoogleAuth={onSuccessGoogleAuth}
                                             onFailedGoogleAuth={onFailedGoogleAuth}
@@ -1152,6 +1159,13 @@ function Login({ history }) {
     };
     return (
         <>
+            <Helmet>
+                <style>{`
+                    main#main {
+                        background-color: #ffffff;
+                    }
+            `}</style>
+            </Helmet>
             <header className={'header-bar'}>
                 {/* <div className="container left">
                     <img src={LogoWhite} alt="logo" />

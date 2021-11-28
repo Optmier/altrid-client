@@ -30,7 +30,7 @@ import AccountPopOver from '../components/essentials/AccountPopOver';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Button from '../AltridUI/Button/Button';
-import Groupbox from '../AltridUI/GroupBox/Groupbox';
+import GroupBox from '../AltridUI/GroupBox/GroupBox';
 import { AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import { withStyles } from '@material-ui/core/styles';
@@ -433,7 +433,7 @@ function Main({ history }) {
                         </div>
                     </div>
                     <div className="addclass">
-                        <Groupbox
+                        <GroupBox
                             title={`${sessions.userName}님의 클래스`}
                             rightComponent={
                                 sessions.userType === 'teachers' ? (

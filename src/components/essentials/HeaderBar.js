@@ -110,7 +110,8 @@ const MainHeader = styled.div`
                     border-radius: 50%;
                 }
             }
-            & p {
+            & a,
+            p {
                 margin: 0px 8px;
             }
         }
@@ -299,7 +300,8 @@ function HeaderBar({ match, defaultColor }) {
                                 />
                             </svg>
 
-                            <p>이용권 구매</p>
+                            <Link to="/pricing">이용권 구매</Link>
+                            {/* <p>이용권 구매</p> */}
                         </div>
                         <div className="profile" ref={testRef}>
                             {sessions.image ? (

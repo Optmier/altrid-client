@@ -135,18 +135,16 @@ function StudentState({ state, assignmentState, handlePreTest, handleStartTest, 
                         리포트 보기
                     </button>
                 )}
-
-                {assignmentState ? (
+                {!assignmentState ? (
                     state === 'done' ? (
                         <button onClick={handlePreTest} className="main">
                             과제 보기
                         </button>
                     ) : null
-                ) : (
-                    <button onClick={handlePreTest} className="main">
-                        과제 보기
-                    </button>
-                )}
+                ) : // <button onClick={handlePreTest} className="main">
+                //     과제 보기
+                // </button>
+                null}
             </div>
         </StyleDiv>
     );

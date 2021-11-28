@@ -3,7 +3,7 @@ import NavLogoBlack from '../../images/logos/nav_logo_white.png';
 import styled from 'styled-components';
 
 const Foot = styled.div`
-    font-family: inter, -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, “Helvetica Neue”, Arial, sans-serif, “Apple Color Emoji”,
+    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, “Helvetica Neue”, Arial, sans-serif, “Apple Color Emoji”,
         “Segoe UI Emoji”, “Segoe UI Symbol”;
     display: flex;
     flex-direction: column;
@@ -45,7 +45,7 @@ const Foot = styled.div`
         white-space: nowrap;
     }
 
-    @media (min-width: 0px) and (max-width: 480px) {
+    @media (min-width: 0px) and (max-width: 560px) {
         max-width: 360px;
         white-space: nowrap;
 
@@ -168,7 +168,7 @@ function Footer() {
                     </svg>
 
                     <div className="info-more">
-                        전화<a href="tel:02-469-9703"> 02-469-9703</a>
+                        전화<a href="tel:02-469-9703"> 02-446-1123</a>
                     </div>
 
                     <svg className="line" width="1" height="12" viewBox="0 0 1 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -183,7 +183,7 @@ function Footer() {
                         <line x1="0.5" y1="2.18557e-08" x2="0.499999" y2="12" stroke="#BFC6CD" />
                     </svg>
 
-                    <div className="info-more">사업자등록번호 309-30-62706</div>
+                    <div className="info-more">사업자등록번호 307-87-02123</div>
                 </div>
                 <div className="adress">
                     <a>서울시 광진구 뚝섬로41길 8 2층 (옵트미어 학원)</a>

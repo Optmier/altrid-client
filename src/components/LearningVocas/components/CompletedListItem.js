@@ -126,9 +126,7 @@ function CompletedListItem({ idx, word, means, notes, label, verified, children 
                 </LayoutContainer>
                 <LayoutContainer>
                     <Notes>{'과제 1'}</Notes>
-                    <Verified>
-                        <VerifiedIcon />
-                    </Verified>
+                    <Verified>{verified ? <VerifiedIcon /> : null}</Verified>
                 </LayoutContainer>
             </ContentsContainer>
         </ItemRoot>
