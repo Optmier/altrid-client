@@ -15,6 +15,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
 import { useSelector } from 'react-redux';
+import TextField from '../AltridUI/TextField/TextField';
+import { Add } from '@material-ui/icons';
 
 const FormButton = styled.button`
     background-color: ${(props) => (props.able ? '#FFFFFF' : '#FFFFFF')};
@@ -202,16 +204,17 @@ function Calendar({ match }) {
                 end: AddEvent.end,
                 type: 0,
                 classNumber: num,
-                color: '#3B1689',
-                daysOfWeek: daysArr
-                    .toString()
-                    .replace('일', '0')
-                    .replace('월', '1')
-                    .replace('화', '2')
-                    .replace('수', '3')
-                    .replace('목', '4')
-                    .replace('금', '5')
-                    .replace('토', '6'),
+                color: '#AEFFE0',
+                daysOfWeek: !AddEvent.days_of_week
+                    ? null
+                    : AddEvent.days_of_week
+                          .replace('일', '0')
+                          .replace('월', '1')
+                          .replace('화', '2')
+                          .replace('수', '3')
+                          .replace('목', '4')
+                          .replace('금', '5')
+                          .replace('토', '6'),
                 editable: 1,
                 allDay: 1,
             };
@@ -371,7 +374,7 @@ function Calendar({ match }) {
     // 이벤트 수정하기 위한 함수
     const changetitle = () => {
         for (var i = 0; i < CalEvents.length; i++) {
-            if (temp.color == 'green') {
+            if (temp.color == '#D4E2FC') {
                 alert('학원 수업은 변경할 수 없습니다.');
                 setopen(false);
                 break;
@@ -418,7 +421,7 @@ function Calendar({ match }) {
             end: clickInfo.event.ends,
             id: clickInfo.event.id,
             color: clickInfo.event.backgroundColor,
-            daysOfWeek: clickInfo.event._def.recurringDef.typeData.daysOfWeek,
+            // daysOfWeek: {!clickInfo.event._def.recurringDef.typeData.daysOfWeek},
             description: clickInfo.event._def.extendedProps.description,
             shared: clickInfo.event._def.extendedProps.shared,
         };
@@ -430,7 +433,7 @@ function Calendar({ match }) {
     const RemoveItem = () => {
         const copy = [...CalEvents];
         for (var i = 0; i < copy.length; i++) {
-            if (temp.color === 'green') {
+            if (temp.color === '#D4E2FC') {
                 alert('학원 수업 일정은 삭제 할 수 없습니다.');
                 setopen(false);
                 break;
@@ -503,7 +506,7 @@ function Calendar({ match }) {
                                           .replace('금', '5')
                                           .replace('토', '6'),
                                 allDay: result.all_day,
-                                color: 'purple',
+                                color: '#AEFFE0',
                             })),
                         ),
                     );
@@ -674,29 +677,66 @@ function Calendar({ match }) {
             </Container>
             <Dialog open={dialogopen} onClose={nosave}>
                 <DialogContent>
-                    <input
+                    <TextField
+                        autoFocus
+                        variant="filled"
+                        required
+                        fullWidth
+                        label="일정 제목"
+                        defaultValue=""
+                        // disabled={Boolean(defaultData)}
+                        // inputRef={titleFieldRef}
+                        InputProps={{ disableUnderline: true }}
+                        // status={fieldErrorControl['title'].error ? 'error' : null}
+                        // helperText={fieldErrorControl['title'].errorText}
+                        name="title"
+                        onChange={(e) => {
+                            setAdd({ ...AddEvent, title: e.target.value });
+                        }}
+                    />
+                    <br />
+                    <br />
+                    <TextField
+                        autoFocus
+                        variant="filled"
+                        required
+                        fullWidth
+                        label="설명"
+                        defaultValue=""
+                        // disabled={Boolean(defaultData)}
+                        // inputRef={titleFieldRef}
+                        InputProps={{ disableUnderline: true }}
+                        // status={fieldErrorControl['title'].error ? 'error' : null}
+                        // helperText={fieldErrorControl['title'].errorText}
+                        name="description"
+                        onChange={(e) => {
+                            setAdd({ ...AddEvent, description: e.target.value });
+                        }}
+                    />
+                    {/* <input
+
                         type="text"
                         placeholder="제목"
                         value={AddEvent.title}
                         onChange={(e) => {
                             setAdd({ ...AddEvent, title: e.target.value });
                         }}
-                    />
-                    <br />
-                    <input
+                    /> */}
+
+                    {/* <input
                         type="text"
                         placeholder="설명"
                         value={AddEvent.description}
                         onChange={(e) => {
                             setAdd({ ...AddEvent, description: e.target.value });
                         }}
-                    />
+                    /> */}
                     <hr />
-                    <p>
+                    <p style={{ textAlign: 'center' }}>
                         시작 : {AddEvent.start} 종료 : {AddEvent.end}
                     </p>
                     <hr />
-                    <p>반복일 선택</p>
+                    <p style={{ textAlign: 'center' }}>반복일 선택</p>
                     <hr />
                     <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
                         월

@@ -686,7 +686,7 @@ function Dashboard_1({ match }) {
                                     <div className="card assignment">
                                         <h3>과제 현황</h3>
                                         {assignment.length !== 0 ? (
-                                            assignment.map((data, index) => {
+                                            assignment.slice(-4, -1).map((data, index) => {
                                                 return (
                                                     <div key={index} className="info">
                                                         {Math.ceil(
