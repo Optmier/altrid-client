@@ -27,7 +27,7 @@ const StyledTableRow = styled(MuiTableRow)(({ theme }) => ({
 }));
 
 function createData(name: string, time: number, achive: number) {
-    return { name, time, achive };
+    return { name, time: `${Math.floor(time / 60000)}분 ${Math.floor((time % 60000) / 1000)}초`, achive };
 }
 
 const dummyRow = [
@@ -127,12 +127,12 @@ const NumberSpan = styled.span`
 `;
 
 function Leaderboard({ classNum }) {
-    const [row, setRow] = useState([...dummyRow]);
+    const [row, setRow] = useState([]);
     useEffect(() => {
         Axios.get(`${apiUrl}/optimer/${classNum}`, { withCredentials: true })
             .then((res) => {
                 if (!res.data || !res.data.length) return;
-                // setRow(res.data.map((d) => createData(d.name, d.time_total)));
+                setRow(res.data.map((d) => createData(d.name, d.time_total)));
             })
             .catch((err) => {
                 console.error(err);
