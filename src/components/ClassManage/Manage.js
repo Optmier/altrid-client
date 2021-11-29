@@ -440,7 +440,7 @@ function Manage({ match, history }) {
         },
     ];
 
-    const [selectedMenu, setSelectedMenu] = useState(1);
+    const [selectedMenu, setSelectedMenu] = useState(0);
     const [toDeleteStudentData, setToDeleteStudentData] = useState({});
 
     const actionChangeStudentsSelection = (data) => {

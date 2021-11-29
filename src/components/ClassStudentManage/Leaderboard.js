@@ -206,7 +206,7 @@ function Leaderboard({ classNum }) {
                                             ) : null}
                                         </TableCell>
                                         <TableCell align="left">{row.name} 님</TableCell>
-                                        <TableCell align="right">{row.time} 분</TableCell>
+                                        <TableCell align="right">{row.time}</TableCell>
                                     </TableRow>
 
                                     // map 함수 function 으로 만들고
