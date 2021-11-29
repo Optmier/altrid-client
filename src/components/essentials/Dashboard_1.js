@@ -213,6 +213,9 @@ const Container = styled.div`
                     color: #174291;
                     white-space: nowrap;
                 }
+                & .finish {
+                    color: '#870F00';
+                }
                 & p {
                     margin-right: 16px;
                     font-weight: bold;
@@ -567,12 +570,12 @@ function Dashboard_1({ match }) {
                             name: 'optimer',
                             data: [
                                 Math.floor((result.data.time_mon / 6000) % 60),
-                                Math.floor((result.data.time_mon / 6000) % 60),
-                                Math.floor((result.data.time_mon / 6000) % 60),
-                                Math.floor((result.data.time_mon / 6000) % 60),
-                                Math.floor((result.data.time_mon / 6000) % 60),
-                                Math.floor((result.data.time_mon / 6000) % 60),
-                                Math.floor((result.data.time_mon / 6000) % 60),
+                                Math.floor((result.data.time_tue / 6000) % 60),
+                                Math.floor((result.data.time_wed / 6000) % 60),
+                                Math.floor((result.data.time_thu / 6000) % 60),
+                                Math.floor((result.data.time_fri / 6000) % 60),
+                                Math.floor((result.data.time_sat / 6000) % 60),
+                                Math.floor((result.data.time_sun / 6000) % 60),
                             ],
                         },
                     ],
@@ -690,20 +693,43 @@ function Dashboard_1({ match }) {
                                                             (new Date(data.due_date).getTime() - today.getTime()) / (1000 * 3600 * 24),
                                                         ) > 0 ? (
                                                             <>
-                                                                <p className="dday">
-                                                                    D
-                                                                    {Math.ceil(
-                                                                        (today.getTime() - new Date(data.due_date).getTime()) /
-                                                                            (1000 * 3600 * 24),
-                                                                    )}
-                                                                </p>
-                                                                <Link to={`/class/${num}/share`}>
-                                                                    <p className="assign_title">{data.title}</p>
-                                                                </Link>
+                                                                {Math.ceil(
+                                                                    (today.getTime() - new Date(data.due_date).getTime()) /
+                                                                        (1000 * 3600 * 24),
+                                                                ) == 0 ? (
+                                                                    <>
+                                                                        <p
+                                                                            style={{ color: '#870F00', backgroundColor: '#FED7D2' }}
+                                                                            className="dday"
+                                                                        >
+                                                                            D - day
+                                                                        </p>
+                                                                        <Link to={`/class/${num}/share`}>
+                                                                            <p className="assign_title">{data.title}</p>
+                                                                        </Link>
 
-                                                                <p>
-                                                                    <span>{data.description}</span>
-                                                                </p>
+                                                                        <p>
+                                                                            <span>{data.description}</span>
+                                                                        </p>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <p className="dday">
+                                                                            D
+                                                                            {Math.ceil(
+                                                                                (today.getTime() - new Date(data.due_date).getTime()) /
+                                                                                    (1000 * 3600 * 24),
+                                                                            )}
+                                                                        </p>
+                                                                        <Link to={`/class/${num}/share`}>
+                                                                            <p className="assign_title">{data.title}</p>
+                                                                        </Link>
+
+                                                                        <p>
+                                                                            <span>{data.description}</span>
+                                                                        </p>
+                                                                    </>
+                                                                )}
                                                             </>
                                                         ) : null}
                                                     </div>
@@ -781,7 +807,7 @@ function Dashboard_1({ match }) {
                                         </div>
                                     ) : (
                                         <div className="todolist">
-                                            {todo.map((result, index) => {
+                                            {todo.slice(0, 3).map((result, index) => {
                                                 return (
                                                     <ul key={index}>
                                                         <li>{result.title}</li>
