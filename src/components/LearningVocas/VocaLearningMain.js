@@ -396,7 +396,7 @@ function VocaLearningMain({ history, match }) {
                                     key={d.idx}
                                     word={d.word}
                                     means={d.means}
-                                    notes={d.means}
+                                    notes={d.assignment_title}
                                     label={d.counts}
                                     verified={d.completed}
                                 />

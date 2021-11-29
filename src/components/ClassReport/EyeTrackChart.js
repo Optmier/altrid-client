@@ -106,6 +106,7 @@ function EyeTrackChart({
     stdName,
     answerChangedProblems,
     aftChangedFaileds,
+    setACMS,
 }) {
     const [trackTimeGoTo, setTrackTimeGoTo] = useState(0);
     const [fixations, setFixations] = useState('-');
@@ -367,6 +368,12 @@ function EyeTrackChart({
         setFixationsTotalAvg(totalEyeStatsAvg.num_of_fixs.toFixed(0));
         setAvgFixDurTotalAvg(totalEyeStatsAvg.avg_of_fix_vels.toFixed(0));
         setRegressionsTotalAvg(totalEyeStatsAvg.num_of_regs.toFixed(0));
+        setACMS.totalFixsMine(currentStudentDatas.num_of_fixs);
+        setACMS.totalFixsAvg(totalEyeStatsAvg.num_of_fixs.toFixed(0));
+        setACMS.avgSpeedFixsMine(currentStudentDatas.avg_of_fix_vels);
+        setACMS.avgSpeedFixsAvg(totalEyeStatsAvg.avg_of_fix_vels.toFixed(0));
+        setACMS.regressionsMine(currentStudentDatas.num_of_regs);
+        setACMS.regressionsAvg(totalEyeStatsAvg.num_of_regs.toFixed(0));
         setchart1({
             ...chart1,
             series: [

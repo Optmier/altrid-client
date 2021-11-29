@@ -848,15 +848,17 @@ function VideoLecturesManage({ match, history }) {
                             selectedMenuId={menuStatus}
                             onItemClick={actionClickHeaderMenuItem}
                             rightComponent={
-                                <Button
-                                    variant="filled"
-                                    sizes="medium"
-                                    colors="purple"
-                                    leftIcon={<AddCamstudyIcon />}
-                                    onClick={toggleDrawer(true)}
-                                >
-                                    새 화상 강의
-                                </Button>
+                                sessions.userType === 'teachers' ? (
+                                    <Button
+                                        variant="filled"
+                                        sizes="medium"
+                                        colors="purple"
+                                        leftIcon={<AddCamstudyIcon />}
+                                        onClick={toggleDrawer(true)}
+                                    >
+                                        새 화상 강의
+                                    </Button>
+                                ) : null
                             }
                         />
                     </HeaderContainer>

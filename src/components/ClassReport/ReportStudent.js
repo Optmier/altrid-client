@@ -42,6 +42,7 @@ import ScoringResults from './ReportStudent/ScoringResults';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import Button from '../../AltridUI/Button/Button';
 import EyeTrackChart from './EyeTrackChart';
+import MakeAutoComments from '../../controllers/MakeAutoComment';
 
 const pad = (n, width) => {
     n = n + '';
@@ -758,6 +759,13 @@ function ReportStudent({ history, match }) {
         });
     };
 
+    const [acmTotalFixsMine, setACMTotalFixsMine] = useState(0);
+    const [acmTotalFixsAvg, setACMTotalFixsAvg] = useState(0);
+    const [acmAvgSpeedFixsMine, setACMAvgSpeedFixsMine] = useState(0);
+    const [acmAvgSpeedFixsAvg, setACMAvgSpeedFixsAvg] = useState(0);
+    const [acmRegressionsMine, setACMRegressionsMine] = useState(0);
+    const [acmRegressionsAvg, setACMRegressionsAvg] = useState(0);
+
     if (mainLoading) return <BackdropComponent open={true} />;
     const preventDefault = (event) => event.preventDefault();
     return (
@@ -1090,6 +1098,14 @@ function ReportStudent({ history, match }) {
                                         stdName={stdName}
                                         answerChangedProblems={answerChangedProblems}
                                         aftChangedFaileds={aftChangedFaileds}
+                                        setACMS={{
+                                            totalFixsMine: setACMTotalFixsMine,
+                                            totalFixsAvg: setACMTotalFixsAvg,
+                                            avgSpeedFixsMine: setACMAvgSpeedFixsMine,
+                                            avgSpeedFixsAvg: setACMAvgSpeedFixsAvg,
+                                            regressionsMine: setACMRegressionsMine,
+                                            regressionsAvg: setACMRegressionsAvg,
+                                        }}
                                     />
                                 ) : (
                                     <p>시선추적이 포함되지 않은 과제입니다.</p>
@@ -1097,7 +1113,16 @@ function ReportStudent({ history, match }) {
                             </div>
                             <div className="ment-ai-col" id="no-eyetrack">
                                 <h5>
-                                    AI comment 영역
+                                    {/* AI comment 영역 */}
+                                    {MakeAutoComments(
+                                        stdName,
+                                        acmTotalFixsMine,
+                                        acmTotalFixsAvg,
+                                        acmAvgSpeedFixsMine,
+                                        acmAvgSpeedFixsAvg,
+                                        acmRegressionsMine,
+                                        acmRegressionsAvg,
+                                    )}
                                     <br />
                                 </h5>
                             </div>
