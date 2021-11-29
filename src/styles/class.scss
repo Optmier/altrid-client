@@ -808,7 +808,8 @@ $textGray: #706d6d;
                 }
             }
             & .ment-ai-col#no-eyetrack {
-                display: none;
+                // display: none;
+                min-height: 192px;
             }
             & .ment-ai-col + .ment-ai-col {
                 padding: 0%;

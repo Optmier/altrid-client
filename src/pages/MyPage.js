@@ -11,12 +11,14 @@ import DeleteAccount from '../components/MyPage/DeleteAccount';
 import { useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import '../styles/mypage.scss';
+import HeaderBar from '../components/essentials/HeaderBar';
+import Footer from '../components/essentials/Footer';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
 
     @media (min-width: 903px) {
-        padding: ${(props) => (props.leftNavState ? '95px 0 50px 240px' : '95px 0 50px 0')};
+        padding: ${(props) => (props.leftNavState ? '95px 0 50px 0' : '95px 0 50px 0')};
     }
 
     @media (min-width: 0) and (max-width: 902px) {
@@ -26,8 +28,8 @@ const SlideWrapper = styled.div`
 
 const MyPageSwitcher = (menu, userType) => {
     switch (menu) {
-        case 'profile':
-            return <Profile />;
+        // case 'profile':
+        //     return <Profile />;
         case 'manage-plan':
             if (userType === 'teachers') {
                 return <Plans />;
@@ -52,6 +54,7 @@ function MyPage({ match }) {
 
     return (
         <>
+            <HeaderBar />
             <Helmet>
                 <style>{`
                     main#main {
@@ -59,10 +62,13 @@ function MyPage({ match }) {
                     }
             `}</style>
             </Helmet>
-            {/* <LeftNavMyPage /> */}
 
-            {/* <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} /> */}
-            {MyPageSwitcher(match.params.menu, sessions.userType)}
+            {/* <LeftNavMyPage leftNavState={leftNavState} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} /> */}
+            <SlideWrapper leftNavState={leftNavState} className="mypage-root">
+                {/* <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} /> */}
+                <ClassWrapper>{MyPageSwitcher(match.params.menu, sessions.userType)}</ClassWrapper>
+            </SlideWrapper>
+            <Footer />
         </>
     );
 }

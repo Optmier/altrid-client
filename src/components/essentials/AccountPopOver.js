@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Popover, Card, CardContent, Avatar, CardActions, List, ListItem, withStyles, makeStyles, Divider } from '@material-ui/core';
 import * as $ from 'jquery';
 import { withRouter } from 'react-router-dom';
@@ -64,6 +65,7 @@ function AccountPopOver({ targetEl, image, userName, history }) {
     const handleAccountPopoverClose = () => {
         setAccountPopOverAnchorEl(null);
     };
+    const sessions = useSelector((state) => state.RdxSessions);
 
     useEffect(() => {
         $(document).on('mouseover', ({ target }) => {
@@ -125,9 +127,14 @@ function AccountPopOver({ targetEl, image, userName, history }) {
                         onClick={handleAccountPopoverClose}
                     >
                         {/* <ListItemLink href={'/'}>마이페이지</ListItemLink> */}
-                        <EdListItem button onClick={() => history.replace('/mypage/profile')}>
+                        <EdListItem button onClick={() => history.replace('/profile')}>
                             마이페이지
                         </EdListItem>
+                        {sessions.userType === 'teachers' ? (
+                            <EdListItem button onClick={() => history.replace('/mypage/manage-plan/now-plan')}>
+                                나의 플랜관리
+                            </EdListItem>
+                        ) : null}
                         <EdListItem button onClick={handleLogout}>
                             로그아웃
                         </EdListItem>

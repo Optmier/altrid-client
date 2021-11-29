@@ -13,6 +13,7 @@ import { withRouter } from 'react-router-dom';
 import HeaderBar from '../essentials/HeaderBar';
 import icon from '../../images/Profile_icon.png';
 import Footer from '../essentials/Footer';
+import { Helmet } from 'react-helmet';
 
 const BtnAble = styled.button`
     pointer-events: ${(props) => (props.btnAbleState ? 'auto' : 'none')};
@@ -320,6 +321,13 @@ function Profile({ history }) {
 
     return (
         <>
+            <Helmet>
+                <style>{`
+                    main#main {
+                        background-color: #ffffff;
+                    }
+            `}</style>
+            </Helmet>
             <HeaderBar />
             <Profile_Header>
                 <div className="profile-header">
@@ -331,6 +339,7 @@ function Profile({ history }) {
                         <img src={icon} alt="pofile_icon" />
                     </div>
                 </div>
+                <div className="profile-selector"></div>
             </Profile_Header>
             <Profile_Main>
                 <h2>프로필 사진</h2>

@@ -7,6 +7,8 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import { withRouter } from 'react-router';
+import '../../styles/mypage.scss';
+import HeaderBar from '../essentials/HeaderBar';
 
 const StylePossible = styled.div`
     display: flex;
@@ -15,7 +17,6 @@ const StylePossible = styled.div`
     font-size: 1rem;
     font-weight: 600;
     color: ${(props) => (props.able ? '#13e2a1' : '#C7C7C7')};
-
     & svg {
         margin-left: 10px;
     }
@@ -24,7 +25,6 @@ const StylePossible = styled.div`
 const StyledPlanName = styled.div`
     display: flex;
     align-items: center;
-
     &.color-Free {
         color: rgba(19, 226, 161, 1);
     }
@@ -34,7 +34,6 @@ const StyledPlanName = styled.div`
     &.color-Premium {
         color: rgba(59, 22, 138, 1);
     }
-
     & button.inner {
         background-color: #9f9f9f;
         box-shadow: none;
@@ -133,83 +132,85 @@ function NowPlan({ history }) {
 
     if (!(academyPlanId && data)) return <BackdropComponent open={true} />;
     return (
-        <div className="now-plan-root">
-            <div className="mypage-contents white-box now-plan">
-                <div className="now-plan-left">
-                    <div className="row">
-                        <div className="row-title">현재 플랜</div>
-                        <StyledPlanName className={`row-desc color-${nowPlan}`}>
-                            {nowPlan}{' '}
-                            {/* {nowPlan !== 'Free' && nextPlan !== 'Free' ? (
+        <>
+            <div className="now-plan-root">
+                <div className="mypage-contents white-box now-plan">
+                    <div className="now-plan-left">
+                        <div className="row">
+                            <div className="row-title">현재 플랜</div>
+                            <StyledPlanName className={`row-desc color-${nowPlan}`}>
+                                {nowPlan}{' '}
+                                {/* {nowPlan !== 'Free' && nextPlan !== 'Free' ? (
                                 <button className="inner" onClick={handleUnsubscribe}>
                                     플랜 구독 해지
                                 </button>
                             ) : null} */}
-                        </StyledPlanName>
-                    </div>
-                    <div className="row">
-                        <div className="row-title">이용 기간</div>
-                        {/* <div className="row-desc">현재는 베타 서비스 기간입니다.</div> */}
-                        <div className="row-desc">{planDurationDate}</div>
-                    </div>
-                    <div className="row">
-                        <div className="row-title">다음 플랜</div>
-                        <StyledPlanName className={`row-desc color-${nextPlan}`}>
-                            {nextPlan}{' '}
-                            {nowPlan === 'Free' ? (
-                                <button className="inner upgrade" onClick={handlePlanBtn}>
-                                    플랜 업그레이드
-                                </button>
-                            ) : nowPlan === nextPlan ? (
-                                <button className="inner modify" onClick={handlePlanBtn}>
-                                    플랜 변경
-                                </button>
-                            ) : (
-                                <button className="inner" onClick={handleCancelModifPlan}>
-                                    변경 취소
-                                </button>
-                            )}
-                        </StyledPlanName>
-                    </div>
-                </div>
-                <div className="now-plan-right">
-                    {nowPlan === 'Free' || nextPlan === 'Free' ? null : (
-                        <button className="btn-gray" onClick={handleUnsubscribe}>
-                            구독 해지
-                        </button>
-                    )}
-                </div>
-            </div>
-            <div className="mypage-contents white-box plan-info">
-                <div className="plan-info-header">나의 플랜 가능 정보</div>
-                <div className="plan-info-table">
-                    {Object.keys(PlanInfo[nowPlan]).map((i) => (
-                        <div key={i} className="info-row">
-                            <div className="title">
-                                <div className="title-header">{i}</div>
-                                <div className="title-info">{PlanInfo[nowPlan][i]['info']}</div>
-                            </div>
-                            <div className="desc">
-                                {PlanInfo[nowPlan][i]['type'] !== 'bool' ? (
-                                    <div className="desc-count">
-                                        {PlanInfo[nowPlan][i]['desc']}{' '}
-                                        <span>
-                                            {PlanInfo[nowPlan][i]['subType'] === 'person'
-                                                ? `(현재 ${data[PlanInfo[nowPlan][i]['type']]}명)`
-                                                : `(현재 ${data[PlanInfo[nowPlan][i]['type']]}회)`}
-                                        </span>
-                                    </div>
-                                ) : PlanInfo[nowPlan][i]['desc'] === '가능' ? (
-                                    <Possible able={true} />
-                                ) : (
-                                    <Possible able={false} />
-                                )}
-                            </div>
+                            </StyledPlanName>
                         </div>
-                    ))}
+                        <div className="row">
+                            <div className="row-title">이용 기간</div>
+                            {/* <div className="row-desc">현재는 베타 서비스 기간입니다.</div> */}
+                            <div className="row-desc">{planDurationDate}</div>
+                        </div>
+                        <div className="row">
+                            <div className="row-title">다음 플랜</div>
+                            <StyledPlanName className={`row-desc color-${nextPlan}`}>
+                                {nextPlan}{' '}
+                                {nowPlan === 'Free' ? (
+                                    <button className="inner upgrade" onClick={handlePlanBtn}>
+                                        플랜 업그레이드
+                                    </button>
+                                ) : nowPlan === nextPlan ? (
+                                    <button className="inner modify" onClick={handlePlanBtn}>
+                                        플랜 변경
+                                    </button>
+                                ) : (
+                                    <button className="inner" onClick={handleCancelModifPlan}>
+                                        변경 취소
+                                    </button>
+                                )}
+                            </StyledPlanName>
+                        </div>
+                    </div>
+                    <div className="now-plan-right">
+                        {nowPlan === 'Free' || nextPlan === 'Free' ? null : (
+                            <button className="btn-gray" onClick={handleUnsubscribe}>
+                                구독 해지
+                            </button>
+                        )}
+                    </div>
+                </div>
+                <div className="mypage-contents white-box plan-info">
+                    <div className="plan-info-header">나의 플랜 가능 정보</div>
+                    <div className="plan-info-table">
+                        {Object.keys(PlanInfo[nowPlan]).map((i) => (
+                            <div key={i} className="info-row">
+                                <div className="title">
+                                    <div className="title-header">{i}</div>
+                                    <div className="title-info">{PlanInfo[nowPlan][i]['info']}</div>
+                                </div>
+                                <div className="desc">
+                                    {PlanInfo[nowPlan][i]['type'] !== 'bool' ? (
+                                        <div className="desc-count">
+                                            {PlanInfo[nowPlan][i]['desc']}{' '}
+                                            <span>
+                                                {PlanInfo[nowPlan][i]['subType'] === 'person'
+                                                    ? `(현재 ${data[PlanInfo[nowPlan][i]['type']]}명)`
+                                                    : `(현재 ${data[PlanInfo[nowPlan][i]['type']]}회)`}
+                                            </span>
+                                        </div>
+                                    ) : PlanInfo[nowPlan][i]['desc'] === '가능' ? (
+                                        <Possible able={true} />
+                                    ) : (
+                                        <Possible able={false} />
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 

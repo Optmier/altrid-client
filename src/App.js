@@ -47,6 +47,7 @@ import { attachOptimer } from './redux_modules/optimerHelper';
 import ComponentTest from './pages/_TempPages/ComponentTest';
 import CamStudyEyetracker from './components/Camstudy/components/CamStudyEyetracker';
 import Calendar from './pages/Calendar';
+import Profile from './components/MyPage/Profile';
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -234,7 +235,7 @@ function App({ history, match }) {
                         <Route path="/pricing/details" component={PriceDetails} exact />
                         <Route path="/payment" component={Payment} exact />
                         <Route path="/pay-state/:state" component={PayState} exact />
-
+                        <Route path="/profile" component={Profile} exact />
                         {navigator.userAgent.toLowerCase().includes('isnativeapp') ? (
                             <Route path="/login-mobile-app-redirect" component={LoginMobileAppRedirect} exact />
                         ) : null}
