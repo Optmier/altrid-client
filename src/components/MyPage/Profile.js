@@ -382,25 +382,25 @@ function Profile({ history }) {
                     </div>
                 </div>
                 <h2 style={{ marginBottom: '16px' }}>프로필 정보</h2>
-                <duv className="profile-inputs">
+                <div className="profile-inputs">
                     <div className="input-box">
                         <p>이름</p>
-                        <input value={name} type="text" onChange={handleInput} />
+                        <input value={!name ? '' : name} type="text" onChange={handleInput} />
                     </div>
 
                     <div className="input-box">
                         <p>이메일</p>
-                        <input type="text" value={emailWith} />
+                        <input type="text" defaultValue={!emailWith ? '' : emailWith} />
                     </div>
                     <div className="input-box">
                         <p>학원명</p>
-                        <input type="text" value={academyName} />
+                        <input type="text" defaultValue={!academyName ? '' : academyName} />
                     </div>
                     <div className="input-box">
                         <p>학원코드</p>
-                        <input type="text" value={academyCode} />
+                        <input type="text" defaultValue={!academyCode ? '' : academyCode} />
                     </div>
-                </duv>
+                </div>
                 <div className="save-button">
                     <button onClick={handleDelete} className="delete">
                         회원탈퇴

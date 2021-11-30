@@ -636,7 +636,7 @@ function Calendar({ match }) {
                                 <input
                                     type="text"
                                     value={temp.title}
-                                    placeholder={temp.title}
+                                    placeholder={!temp.title ? '' : temp.title}
                                     style={{ border: 'none', height: '18px', background: 'rgb(239, 239, 239)' }}
                                     onChange={(e) => {
                                         settemp({
@@ -650,7 +650,7 @@ function Calendar({ match }) {
                                 설명 :{' '}
                                 <input
                                     type="text"
-                                    value={temp.description}
+                                    value={!temp.description ? '' : temp.description}
                                     placeholder={temp.description}
                                     style={{ border: 'none', height: '18px', background: 'rgb(239, 239, 239)' }}
                                     onChange={(e) => {
@@ -683,7 +683,7 @@ function Calendar({ match }) {
                         required
                         fullWidth
                         label="일정 제목"
-                        defaultValue=""
+                        defaultValue=" "
                         // disabled={Boolean(defaultData)}
                         // inputRef={titleFieldRef}
                         InputProps={{ disableUnderline: true }}
@@ -702,7 +702,7 @@ function Calendar({ match }) {
                         required
                         fullWidth
                         label="설명"
-                        defaultValue=""
+                        defaultValue=" "
                         // disabled={Boolean(defaultData)}
                         // inputRef={titleFieldRef}
                         InputProps={{ disableUnderline: true }}
