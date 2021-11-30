@@ -636,7 +636,7 @@ function Dashboard_1({ match, history }) {
     const newAssignment = assignment.sort(function (a, b) {
         return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
     });
-    console.log(newAssignment);
+    // console.log(newAssignment);
     return (
         <>
             <Helmet>
@@ -737,8 +737,7 @@ function Dashboard_1({ match, history }) {
                                     <div className="card assignment">
                                         <h3>과제 현황</h3>
                                         {assignment.length !== 0 ? (
-                                            // const newarray =
-                                            newAssignment.slice(0, 5).map((data, index) => {
+                                            newAssignment.slice(0, 3).map((data, index) => {
                                                 return (
                                                     <div key={index} className="info">
                                                         {Math.ceil(
