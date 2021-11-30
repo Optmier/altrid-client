@@ -129,7 +129,7 @@ function Class({ match }) {
         if (optimerModule.classNum === parseInt(match.params.num)) return;
         optimerModule.updateClassNumber(parseInt(match.params.num));
         window.DDayClass = new DashboardDDay(match.params.num, (msg, res) => {
-            console.log(msg, res);
+            // console.log(msg, res);
             //...setState(res);
         });
     }, [match, sessions, optimerModule]);

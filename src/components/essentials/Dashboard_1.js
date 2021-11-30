@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import ReactApexChart from 'react-apexcharts';
 import Button from '../../AltridUI/Button/Button';
 import { Helmet } from 'react-helmet';
+import MakeAutoComments from '../../controllers/MakeAutoComment';
 
 const Container = styled.div`
     margin: 0px auto;
@@ -307,7 +308,11 @@ const Container = styled.div`
 `;
 const Item = styled.div``;
 
-function Dashboard_1({ match }) {
+function Dashboard_1({ match, history }) {
+    const [activedNum, setactiveNum] = useState('');
+    // const [currentStudentData, setCurrentStudentData] = useState({});
+    const urlSearchParams = new URLSearchParams(history.location.search);
+    const queryUserId = urlSearchParams.get('user');
     const sessions = useSelector((state) => state.RdxSessions);
     const { num } = match.params;
     const classNum = match.params.num;
@@ -321,6 +326,7 @@ function Dashboard_1({ match }) {
     const [today, setdate] = useState(new Date());
     const [room, setroom] = useState([]);
     const [todo, settodo] = useState([]);
+    const [studentsData, setStudentsData] = useState([]);
     const [chart, setchart] = useState({
         series: [0],
         options: {
@@ -490,6 +496,7 @@ function Dashboard_1({ match }) {
         Axios.get(`${apiUrl}/meeting-room`, { params: { classNumber: classNum }, withCredentials: true })
             .then((result) => {})
             .catch((err) => console.log(err));
+
         // 클래스 정보 가져오기
         Axios.get(`${apiUrl}/classes/infos/${classNum}`, { withCredentials: true })
             .then((result) => {
@@ -518,6 +525,7 @@ function Dashboard_1({ match }) {
     useEffect(() => {
         Axios.get(`${apiUrl}/vocas/progress`, { params: { classNum: classNum }, withCredentials: true })
             .then((result) => {
+                // console.log(result.data);
                 settotal(result.data);
                 setchart({
                     ...chart,
@@ -536,7 +544,13 @@ function Dashboard_1({ match }) {
             .catch((err) => console.log(err));
     }, []);
 
-    // 오늘의 TODO 가져오기
+    const [acmTotalFixsMine, setACMTotalFixsMine] = useState(0);
+    const [acmTotalFixsAvg, setACMTotalFixsAvg] = useState(0);
+    const [acmAvgSpeedFixsMine, setACMAvgSpeedFixsMine] = useState(0);
+    const [acmAvgSpeedFixsAvg, setACMAvgSpeedFixsAvg] = useState(0);
+    const [acmRegressionsMine, setACMRegressionsMine] = useState(0);
+    const [acmRegressionsAvg, setACMRegressionsAvg] = useState(0);
+
     useEffect(() => {
         Axios.get(`${apiUrl}/calendar-events/my/${num}/current`, { withCredentials: true })
             .then((result) => {
@@ -544,47 +558,85 @@ function Dashboard_1({ match }) {
                 settodo(result.data);
             })
             .catch((err) => console.log(err));
-    }, []);
 
-    // optimer 가져오기
-    // console.log(sessions.authId);
-    useEffect(() => {
-        Axios.get(`${apiUrl}/optimer/${num}/${sessions.authId}`, { withCredentials: true })
+        Axios.get(`${apiUrl}/assignment-result/last-my-actived/${classNum}`, { withCredentials: true })
             .then((result) => {
-                // if (!result) {
-                //     setoptimer({
-                //         series: [
-                //             {
-                //                 name: 'optimer',
-                //                 data: [0, 0, 0, 0, 0, 0, 0],
-                //             },
-                //         ],
-                //         ...optimer,
-                //     });
-                // }
-
-                // } else if (sessions.authId) {
-                setoptimer({
-                    series: [
-                        {
-                            name: 'optimer',
-                            data: [
-                                Math.floor(result.data.time_mon / 60000),
-                                Math.floor(result.data.time_tue / 60000),
-                                Math.floor(result.data.time_wed / 60000),
-                                Math.floor(result.data.time_thu / 60000),
-                                Math.floor(result.data.time_fri / 60000),
-                                Math.floor(result.data.time_sat / 60000),
-                                Math.floor(result.data.time_sun / 60000),
+                // console.log(result.data);
+                Axios.get(`${apiUrl}/assignment-result/${result.data.actived_number}`, {
+                    params: {
+                        classNumber: classNum,
+                    },
+                    withCredentials: true,
+                })
+                    .then((result) => {
+                        // console.log(result.data['curr'][0].);
+                        setStudentsData(result.data['curr']);
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+                Axios.get(`${apiUrl}/optimer/${num}/${result.data.student_id}`, { withCredentials: true })
+                    .then((result) => {
+                        if (!result.data.time_mon) {
+                            return;
+                        }
+                        setoptimer({
+                            ...optimer,
+                            series: [
+                                {
+                                    name: 'optimer',
+                                    data: [
+                                        Math.floor(result.data.time_mon / 60000),
+                                        Math.floor(result.data.time_tue / 60000),
+                                        Math.floor(result.data.time_wed / 60000),
+                                        Math.floor(result.data.time_thu / 60000),
+                                        Math.floor(result.data.time_fri / 60000),
+                                        Math.floor(result.data.time_sat / 60000),
+                                        Math.floor(result.data.time_sun / 60000),
+                                    ],
+                                },
                             ],
-                        },
-                    ],
-                });
+                        });
+                    })
+                    .catch((err) => console.log(err));
             })
             .catch((err) => console.log(err));
-    }, [sessions]);
+    }, []);
 
-    window.test1 = classInfo;
+    useEffect(() => {
+        if (!studentsData || !studentsData.length) return;
+        const currentStudentData = studentsData.filter((p) => p.student_id === sessions.authId)[0];
+        setACMTotalFixsMine(currentStudentData.num_of_fixs);
+        setACMAvgSpeedFixsMine(currentStudentData.avg_of_fix_vels);
+        setACMRegressionsMine(currentStudentData.num_of_regs);
+
+        // 학생들 데이터 합
+        const totalEyeStatsSum = studentsData.reduce((a, b) => ({
+            num_of_fixs: a.num_of_fixs + b.num_of_fixs,
+            avg_of_fix_durs: a.avg_of_fix_durs + b.avg_of_fix_durs,
+            avg_of_fix_vels: a.avg_of_fix_vels + b.avg_of_fix_vels,
+            num_of_sacs: a.num_of_sacs + b.num_of_sacs,
+            var_of_sac_vels: a.var_of_sac_vels + b.var_of_sac_vels,
+            cluster_area: a.cluster_area + b.cluster_area,
+            cluster_counts: a.cluster_counts + b.cluster_counts,
+            num_of_regs: a.num_of_regs + b.num_of_regs,
+        }));
+        // 학생 평균 데이터
+        const totalEyeStatsAvg = {};
+        Object.keys(totalEyeStatsSum).forEach((name) => {
+            totalEyeStatsAvg[name] = (totalEyeStatsSum[name] / studentsData.length) * 1.0;
+        });
+
+        setACMTotalFixsAvg(totalEyeStatsAvg.num_of_fixs.toFixed(0));
+        setACMAvgSpeedFixsAvg(totalEyeStatsAvg.avg_of_fix_vels.toFixed(0));
+        setACMRegressionsAvg(totalEyeStatsAvg.num_of_regs.toFixed(0));
+    });
+
+    // useEffect(() => {
+
+    // }, []);
+
+    // window.optimer = optimer;
 
     return (
         <>
@@ -793,7 +845,31 @@ function Dashboard_1({ match }) {
                                                 fill="#9AA5AF"
                                             />
                                         </svg>
-                                        <p>Hazel님은 어휘력은 뛰어나지만, 활용력이 부족합니다. 그래서 어쩌구 저저구가 더 필요합니다.</p>
+                                        <div style={{ marginTop: '35px' }} className="AutoComment">
+                                            {/* {MakeAutoComments(
+                                                sessions.userName,
+                                                acmTotalFixsMine,
+                                                acmTotalFixsAvg,
+                                                acmAvgSpeedFixsMine,
+                                                acmAvgSpeedFixsAvg,
+                                                acmRegressionsMine,
+                                                acmRegressionsAvg,
+                                            )} */}
+                                            {acmTotalFixsMine === 0 ? (
+                                                <p>최근 풀이한 과제가 존재하지 않거나 제대로 된 측정이 이루어지지 않았습니다.</p>
+                                            ) : (
+                                                MakeAutoComments(
+                                                    sessions.userName,
+                                                    acmTotalFixsMine,
+                                                    acmTotalFixsAvg,
+                                                    acmAvgSpeedFixsMine,
+                                                    acmAvgSpeedFixsAvg,
+                                                    acmRegressionsMine,
+                                                    acmRegressionsAvg,
+                                                )
+                                            )}
+                                            {/* {console.log(acmTotalFixsMine)} */}
+                                        </div>
                                     </div>
                                 </Item>
                             </Grid>
@@ -828,13 +904,15 @@ function Dashboard_1({ match }) {
                             <Grid item xs={12}>
                                 <div className="card optimer">
                                     <h3>나의 학습 시간</h3>
-                                    <ReactApexChart
-                                        style={{ overflow: 'hidden' }}
-                                        options={optimer.options}
-                                        series={optimer.series}
-                                        type="bar"
-                                        height={300}
-                                    />
+                                    {!sessions ? null : (
+                                        <ReactApexChart
+                                            style={{ overflow: 'hidden' }}
+                                            options={optimer.options}
+                                            series={optimer.series}
+                                            type="bar"
+                                            height={300}
+                                        />
+                                    )}
                                 </div>
                             </Grid>
                         </Grid>

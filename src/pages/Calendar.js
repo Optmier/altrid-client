@@ -486,7 +486,7 @@ function Calendar({ match }) {
                 withCredentials: true,
             })
                 .then((result) => {
-                    console.log(result.data);
+                    // console.log(result.data);
                     setEvents((events) =>
                         events.concat(
                             result.data.map((result, index) => ({
