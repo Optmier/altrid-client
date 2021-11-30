@@ -733,7 +733,7 @@ function Calendar({ match }) {
                     /> */}
                     <hr />
                     <p style={{ textAlign: 'center' }}>
-                        시작 : {AddEvent.start} 종료 : {AddEvent.end}
+                        시작 : {AddEvent.start} 종료 : {moment(AddEvent.end).subtract(1, 'day').format('YYYY-MM-DD')}
                     </p>
                     <hr />
                     <p style={{ textAlign: 'center' }}>반복일 선택</p>
