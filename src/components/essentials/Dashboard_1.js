@@ -631,13 +631,12 @@ function Dashboard_1({ match, history }) {
         setACMAvgSpeedFixsAvg(totalEyeStatsAvg.avg_of_fix_vels.toFixed(0));
         setACMRegressionsAvg(totalEyeStatsAvg.num_of_regs.toFixed(0));
     });
+    // new Date(b.due_date).getTime - new Date(a.due_date).getTime;
 
-    // useEffect(() => {
-
-    // }, []);
-
-    // window.optimer = optimer;
-
+    const newAssignment = assignment.sort(function (a, b) {
+        return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+    });
+    console.log(newAssignment);
     return (
         <>
             <Helmet>
@@ -738,7 +737,8 @@ function Dashboard_1({ match, history }) {
                                     <div className="card assignment">
                                         <h3>과제 현황</h3>
                                         {assignment.length !== 0 ? (
-                                            assignment.slice(-4, -1).map((data, index) => {
+                                            // const newarray =
+                                            newAssignment.slice(0, 5).map((data, index) => {
                                                 return (
                                                     <div key={index} className="info">
                                                         {Math.ceil(
