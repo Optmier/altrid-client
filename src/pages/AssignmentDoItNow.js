@@ -268,15 +268,16 @@ function AssignmentDoItNow({ history, match }) {
     }, []);
 
     useEffect(() => {
-        // if (!window.opener) {
-        //     alert('잘못된 접근입니다!');
-        //     document.body.innerHTML = '';
-        //     window.close();
-        //     return;
-        // }
+        if (!window.opener) {
+            alert('잘못된 접근입니다!');
+            document.body.innerHTML = '';
+            window.close();
+            return;
+        }
         ChannelService.hideButton();
-        if (!serverdate.datetime) return;
+        if (!serverdate.datetime || serverdate.loading) return;
         const { classnum, assignmentid } = match.params;
+
         Axios.get(`${apiUrl}/assignment-actived/${classnum}/${assignmentid}`, { withCredentials: true })
             .then((res) => {
                 // console.log(res);
@@ -378,7 +379,7 @@ function AssignmentDoItNow({ history, match }) {
             .catch((err) => {
                 console.error(err);
             });
-    }, [serverdate]);
+    }, [serverdate.loading]);
 
     useEffect(() => {
         if (!originalDatas.contents_data) return;
