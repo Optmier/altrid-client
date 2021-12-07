@@ -38,6 +38,7 @@ import GroupBox from '../AltridUI/GroupBox/GroupBox';
 import Button from '../AltridUI/Button/Button';
 import { withStyles } from '@material-ui/core/styles';
 import MuiAccordion from '@material-ui/core/Accordion';
+import BackgroundTheme from '../AltridUI/ThemeColors/BackgroundTheme';
 
 const Accordion = withStyles({
     root: {
@@ -405,13 +406,7 @@ function MainDraft({ match, cardData, history }) {
     if (errorState) return <Error />;
     return (
         <div style={{ overflowX: 'hidden' }}>
-            <Helmet>
-                <style>{`
-                    main#main {
-                        background-color: #ffffff;
-                    }
-            `}</style>
-            </Helmet>
+            <BackgroundTheme colors="#ffffff" />
             <ClassDialogDelete ver="draft" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
             <CardPopOver
                 // contents_data={cardData['contents_data']}
@@ -427,7 +422,7 @@ function MainDraft({ match, cardData, history }) {
             <Drawer anchor="right" open={openCreateNewDrawer}>
                 <ClassDrawer handleClose={toggleDrawer(false)} ver="draft" />
             </Drawer>
-            <HeaderBar />
+            {/* <HeaderBar /> */}
             <GoLink>
                 <Accordion>
                     <AccordionSummary expandIcon={<ExpandMore />}>

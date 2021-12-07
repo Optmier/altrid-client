@@ -48,6 +48,11 @@ import ComponentTest from './pages/_TempPages/ComponentTest';
 import CamStudyEyetracker from './components/Camstudy/components/CamStudyEyetracker';
 import Calendar from './pages/Calendar';
 import Profile from './components/MyPage/Profile';
+import styled from 'styled-components';
+import HeaderBar from './components/essentials/HeaderBar';
+import Footer from './components/essentials/Footer';
+
+const MainContainer = styled.main``;
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -200,6 +205,47 @@ function App({ history, match }) {
         }
     }, [sessions, optimerModule]);
 
+    // console.log(history, match);
+    const HeaderBarSelector = (currentPath) => {
+        if (currentPath.includes('/login')) return <HeaderBar onlyLogo />;
+        else if (
+            currentPath === '/' ||
+            currentPath.includes('/profile') ||
+            currentPath.includes('/mypage') ||
+            currentPath.includes('/main-draft') ||
+            currentPath.includes('/dashboard') ||
+            currentPath.includes('/pricing') ||
+            currentPath.includes('/payment') ||
+            currentPath.includes('/pay-state')
+        )
+            return <HeaderBar />;
+        else if (
+            currentPath.includes('/assignments') ||
+            currentPath.includes('/video-lecture-detect-lists') ||
+            currentPath.includes('/video-lecture-eyetracker') ||
+            currentPath.includes('/cam-study-eyetracker')
+        )
+            return null;
+        else return <HeaderBar shrinked />;
+    };
+
+    const FooterSelector = (currentPath, isMobile) => {
+        if (
+            currentPath === '/' ||
+            currentPath.includes('/login') ||
+            currentPath.includes('/profile') ||
+            currentPath.includes('/mypage') ||
+            currentPath.includes('/main-draft') ||
+            currentPath.includes('/dashboard') ||
+            currentPath.includes('/pricing') ||
+            currentPath.includes('/payment') ||
+            currentPath.includes('/pay-state')
+        ) {
+            if (isMobile) return 'mobile footer';
+            else return <Footer />;
+        } else return null;
+    };
+
     return (
         <>
             <AlertSubscribe />
@@ -210,7 +256,8 @@ function App({ history, match }) {
             <ScrollTop>
                 {/* <ErrorOS os={navigator.userAgent.toLowerCase()} /> */}
                 {/* <MobileBody /> */}
-                <main id="main">
+                {HeaderBarSelector(history.location.pathname)}
+                <MainContainer>
                     <Switch>
                         <Route path={$_root} component={Main} exact />
                         <Route path={'/main-draft'} component={MainDraft} exact />
@@ -247,7 +294,8 @@ function App({ history, match }) {
                             <Error />
                         </Route>
                     </Switch>
-                </main>
+                </MainContainer>
+                {FooterSelector(history.location.pathname, isMobile)}
             </ScrollTop>
             {history.location.pathname === '/class/draft' || history.location.pathname === '/class/share' ? <TrashButton /> : ''}
         </>

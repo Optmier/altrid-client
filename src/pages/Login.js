@@ -47,7 +47,7 @@ const LoginMain = styled.div`
             height: 100%;
             max-height: 230px;
             filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.1));
-            margin-bottom: 264px;
+            /* margin-bottom: 264px; */
             @media (min-width: 0px) and (max-width: 480px) {
                 margin: 0 auto;
 
@@ -704,7 +704,6 @@ function Login({ history }) {
             case 0:
                 return (
                     <>
-                        <HeaderBarLogin />
                         <LoginMain>
                             <div className="LoginBox">
                                 <svg width="71" height="47" viewBox="0 0 71 47" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -824,7 +823,6 @@ function Login({ history }) {
             case 1:
                 return (
                     <>
-                        <HeaderBarLogin />
                         <AddName>
                             {usertype === 'students' ? (
                                 <h3>학생의 이름을 정확히 입력해주세요</h3>
@@ -922,7 +920,6 @@ function Login({ history }) {
             case 2:
                 return (
                     <>
-                        <HeaderBarLogin />
                         <Make>
                             <div className="MakeAcdemy">
                                 <h3>
@@ -1110,7 +1107,6 @@ function Login({ history }) {
             case 3:
                 return (
                     <>
-                        <HeaderBarLogin />
                         <CodeAcademy>
                             <h3>{inputState['academy_name']}의 학원 코드는 </h3>
                             <div
@@ -1176,7 +1172,6 @@ function Login({ history }) {
             <main className={classNames('login-page', usertype === 'students' ? 'students' : 'teachers')}>
                 <section className="contents-root">{getContentsForStep(loginStep)}</section>
             </main>
-            {isMobile ? null : <Footer />}
         </>
     );
 }

@@ -35,6 +35,7 @@ import { AccordionDetails, AccordionSummary, Typography } from '@material-ui/cor
 import { ExpandMore } from '@material-ui/icons';
 import { withStyles } from '@material-ui/core/styles';
 import MuiAccordion from '@material-ui/core/Accordion';
+import BackgroundTheme from '../AltridUI/ThemeColors/BackgroundTheme';
 
 const Accordion = withStyles({
     root: {
@@ -370,13 +371,7 @@ function Main({ history }) {
 
     return (
         <Mainpage>
-            <Helmet>
-                <style>{`
-                    main#main {
-                        background-color: #ffffff;
-                    }
-            `}</style>
-            </Helmet>
+            <BackgroundTheme colors="#ffffff" />
             <Drawer
                 anchor="right"
                 open={openCreateNewDrawer}
@@ -399,7 +394,7 @@ function Main({ history }) {
                 <AddClass handleClose={toggleAddTeacherDrawer(false)} />
             </Drawer>
             <HeaderSection>
-                <HeaderBar />
+                {/* <HeaderBar /> */}
                 <div className="GoLink">
                     {sessions.userType === 'teachers' ? (
                         <Accordion>
@@ -663,11 +658,11 @@ function Main({ history }) {
                 </Info>
             </MainSection>
 
-            {isMobile ? null : (
+            {/* {isMobile ? null : (
                 <FooterSection>
                     <Footer />
                 </FooterSection>
-            )}
+            )} */}
         </Mainpage>
     );
 }

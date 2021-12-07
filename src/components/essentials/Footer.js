@@ -8,7 +8,8 @@ const Foot = styled.div`
     display: flex;
     flex-direction: column;
     text-align: center;
-    overflow: hidden;
+    /* overflow: hidden; */
+    margin-top: auto;
     & .contents {
         padding: 48px 144px;
         & .logo {

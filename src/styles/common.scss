@@ -104,6 +104,13 @@ body {
     height: 100%;
     word-break: keep-all;
 
+    div#root {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        // overflow: auto;
+    }
+
     #main {
     }
     input {
