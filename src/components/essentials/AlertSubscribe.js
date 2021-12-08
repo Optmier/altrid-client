@@ -74,8 +74,8 @@ function AlertSubscribe({ history }) {
     const { analysisPattern, eyetrack, fileCreation, studentInvited, teacherInvited, videoLecture } = restricted;
 
     const handleAlert = () => {
-        $('#main').css({ paddingTop: '0px' });
-        $('#subpage-top-nav').css({ marginTop: '0px' });
+        // $('#main').css({ paddingTop: '0px' });
+        $('.header-bar-set').css({ marginTop: '0px' });
         $('#alert-subscribe').css({ top: '-55px' });
     };
 
@@ -133,13 +133,13 @@ function AlertSubscribe({ history }) {
     }, [pathname, restricted]);
 
     if (!renderState || userType === 'students') {
-        $('#main').css({ paddingTop: '0px' });
-        $('#subpage-top-nav').css({ marginTop: '0px' });
+        // $('#main').css({ paddingTop: '0px' });
+        $('.header-bar-set').css({ marginTop: '0px' });
 
         return null;
     } else {
-        $('#main').css({ paddingTop: '55px' });
-        $('#subpage-top-nav').css({ marginTop: '55px' });
+        // $('#main').css({ paddingTop: '55px' });
+        $('.header-bar-set').css({ marginTop: '55px' });
 
         return (
             <StyleDiv id="alert-subscribe">

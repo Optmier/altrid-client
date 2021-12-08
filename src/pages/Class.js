@@ -23,19 +23,19 @@ import LearningVocas from '../components/LearningVocas/LearningVocas';
 import CamStudyMainLists from '../components/Camstudy/CamStudyMainLists';
 import Dashboard_1 from '../components/essentials/Dashboard_1';
 import DashboardDDay from '../controllers/DashboardDDay.js';
-import { setLeftNavStateGlobal } from '../redux_modules/leftNavStateGlobal';
+import { setLeftNavStateGlobal, toggleLeftNavGlobal } from '../redux_modules/leftNavStateGlobal';
 
 const SlideWrapper = styled.div`
     position: relative;
     transition: all 0.4s;
 
     @media (min-width: 903px) {
-        padding: ${(props) => (props.leftNavState ? '95px 0 0 0' : '95px 0 0 0')};
+        padding: ${(props) => (props.leftNavState ? '36px 0 0 0' : '36px 0 0 0')};
         margin-left: ${(props) => (props.leftNavState ? '392px' : 0)};
     }
 
     @media (min-width: 0) and (max-width: 902px) {
-        padding: 95px 0 0 0;
+        padding: 20px 0 0 0;
         margin-left: 0;
     }
 `;
@@ -100,15 +100,15 @@ function Class({ match }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const [stMatch, setStMatch] = useState({ id: null, path: null });
     const [RenderSubPage, setRenderSubPage] = useState(null);
-    const [leftNavState, setLeftNavState] = useState(window.innerWidth > 902);
+    const { leftNavGlobal } = useSelector((state) => state.RdxGlobalLeftNavState);
 
     const handleLeftNav = () => {
-        setLeftNavState(!leftNavState);
+        dispatch(toggleLeftNavGlobal());
     };
 
-    useEffect(() => {
-        dispatch(setLeftNavStateGlobal(leftNavState));
-    }, [leftNavState]);
+    const setLeftNavState = (state) => {
+        dispatch(setLeftNavStateGlobal(state));
+    };
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;
@@ -136,9 +136,9 @@ function Class({ match }) {
 
     return (
         <>
-            <LeftNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} />
-            <SlideWrapper leftNavState={leftNavState} className="class-page-root">
-                <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} />
+            <LeftNav leftNavState={leftNavGlobal} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} />
+            <SlideWrapper leftNavState={leftNavGlobal} className="class-page-root">
+                <TopNav leftNavState={leftNavGlobal} handleLeftNav={handleLeftNav} />
                 <BackdropComponent open={loading && !data && !error} />
                 {error ? <Error /> : !data && sessions.userType === 'teachers' ? null : RenderSubPage}
             </SlideWrapper>

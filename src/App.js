@@ -52,7 +52,9 @@ import styled from 'styled-components';
 import HeaderBar from './components/essentials/HeaderBar';
 import Footer from './components/essentials/Footer';
 
-const MainContainer = styled.main``;
+const MainContainer = styled.main`
+    flex: 1;
+`;
 
 window.axios = Axios;
 window.lastUrl = '/';
@@ -257,7 +259,7 @@ function App({ history, match }) {
                 {/* <ErrorOS os={navigator.userAgent.toLowerCase()} /> */}
                 {/* <MobileBody /> */}
                 {HeaderBarSelector(history.location.pathname)}
-                <MainContainer>
+                <MainContainer id="main">
                     <Switch>
                         <Route path={$_root} component={Main} exact />
                         <Route path={'/main-draft'} component={MainDraft} exact />

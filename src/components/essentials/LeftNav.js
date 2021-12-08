@@ -56,6 +56,8 @@ const LeftNavRoot = styled.div`
     @media (min-width: 0) and (max-width: 902px) {
         width: calc(100% - 64px);
         left: ${(props) => (props.leftNavState ? '0' : 'calc(-100% - 64px)')};
+        top: 0;
+        z-index: 1301;
     }
 `;
 

@@ -314,6 +314,18 @@ const Info = styled.div`
     }
 `;
 
+const MainPageRoot = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 2px 32px;
+    @media (max-width: 640px) {
+        padding: 2px 16px;
+    }
+`;
+const GreetingsSection = styled.div``;
+const ClassListContainer = styled.div``;
+const BottomBannerContainer = styled.div``;
+
 const useStyles = makeStyles((theme) => ({
     drawerPaper: {
         '@media (min-width: 0) and (max-width: 662px)': {
@@ -370,6 +382,53 @@ function Main({ history }) {
     window.test = sessions.userType;
 
     return (
+        <MainPageRoot>
+            <BackgroundTheme colors="#ffffff" />
+            <GreetingsSection></GreetingsSection>
+            <ClassListContainer></ClassListContainer>
+            <BottomBannerContainer>
+                {sessions.userType === 'students' ? (
+                    <>
+                        <div className="Info-total">
+                            <div className="Info-icon">
+                                <svg width="33" height="42" viewBox="0 0 33 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M8.35941 31.9999C7.75949 29.4539 5.05278 27.3719 3.94181 25.9999C2.03942 23.6465 0.84717 20.8089 0.5024 17.8139C0.157631 14.8189 0.674369 11.7884 1.99309 9.07144C3.31181 6.35451 5.37886 4.0617 7.95614 2.45712C10.5334 0.852537 13.5161 0.00147064 16.5605 0.00195333C19.6049 0.00243602 22.5873 0.854449 25.1641 2.45984C27.7408 4.06524 29.8071 6.35871 31.125 9.07606C32.4428 11.7934 32.9586 14.8241 32.6128 17.819C32.2671 20.8139 31.0739 23.6511 29.1708 26.0039C28.0598 27.3739 25.3572 29.4559 24.7572 31.9999H8.35739H8.35941ZM24.6381 35.9999V37.9999C24.6381 39.0608 24.2124 40.0782 23.4548 40.8284C22.6972 41.5785 21.6696 41.9999 20.5982 41.9999H12.5185C11.447 41.9999 10.4195 41.5785 9.66183 40.8284C8.90421 40.0782 8.47858 39.0608 8.47858 37.9999V35.9999H24.6381ZM18.5783 16.0099V7.99995L9.48855 20.0099H14.5384V28.0099L23.6281 16.0099H18.5783Z"
+                                        fill="#2D3843"
+                                    />
+                                </svg>
+                            </div>
+                            <div className="Info-Word">
+                                <div className="Info-Top">서비스 관련 궁금하신 점이 있으신가요?</div>
+                                <div className="Info-Bottom">1대 1 바로 상담을 원하는 경우에는 우하단 물음표 버튼을 클릭해주세요.</div>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="Info-total">
+                            <div className="Info-icon">
+                                <svg width="33" height="42" viewBox="0 0 33 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M8.35941 31.9999C7.75949 29.4539 5.05278 27.3719 3.94181 25.9999C2.03942 23.6465 0.84717 20.8089 0.5024 17.8139C0.157631 14.8189 0.674369 11.7884 1.99309 9.07144C3.31181 6.35451 5.37886 4.0617 7.95614 2.45712C10.5334 0.852537 13.5161 0.00147064 16.5605 0.00195333C19.6049 0.00243602 22.5873 0.854449 25.1641 2.45984C27.7408 4.06524 29.8071 6.35871 31.125 9.07606C32.4428 11.7934 32.9586 14.8241 32.6128 17.819C32.2671 20.8139 31.0739 23.6511 29.1708 26.0039C28.0598 27.3739 25.3572 29.4559 24.7572 31.9999H8.35739H8.35941ZM24.6381 35.9999V37.9999C24.6381 39.0608 24.2124 40.0782 23.4548 40.8284C22.6972 41.5785 21.6696 41.9999 20.5982 41.9999H12.5185C11.447 41.9999 10.4195 41.5785 9.66183 40.8284C8.90421 40.0782 8.47858 39.0608 8.47858 37.9999V35.9999H24.6381ZM18.5783 16.0099V7.99995L9.48855 20.0099H14.5384V28.0099L23.6281 16.0099H18.5783Z"
+                                        fill="#2D3843"
+                                    />
+                                </svg>
+                            </div>
+                            <div className="Info-Word">
+                                <div className="Info-Top">알트리드는 문제 풀이 중 모든 것을 관찰하고 기록합니다.</div>
+                                <div className="Info-Bottom">
+                                    시선흐름 추적 기술과 문제 패턴 데이터 수집을 통해 맞춤형 리포트를 제공합니다.
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
+            </BottomBannerContainer>
+        </MainPageRoot>
+    );
+
+    return (
         <Mainpage>
             <BackgroundTheme colors="#ffffff" />
             <Drawer
@@ -415,7 +474,7 @@ function Main({ history }) {
                 </div>
             </HeaderSection>
 
-            <MainSection>
+            <MainSection style={{ display: 'none' }}>
                 <MainHeader>
                     <div className="greeting">
                         <div className="left">
