@@ -231,6 +231,8 @@ function MainDraft({ match, cardData, history }) {
         state.assignmentDraft.draftDatas.data ? state.assignmentDraft.draftDatas : { loading: true, data: [], error: null },
     );
 
+    window.cardData = cardData;
+
     const { activedNum, num, idx } = match.params;
 
     const sessions = useSelector((state) => state.RdxSessions);

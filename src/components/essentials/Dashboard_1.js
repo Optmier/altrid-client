@@ -14,6 +14,7 @@ import ReactApexChart from 'react-apexcharts';
 import Button from '../../AltridUI/Button/Button';
 import { Helmet } from 'react-helmet';
 import MakeAutoComments from '../../controllers/MakeAutoComment';
+import BackgroundTheme from '../../AltridUI/ThemeColors/BackgroundTheme';
 
 const Container = styled.div`
     margin: 0px auto;
@@ -639,14 +640,7 @@ function Dashboard_1({ match, history }) {
     // console.log(newAssignment);
     return (
         <>
-            <Helmet>
-                <style>{`
-                    main#main {
-                        background-color: #ffffff;
-                    }
-            `}</style>
-            </Helmet>
-            <HeaderBar />
+            <BackgroundTheme color="#ffffff" />
             <Container>
                 <div className="greeting">
                     <div className="left">
@@ -918,7 +912,6 @@ function Dashboard_1({ match, history }) {
                     </Box>
                 </div>
             </Container>
-            <Footer />
         </>
     );
 }

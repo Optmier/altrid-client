@@ -299,7 +299,6 @@ function Price({ history }) {
                     </button>
                 </StyleDialog>
             </Dialog>
-            <HeaderBar />
             <div className="price-root">
                 <div className="price_section_header">
                     <ClassWrapper col="none" type="main_page">

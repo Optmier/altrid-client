@@ -6,7 +6,10 @@ import AccountPopOver from './AccountPopOver';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Button from '../../AltridUI/Button/Button';
+import MuiAccordion from '@material-ui/core/Accordion';
 import { toggleLeftNavGlobal } from '../../redux_modules/leftNavStateGlobal';
+import { AccordionDetails, AccordionSummary, withStyles } from '@material-ui/core';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 
 const useScroll = () => {
     const [state, setState] = useState({
@@ -137,6 +140,34 @@ const LeftNavHandleBtnMobile = styled.svg`
     }
 `;
 
+const Accordion = withStyles({
+    root: {
+        border: '1px solid rgba(0, 0, 0, .125)',
+        boxShadow: 'none',
+        backgroundColor: '#F6F8F9',
+        '&:not(:last-child)': {
+            borderBottom: '1px solid #F6F8F9',
+        },
+        '&:before': {
+            display: 'none',
+        },
+        '&$expanded': {
+            margin: 'auto',
+        },
+    },
+    expanded: {},
+})(MuiAccordion);
+
+const HeaderSection = styled.div`
+    & .GoLink {
+        margin-bottom: 40px;
+        display: none;
+        @media (min-width: 0px) and (max-width: 590px) {
+            display: block;
+        }
+    }
+`;
+
 function HeaderBar({ history, match, defaultColor, onlyLogo, shrinked }) {
     const sessions = useSelector((state) => state.RdxSessions);
     const { leftNavGlobal } = useSelector((state) => state.RdxGlobalLeftNavState);
@@ -220,7 +251,7 @@ function HeaderBar({ history, match, defaultColor, onlyLogo, shrinked }) {
                         <div className="dummy"></div>
                     ) : (
                         <>
-                            {!shrinked ? (
+                            {!shrinked && sessions.userType === 'teachers' ? (
                                 <MiddleActions>
                                     <Link to="/">
                                         <Button
@@ -243,7 +274,7 @@ function HeaderBar({ history, match, defaultColor, onlyLogo, shrinked }) {
                                 </MiddleActions>
                             ) : null}
                             <RightActions>
-                                {!shrinked ? (
+                                {!shrinked && sessions.userType === 'teachers' ? (
                                     <Link to="/pricing">
                                         <Button
                                             className="btn-purchase"
@@ -296,6 +327,27 @@ function HeaderBar({ history, match, defaultColor, onlyLogo, shrinked }) {
                     )}
                 </HeaderBarContainer>
             </HeaderBarRoot>
+            {!shrinked && !onlyLogo ? (
+                <HeaderSection>
+                    {/* <HeaderBar /> */}
+                    <div className="GoLink">
+                        {sessions.userType === 'teachers' ? (
+                            <Accordion>
+                                <AccordionSummary expandIcon={<ExpandMore />}>클래스</AccordionSummary>
+                                {/* <AccordionDetails>
+                                <Link to="/">클래스</Link>
+                            </AccordionDetails> */}
+                                <AccordionDetails>
+                                    <Link to="/main-draft">과제</Link>
+                                </AccordionDetails>
+                                <AccordionDetails>
+                                    <Link to="/pricing">이용권 구매하기</Link>
+                                </AccordionDetails>
+                            </Accordion>
+                        ) : null}
+                    </div>
+                </HeaderSection>
+            ) : null}
         </>
     );
 }

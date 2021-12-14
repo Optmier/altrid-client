@@ -3,7 +3,7 @@ import Axios from 'axios';
 import './styles/common.scss';
 import { Element } from 'react-scroll';
 import Class from './pages/Class';
-import Main from './pages/Main';
+import Main from './pages/Main/Main';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import ScrollTop from './components/essentials/ScrollTop';
 import TrashButton from './components/essentials/TrashButton';
@@ -33,7 +33,6 @@ import GooroomeeTest from './pages/GooroomeeTest';
 import VideoLectureEyetracker from './components/VideoLectures/VideoLectureEyetracker';
 import VideoLectureEyetrackDetectionList from './components/VideoLectures/VideoLectureEyetrackDetectionList';
 import LoginMobileAppRedirect from './pages/LoginMobileAppRedirect';
-import MainDraft from './pages/MainDraft';
 import MyPage from './pages/MyPage';
 import Price from './pages/Price';
 import PriceDetails from './components/Price/PriceDetails';
@@ -51,6 +50,7 @@ import Profile from './components/MyPage/Profile';
 import styled from 'styled-components';
 import HeaderBar from './components/essentials/HeaderBar';
 import Footer from './components/essentials/Footer';
+import MainDraft from './pages/MainDraft/MainDraft';
 
 const MainContainer = styled.main`
     flex: 1;

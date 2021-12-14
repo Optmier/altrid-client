@@ -337,7 +337,6 @@ function Confirm({ location, history }) {
 
     return (
         <>
-            <HeaderBar defaultColor="white" />
             <div className="payment-root">
                 <section className="payment-confirm">
                     <div className="payment-header">현재 플랜 확인</div>

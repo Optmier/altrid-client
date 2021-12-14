@@ -33,8 +33,6 @@ function PayState({ match, history }) {
 
     return (
         <>
-            <HeaderBar defaultColor="white" />
-
             <div className="payState-root">{switchPayState(state)}</div>
 
             <PaymentWarn />

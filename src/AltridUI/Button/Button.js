@@ -95,6 +95,13 @@ const ButtonRoot = styled.button`
             return getColorSeries400(colors);
         }
     }};
+    fill: ${({ variant, colors }) => {
+        if (variant === 'filled') return '#ffffff';
+        if (variant === 'mono') return '#11171C';
+        else {
+            return getColorSeries400(colors);
+        }
+    }};
     display: flex;
     justify-content: center;
     font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
@@ -137,7 +144,7 @@ const ButtonRoot = styled.button`
                 return '12px 24px';
         }
     }};
-    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, fill 0.2s;
     width: ${({ fullWidth }) => (fullWidth ? '100%' : null)};
 
     &:hover {
@@ -158,6 +165,12 @@ const ButtonRoot = styled.button`
             else if (variant === 'default') return null;
             return getColorSeries300(colors);
         }};
+        fill: ${({ colors, variant }) => {
+            if (variant === 'filled') return '#ffffff';
+            if (variant === 'mono') return '#11171C';
+            else if (variant === 'default') return null;
+            return getColorSeries300(colors);
+        }};
     }
 
     &:disabled {
@@ -171,6 +184,11 @@ const ButtonRoot = styled.button`
             else if (variant === 'mono') return '#E9EDEF';
         }};
         color: ${({ variant }) => {
+            if (variant === 'outlined' || variant === 'light') return '#bfc6cd';
+            else if (variant === 'mono') return '#E9EDEF';
+            else if (variant === 'default') return '#BFC6CD';
+        }};
+        fill: ${({ variant }) => {
             if (variant === 'outlined' || variant === 'light') return '#bfc6cd';
             else if (variant === 'mono') return '#E9EDEF';
             else if (variant === 'default') return '#BFC6CD';

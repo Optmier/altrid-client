@@ -14,6 +14,7 @@ import HeaderBar from '../essentials/HeaderBar';
 import icon from '../../images/Profile_icon.png';
 import Footer from '../essentials/Footer';
 import { Helmet } from 'react-helmet';
+import BackgroundTheme from '../../AltridUI/ThemeColors/BackgroundTheme';
 
 const BtnAble = styled.button`
     pointer-events: ${(props) => (props.btnAbleState ? 'auto' : 'none')};
@@ -321,14 +322,7 @@ function Profile({ history }) {
 
     return (
         <>
-            <Helmet>
-                <style>{`
-                    main#main {
-                        background-color: #ffffff;
-                    }
-            `}</style>
-            </Helmet>
-            <HeaderBar />
+            <BackgroundTheme colors="#ffffff" />
             <Profile_Header>
                 <div className="profile-header">
                     <div className="test">{/* <h3>sd</h2> */}</div>
@@ -410,7 +404,6 @@ function Profile({ history }) {
                     </button>
                 </div>
             </Profile_Main>
-            <Footer />
         </>
     );
 }

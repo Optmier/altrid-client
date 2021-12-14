@@ -13,6 +13,7 @@ import { Helmet } from 'react-helmet';
 import '../styles/mypage.scss';
 import HeaderBar from '../components/essentials/HeaderBar';
 import Footer from '../components/essentials/Footer';
+import BackgroundTheme from '../AltridUI/ThemeColors/BackgroundTheme';
 
 const SlideWrapper = styled.div`
     transition: all 0.4s;
@@ -54,21 +55,12 @@ function MyPage({ match }) {
 
     return (
         <>
-            <HeaderBar />
-            <Helmet>
-                <style>{`
-                    main#main {
-                        background-color: #ffffff;
-                    }
-            `}</style>
-            </Helmet>
-
+            <BackgroundTheme colors="#ffffff" />
             {/* <LeftNavMyPage leftNavState={leftNavState} handleLeftNav={handleLeftNav} setLeftNavState={setLeftNavState} /> */}
             <SlideWrapper leftNavState={leftNavState} className="mypage-root">
                 {/* <TopNav leftNavState={leftNavState} handleLeftNav={handleLeftNav} /> */}
                 <ClassWrapper>{MyPageSwitcher(match.params.menu, sessions.userType)}</ClassWrapper>
             </SlideWrapper>
-            <Footer />
         </>
     );
 }
