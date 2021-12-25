@@ -50,7 +50,7 @@ const StyledButton = styled.button`
 
 const CardRoot = styled.div`
     display: flex;
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
     border-radius: 11px;
     padding: 18px;
 

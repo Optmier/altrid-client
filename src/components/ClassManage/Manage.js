@@ -19,6 +19,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
 import BulbIcon from '../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
 import InnerPageBottomActions from '../../AltridUI/OtherContainers/InnerPageBottomActions';
+import Typography from '../../AltridUI/Typography/Typography';
 
 const CopyButton = styled.div`
     pointer-events: ${(props) => (props.state ? 'none' : 'all')};
@@ -150,6 +151,22 @@ const ManageInputsContainer = styled.div`
         display: flex;
         width: 100%;
     }
+`;
+
+const ClassManagementRoot = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    margin-bottom: ${(props) => (props['bottom-actions'] ? '72px' : null)};
+    max-width: 960px;
+    height: 100%;
+    @media (max-width: 640px) {
+        margin-top: 30px;
+    }
+`;
+const ContentsWrapper = styled.div`
+    margin: 24px 0;
 `;
 
 function Manage({ match, history }) {
@@ -468,135 +485,111 @@ function Manage({ match, history }) {
             });
     };
 
-    window.historyTest = history;
+    const [rootHasBottomActions, setRootHasBottomActions] = useState(false);
+    const hasActions = (bool) => {
+        setRootHasBottomActions(bool);
+    };
 
     return (
-        <WrapperRoot>
-            <ClassWrapper>
-                <div className="class-section-root" style={{ width: '100%', height: 'calc(100vh - 167px)', overflow: 'auto' }}>
-                    {/* <div className="class-share-header"> */}
-                    <HeaderMenu
-                        fullWidth
-                        title="학생 및 클래스"
-                        menuDatas={menuDatas}
-                        selectedMenuId={selectedMenu}
-                        onItemClick={(id) => {
-                            setSelectedMenu(id);
-                        }}
-                    />
-                    {/* </div> */}
-                    <div className="test" style={{ marginBottom: 32, marginTop: 24 }}>
-                        {selectedMenu === 2 ? (
-                            <StudentManage onChangeStudentSelection={actionChangeStudentsSelection} />
-                        ) : selectedMenu === 1 ? (
-                            <>
-                                <PopOverClipboard state={clipboardState} />
-                                <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
-                                <div className="class-manage-root" style={{ width: '100%' }}>
-                                    <div>
-                                        <ClassCopyRoot>
-                                            <CodeContainer>
-                                                <ClassCopyTitle>클래스 초대 코드</ClassCopyTitle>
-                                                <ClassCopyInput readOnly type="text" defaultValue={codeState} ref={textCopy} />
-                                            </CodeContainer>
-                                            <Button variant="light" sizes="small" colors="purple" onClick={handleCopy}>
-                                                복사하기
-                                            </Button>
-                                        </ClassCopyRoot>
+        <ClassManagementRoot bottom-actions={rootHasBottomActions}>
+            <HeaderMenu
+                fullWidth
+                title="학생 및 클래스"
+                menuDatas={menuDatas}
+                selectedMenuId={selectedMenu}
+                fixed
+                backgroundColor="#f6f8f9"
+                onItemClick={(id) => {
+                    setSelectedMenu(id);
+                }}
+            />
+            <ContentsWrapper>
+                {selectedMenu === 2 ? (
+                    <StudentManage onChangeStudentSelection={actionChangeStudentsSelection} />
+                ) : selectedMenu === 1 ? (
+                    <>
+                        <PopOverClipboard state={clipboardState} />
+                        <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
+                        <div className="class-manage-root" style={{ width: '100%' }}>
+                            <div>
+                                <ClassCopyRoot>
+                                    <CodeContainer>
+                                        <ClassCopyTitle>클래스 초대 코드</ClassCopyTitle>
+                                        <ClassCopyInput readOnly type="text" defaultValue={codeState} ref={textCopy} />
+                                    </CodeContainer>
+                                    <Button variant="light" sizes="small" colors="purple" onClick={handleCopy}>
+                                        복사하기
+                                    </Button>
+                                </ClassCopyRoot>
 
-                                        <DrawerGroupBox
-                                            title="클래스 소개"
-                                            description="클래스 이름 및 소개를 입력해 주세요"
-                                            descriptionAdornment={BulbIcon}
-                                        >
-                                            <ManageInputsContainer>
-                                                <input
-                                                    style={{ backgroundColor: '#ffffff' }}
-                                                    className={classNames('default', inputError ? 'error' : '')}
-                                                    type="text"
-                                                    name="entry_new_name"
-                                                    id="entry_new_name"
-                                                    placeholder="클래스 이름"
-                                                    onChange={handleInputChange}
-                                                    value={inputState['entry_new_name']}
-                                                />
-                                                <textarea
-                                                    style={{ backgroundColor: '#ffffff' }}
-                                                    className="default"
-                                                    type="text"
-                                                    name="entry_new_description"
-                                                    id="entry_new_description"
-                                                    placeholder="클래스 한줄 설명"
-                                                    onChange={handleInputChange}
-                                                    value={inputState['entry_new_description']}
-                                                />
-                                            </ManageInputsContainer>
-                                        </DrawerGroupBox>
+                                <DrawerGroupBox
+                                    title="클래스 소개"
+                                    description="클래스 이름 및 소개를 입력해 주세요"
+                                    descriptionAdornment={BulbIcon}
+                                >
+                                    <ManageInputsContainer>
+                                        <input
+                                            style={{ backgroundColor: '#ffffff' }}
+                                            className={classNames('default', inputError ? 'error' : '')}
+                                            type="text"
+                                            name="entry_new_name"
+                                            id="entry_new_name"
+                                            placeholder="클래스 이름"
+                                            onChange={handleInputChange}
+                                            value={inputState['entry_new_name']}
+                                        />
+                                        <textarea
+                                            style={{ backgroundColor: '#ffffff' }}
+                                            className="default"
+                                            type="text"
+                                            name="entry_new_description"
+                                            id="entry_new_description"
+                                            placeholder="클래스 한줄 설명"
+                                            onChange={handleInputChange}
+                                            value={inputState['entry_new_description']}
+                                        />
+                                    </ManageInputsContainer>
+                                </DrawerGroupBox>
 
-                                        <DrawerGroupBox
-                                            title="수업 요일"
-                                            description="수업을 하시는 요일을 모두 선택해주세요."
-                                            descriptionAdornment={BulbIcon}
-                                        >
-                                            <ManageInputsContainer>
-                                                <div className="form-buttons">
-                                                    <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
-                                                        월
-                                                    </FormButton>
-                                                    <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
-                                                        화
-                                                    </FormButton>
-                                                    <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
-                                                        수
-                                                    </FormButton>
-                                                    <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
-                                                        목
-                                                    </FormButton>
-                                                    <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
-                                                        금
-                                                    </FormButton>
-                                                    <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
-                                                        토
-                                                    </FormButton>
-                                                    <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
-                                                        일
-                                                    </FormButton>
-                                                </div>
-                                            </ManageInputsContainer>
-                                        </DrawerGroupBox>
-                                    </div>
-
-                                    {/* <div className="manage-footer">
-                                        <CreateButton
-                                            className="button-delete critical"
-                                            size="large"
-                                            variant="contained"
-                                            disabled={!createButtonEnabled}
-                                            name="delete"
-                                            onClick={handleButton}
-                                        >
-                                            삭제하기
-                                        </CreateButton>
-                                        <CreateButton
-                                            className="button-modify"
-                                            size="large"
-                                            variant="contained"
-                                            disabled={!createButtonEnabled}
-                                            name="modify"
-                                            onClick={handleButton}
-                                        >
-                                            수정하기
-                                        </CreateButton>
-                                    </div> */}
-                                </div>
-                            </>
-                        ) : selectedMenu === 0 ? (
-                            <Leaderboard classNum={num} />
-                        ) : null}
-                    </div>
-                </div>
-            </ClassWrapper>
-            <InnerPageBottomActions>
+                                <DrawerGroupBox
+                                    title="수업 요일"
+                                    description="수업을 하시는 요일을 모두 선택해주세요."
+                                    descriptionAdornment={BulbIcon}
+                                >
+                                    <ManageInputsContainer>
+                                        <div className="form-buttons">
+                                            <FormButton name="월" able={buttonAble['월']} onClick={handleDaysButtons}>
+                                                월
+                                            </FormButton>
+                                            <FormButton name="화" able={buttonAble['화']} onClick={handleDaysButtons}>
+                                                화
+                                            </FormButton>
+                                            <FormButton name="수" able={buttonAble['수']} onClick={handleDaysButtons}>
+                                                수
+                                            </FormButton>
+                                            <FormButton name="목" able={buttonAble['목']} onClick={handleDaysButtons}>
+                                                목
+                                            </FormButton>
+                                            <FormButton name="금" able={buttonAble['금']} onClick={handleDaysButtons}>
+                                                금
+                                            </FormButton>
+                                            <FormButton name="토" able={buttonAble['토']} onClick={handleDaysButtons}>
+                                                토
+                                            </FormButton>
+                                            <FormButton name="일" able={buttonAble['일']} onClick={handleDaysButtons}>
+                                                일
+                                            </FormButton>
+                                        </div>
+                                    </ManageInputsContainer>
+                                </DrawerGroupBox>
+                            </div>
+                        </div>
+                    </>
+                ) : selectedMenu === 0 ? (
+                    <Leaderboard classNum={num} />
+                ) : null}
+            </ContentsWrapper>
+            <InnerPageBottomActions hasActions={hasActions}>
                 {selectedMenu === 2 ? (
                     <>
                         {Object.keys(toDeleteStudentData).filter((i) => toDeleteStudentData[i] === true).length ? (
@@ -607,7 +600,9 @@ function Manage({ match, history }) {
                                 leftIcon={<DeleteIcon fontSize="inherit" color="inherit" />}
                                 onClick={actionDeleteStudents}
                             >
-                                선택 삭제
+                                <Typography type="label" size="l" bold>
+                                    선택 삭제
+                                </Typography>
                             </Button>
                         ) : null}
                     </>
@@ -622,12 +617,14 @@ function Manage({ match, history }) {
                             disabled={!createButtonEnabled}
                             onClick={handleButton}
                         >
-                            삭제하기
+                            <Typography type="label" size="l" bold>
+                                클래스 삭제
+                            </Typography>
                         </Button>
                         <Button
                             sizes="medium"
                             colors="purple"
-                            variant="light"
+                            variant="filled"
                             name="modify"
                             disabled={!createButtonEnabled}
                             onClick={handleButton}
@@ -637,7 +634,7 @@ function Manage({ match, history }) {
                     </>
                 ) : null}
             </InnerPageBottomActions>
-        </WrapperRoot>
+        </ClassManagementRoot>
     );
 }
 

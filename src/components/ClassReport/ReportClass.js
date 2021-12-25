@@ -26,7 +26,7 @@ import { getServerDate } from '../../redux_modules/serverdate';
 import BackdropComponent from '../essentials/BackdropComponent';
 import Error from '../../pages/Error';
 import { changeParams } from '../../redux_modules/params';
-import { withRouter } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { SecondsToHoursAndMinutes } from '../essentials/TimeChange';
 import { Link } from '@material-ui/core';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
@@ -571,11 +571,11 @@ function ReportClass({ match, history }) {
                         <GroupBox
                             title="채점 결과 요약"
                             rightComponent={
-                                <Link href={`${match.url}/hands-up`}>
+                                <NavLink to={`${match.url}/hands-up`}>
                                     <Button variant="light" colors="purple">
                                         학생 손들기 목록 확인
                                     </Button>
-                                </Link>
+                                </NavLink>
                             }
                         />
                         <TotalProgress studentList={studentsData} problemNumbers={problemNumbers}></TotalProgress>

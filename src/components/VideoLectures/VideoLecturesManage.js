@@ -241,56 +241,14 @@ const ButtonAble = styled.button`
 `;
 
 const VideoLectureRoot = styled.div`
-    & .class-share-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 54px;
-        width: 100%;
-
-        & div.left {
-            display: inherit;
-
-            & .header-title {
-                font-size: 1.75rem;
-                font-weight: 600;
-                margin-right: 50px;
-            }
-            & .header-menu {
-                display: flex;
-
-                & > button {
-                    font-size: 1.12rem;
-                    font-weight: 500;
-                    background-color: transparent;
-                    padding: 5px;
-                }
-                & > button + button {
-                    margin-left: 25px;
-                }
-            }
-        }
-
-        & div.right {
-            display: inherit;
-            margin-left: auto;
-        }
-
-        @media (min-width: 0) and (max-width: 767px) {
-            flex-direction: column;
-            margin-bottom: 42px;
-
-            & div.left {
-                width: 100%;
-                & .header-title {
-                    font-size: 1.5rem;
-                }
-            }
-            & div.right {
-                width: 100%;
-                margin: initial;
-                margin-top: 24px;
-            }
-        }
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    max-width: 960px;
+    height: 100%;
+    @media (max-width: 640px) {
+        margin-top: 30px;
     }
 `;
 
@@ -375,6 +333,18 @@ const ContentsWrapper = styled.div`
     margin-top: 32px;
     width: 100%;
 `;
+
+const GridResponsive = withStyles((theme) => ({
+    'spacing-xs-2': {
+        '@media (max-width: 640px)': {
+            width: 'calc(100% + 8px)',
+            margin: -4,
+            '& .MuiGrid-item': {
+                padding: 4,
+            },
+        },
+    },
+}))(Grid);
 
 function VideoLecturesManage({ match, history }) {
     const classNum = match.params.num;
@@ -623,19 +593,56 @@ function VideoLecturesManage({ match, history }) {
     ];
     const [menuStatus, setMenuStatus] = useState(0);
     const actionClickHeaderMenuItem = (menuId) => {
+        window.scrollTo(0, 0);
         setMenuStatus(menuId);
     };
+    const { leftNavGlobal } = useSelector((state) => state.RdxGlobalLeftNavState);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const [gridMdBreakpoint, setGridMdBreakpoint] = useState(false);
+    const [gridSmBreakpoint, setGridSmBreakpoint] = useState(false);
+    useEffect(() => {
+        const updateWindowDimensions = () => {
+            setScreenWidth(window.innerWidth);
+        };
+        window.addEventListener('resize', updateWindowDimensions);
+        return () => window.removeEventListener('resize', updateWindowDimensions);
+    }, []);
+
+    useEffect(() => {
+        if (screenWidth < 1100 && leftNavGlobal) {
+            setGridMdBreakpoint(true);
+        } else {
+            setGridMdBreakpoint(false);
+        }
+        if (screenWidth > 902 && leftNavGlobal) setGridSmBreakpoint(true);
+        else setGridSmBreakpoint(false);
+    }, [screenWidth, leftNavGlobal]);
 
     const renderContentsByMenu = (id) => {
         switch (id) {
             case 0:
                 return (
                     <>
-                        <GroupBox title="현재 진행 중인 강의">
+                        <GroupBox
+                            title={
+                                <>
+                                    현재 진행 중인 강의{' '}
+                                    <span style={{ color: '#3AE2A1' }}>
+                                        {currentVideoLectures.current.length ? currentVideoLectures.current.length : null}
+                                    </span>
+                                </>
+                            }
+                        >
                             {currentVideoLectures.current.length ? (
-                                <Grid container spacing={2}>
+                                <GridResponsive container spacing={2}>
                                     {currentVideoLectures.current.map((d, i) => (
-                                        <Grid item key={d.room_id} lg={6} md={12} sm={12} xs={12}>
+                                        <GridResponsive
+                                            item
+                                            key={d.room_id}
+                                            md={gridMdBreakpoint ? 12 : 6}
+                                            sm={gridSmBreakpoint ? 12 : 6}
+                                            xs={12}
+                                        >
                                             <VideoLectureListItem
                                                 number={i}
                                                 title={d.title}
@@ -651,15 +658,22 @@ function VideoLecturesManage({ match, history }) {
                                                 onEntranceClick={enterVideoLecture(d)}
                                                 onLectureCloseClick={closeVideoLecture(d)}
                                             />
-                                        </Grid>
+                                        </GridResponsive>
                                     ))}
-                                </Grid>
+                                </GridResponsive>
                             ) : (
                                 <NoLecturesCard />
                             )}
                         </GroupBox>
                         <GroupBox
-                            title="진행 예정인 강의"
+                            title={
+                                <>
+                                    진행 예정인 강의{' '}
+                                    <span style={{ color: '#3AE2A1' }}>
+                                        {currentVideoLectures.scheduled.length ? currentVideoLectures.scheduled.length : null}
+                                    </span>
+                                </>
+                            }
                             // style={{ marginTop: 90 }}
                             // rightComponent={
                             //     sessions.userType === 'students' ? null : (
@@ -671,9 +685,15 @@ function VideoLecturesManage({ match, history }) {
                             // }
                         >
                             {currentVideoLectures.scheduled.length ? (
-                                <Grid container spacing={2}>
+                                <GridResponsive container spacing={2}>
                                     {currentVideoLectures.scheduled.map((d, i) => (
-                                        <Grid item key={d.room_id} lg={6} md={12} sm={12} xs={12}>
+                                        <GridResponsive
+                                            item
+                                            key={d.room_id}
+                                            md={gridMdBreakpoint ? 12 : 6}
+                                            sm={gridSmBreakpoint ? 12 : 6}
+                                            xs={12}
+                                        >
                                             <VideoLectureListItem
                                                 number={i}
                                                 title={d.title}
@@ -686,9 +706,9 @@ function VideoLecturesManage({ match, history }) {
                                                 serverDate={serverdate.datetime}
                                                 onLectureCloseClick={closeVideoLecture(d)}
                                             />
-                                        </Grid>
+                                        </GridResponsive>
                                     ))}
-                                </Grid>
+                                </GridResponsive>
                             ) : (
                                 <NoLecturesCard message="예정된 강의가 없습니다." />
                             )}
@@ -697,11 +717,20 @@ function VideoLecturesManage({ match, history }) {
                 );
             case 1:
                 return (
-                    <GroupBox title="완료된 화상 강의">
+                    <GroupBox
+                        title={
+                            <>
+                                완료된 강의{' '}
+                                <span style={{ color: '#3AE2A1' }}>
+                                    {currentVideoLectures.scheduled.length ? currentVideoLectures.scheduled.length : null}
+                                </span>
+                            </>
+                        }
+                    >
                         {currentVideoLectures.done.length ? (
-                            <Grid container spacing={2}>
+                            <GridResponsive container spacing={2}>
                                 {currentVideoLectures.done.map((d, i) => (
-                                    <Grid item key={d.idx} md={12} sm={12} xs={12}>
+                                    <GridResponsive item key={d.idx} md={12} sm={12} xs={12}>
                                         <VideoLectureListItem
                                             key={d.room_id}
                                             number={i}
@@ -713,9 +742,9 @@ function VideoLecturesManage({ match, history }) {
                                             status={2}
                                             userType={sessions.userType}
                                         />
-                                    </Grid>
+                                    </GridResponsive>
                                 ))}
-                            </Grid>
+                            </GridResponsive>
                         ) : (
                             <NoLecturesCard message="기록이 없습니다." />
                         )}
@@ -840,30 +869,30 @@ function VideoLecturesManage({ match, history }) {
             </Dialog>
 
             <VideoLectureRoot>
-                <ClassWrapper col="col">
-                    <HeaderContainer>
-                        <HeaderMenu
-                            title="화상 강의"
-                            menuDatas={headerMenus}
-                            selectedMenuId={menuStatus}
-                            onItemClick={actionClickHeaderMenuItem}
-                            rightComponent={
-                                sessions.userType === 'teachers' ? (
-                                    <Button
-                                        variant="filled"
-                                        sizes="medium"
-                                        colors="purple"
-                                        leftIcon={<AddCamstudyIcon />}
-                                        onClick={toggleDrawer(true)}
-                                    >
-                                        새 화상 강의
-                                    </Button>
-                                ) : null
-                            }
-                        />
-                    </HeaderContainer>
-                    <ContentsWrapper>{renderContentsByMenu(menuStatus)}</ContentsWrapper>
-                </ClassWrapper>
+                <HeaderContainer>
+                    <HeaderMenu
+                        title="화상 강의"
+                        menuDatas={headerMenus}
+                        selectedMenuId={menuStatus}
+                        onItemClick={actionClickHeaderMenuItem}
+                        rightComponent={
+                            sessions.userType === 'teachers' ? (
+                                <Button
+                                    variant="filled"
+                                    sizes="medium"
+                                    colors="purple"
+                                    leftIcon={<AddCamstudyIcon />}
+                                    onClick={toggleDrawer(true)}
+                                >
+                                    새 화상 강의
+                                </Button>
+                            ) : null
+                        }
+                        fixed
+                        backgroundColor="#f6f8f9"
+                    />
+                </HeaderContainer>
+                <ContentsWrapper>{renderContentsByMenu(menuStatus)}</ContentsWrapper>
             </VideoLectureRoot>
         </>
     );

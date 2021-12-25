@@ -5,10 +5,8 @@ import {
     AccordionSummary as MuiAccordionSummary,
     Checkbox,
     FormControlLabel,
-    Typography,
     withStyles,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMoreOutlined';
 import Axios from 'axios';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
@@ -16,26 +14,26 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { apiUrl } from '../../../configs/configs';
 import { changeParams } from '../../../redux_modules/params';
-import ClassWrapper from '../../essentials/ClassWrapper';
 import CardProblemPreview from '../../TOFELRenderer/CardProblemPreview';
 import { getHandsUpFromStudents, selectHansUpProblems, unselectHandsUpProblems } from './HandsUpInterface';
 import Button from '../../../AltridUI/Button/Button';
 import AltCheckedIcon from '../../../AltridUI/Icons/AltCheckedIcon';
 import AltUncheckedIcon from '../../../AltridUI/Icons/AltUncheckedIcon';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import AccordionArrowIcon from '../../../AltridUI/Icons/AccordionArrowIcon';
 import InnerPageBottomActions from '../../../AltridUI/OtherContainers/InnerPageBottomActions';
+import HeaderMenu from '../../../AltridUI/HeaderMenu/HeaderMenu';
 
 const HandsUpListRoot = styled.div`
     display: flex;
     flex-direction: column;
-    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
-        'Segoe UI Emoji', 'Segoe UI Symbol';
-    margin: 0 auto;
-    max-width: 960px;
-    /* padding: 0 16px; */
-    height: calc(100vh - 167px);
     width: 100%;
+    margin-top: 32px;
+    margin-bottom: ${(props) => (props['bottom-actions'] ? '72px' : null)};
+    max-width: 960px;
+    height: 100%;
+    @media (max-width: 640px) {
+        margin-top: 30px;
+    }
 `;
 
 const HeaderTitleContainer = styled.div`
@@ -44,18 +42,8 @@ const HeaderTitleContainer = styled.div`
     width: 100%;
     margin-bottom: 28px;
 `;
-const HeaderTitle = styled.div`
-    font-size: 1.68rem;
-    font-weight: 700;
-    margin-bottom: 11px;
-    width: 100%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-`;
 const HandsUpListContainer = styled.div`
-    height: calc(100vh - 300px);
-    overflow-y: auto;
+    margin-bottom: 16px;
     width: 100%;
 `;
 const ColorLabel = styled.div`
@@ -132,7 +120,6 @@ const DetailsRoot = styled.div`
         width: initial;
     }
 `;
-
 const DetailListWrapper = styled.div`
     border: 1px solid #e9edef;
     border-radius: 8px;
@@ -173,39 +160,6 @@ const DetailsActions = styled.div`
         margin-top: 8px;
     }
 `;
-
-const HandsUpActions = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1rem;
-`;
-
-const ActionButton = styled.button`
-    background-color: #ffffff;
-    border-radius: 48px;
-    box-shadow: 0px 1px 2px #0000004a;
-    color: #333333;
-    font-size: 1rem;
-    min-height: 48px;
-    min-width: 108px;
-    padding: 0 1rem;
-    transition: box-shadow 0.25s;
-    &.primary {
-        background-color: #6d2afa;
-        color: #ffffff;
-    }
-    &.secondary {
-        background-color: #13e2a1;
-        color: #ffffff;
-    }
-    & + & {
-        margin-left: 0.4rem;
-    }
-    &:hover {
-        box-shadow: 0px 2px 5px #0000003d;
-    }
-`;
-
 const Accordion = withStyles({
     root: {
         boxShadow: 'none',
@@ -230,7 +184,6 @@ const Accordion = withStyles({
     },
     expanded: {},
 })(MuiAccordion);
-
 const AccordionSummary = withStyles({
     root: {
         backgroundColor: ({ mark }) => (mark % 2 === 1 ? '#F6F8F9' : '#ffffff'),
@@ -283,7 +236,6 @@ const AccordionSummary = withStyles({
     },
     expanded: {},
 })(MuiAccordionSummary);
-
 const AccordionDetails = withStyles((theme) => ({
     root: {
         borderBottom: '2px solid #6C46A1',
@@ -301,12 +253,6 @@ const AccordionDetails = withStyles((theme) => ({
         },
     },
 }))(MuiAccordionDetails);
-
-const WrapperRoot = styled.div`
-    /* display: flex;
-    flex-direction: column;
-    height: calc(100vh - 95px); */
-`;
 const DetailListCorret = styled.div`
     background-color: #f0fff9;
     display: flex;
@@ -465,7 +411,6 @@ function HandsUpList({ match }) {
                             return -1;
                         }
                     });
-                    console.log(res.data);
                     setHandsUpList(res.data);
                     const obj = {};
                     for (const data of res.data) {
@@ -507,135 +452,135 @@ function HandsUpList({ match }) {
                 alert('과제 데이터를 불러오지 못했습니다.');
             });
     }, []);
+    const [rootHasBottomActions, setRootHasBottomActions] = useState(false);
+    const hasActions = (bool) => {
+        setRootHasBottomActions(bool);
+    };
     return (
-        <WrapperRoot>
-            <ClassWrapper>
-                {assignmentData && assignmentData.contents_data ? (
-                    <CardProblemPreview
-                        openPreview={previewOpenState}
-                        metadata={assignmentData.contents_data}
-                        timeLimit={assignmentData.time_limit}
-                        handlePreviewClose={() => {
-                            setPreviewOpenState(false);
-                        }}
-                    />
-                ) : null}
-                <HandsUpListRoot>
-                    <HeaderTitleContainer>
-                        <HeaderTitle>손들기 목록</HeaderTitle>
-                    </HeaderTitleContainer>
-                    <HandsUpListContainer>
-                        {assignmentData && assignmentData.contents_data && selectedIds
-                            ? handsUpList.map((data, idx) => (
-                                  <Accordion
-                                      key={data[0].questionId}
-                                      expanded={expanded === data[0].questionId}
-                                      onChange={actionExpand(data[0].questionId)}
-                                  >
-                                      <AccordionSummary
-                                          expandIcon={<AccordionArrowIcon />}
-                                          mark={idx}
-                                          aria-controls={`${data[0].questionId}bh-content`}
-                                          id={`${data[0].questionId}bh-header`}
-                                      >
-                                          <ColorLabel counts={data.length} />
-                                          <SummaryInfoWrapper>
-                                              <SummaryInfoContainer>
-                                                  <FormControlLabel
-                                                      aria-label={'select_' + data[0].questionId}
-                                                      onClick={(event) => event.stopPropagation()}
-                                                      onFocus={(event) => event.stopPropagation()}
-                                                      onChange={actionProblemSelectChanged(data[0].questionId)}
-                                                      checked={selectedIds[data[0].questionId]}
-                                                      control={
-                                                          <Checkbox
-                                                              disableRipple
-                                                              disableTouchRipple
-                                                              disableFocusRipple
-                                                              icon={<AltUncheckedIcon />}
-                                                              checkedIcon={<AltCheckedIcon />}
-                                                          />
-                                                      }
+        <HandsUpListRoot bottom-actions={rootHasBottomActions}>
+            {assignmentData && assignmentData.contents_data ? (
+                <CardProblemPreview
+                    openPreview={previewOpenState}
+                    metadata={assignmentData.contents_data}
+                    timeLimit={assignmentData.time_limit}
+                    handlePreviewClose={() => {
+                        setPreviewOpenState(false);
+                    }}
+                />
+            ) : null}
+            <HeaderTitleContainer>
+                <HeaderMenu fullWidth title="손들기 목록" menuDatas={null} selectedMenuId={0} fixed backgroundColor="#f6f8f9" />
+            </HeaderTitleContainer>
+            <HandsUpListContainer>
+                {assignmentData && assignmentData.contents_data && selectedIds
+                    ? handsUpList.map((data, idx) => (
+                          <Accordion
+                              key={data[0].questionId}
+                              expanded={expanded === data[0].questionId}
+                              onChange={actionExpand(data[0].questionId)}
+                          >
+                              <AccordionSummary
+                                  expandIcon={<AccordionArrowIcon />}
+                                  mark={idx}
+                                  aria-controls={`${data[0].questionId}bh-content`}
+                                  id={`${data[0].questionId}bh-header`}
+                              >
+                                  <ColorLabel counts={data.length} />
+                                  <SummaryInfoWrapper>
+                                      <SummaryInfoContainer>
+                                          <FormControlLabel
+                                              aria-label={'select_' + data[0].questionId}
+                                              onClick={(event) => event.stopPropagation()}
+                                              onFocus={(event) => event.stopPropagation()}
+                                              onChange={actionProblemSelectChanged(data[0].questionId)}
+                                              checked={selectedIds[data[0].questionId]}
+                                              control={
+                                                  <Checkbox
+                                                      disableRipple
+                                                      disableTouchRipple
+                                                      disableFocusRipple
+                                                      icon={<AltUncheckedIcon />}
+                                                      checkedIcon={<AltCheckedIcon />}
                                                   />
-                                                  <SummaryTitle>#{data[0].problemAbsIdx + 1}</SummaryTitle>
-                                              </SummaryInfoContainer>
+                                              }
+                                          />
+                                          <SummaryTitle>#{data[0].problemAbsIdx + 1}</SummaryTitle>
+                                      </SummaryInfoContainer>
 
-                                              <SummaryStudents>
-                                                  {data.map(({ studentName }, idx) => (
-                                                      <StudentNameTag key={data[0].questionId + '-summary-' + idx}>
-                                                          {studentName}
-                                                      </StudentNameTag>
-                                                  ))}
-                                              </SummaryStudents>
-                                              <SummaryShowProblemBtnContainer>
-                                                  <Button
-                                                      variant="mono"
-                                                      sizes="small"
-                                                      onClick={(e) => {
-                                                          e.stopPropagation();
-                                                          actionShowProblem(data[0].problemAbsIdx);
-                                                      }}
-                                                  >
-                                                      문제보기
-                                                  </Button>
-                                              </SummaryShowProblemBtnContainer>
-                                          </SummaryInfoWrapper>
-                                      </AccordionSummary>
-                                      <AccordionDetails>
-                                          <DetailsRoot>
-                                              <DetailListWrapper>
-                                                  <DetailListCorret>
-                                                      <div className="name">문제 정답</div>
-                                                      <div className="value">{data[0].correctAnswer}</div>
-                                                  </DetailListCorret>
-                                                  {data.map(({ studentName, studentAnswer }, idx) => (
-                                                      <DetailListStudent
-                                                          key={data[0].questionId + '-details-' + idx}
-                                                          isCorrect={data[0].correctAnswer === studentAnswer}
-                                                      >
-                                                          <div className="name">{studentName}</div>
-                                                          <div className="value">{studentAnswer === null ? '미응답' : studentAnswer}</div>
-                                                      </DetailListStudent>
-                                                  ))}
-                                              </DetailListWrapper>
-                                              <DetailsActions>
-                                                  <Button
-                                                      fullWidth
-                                                      variant="mono"
-                                                      sizes="small"
-                                                      onClick={(e) => {
-                                                          e.stopPropagation();
-                                                          actionShowProblem(data[0].problemAbsIdx);
-                                                      }}
-                                                  >
-                                                      문제보기
-                                                  </Button>
-                                              </DetailsActions>
-                                          </DetailsRoot>
-                                      </AccordionDetails>
-                                  </Accordion>
-                              ))
-                            : null}
-                    </HandsUpListContainer>
-                </HandsUpListRoot>
-            </ClassWrapper>
-            <InnerPageBottomActions>
-                {selectedIds && Object.keys(selectedIds).filter((k) => selectedIds[k]).length === handsUpList.length ? (
-                    <Button sizes="small" variant="filled" colors="purple" onClick={actionUnselectAll}>
-                        모두 해제
-                    </Button>
-                ) : (
-                    <Button sizes="small" variant="light" colors="purple" onClick={actionSelectAll}>
-                        모두 선택
-                    </Button>
-                )}
-                {teacherSelectionChanged ? (
-                    <Button sizes="small" variant="light" colors="green" onClick={actionUpdateSelection}>
-                        선택 사항 업데이트
-                    </Button>
-                ) : null}
+                                      <SummaryStudents>
+                                          {data.map(({ studentName }, idx) => (
+                                              <StudentNameTag key={data[0].questionId + '-summary-' + idx}>{studentName}</StudentNameTag>
+                                          ))}
+                                      </SummaryStudents>
+                                      <SummaryShowProblemBtnContainer>
+                                          <Button
+                                              variant="mono"
+                                              sizes="small"
+                                              onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  actionShowProblem(data[0].problemAbsIdx);
+                                              }}
+                                          >
+                                              문제보기
+                                          </Button>
+                                      </SummaryShowProblemBtnContainer>
+                                  </SummaryInfoWrapper>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                  <DetailsRoot>
+                                      <DetailListWrapper>
+                                          <DetailListCorret>
+                                              <div className="name">문제 정답</div>
+                                              <div className="value">{data[0].correctAnswer}</div>
+                                          </DetailListCorret>
+                                          {data.map(({ studentName, studentAnswer }, idx) => (
+                                              <DetailListStudent
+                                                  key={data[0].questionId + '-details-' + idx}
+                                                  isCorrect={data[0].correctAnswer === studentAnswer}
+                                              >
+                                                  <div className="name">{studentName}</div>
+                                                  <div className="value">{studentAnswer === null ? '미응답' : studentAnswer}</div>
+                                              </DetailListStudent>
+                                          ))}
+                                      </DetailListWrapper>
+                                      <DetailsActions>
+                                          <Button
+                                              fullWidth
+                                              variant="mono"
+                                              sizes="small"
+                                              onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  actionShowProblem(data[0].problemAbsIdx);
+                                              }}
+                                          >
+                                              문제보기
+                                          </Button>
+                                      </DetailsActions>
+                                  </DetailsRoot>
+                              </AccordionDetails>
+                          </Accordion>
+                      ))
+                    : null}
+            </HandsUpListContainer>
+            <InnerPageBottomActions hasActions={hasActions}>
+                <>
+                    {selectedIds && Object.keys(selectedIds).filter((k) => selectedIds[k]).length === handsUpList.length ? (
+                        <Button sizes="medium" variant="filled" colors="purple" onClick={actionUnselectAll}>
+                            모두 해제
+                        </Button>
+                    ) : (
+                        <Button sizes="medium" variant="light" colors="purple" onClick={actionSelectAll}>
+                            모두 선택
+                        </Button>
+                    )}
+                    {teacherSelectionChanged ? (
+                        <Button sizes="medium" variant="light" colors="green" onClick={actionUpdateSelection}>
+                            선택 사항 업데이트
+                        </Button>
+                    ) : null}
+                </>
             </InnerPageBottomActions>
-        </WrapperRoot>
+        </HandsUpListRoot>
     );
 }
 

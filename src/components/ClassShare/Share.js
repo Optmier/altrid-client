@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import CardShare from './CardShare';
 import CardLists from '../essentials/CardLists';
 import CardRoot from '../essentials/CardRoot';
-import { Drawer, Grid } from '@material-ui/core';
+import { Drawer, Grid, withStyles } from '@material-ui/core';
 import ClassDrawer from '../essentials/ClassDrawer';
 // import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,7 +20,6 @@ import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 
 const GoDraftDiv = styled.div`
     margin-top: 100px;
-    min-height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -93,6 +92,30 @@ const AssigmentWarning = styled.div`
         display: none;
     }
 `;
+const SharedAssignmentRoot = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    max-width: 960px;
+    height: 100%;
+    @media (max-width: 640px) {
+        margin-top: 30px;
+    }
+`;
+const AssignmentItemCardContainer = styled.div``;
+
+const GridResponsive = withStyles((theme) => ({
+    'spacing-xs-2': {
+        '@media (max-width: 640px)': {
+            width: 'calc(100% + 8px)',
+            margin: -4,
+            '& .MuiGrid-item': {
+                padding: 4,
+            },
+        },
+    },
+}))(Grid);
 
 function Share({ match, history }) {
     const { num } = match.params;
@@ -109,6 +132,7 @@ function Share({ match, history }) {
         data: null,
         error: null,
     }; // 아예 데이터가 존재하지 않을 때가 있으므로, 비구조화 할당이 오류나지 않도록
+    const { leftNavGlobal } = useSelector((state) => state.RdxGlobalLeftNavState);
 
     /** component state */
     const [tries, setTries] = useState(undefined);
@@ -119,6 +143,9 @@ function Share({ match, history }) {
         done: false,
     });
     const [menuStatus, setMenuStatus] = useState(1);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const [gridMdBreakpoint, setGridMdBreakpoint] = useState(false);
+    const [gridSmBreakpoint, setGridSmBreakpoint] = useState(false);
     const actionClickHeaderMenuItem = (menuId) => {
         setMenuStatus(menuId);
     };
@@ -156,6 +183,24 @@ function Share({ match, history }) {
         }
     }, [sessions.authId]);
 
+    useEffect(() => {
+        const updateWindowDimensions = () => {
+            setScreenWidth(window.innerWidth);
+        };
+        window.addEventListener('resize', updateWindowDimensions);
+        return () => window.removeEventListener('resize', updateWindowDimensions);
+    }, []);
+
+    useEffect(() => {
+        if (screenWidth < 1100 && leftNavGlobal) {
+            setGridMdBreakpoint(true);
+        } else {
+            setGridMdBreakpoint(false);
+        }
+        if (screenWidth > 902 && leftNavGlobal) setGridSmBreakpoint(true);
+        else setGridSmBreakpoint(false);
+    }, [screenWidth, leftNavGlobal]);
+
     if (data) {
         shareDatas = data;
         shareDatas.map((i) => (moment(i['due_date']).format('YYMMDDHHmmss') > moment().format('YYMMDDHHmmss') ? cnt++ : ''));
@@ -166,9 +211,9 @@ function Share({ match, history }) {
 
     return (
         <>
-            <BackdropComponent open={loading && !data && !error} />
-            {shareDatas.length === 0 ? (
-                <ClassWrapper>
+            {/* <BackdropComponent open={loading && !data && !error} /> */}
+            <SharedAssignmentRoot>
+                {shareDatas.length === 0 ? (
                     <GoDraftDiv>
                         <h1>현재 진행중인 과제가 없습니다 :( </h1>
                         {sessions.userType !== 'students' ? (
@@ -191,26 +236,8 @@ function Share({ match, history }) {
                             </button>
                         ) : null}
                     </GoDraftDiv>
-                </ClassWrapper>
-            ) : (
-                <div className="class-section-root">
-                    <ClassWrapper col>
-                        {/* <div className="class-share-header">
-                            <div className="header-title">과제 게시판</div>
-                            <div className="header-menu">
-                                <ButtonAble name="total" able={ableState['total']} value={ableState['total']} onClick={handleShareCardList}>
-                                    전체({shareDatas.length})
-                                </ButtonAble>
-                                <ButtonAble name="ing" able={ableState['ing']} value={ableState['ing']} onClick={handleShareCardList}>
-                                    진행중({cnt})
-                                </ButtonAble>
-                                <ButtonAble name="done" able={ableState['done']} value={ableState['done']} onClick={handleShareCardList}>
-                                    진행 완료({shareDatas.length - cnt})
-                                </ButtonAble>
-                            </div>
-                            
-                        </div> */}
-
+                ) : (
+                    <>
                         <HeaderContainer>
                             <HeaderMenu
                                 title="과제 게시판"
@@ -227,11 +254,12 @@ function Share({ match, history }) {
                                     },
                                 ]}
                                 selectedMenuId={menuStatus}
+                                fixed
+                                backgroundColor="#f6f8f9"
                                 onItemClick={actionClickHeaderMenuItem}
                             />
                         </HeaderContainer>
-
-                        <div className="class-draft-card">
+                        <AssignmentItemCardContainer>
                             <WarningsContainer>
                                 {sessions.userType === 'students' ? (
                                     <AssigmentWarning>
@@ -247,7 +275,7 @@ function Share({ match, history }) {
                                     </AssigmentWarning>
                                 )}
                             </WarningsContainer>
-                            <Grid container spacing={2}>
+                            <GridResponsive container spacing={2}>
                                 {(sessions.userType === 'students' && tries) || sessions.userType !== 'students'
                                     ? Object.keys(shareDatas)
                                           .filter((i) =>
@@ -258,8 +286,14 @@ function Share({ match, history }) {
                                                   : new Date(shareDatas[i]['due_date']).getTime() <= datetime,
                                           )
                                           .map((key) => (
-                                              //   <CardRoot key={key} wider>
-                                              <Grid key={key} item md={6} sm={12} xs={12} zeroMinWidth>
+                                              <GridResponsive
+                                                  key={key}
+                                                  item
+                                                  md={gridMdBreakpoint ? 12 : 6}
+                                                  sm={gridSmBreakpoint ? 12 : 6}
+                                                  xs={12}
+                                                  zeroMinWidth
+                                              >
                                                   <CardShare
                                                       testNum={shareDatas[key]['idx']}
                                                       cardData={shareDatas[key]}
@@ -270,15 +304,15 @@ function Share({ match, history }) {
                                                       }
                                                       totalStudents={currentClass.currentStudentsNumber}
                                                   />
-                                              </Grid>
-                                              //   </CardRoot>
+                                              </GridResponsive>
                                           ))
                                     : null}
-                            </Grid>
-                        </div>
-                    </ClassWrapper>
-                </div>
-            )}
+                            </GridResponsive>
+                        </AssignmentItemCardContainer>
+                    </>
+                )}
+                <div style={{ marginTop: 'auto' }}></div>
+            </SharedAssignmentRoot>
         </>
     );
 }

@@ -149,7 +149,7 @@ function Leaderboard({ classNum }) {
                 </div> */}
                 <div className="score">
                     <TableContainer>
-                        <Table sx={{ minwidth: 650 }} aria-label="simple table">
+                        <Table stickyHeader sx={{ minwidth: 650 }} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="left">순위</TableCell>

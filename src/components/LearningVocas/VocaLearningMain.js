@@ -23,8 +23,15 @@ import ProgressIndicator from '../../AltridUI/Icons/ProgressIndicator';
  * 2. 몇개씩 묶을 것인지
  */
 const LearningRoot = styled.div`
-    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
-        'Segoe UI Emoji', 'Segoe UI Symbol';
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    max-width: 960px;
+    height: 100%;
+    @media (max-width: 640px) {
+        margin-top: 30px;
+    }
 `;
 const Contents = styled.div`
     margin-top: 54px;
@@ -234,6 +241,7 @@ function VocaLearningMain({ history, match }) {
     const dispatch = useDispatch();
 
     const actionClickHeaderMenuItem = (menuId) => {
+        if (menuId === 1) return alert('서비스 준비중 입니다.');
         setMenuStatus(menuId);
     };
 
@@ -329,82 +337,88 @@ function VocaLearningMain({ history, match }) {
 
     return (
         <LearningRoot>
-            <ClassWrapper col="col">
-                <HeaderMenu title="단어 학습" menuDatas={headerMenus} selectedMenuId={menuStatus} onItemClick={actionClickHeaderMenuItem} />
-                <Contents>
-                    <GroupBox title="학습하기">
-                        <LearningSection>
-                            <LearningProgressContainer>
-                                나의 단어 학습 진행률
-                                <LearningProgressPercentage>{totalProgress}%</LearningProgressPercentage>
-                            </LearningProgressContainer>
-                            <GotoLearningContainer>
-                                <SelectNumbersGroup>
-                                    <FormControl className={classes.selectBox} variant="outlined">
-                                        {/* <InputLabel id="select-learning-numbers-label">학습할 단어 수 선택</InputLabel> */}
-                                        <WordCountsSelect
-                                            labelId="select-learning-numbers-label"
-                                            // label="학습할 단어 수 선택"
-                                            value={learningNumbersSelectValue}
-                                            onChange={actionOnChangeNumbersSelect}
-                                        >
-                                            <option value={0}>학습할 단어 수 선택</option>
-                                            <option value={10}>10</option>
-                                            <option value={20}>20</option>
-                                            <option value={30}>30</option>
-                                            <option value={50}>50</option>
-                                            <option value={100}>100</option>
-                                            <option value="custom">직접 입력하기</option>
-                                        </WordCountsSelect>
-                                    </FormControl>
-                                    {learningNumbersSelectValue === 'custom' ? (
-                                        // <FormControl className={classes.customNumbersTextfield}>
-                                        <CustomNumberField
-                                            variant="outlined"
-                                            type="number"
-                                            defaultValue={customNumbers}
-                                            onChange={actionChangeCustomNumbersField}
-                                        />
-                                    ) : // </FormControl>
-                                    null}
-                                </SelectNumbersGroup>
-                                <Button
-                                    className={classes.startButton}
-                                    colors="purple"
-                                    onClick={actionClickLearningStart}
-                                    disabled={learningNumbersSelectValue == 0}
-                                >
-                                    학습하기!
-                                </Button>
-                            </GotoLearningContainer>
-                        </LearningSection>
-                    </GroupBox>
-                    <GroupBox
-                        title="완료된 단어"
-                        rightComponent={<CompletedListSearchbox onSearchboxChange={actionChangeCompletedSearchbox} />}
-                        limited
-                        maxHeightCss="calc(100vh - 700px)"
-                        breakPoint={799}
-                        breakPointMaxHeightCss="calc(100vh - 600px)"
-                        onScrollBottomEdge={actionScrollBottomEdge}
-                    >
-                        {completedList.map((d, i) => (
-                            <React.Fragment key={d.idx + '_F'}>
-                                {i >= 10 && i % 10 === 0 ? <CompletedListDivider key={d.idx + '_hr'} /> : null}
-                                <CompletedListItem
-                                    idx={i}
-                                    key={d.idx}
-                                    word={d.word}
-                                    means={d.means}
-                                    notes={d.assignment_title}
-                                    label={d.counts}
-                                    verified={d.completed}
-                                />
-                            </React.Fragment>
-                        ))}
-                    </GroupBox>
-                </Contents>
-            </ClassWrapper>
+            <HeaderMenu
+                title="단어 학습"
+                menuDatas={headerMenus}
+                selectedMenuId={menuStatus}
+                fixed
+                backgroundColor="#f6f8f9"
+                onItemClick={actionClickHeaderMenuItem}
+            />
+            <Contents>
+                <GroupBox title="학습하기">
+                    <LearningSection>
+                        <LearningProgressContainer>
+                            나의 단어 학습 진행률
+                            <LearningProgressPercentage>{totalProgress}%</LearningProgressPercentage>
+                        </LearningProgressContainer>
+                        <GotoLearningContainer>
+                            <SelectNumbersGroup>
+                                <FormControl className={classes.selectBox} variant="outlined">
+                                    {/* <InputLabel id="select-learning-numbers-label">학습할 단어 수 선택</InputLabel> */}
+                                    <WordCountsSelect
+                                        labelId="select-learning-numbers-label"
+                                        // label="학습할 단어 수 선택"
+                                        value={learningNumbersSelectValue}
+                                        onChange={actionOnChangeNumbersSelect}
+                                    >
+                                        <option value={0}>학습할 단어 수 선택</option>
+                                        <option value={10}>10</option>
+                                        <option value={20}>20</option>
+                                        <option value={30}>30</option>
+                                        <option value={50}>50</option>
+                                        <option value={100}>100</option>
+                                        <option value="custom">직접 입력하기</option>
+                                    </WordCountsSelect>
+                                </FormControl>
+                                {learningNumbersSelectValue === 'custom' ? (
+                                    // <FormControl className={classes.customNumbersTextfield}>
+                                    <CustomNumberField
+                                        variant="outlined"
+                                        type="number"
+                                        defaultValue={customNumbers}
+                                        onChange={actionChangeCustomNumbersField}
+                                    />
+                                ) : // </FormControl>
+                                null}
+                            </SelectNumbersGroup>
+                            <Button
+                                className={classes.startButton}
+                                colors="purple"
+                                onClick={actionClickLearningStart}
+                                disabled={learningNumbersSelectValue == 0}
+                            >
+                                학습하기!
+                            </Button>
+                        </GotoLearningContainer>
+                    </LearningSection>
+                </GroupBox>
+                <GroupBox
+                    title="완료된 단어"
+                    rightComponent={<CompletedListSearchbox onSearchboxChange={actionChangeCompletedSearchbox} />}
+                    limited
+                    maxHeightCss="calc(100vh - 660px)"
+                    breakPoint={640}
+                    breakPointMaxHeightCss="calc(100vh - 600px)"
+                    onScrollBottomEdge={actionScrollBottomEdge}
+                    limitedMinHeight={240}
+                >
+                    {completedList.map((d, i) => (
+                        <React.Fragment key={d.idx + '_F'}>
+                            {i >= 10 && i % 10 === 0 ? <CompletedListDivider key={d.idx + '_hr'} /> : null}
+                            <CompletedListItem
+                                idx={i}
+                                key={d.idx}
+                                word={d.word}
+                                means={d.means}
+                                notes={d.assignment_title}
+                                label={d.counts}
+                                verified={d.completed}
+                            />
+                        </React.Fragment>
+                    ))}
+                </GroupBox>
+            </Contents>
         </LearningRoot>
     );
 }

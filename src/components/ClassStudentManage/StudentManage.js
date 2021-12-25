@@ -311,6 +311,15 @@ const ReportSelect = styled.select`
     text-overflow: ellipsis;
     white-space: nowrap;
 `;
+const StudentManagementRoot = styled.div`
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 auto;
+    padding: 0;
+    width: 100%;
+`;
 
 function StudentManage({ onChangeStudentSelection, match, history }) {
     const dispatch = useDispatch();
@@ -435,7 +444,7 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
     };
 
     return (
-        <div className="class-student-manage-root" style={{ width: '100%' }}>
+        <StudentManagementRoot>
             <div className="manage-inputs">
                 {/* <div className="manage-inputs-header">
                     <div className="header-left">
@@ -558,7 +567,7 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
                     ))}
                 </GroupBox>
             </div>
-        </div>
+        </StudentManagementRoot>
     );
 }
 

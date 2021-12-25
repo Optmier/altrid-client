@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import Typography from '../Typography/Typography';
 
 const GropboxRoot = styled.div`
     width: ${({ fullWidth }) => (fullWidth ? '100%' : null)};
@@ -13,18 +14,9 @@ const HeaderBox = styled.header`
     color: #000;
     display: flex;
     flex-direction: row;
-    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
-        'Segoe UI Emoji', 'Segoe UI Symbol';
-    font-weight: 700;
     justify-content: space-between;
     /* padding: 6px 2px 6px 2px; */
     margin-bottom: 16px;
-    letter-spacing: -0.02em;
-    & h5.title {
-        font-size: 24px;
-        font-weight: 700;
-        line-height: 28px;
-    }
     & div.right-comp {
         margin-left: auto;
     }
@@ -42,7 +34,7 @@ const HeaderBox = styled.header`
 
 const LimitedContainer = styled.main`
     height: ${(props) => props['max-height-css']};
-    min-height: 64px;
+    min-height: ${(props) => (props['limited-min-height'] ? props['limited-min-height'] + 'px' : 0)};
     overflow: scroll;
     ${(props) =>
         props['break-point']
@@ -64,6 +56,7 @@ const GroupBox = React.memo(function ({
     breakPointMaxHeightCss,
     onClick,
     onScrollBottomEdge,
+    limitedMinHeight,
     children,
     ...rest
 }) {
@@ -107,7 +100,9 @@ const GroupBox = React.memo(function ({
     return (
         <GropboxRoot fullWidth={fullWidth} {...rest}>
             <HeaderBox onClick={onClick}>
-                <h5 className="title">{title}</h5>
+                <Typography type="label" size="xxl" bold>
+                    {title}
+                </Typography>
                 <div className="right-comp">{rightComponent}</div>
             </HeaderBox>
             {limited ? (
@@ -116,6 +111,7 @@ const GroupBox = React.memo(function ({
                     max-height-css={maxHeightCss}
                     break-point={breakPoint}
                     break-point-max-height-css={breakPointMaxHeightCss}
+                    limited-min-height={limitedMinHeight}
                 >
                     {children}
                 </LimitedContainer>
@@ -130,6 +126,7 @@ GroupBox.defaultProps = {
     title: '제목',
     rightComponent: <></>,
     limited: false,
+    limitedMinHeight: 16,
     fullWidth: false,
     onClick() {},
     onScrollBottomEdge() {},

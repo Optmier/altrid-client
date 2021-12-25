@@ -67,8 +67,8 @@ const TopInfoTag = styled.div`
     & + & {
         margin-left: 4px;
     }
-    & span {
-        margin-left: 5px;
+    & svg {
+        margin-right: 5px;
     }
 `;
 const ItemMainInfoContainer = styled.div`
@@ -148,17 +148,19 @@ function VideoLectureListItem({
                         <span>LIVE</span>
                     </TopInfoTag>
                 ) : null}
-                <TopInfoTag colors="blue">
-                    <CardEyetrackIcon />
-                    <span>시선추적 포함</span>
-                </TopInfoTag>
+                {hasEyetrack ? (
+                    <TopInfoTag colors="blue">
+                        <CardEyetrackIcon />
+                        <span>시선추적 포함</span>
+                    </TopInfoTag>
+                ) : null}
                 {status !== 2 ? (
                     <TopInfoTag colors="purple">
                         {status === 0 ? (
                             <>
                                 <CardPeopleIcon style={{ marginTop: -1 }} />
                                 <span>
-                                    참여중인 인원 {currentParticipants}/{totalParticipants}
+                                    참여중 {currentParticipants}/{totalParticipants}
                                 </span>
                             </>
                         ) : status === 1 ? (

@@ -121,7 +121,7 @@ const ButtonRoot = styled.button`
             case 'large':
                 return '46px';
             case 'medium':
-                return '38px';
+                return '36px';
             case 'small':
                 return '28px';
             case 'xsmall':

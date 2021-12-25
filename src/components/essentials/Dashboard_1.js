@@ -15,12 +15,13 @@ import Button from '../../AltridUI/Button/Button';
 import { Helmet } from 'react-helmet';
 import MakeAutoComments from '../../controllers/MakeAutoComment';
 import BackgroundTheme from '../../AltridUI/ThemeColors/BackgroundTheme';
+import { withStyles } from '@material-ui/core';
 
 const Container = styled.div`
     margin: 0px auto;
     max-width: 1216px;
     margin-bottom: 160px;
-    padding: 0 16px;
+    padding: 0 32px;
     & .gobutton {
         margin-top: 68px;
     }
@@ -306,8 +307,22 @@ const Container = styled.div`
             }
         }
     }
+    @media all and (max-width: 640px) {
+        padding: 0 16px;
+    }
 `;
 const Item = styled.div``;
+const GridResponsive = withStyles((theme) => ({
+    'spacing-xs-4': {
+        '@media (max-width: 640px)': {
+            width: 'calc(100% + 8px)',
+            margin: -4,
+            '& .MuiGrid-item': {
+                padding: 4,
+            },
+        },
+    },
+}))(Grid);
 
 function Dashboard_1({ match, history }) {
     const [activedNum, setactiveNum] = useState('');
@@ -638,6 +653,131 @@ function Dashboard_1({ match, history }) {
         return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
     });
     // console.log(newAssignment);
+    const { leftNavGlobal } = useSelector((state) => state.RdxGlobalLeftNavState);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const [layoutSet, setLayoutSet] = useState(false);
+    useEffect(() => {
+        const updateWindowDimensions = () => {
+            setScreenWidth(window.innerWidth);
+        };
+        window.addEventListener('resize', updateWindowDimensions);
+        return () => window.removeEventListener('resize', updateWindowDimensions);
+    }, []);
+
+    useEffect(() => {
+        if (screenWidth < 1024) setLayoutSet(true);
+        else setLayoutSet(false);
+    }, [screenWidth]);
+
+    const cardSelectRender = (layoutSet) => {
+        const todayWordCard = (
+            <GridResponsive item xs={12} xl={4} sm={layoutSet ? 6 : 4}>
+                <Item>
+                    <div className="card word">
+                        <h3>오늘의 단어</h3>
+                        {!word ? <h4>단어가 없습니다.</h4> : <h1 onClick={ClickCard}>{flip ? korean : word}</h1>}
+
+                        {word ? (
+                            <Link to={`/class/${num}/learning-vocas`}>
+                                <p>더 많은 단어 학습하기</p>
+                            </Link>
+                        ) : null}
+                    </div>
+                </Item>
+            </GridResponsive>
+        );
+        const assignmentStatusCard = (
+            <GridResponsive item xs={12} xl={8} sm={layoutSet ? 12 : 8}>
+                <Item>
+                    <div className="card assignment">
+                        <h3>과제 현황</h3>
+                        {assignment.length !== 0 ? (
+                            newAssignment.slice(0, 3).map((data, index) => {
+                                return (
+                                    <div key={index} className="info">
+                                        {Math.ceil((new Date(data.due_date).getTime() - today.getTime()) / (1000 * 3600 * 24)) > 0 ? (
+                                            <>
+                                                {Math.ceil((today.getTime() - new Date(data.due_date).getTime()) / (1000 * 3600 * 24)) ==
+                                                0 ? (
+                                                    <>
+                                                        <p style={{ color: '#870F00', backgroundColor: '#FED7D2' }} className="dday">
+                                                            D - day
+                                                        </p>
+                                                        <Link to={`/class/${num}/share`}>
+                                                            <p className="assign_title">{data.title}</p>
+                                                        </Link>
+
+                                                        <p>
+                                                            <span>{data.description}</span>
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <p className="dday">
+                                                            D
+                                                            {Math.ceil(
+                                                                (today.getTime() - new Date(data.due_date).getTime()) / (1000 * 3600 * 24),
+                                                            )}
+                                                        </p>
+                                                        <Link to={`/class/${num}/share`}>
+                                                            <p className="assign_title">{data.title}</p>
+                                                        </Link>
+
+                                                        <p>
+                                                            <span>{data.description}</span>
+                                                        </p>
+                                                    </>
+                                                )}
+                                            </>
+                                        ) : null}
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <>
+                                <p>현재진행 중인 과제가 없습니다. </p>
+                            </>
+                        )}
+                        {/* <h3>마감된 과제 </h3> */}
+                        {/* {assignment.length !== 0
+        ? assignment.map((data, index) => {
+              return (
+                  <div key={index} className="info">
+                      {Math.ceil(
+                          (new Date(data.due_date).getTime() - today.getTime()) / (1000 * 3600 * 24),
+                      ) > 0 ? null : (
+                          <>
+                              <p>{data.title}</p>
+                              <p>
+                                  <span>{data.description}</span>
+                              </p>
+                          </>
+                      )}
+                  </div>
+              );
+          })
+        : null} */}
+                    </div>
+                </Item>
+            </GridResponsive>
+        );
+        if (layoutSet) {
+            return (
+                <>
+                    {assignmentStatusCard}
+                    {todayWordCard}
+                </>
+            );
+        } else {
+            return (
+                <>
+                    {todayWordCard}
+                    {assignmentStatusCard}
+                </>
+            );
+        }
+    };
+
     return (
         <>
             <BackgroundTheme color="#ffffff" />
@@ -659,8 +799,8 @@ function Dashboard_1({ match, history }) {
                 </div>
                 <div className="dashboard">
                     <Box sx={{ flexGrow: 1 }}>
-                        <Grid container spacing={4}>
-                            <Grid item xs={12} xl={4} sm={4}>
+                        <GridResponsive container spacing={4}>
+                            <GridResponsive item xs={12} xl={4} sm={layoutSet ? 6 : 4}>
                                 <Item>
                                     <div className="card lecture">
                                         <h3>강의실</h3>
@@ -689,8 +829,8 @@ function Dashboard_1({ match, history }) {
                                         )}
                                     </div>
                                 </Item>
-                            </Grid>
-                            <Grid item xs={12} xl={4} sm={4}>
+                            </GridResponsive>
+                            <GridResponsive item xs={12} xl={4} sm={layoutSet ? 6 : 4}>
                                 <Item>
                                     <div className="card camstudy">
                                         <h3>캠스터디</h3>
@@ -711,103 +851,9 @@ function Dashboard_1({ match, history }) {
                                         </div>
                                     </div>
                                 </Item>
-                            </Grid>
-                            <Grid item xs={12} xl={4} sm={4}>
-                                <Item>
-                                    <div className="card word">
-                                        <h3>오늘의 단어</h3>
-                                        {!word ? <h4>단어가 없습니다.</h4> : <h1 onClick={ClickCard}>{flip ? korean : word}</h1>}
-
-                                        {word ? (
-                                            <Link to={`/class/${num}/learning-vocas`}>
-                                                <p>더 많은 단어 학습하기</p>
-                                            </Link>
-                                        ) : null}
-                                    </div>
-                                </Item>
-                            </Grid>
-                            <Grid item xs={12} xl={8} sm={8}>
-                                <Item>
-                                    <div className="card assignment">
-                                        <h3>과제 현황</h3>
-                                        {assignment.length !== 0 ? (
-                                            newAssignment.slice(0, 3).map((data, index) => {
-                                                return (
-                                                    <div key={index} className="info">
-                                                        {Math.ceil(
-                                                            (new Date(data.due_date).getTime() - today.getTime()) / (1000 * 3600 * 24),
-                                                        ) > 0 ? (
-                                                            <>
-                                                                {Math.ceil(
-                                                                    (today.getTime() - new Date(data.due_date).getTime()) /
-                                                                        (1000 * 3600 * 24),
-                                                                ) == 0 ? (
-                                                                    <>
-                                                                        <p
-                                                                            style={{ color: '#870F00', backgroundColor: '#FED7D2' }}
-                                                                            className="dday"
-                                                                        >
-                                                                            D - day
-                                                                        </p>
-                                                                        <Link to={`/class/${num}/share`}>
-                                                                            <p className="assign_title">{data.title}</p>
-                                                                        </Link>
-
-                                                                        <p>
-                                                                            <span>{data.description}</span>
-                                                                        </p>
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <p className="dday">
-                                                                            D
-                                                                            {Math.ceil(
-                                                                                (today.getTime() - new Date(data.due_date).getTime()) /
-                                                                                    (1000 * 3600 * 24),
-                                                                            )}
-                                                                        </p>
-                                                                        <Link to={`/class/${num}/share`}>
-                                                                            <p className="assign_title">{data.title}</p>
-                                                                        </Link>
-
-                                                                        <p>
-                                                                            <span>{data.description}</span>
-                                                                        </p>
-                                                                    </>
-                                                                )}
-                                                            </>
-                                                        ) : null}
-                                                    </div>
-                                                );
-                                            })
-                                        ) : (
-                                            <>
-                                                <p>현재진행 중인 과제가 없습니다. </p>
-                                            </>
-                                        )}
-                                        {/* <h3>마감된 과제 </h3> */}
-                                        {/* {assignment.length !== 0
-                                            ? assignment.map((data, index) => {
-                                                  return (
-                                                      <div key={index} className="info">
-                                                          {Math.ceil(
-                                                              (new Date(data.due_date).getTime() - today.getTime()) / (1000 * 3600 * 24),
-                                                          ) > 0 ? null : (
-                                                              <>
-                                                                  <p>{data.title}</p>
-                                                                  <p>
-                                                                      <span>{data.description}</span>
-                                                                  </p>
-                                                              </>
-                                                          )}
-                                                      </div>
-                                                  );
-                                              })
-                                            : null} */}
-                                    </div>
-                                </Item>
-                            </Grid>
-                            <Grid item xl={4} xs={12} sm={4}>
+                            </GridResponsive>
+                            {cardSelectRender(layoutSet)}
+                            <GridResponsive item xl={4} xs={12} sm={layoutSet ? 6 : 4}>
                                 <Item>
                                     <div className="card wordprogress">
                                         <h3>단어 진행률</h3>
@@ -828,8 +874,8 @@ function Dashboard_1({ match, history }) {
                                         )}
                                     </div>
                                 </Item>
-                            </Grid>
-                            <Grid item xl={8} xs={12} sm={8}>
+                            </GridResponsive>
+                            <GridResponsive item xl={8} xs={12} sm={8}>
                                 <Item>
                                     <div className="card comment">
                                         <svg width="71" height="47" viewBox="0 0 71 47" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -865,8 +911,8 @@ function Dashboard_1({ match, history }) {
                                         </div>
                                     </div>
                                 </Item>
-                            </Grid>
-                            <Grid item xs={12} xl={4} sm={4}>
+                            </GridResponsive>
+                            <GridResponsive item xs={12} xl={4} sm={4}>
                                 <div className="card calendar">
                                     <h3>오늘의 일정</h3>
 
@@ -893,8 +939,8 @@ function Dashboard_1({ match, history }) {
                                         </Link>
                                     </div>
                                 </div>
-                            </Grid>
-                            <Grid item xs={12}>
+                            </GridResponsive>
+                            <GridResponsive item xs={12}>
                                 <div className="card optimer">
                                     <h3>나의 학습 시간</h3>
                                     {!sessions ? null : (
@@ -907,8 +953,8 @@ function Dashboard_1({ match, history }) {
                                         />
                                     )}
                                 </div>
-                            </Grid>
-                        </Grid>
+                            </GridResponsive>
+                        </GridResponsive>
                     </Box>
                 </div>
             </Container>

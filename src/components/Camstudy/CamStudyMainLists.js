@@ -12,7 +12,17 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@materi
 import HtmlParser from 'react-html-parser';
 import AddCamstudyIcon from '../../AltridUI/Icons/AddCamstudyIcon';
 
-const CamstudyMainRoot = styled.div``;
+const CamstudyMainRoot = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    max-width: 960px;
+    height: 100%;
+    @media (max-width: 640px) {
+        margin-top: 30px;
+    }
+`;
 const HeaderContainer = styled.div`
     display: flex;
     width: 100%;
@@ -424,29 +434,26 @@ function CamStudyMainLists({ history, match }) {
                 handleClose={actionToggleDrawer(false)}
                 onAfterCreateOrModify={actionAfterCreateOrModify}
             />
-
-            <ClassWrapper col="col">
-                <HeaderContainer>
-                    <HeaderMenu
-                        title="캠 스터디"
-                        menuDatas={headerMenus}
-                        selectedMenuId={menuStatus}
-                        onItemClick={actionClickHeaderMenuItem}
-                        rightComponent={
-                            <Button
-                                variant="filled"
-                                sizes="medium"
-                                colors="green"
-                                leftIcon={<AddCamstudyIcon />}
-                                onClick={actionToggleDrawer(true)}
-                            >
-                                캠 스터디 만들기
-                            </Button>
-                        }
-                    />
-                </HeaderContainer>
-                <Contents>{renderContentsByMenu(menuStatus)}</Contents>
-            </ClassWrapper>
+            <HeaderContainer>
+                <HeaderMenu
+                    title="캠 스터디"
+                    menuDatas={headerMenus}
+                    selectedMenuId={menuStatus}
+                    onItemClick={actionClickHeaderMenuItem}
+                    rightComponent={
+                        <Button
+                            variant="filled"
+                            sizes="medium"
+                            colors="green"
+                            leftIcon={<AddCamstudyIcon />}
+                            onClick={actionToggleDrawer(true)}
+                        >
+                            캠 스터디 만들기
+                        </Button>
+                    }
+                />
+            </HeaderContainer>
+            <Contents>{renderContentsByMenu(menuStatus)}</Contents>
         </CamstudyMainRoot>
     );
 }

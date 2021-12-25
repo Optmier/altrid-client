@@ -105,7 +105,7 @@ const TopProgressBar = styled.div`
     font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
     position: absolute;
-    top: 48px;
+    top: 0;
     height: 8px;
     width: 100%;
     z-index: 900;

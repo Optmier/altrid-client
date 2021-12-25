@@ -34,11 +34,17 @@ const FormButton = styled.button`
 
 const Container = styled.div`
     display: flex;
-    justify-content: space-around;
-    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    max-width: 960px;
+    height: 100%;
+    @media (max-width: 640px) {
+        margin-top: 30px;
+    }
 
     & .calendar {
-        width: 70%;
+        width: 100%;
         height: auto;
         margin: 40px 0;
         overflow: hidden;

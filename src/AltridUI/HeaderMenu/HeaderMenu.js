@@ -1,10 +1,58 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import Typography from '../Typography/Typography';
 
 const HeaderMenuRoot = styled.div`
+    background-color: ${({ backgroundColor, fixed }) => (backgroundColor && fixed ? backgroundColor : null)};
     font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol';
+    padding: 32px 32px 2px 32px;
+    margin: -32px -32px -2px -32px;
+    position: ${({ fixed }) => (fixed ? 'fixed' : null)};
+    max-width: ${({ fixed }) => (fixed ? '960px' : null)};
     width: ${({ fullWidth }) => (fullWidth ? '100%' : null)};
+    width: ${({ fixed, leftNavState }) => {
+        if (fixed) {
+            return leftNavState ? 'calc(100% - 64px - 392px)' : 'calc(100% - 64px)';
+        } else {
+            return null;
+        }
+    }};
+    transition: ${({ fixed }) => (fixed ? 'width 0.4s' : null)};
+    z-index: ${({ fixed }) => (fixed ? 100 : null)};
+    @media all and (max-width: 902px) {
+        width: ${({ fixed }) => (fixed ? 'calc(100% - 64px)' : null)};
+    }
+    @media all and (max-width: 640px) {
+        padding: 16px 16px 2px 16px;
+        margin: -16px -16px -2px -16px;
+        width: ${({ fixed }) => (fixed ? 'calc(100% - 32px)' : null)};
+    }
+`;
+const HeaderFixedDummy = styled.div`
+    padding: 32px 32px 2px 32px;
+    margin: -32px -32px -2px -32px;
+    min-height: 112px;
+    min-height: ${({ noMenus }) => (noMenus ? '52px' : null)};
+    max-width: ${({ fixed }) => (fixed ? '960px' : null)};
+    width: 100%;
+    transition: ${({ fixed }) => (fixed ? 'width 0.4s' : null)};
+    z-index: 99;
+    @media all and (max-width: 960px) {
+        min-height: 100px;
+        min-height: ${({ noMenus }) => (noMenus ? '40px' : null)};
+    }
+    @media all and (max-width: 799px) {
+        min-height: 92px;
+        min-height: ${({ noMenus }) => (noMenus ? '32px' : null)};
+    }
+    @media all and (max-width: 640px) {
+        padding: 16px 16px 2px 16px;
+        margin: -16px -16px -2px -16px;
+        min-height: 92px;
+        min-height: ${({ noMenus }) => (noMenus ? '32px' : null)};
+    }
 `;
 const ContainerTitle = styled.div`
     display: flex;
@@ -31,15 +79,8 @@ const ContainerMenus = styled.div`
 `;
 const HeaderTitle = styled.div`
     font-family: inherit;
-    font-size: ${({ type }) => (type === 1 ? '3.5rem' : '3rem')};
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: ${({ type }) => (type === 1 ? '3.75rem' : '3.25rem')};
     text-align: ${({ type }) => (type === 1 ? 'center' : null)};
-    @media all and (max-width: 799px) {
-        font-size: 1.75rem;
-        line-height: 2rem;
-    }
+    width: ${({ type }) => (type === 1 ? '100%' : null)};
 `;
 const MenuItem = styled.button`
     background-color: ${(props) => (props['m-selected'] ? '#3B1689' : 'transparent')};
@@ -48,9 +89,6 @@ const MenuItem = styled.button`
     border-radius: 4px;
     color: ${(props) => (props['m-selected'] ? '#ffffff' : '#9AA5AF')};
     font-family: inherit;
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.25rem;
     padding: 0;
     height: 100%;
     width: calc(100%);
@@ -60,34 +98,58 @@ const MenuItem = styled.button`
     }
 `;
 
-function HeaderMenu({ fullWidth, title, menuDatas, defaultMenuItemId, selectedMenuId, onItemClick, type, rightComponent, children }) {
+function HeaderMenu({
+    fullWidth,
+    title,
+    menuDatas,
+    defaultMenuItemId,
+    selectedMenuId,
+    onItemClick,
+    type,
+    rightComponent,
+    fixed,
+    backgroundColor,
+    children,
+}) {
+    const { leftNavGlobal } = useSelector((state) => state.RdxGlobalLeftNavState);
     const onMenuItemClick = (mId, onClickFn) => () => {
         onItemClick(mId);
         if (onClickFn) onClickFn();
     };
 
     return (
-        <HeaderMenuRoot fullWidth={fullWidth}>
-            <ContainerTitle>
-                <HeaderTitle type={type}>{title}</HeaderTitle>
-                <RightComponentContainer>{rightComponent}</RightComponentContainer>
-            </ContainerTitle>
-            <ContainerMenus type={type}>
-                {menuDatas
-                    ? menuDatas.map((data) => (
-                          <MenuItem
-                              key={data.mId}
-                              title={!data.mDesc ? null : data.mDesc}
-                              m-selected={data.mId === selectedMenuId}
-                              onClick={onMenuItemClick(data.mId, data.onClick)}
-                          >
-                              {data.mName}
-                              {!isNaN(parseInt(data.mCounts)) ? `(${data.mCounts})` : null}
-                          </MenuItem>
-                      ))
-                    : null}
-            </ContainerMenus>
-        </HeaderMenuRoot>
+        <>
+            {fixed ? <HeaderFixedDummy noMenus={!menuDatas} fixed={fixed} leftNavState={leftNavGlobal} /> : null}
+            <HeaderMenuRoot fullWidth={fullWidth} fixed={fixed} leftNavState={leftNavGlobal} backgroundColor={backgroundColor}>
+                <ContainerTitle>
+                    <HeaderTitle type={type}>
+                        <Typography type="heading" size={type === 1 ? 'l' : 'm'} bold>
+                            {title}
+                        </Typography>
+                    </HeaderTitle>
+                    <RightComponentContainer>{rightComponent}</RightComponentContainer>
+                </ContainerTitle>
+                {menuDatas ? (
+                    <ContainerMenus type={type}>
+                        {menuDatas
+                            ? menuDatas.map((data) => (
+                                  <MenuItem
+                                      key={data.mId}
+                                      title={!data.mDesc ? null : data.mDesc}
+                                      m-selected={data.mId === selectedMenuId}
+                                      onClick={onMenuItemClick(data.mId, data.onClick)}
+                                  >
+                                      <Typography type="label" size="l" bold>
+                                          {data.mName}
+                                          {!isNaN(parseInt(data.mCounts)) ? `(${data.mCounts})` : null}
+                                      </Typography>
+                                  </MenuItem>
+                              ))
+                            : null}
+                    </ContainerMenus>
+                ) : null}
+            </HeaderMenuRoot>
+        </>
     );
 }
 
@@ -125,6 +187,8 @@ HeaderMenu.defaultProps = {
         },
     ],
     type: 0,
+    fixed: false,
+    backgroundColor: 'transparent',
     onItemClick() {},
 };
 
