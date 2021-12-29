@@ -5,22 +5,21 @@ import { useSelector } from 'react-redux';
 import Dday from '../../pages/Dday';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import Footer from './Footer';
-import HeaderBar from './HeaderBar';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { Link } from 'react-router-dom';
 import ReactApexChart from 'react-apexcharts';
 import Button from '../../AltridUI/Button/Button';
-import { Helmet } from 'react-helmet';
 import MakeAutoComments from '../../controllers/MakeAutoComment';
 import BackgroundTheme from '../../AltridUI/ThemeColors/BackgroundTheme';
+import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
 import { withStyles } from '@material-ui/core';
+import Typography from '../../AltridUI/Typography/Typography';
 
 const Container = styled.div`
     margin: 0px auto;
     max-width: 1216px;
-    margin-bottom: 160px;
+    margin-bottom: 84px;
     padding: 0 32px;
     & .gobutton {
         margin-top: 68px;
@@ -108,212 +107,151 @@ const Container = styled.div`
 
     & .dashboard {
         margin: 0 auto;
-        & .card {
-            padding: 32px 32px;
-            min-height: 190px;
-            border-radius: 32px;
-            background-color: #f6f8f9;
-            font-weight: bold;
-            & .input {
-                margin-top: 68px;
-                background: #3b1689;
-                border-radius: 104px;
-                color: #ffffff;
-                text-align: center;
-                width: 320px;
-                height: 46px;
-            }
-            @media (min-width: 600px) and (max-width: 990px) {
-                padding: 16px 16px;
-            }
-        }
-        & .lecture {
-            background: #f4f1fa;
-            & h3 {
-                font-size: 24px;
-                line-height: 28px;
-                color: #3b1689;
-            }
-            & p {
-                font-weight: bold;
-                height: 32px;
-                font-size: 18px;
-                line-height: 22px;
-                margin-top: 16px;
-                color: #957fce;
-            }
-        }
-        & .camstudy {
-            background-color: #d4e2fc;
-
-            & h3 {
-                font-size: 24px;
-                line-height: 28px;
-                color: #1e54b7;
-            }
-
-            & p {
-                font-weight: bold;
-                width: 100%;
-                height: 32px;
-                font-size: 18px;
-                line-height: 22px;
-                margin-top: 16px;
-                color: #5b91f5;
-            }
-        }
-        & .word {
-            background: #fff3ef;
-            overflow: auto;
-            & p {
-                color: #ff6937;
-                padding-top: 25px;
-                font-weight: 400;
-                font-size: 14px;
-                text-align: center;
-            }
-            & h3 {
-                color: #ff6937;
-            }
-            & h1 {
-                margin-top: 34px;
-                color: #ff6937;
-                font-weight: bold;
-                /* font-size: 56px; */
-                line-height: 60px;
-                text-align: center;
-                cursor: pointer;
-            }
-            & h4 {
-                color: #ff6937;
-                margin-top: 40px;
-                font-weight: bold;
-                text-align: center;
-            }
-        }
-        & .assignment {
-            overflow-x: auto;
-            & h3 {
-                font-size: 24px;
-                line-height: 28px;
-                color: '#000000';
-            }
-            & .info {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                align-content: center;
-                & .assign_title {
-                    width: 200px;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                }
-                & .dday {
-                    background: #d4e2fc;
-                    border-radius: 8px;
-                    padding: 4px 8px;
-                    color: #174291;
-                    white-space: nowrap;
-                }
-                & .finish {
-                    color: '#870F00';
-                }
-                & p {
-                    margin-right: 16px;
-                    font-weight: bold;
-                    font-size: 18px;
-                }
-                & span {
-                    font-weight: normal;
-                    font-size: 18px;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                }
-            }
-            & p {
-                margin-top: 17px;
-            }
-        }
-        & .comment {
-            background: #ffffff;
-            border: 1px solid #bfc6cd;
-            background: #ffffff;
-            /* height: 198px; */
-
-            & p {
-                margin-top: 16px;
-                font-size: 24px;
-                /* line-height: 36px; */
-                font-weight: 400;
-            }
-        }
-        & .wordprogress {
-            background-color: #fffaf0;
-            & h3 {
-                font-size: 24px;
-                line-height: 28px;
-                color: #bc8b2c;
-                margin-bottom: 20px;
-                @media (min-width: 600px) and (max-width: 990px) {
-                    margin-bottom: 40px;
-                }
-            }
-
-            & p {
-                margin-top: 20px;
-                color: #bc8b2c;
-                font-weight: bold;
-                font-size: 20px;
-                text-align: center;
-            }
-            & h4 {
-                padding-top: 60px;
-                font-size: 20px;
-                text-align: center;
-                color: #bc8b2c;
-            }
-        }
-        & .calendar {
-            background-color: #aeffe0;
-            & h3 {
-                font-size: 24px;
-                line-height: 28px;
-                color: #008f58;
-            }
-            & .todolist {
-                height: 120px;
-                color: #008f58;
-                overflow-y: hidden;
-                & li {
-                    padding-top: 10px;
-                    font-size: 20px;
-                }
-                & p {
-                    padding-top: 10px;
-                }
-            }
-            & .gocalendar {
-                /* margin-top: 0px; */
-            }
-        }
-        & .optimer {
-            overflow-x: auto;
-            & h3 {
-                font-size: 24px;
-                line-height: 28px;
-                color: '#000000';
-            }
-        }
     }
     @media all and (max-width: 640px) {
         padding: 0 16px;
     }
 `;
-const Item = styled.div``;
+const DashCard = styled.div`
+    align-items: flex-start;
+    background-color: ${({ color }) => getColorSets(50, color)};
+    border: 1px solid transparent;
+    border-color: ${({ borderColor }) => (borderColor ? borderColor : null)};
+    border-radius: 32px;
+    color: ${({ color }) => (color === 'white' ? '#11171C' : getColorSets(500, color))};
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px;
+    min-height: 190px;
+    @media all and (max-width: 640px) {
+        padding: 24px;
+    }
+`;
+const DashCardHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+`;
+const DashCardTitle = styled.div``;
+const DashCardHeaderRight = styled.div``;
+const DashCardContents = styled.div`
+    color: ${({ color, disabled }) => (color === 'white' ? (disabled ? '#9AA5AF' : '#4D5C6A') : getColorSets(disabled ? 200 : 400, color))};
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+    width: 100%;
+    &.center {
+        justify-content: center;
+        text-align: center;
+    }
+`;
+const DashCardBottom = styled.div`
+    display: flex;
+    margin-top: auto;
+    width: 100%;
+    & a {
+        width: 100%;
+    }
+    &.center {
+        justify-content: center;
+        & a {
+            text-align: center;
+        }
+    }
+`;
+const AssignmentListItem = styled.div`
+    align-items: center;
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    flex-grow: 1;
+    & + & {
+        margin-top: 16px;
+    }
+    @media all and (max-width: 640px) {
+        align-items: flex-start;
+        & + & {
+            margin-top: 16px;
+        }
+    }
+`;
+const AssignmentListItemDDayTag = styled.div`
+    align-items: center;
+    background-color: ${({ dday }) => (dday ? '#FED7D2' : '#D4E2FC')};
+    border-radius: 8px;
+    color: ${({ dday }) => (dday ? '#870F00' : '#174291')};
+    display: flex;
+    flex-basis: 48px;
+    flex-shrink: 0;
+    justify-content: center;
+    padding: 4px 8px;
+    @media all and (max-width: 640px) {
+        flex-basis: initial;
+    }
+`;
+const AssignmentListItemTexts = styled.div`
+    align-items: center;
+    color: #11171c;
+    display: flex;
+    margin-left: 8px;
+    overflow: hidden;
+    width: 100%;
+    @media all and (max-width: 640px) {
+        margin: 0;
+        margin-top: 4px;
+    }
+`;
+const AssignmentListItemTitle = styled.div`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    & div.altrid-typography {
+        overflow: inherit;
+        text-overflow: inherit;
+    }
+`;
+const AssignmentListItemDesc = styled.div`
+    margin-left: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    & div.altrid-typography {
+        overflow: inherit;
+        text-overflow: inherit;
+    }
+`;
+const TodoListItem = styled.div`
+    align-items: center;
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    flex-grow: 1;
+    & + & {
+        margin-top: 8px;
+    }
+    & div.altrid-typography {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+    }
+    @media all and (max-width: 640px) {
+        align-items: flex-start;
+        & + & {
+            margin-top: 8px;
+        }
+    }
+`;
 const GridResponsive = withStyles((theme) => ({
     'spacing-xs-4': {
+        '@media (max-width: 1023px)': {
+            width: 'calc(100% + 16px)',
+            margin: -8,
+            '& .MuiGrid-item': {
+                padding: 8,
+            },
+        },
         '@media (max-width: 640px)': {
             width: 'calc(100% + 8px)',
             margin: -4,
@@ -401,7 +339,6 @@ function Dashboard_1({ match, history }) {
             labels: ['WordProgress'],
         },
     });
-
     const [optimer, setoptimer] = useState({
         series: [
             {
@@ -491,24 +428,7 @@ function Dashboard_1({ match, history }) {
                 Setmeetingroom(result.data);
             })
             .catch((err) => console.log(err));
-    }, []);
 
-    const ClickCard = () => {
-        Axios({
-            url: `https://dapi.kakao.com/v2/translation/translate?src_lang=en&target_lang=kr&query=${word}`,
-            type: 'GET',
-            headers: { Authorization: 'KakaoAK deff2bf52bcadf12b544be630be9846b' },
-        })
-            .then((result) => setkorean(result.data.translated_text[0]))
-            .catch((error) => console.log(error));
-        if (!flip) {
-            setflip(true);
-        } else {
-            setflip(false);
-        }
-    };
-
-    useEffect(() => {
         Axios.get(`${apiUrl}/meeting-room`, { params: { classNumber: classNum }, withCredentials: true })
             .then((result) => {})
             .catch((err) => console.log(err));
@@ -521,24 +441,26 @@ function Dashboard_1({ match, history }) {
                 // console.log(result.data);
             })
             .catch((err) => console.log(err));
-    }, []);
 
-    useEffect(() => {
+        // 진행중인 과제 목록 불러오기
         Axios.get(`${apiUrl}/assignment-actived/${num}`, { withCredentials: true })
             .then((result) => {
                 // console.log(result.data);
-                setassignment(result.data);
+                if (!result.data || !result.data.length) return;
+                setassignment(
+                    result.data
+                        .filter(({ due_date }) => Math.ceil((new Date(due_date).getTime() - today.getTime()) / (1000 * 3600 * 24)) > 0)
+                        .slice(0, 3),
+                );
             })
             .catch((err) => console.log(err));
-    }, []);
 
-    useEffect(() => {
+        // 랜덤 단어 가져오기
         Axios.get(`${apiUrl}/vocas/random`, { params: { classNum: classNum }, withCredentials: true })
             .then((result) => setword(result.data.word))
             .catch((err) => console.log(err));
-    }, []);
 
-    useEffect(() => {
+        // 단어 진행률 가져오기
         Axios.get(`${apiUrl}/vocas/progress`, { params: { classNum: classNum }, withCredentials: true })
             .then((result) => {
                 // console.log(result.data);
@@ -550,24 +472,14 @@ function Dashboard_1({ match, history }) {
             })
 
             .catch((err) => console.log(err));
-    }, []);
 
-    useEffect(() => {
+        // 캠 스터디 목록 가져오기
         Axios.get(`${apiUrl}/cam-study/all`, { withCredentials: true })
             .then((result) => {
                 setroom(result.data);
             })
             .catch((err) => console.log(err));
-    }, []);
 
-    const [acmTotalFixsMine, setACMTotalFixsMine] = useState(0);
-    const [acmTotalFixsAvg, setACMTotalFixsAvg] = useState(0);
-    const [acmAvgSpeedFixsMine, setACMAvgSpeedFixsMine] = useState(0);
-    const [acmAvgSpeedFixsAvg, setACMAvgSpeedFixsAvg] = useState(0);
-    const [acmRegressionsMine, setACMRegressionsMine] = useState(0);
-    const [acmRegressionsAvg, setACMRegressionsAvg] = useState(0);
-
-    useEffect(() => {
         Axios.get(`${apiUrl}/calendar-events/my/${num}/current`, { withCredentials: true })
             .then((result) => {
                 // console.log(result.data);
@@ -575,6 +487,7 @@ function Dashboard_1({ match, history }) {
             })
             .catch((err) => console.log(err));
 
+        // 최근 과제 데이터 가져오기
         Axios.get(`${apiUrl}/assignment-result/last-my-actived/${classNum}`, { withCredentials: true })
             .then((result) => {
                 // console.log(result.data);
@@ -591,6 +504,8 @@ function Dashboard_1({ match, history }) {
                     .catch((err) => {
                         console.error(err);
                     });
+
+                // 옵타이머 데이터
                 Axios.get(`${apiUrl}/optimer/${num}/${result.data.student_id}`, { withCredentials: true })
                     .then((result) => {
                         if (!result.data.time_mon) {
@@ -619,6 +534,28 @@ function Dashboard_1({ match, history }) {
             .catch((err) => console.log(err));
     }, []);
 
+    const ClickCard = () => {
+        Axios({
+            url: `https://dapi.kakao.com/v2/translation/translate?src_lang=en&target_lang=kr&query=${word}`,
+            type: 'GET',
+            headers: { Authorization: 'KakaoAK deff2bf52bcadf12b544be630be9846b' },
+        })
+            .then((result) => setkorean(result.data.translated_text[0]))
+            .catch((error) => console.log(error));
+        if (!flip) {
+            setflip(true);
+        } else {
+            setflip(false);
+        }
+    };
+
+    const [acmTotalFixsMine, setACMTotalFixsMine] = useState(0);
+    const [acmTotalFixsAvg, setACMTotalFixsAvg] = useState(0);
+    const [acmAvgSpeedFixsMine, setACMAvgSpeedFixsMine] = useState(0);
+    const [acmAvgSpeedFixsAvg, setACMAvgSpeedFixsAvg] = useState(0);
+    const [acmRegressionsMine, setACMRegressionsMine] = useState(0);
+    const [acmRegressionsAvg, setACMRegressionsAvg] = useState(0);
+
     useEffect(() => {
         if (!studentsData || !studentsData.length) return;
         const currentStudentData = studentsData.filter((p) => p.student_id === sessions.authId)[0];
@@ -646,14 +583,13 @@ function Dashboard_1({ match, history }) {
         setACMTotalFixsAvg(totalEyeStatsAvg.num_of_fixs.toFixed(0));
         setACMAvgSpeedFixsAvg(totalEyeStatsAvg.avg_of_fix_vels.toFixed(0));
         setACMRegressionsAvg(totalEyeStatsAvg.num_of_regs.toFixed(0));
-    });
+    }, [studentsData]);
     // new Date(b.due_date).getTime - new Date(a.due_date).getTime;
 
     const newAssignment = assignment.sort(function (a, b) {
         return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
     });
     // console.log(newAssignment);
-    const { leftNavGlobal } = useSelector((state) => state.RdxGlobalLeftNavState);
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
     const [layoutSet, setLayoutSet] = useState(false);
     useEffect(() => {
@@ -672,93 +608,89 @@ function Dashboard_1({ match, history }) {
     const cardSelectRender = (layoutSet) => {
         const todayWordCard = (
             <GridResponsive item xs={12} xl={4} sm={layoutSet ? 6 : 4}>
-                <Item>
-                    <div className="card word">
-                        <h3>오늘의 단어</h3>
-                        {!word ? <h4>단어가 없습니다.</h4> : <h1 onClick={ClickCard}>{flip ? korean : word}</h1>}
-
+                <DashCard color="orange">
+                    <DashCardHeader>
+                        <DashCardTitle>
+                            <Typography type="label" size="xxl" bold>
+                                오늘의 단어
+                            </Typography>
+                        </DashCardTitle>
+                        <DashCardHeaderRight></DashCardHeaderRight>
+                    </DashCardHeader>
+                    <DashCardContents className="center" color="orange" disabled={!word}>
+                        {!word ? (
+                            <Typography type="label" size="xl" bold>
+                                단어가 없습니다
+                            </Typography>
+                        ) : (
+                            <Typography onClick={ClickCard}>{flip ? korean : word}</Typography>
+                        )}
+                    </DashCardContents>
+                    <DashCardBottom className="center">
                         {word ? (
                             <Link to={`/class/${num}/learning-vocas`}>
-                                <p>더 많은 단어 학습하기</p>
+                                <Typography type="label" size="xl" bold>
+                                    더 많은 단어 학습하기
+                                </Typography>
                             </Link>
                         ) : null}
-                    </div>
-                </Item>
+                    </DashCardBottom>
+                </DashCard>
             </GridResponsive>
         );
         const assignmentStatusCard = (
             <GridResponsive item xs={12} xl={8} sm={layoutSet ? 12 : 8}>
-                <Item>
-                    <div className="card assignment">
-                        <h3>과제 현황</h3>
-                        {assignment.length !== 0 ? (
-                            newAssignment.slice(0, 3).map((data, index) => {
-                                return (
-                                    <div key={index} className="info">
-                                        {Math.ceil((new Date(data.due_date).getTime() - today.getTime()) / (1000 * 3600 * 24)) > 0 ? (
-                                            <>
-                                                {Math.ceil((today.getTime() - new Date(data.due_date).getTime()) / (1000 * 3600 * 24)) ==
-                                                0 ? (
-                                                    <>
-                                                        <p style={{ color: '#870F00', backgroundColor: '#FED7D2' }} className="dday">
-                                                            D - day
-                                                        </p>
-                                                        <Link to={`/class/${num}/share`}>
-                                                            <p className="assign_title">{data.title}</p>
-                                                        </Link>
-
-                                                        <p>
-                                                            <span>{data.description}</span>
-                                                        </p>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <p className="dday">
-                                                            D
-                                                            {Math.ceil(
-                                                                (today.getTime() - new Date(data.due_date).getTime()) / (1000 * 3600 * 24),
-                                                            )}
-                                                        </p>
-                                                        <Link to={`/class/${num}/share`}>
-                                                            <p className="assign_title">{data.title}</p>
-                                                        </Link>
-
-                                                        <p>
-                                                            <span>{data.description}</span>
-                                                        </p>
-                                                    </>
-                                                )}
-                                            </>
-                                        ) : null}
-                                    </div>
-                                );
-                            })
+                <DashCard color="gray">
+                    <DashCardHeader>
+                        <DashCardTitle>
+                            <Typography type="label" size="xxl" bold>
+                                과제 현황
+                            </Typography>
+                        </DashCardTitle>
+                        <DashCardHeaderRight>
+                            <Link to={`/class/${num}/share`}>
+                                <Button variant="outlined" colors="purple" sizes="xsmall">
+                                    과제 목록 보기
+                                </Button>
+                            </Link>
+                        </DashCardHeaderRight>
+                    </DashCardHeader>
+                    <DashCardContents color="gray" disabled={!newAssignment.length}>
+                        {console.log(newAssignment)}
+                        {newAssignment.length > 0 ? (
+                            newAssignment.map((d) => (
+                                <AssignmentListItem key={d.idx}>
+                                    <AssignmentListItemDDayTag
+                                        dday={Math.ceil((today.getTime() - new Date(d.due_date).getTime()) / (1000 * 3600 * 24)) === 0}
+                                    >
+                                        <Typography type="label" size="s" bold>
+                                            {Math.ceil((today.getTime() - new Date(d.due_date).getTime()) / (1000 * 3600 * 24)) === 0
+                                                ? 'D-Day'
+                                                : 'D' + Math.ceil((today.getTime() - new Date(d.due_date).getTime()) / (1000 * 3600 * 24))}
+                                        </Typography>
+                                    </AssignmentListItemDDayTag>
+                                    <AssignmentListItemTexts>
+                                        <AssignmentListItemTitle>
+                                            <Typography type="label" size="xl" bold title={d.title}>
+                                                {d.title}
+                                            </Typography>
+                                        </AssignmentListItemTitle>
+                                        <AssignmentListItemDesc>
+                                            <Typography type="label" size="xl" title={d.description}>
+                                                {d.description}
+                                            </Typography>
+                                        </AssignmentListItemDesc>
+                                    </AssignmentListItemTexts>
+                                </AssignmentListItem>
+                            ))
                         ) : (
-                            <>
-                                <p>현재진행 중인 과제가 없습니다. </p>
-                            </>
+                            <Typography type="label" size="xl" bold>
+                                진행 중인 과제가 없습니다.
+                            </Typography>
                         )}
-                        {/* <h3>마감된 과제 </h3> */}
-                        {/* {assignment.length !== 0
-        ? assignment.map((data, index) => {
-              return (
-                  <div key={index} className="info">
-                      {Math.ceil(
-                          (new Date(data.due_date).getTime() - today.getTime()) / (1000 * 3600 * 24),
-                      ) > 0 ? null : (
-                          <>
-                              <p>{data.title}</p>
-                              <p>
-                                  <span>{data.description}</span>
-                              </p>
-                          </>
-                      )}
-                  </div>
-              );
-          })
-        : null} */}
-                    </div>
-                </Item>
+                    </DashCardContents>
+                    <DashCardBottom></DashCardBottom>
+                </DashCard>
             </GridResponsive>
         );
         if (layoutSet) {
@@ -801,103 +733,122 @@ function Dashboard_1({ match, history }) {
                     <Box sx={{ flexGrow: 1 }}>
                         <GridResponsive container spacing={4}>
                             <GridResponsive item xs={12} xl={4} sm={layoutSet ? 6 : 4}>
-                                <Item>
-                                    <div className="card lecture">
-                                        <h3>강의실</h3>
-                                        {meetingroom.length !== 0 ? (
-                                            <>
-                                                <p>현재 강의가 진행 중이니 입장해주세요 </p>
-                                                <div className="gobutton">
-                                                    <Link to={`/class/${num}/vid-lecture`}>
-                                                        <Button fullWidth colors="purple" variant="filled">
-                                                            강의실로 이동
-                                                        </Button>
-                                                    </Link>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <p>현재 진행중인 강의가 없습니다.</p>
-                                                <div className="gobutton">
-                                                    <Link to={`/class/${num}/vid-lecture`}>
-                                                        <Button fullWidth colors="purple" variant="filled">
-                                                            강의실로 이동
-                                                        </Button>
-                                                    </Link>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-                                </Item>
+                                <DashCard color="purple">
+                                    <DashCardHeader>
+                                        <DashCardTitle>
+                                            <Typography type="label" size="xxl" bold>
+                                                강의실
+                                            </Typography>
+                                        </DashCardTitle>
+                                        <DashCardHeaderRight></DashCardHeaderRight>
+                                    </DashCardHeader>
+                                    <DashCardContents color="purple" disabled={!meetingroom.length}>
+                                        <Typography type="label" size="xl" bold>
+                                            {console.log(meetingroom)}
+                                            {meetingroom.length > 0 ? '현재 진행 중인 강의가 있습니다.' : '진행 중인 강의가 없습니다.'}
+                                        </Typography>
+                                    </DashCardContents>
+                                    <DashCardBottom>
+                                        <Link to={`/class/${num}/vid-lecture`}>
+                                            <Button fullWidth colors="purple" variant="filled">
+                                                강의실로 이동
+                                            </Button>
+                                        </Link>
+                                    </DashCardBottom>
+                                </DashCard>
                             </GridResponsive>
                             <GridResponsive item xs={12} xl={4} sm={layoutSet ? 6 : 4}>
-                                <Item>
-                                    <div className="card camstudy">
-                                        <h3>캠스터디</h3>
-                                        {room.length === 0 ? (
-                                            <p>현재 공부중인 방이 없습니다. </p>
-                                        ) : (
-                                            <p>
-                                                총 {room.length} 개의 방이 있습니다. <br />
-                                                함께 공부해보세요
-                                            </p>
-                                        )}
-                                        <div className="gobutton">
-                                            <Link to={`/class/${num}/cam-study`}>
-                                                <Button colors="blue" fullWidth variant="filled">
-                                                    캠 스터디 목록
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </Item>
+                                <DashCard color="blue">
+                                    <DashCardHeader>
+                                        <DashCardTitle>
+                                            <Typography type="label" size="xxl" bold>
+                                                캠 스터디
+                                            </Typography>
+                                        </DashCardTitle>
+                                        <DashCardHeaderRight></DashCardHeaderRight>
+                                    </DashCardHeader>
+                                    <DashCardContents color="blue" disabled={!room.length}>
+                                        <Typography type="label" size="xl" bold>
+                                            {room.length > 0 ? (
+                                                <>
+                                                    총 {room.length} 개의 방이 있습니다. <br />
+                                                    함께 공부해보세요
+                                                </>
+                                            ) : (
+                                                '현재 공부중인 방이 없습니다.'
+                                            )}
+                                        </Typography>
+                                    </DashCardContents>
+                                    <DashCardBottom>
+                                        <Link to={`/class/${num}/cam-study`}>
+                                            <Button colors="blue" fullWidth variant="filled">
+                                                캠 스터디 목록
+                                            </Button>
+                                        </Link>
+                                    </DashCardBottom>
+                                </DashCard>
                             </GridResponsive>
                             {cardSelectRender(layoutSet)}
                             <GridResponsive item xl={4} xs={12} sm={layoutSet ? 6 : 4}>
-                                <Item>
-                                    <div className="card wordprogress">
-                                        <h3>단어 진행률</h3>
+                                <DashCard color="yellow">
+                                    <DashCardTitle>
+                                        <Typography type="label" size="xxl" bold>
+                                            단어 진행률
+                                        </Typography>
+                                    </DashCardTitle>
+                                    <DashCardContents color="yellow" disabled={!total.total}>
                                         {!total.total ? (
-                                            <h4>저장된 단어가 없습니다.</h4>
+                                            <Typography type="label" size="xl" bold>
+                                                저장된 단어가 없습니다.
+                                            </Typography>
                                         ) : (
                                             <>
                                                 <ReactApexChart
                                                     options={chart.options}
                                                     series={chart.series}
                                                     type="radialBar"
-                                                    height={200}
+                                                    height={240}
                                                 />
-                                                <p>
-                                                    {total.progress}/{total.total}
-                                                </p>
                                             </>
                                         )}
-                                    </div>
-                                </Item>
+                                    </DashCardContents>
+                                    <DashCardBottom className="center">
+                                        {total.total ? (
+                                            <Typography type="label" size="xl" bold>
+                                                {total.progress}/{total.total}
+                                            </Typography>
+                                        ) : null}
+                                    </DashCardBottom>
+                                </DashCard>
                             </GridResponsive>
                             <GridResponsive item xl={8} xs={12} sm={8}>
-                                <Item>
-                                    <div className="card comment">
-                                        <svg width="71" height="47" viewBox="0 0 71 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <DashCard color="white" borderColor="#BFC6CD">
+                                    <DashCardTitle>
+                                        <svg
+                                            width="71"
+                                            height="47"
+                                            viewBox="0 0 71 47"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            style={{ marginBottom: -21 }}
+                                        >
                                             <path
                                                 d="M23.337 0.0335945C23.9963 -0.100785 24.3918 0.167979 24.5237 0.839887C24.6555 1.37741 24.3918 1.71337 23.7326 1.84775C18.8542 2.9228 14.8329 4.66976 11.6685 7.08863C8.63603 9.37312 7.11978 11.8592 7.11978 14.5468C7.11978 16.1594 7.64717 17.436 8.70195 18.3767C9.88858 19.3174 13.3825 20.4596 19.1838 21.8034C23.2711 22.8785 26.2377 24.4239 28.0836 26.4396C30.0613 28.4553 31.0501 31.0758 31.0501 34.3009C31.0501 37.9292 29.7976 40.9528 27.2925 43.3717C24.7874 45.7906 21.5571 47 17.6017 47C12.4596 47 8.24048 45.1858 4.94429 41.5575C1.6481 37.7948 0 33.0243 0 27.2459C0 20.258 2.04364 14.4124 6.13092 9.70907C10.35 5.00572 16.0854 1.78056 23.337 0.0335945ZM63.0891 0.0335945C63.7484 -0.100785 64.1439 0.167979 64.2758 0.839887C64.5395 1.37741 64.3417 1.71337 63.6824 1.84775C58.8041 2.9228 54.7827 4.66976 51.6184 7.08863C48.5859 9.37312 47.0696 11.8592 47.0696 14.5468C47.0696 16.1594 47.597 17.436 48.6518 18.3767C49.7066 19.3174 53.1346 20.4596 58.9359 21.8034C63.1551 22.8785 66.1875 24.4239 68.0334 26.4396C70.0111 28.4553 71 31.0758 71 34.3009C71 37.9292 69.7474 40.9528 67.2423 43.3717C64.7372 45.7906 61.507 47 57.5515 47C52.4095 47 48.1903 45.1187 44.8941 41.356C41.598 37.4589 39.9499 32.554 39.9499 26.6412C39.9499 19.7877 41.9935 14.0765 46.0808 9.5075C50.1681 4.93853 55.8375 1.78056 63.0891 0.0335945Z"
-                                                fill="#9AA5AF"
+                                                fill="#BFC6CD"
                                             />
                                         </svg>
-                                        <div style={{ marginTop: '35px' }} className="AutoComment">
-                                            {/* {MakeAutoComments(
-                                                sessions.userName,
-                                                acmTotalFixsMine,
-                                                acmTotalFixsAvg,
-                                                acmAvgSpeedFixsMine,
-                                                acmAvgSpeedFixsAvg,
-                                                acmRegressionsMine,
-                                                acmRegressionsAvg,
-                                            )} */}
-                                            {acmTotalFixsMine === 0 ? (
-                                                <p>최근 풀이한 과제가 존재하지 않거나 제대로 된 측정이 이루어지지 않았습니다.</p>
-                                            ) : (
-                                                MakeAutoComments(
+                                        <Typography type="label" size="xxl" bold>
+                                            최근 과제 코멘트
+                                        </Typography>
+                                    </DashCardTitle>
+                                    <DashCardContents color="white" disabled={!acmTotalFixsMine}>
+                                        {acmTotalFixsMine === 0 ? (
+                                            <Typography type="label" size="xl" bold>
+                                                최근 풀이한 과제가 존재하지 않거나 제대로 된 측정이 이루어지지 않았습니다.
+                                            </Typography>
+                                        ) : (
+                                            <Typography type="label" size="xl" bold>
+                                                {MakeAutoComments(
                                                     sessions.userName,
                                                     acmTotalFixsMine,
                                                     acmTotalFixsAvg,
@@ -905,54 +856,64 @@ function Dashboard_1({ match, history }) {
                                                     acmAvgSpeedFixsAvg,
                                                     acmRegressionsMine,
                                                     acmRegressionsAvg,
-                                                )
-                                            )}
-                                            {/* {console.log(acmTotalFixsMine)} */}
-                                        </div>
-                                    </div>
-                                </Item>
+                                                )}
+                                            </Typography>
+                                        )}
+                                    </DashCardContents>
+                                    <DashCardBottom></DashCardBottom>
+                                </DashCard>
                             </GridResponsive>
                             <GridResponsive item xs={12} xl={4} sm={4}>
-                                <div className="card calendar">
-                                    <h3>오늘의 일정</h3>
-
-                                    {todo.length == 0 ? (
-                                        <div className="todolist">
-                                            <p>오늘의 일정이 없습니다.</p>
-                                        </div>
-                                    ) : (
-                                        <div className="todolist">
-                                            {todo.slice(0, 3).map((result, index) => {
-                                                return (
-                                                    <ul key={index}>
-                                                        <li>{result.title}</li>
-                                                    </ul>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
-                                    <div className="gocalendar">
+                                <DashCard color="green">
+                                    <DashCardTitle>
+                                        <Typography type="label" size="xxl" bold>
+                                            오늘의 할 일
+                                        </Typography>
+                                    </DashCardTitle>
+                                    <DashCardContents color="green" disabled={!todo.length}>
+                                        {!todo.length ? (
+                                            <Typography type="label" size="xl" bold>
+                                                일정이 없습니다.
+                                            </Typography>
+                                        ) : (
+                                            todo.slice(0, 3).map((d, i) => (
+                                                <TodoListItem key={i}>
+                                                    <Typography type="label" size="xl" bold>
+                                                        {i + 1}. {d.title}
+                                                    </Typography>
+                                                </TodoListItem>
+                                            ))
+                                        )}
+                                    </DashCardContents>
+                                    <DashCardBottom>
                                         <Link to={`/class/${num}/calendar`}>
                                             <Button fullWidth variant="filled" colors="green">
                                                 나의 일정 보러가기
                                             </Button>
                                         </Link>
-                                    </div>
-                                </div>
+                                    </DashCardBottom>
+                                </DashCard>
                             </GridResponsive>
                             <GridResponsive item xs={12}>
-                                <div className="card optimer">
-                                    <h3>나의 학습 시간</h3>
-                                    {!sessions ? null : (
-                                        <ReactApexChart
-                                            style={{ overflow: 'hidden' }}
-                                            options={optimer.options}
-                                            series={optimer.series}
-                                            type="bar"
-                                            height={300}
-                                        />
-                                    )}
-                                </div>
+                                <DashCard color="gray">
+                                    <DashCardTitle>
+                                        <Typography type="label" size="xxl" bold>
+                                            나의 주간 학습 시간
+                                        </Typography>
+                                    </DashCardTitle>
+                                    <DashCardContents color="gray">
+                                        {!sessions ? null : (
+                                            <ReactApexChart
+                                                style={{ overflow: 'hidden' }}
+                                                options={optimer.options}
+                                                series={optimer.series}
+                                                type="bar"
+                                                height={300}
+                                            />
+                                        )}
+                                    </DashCardContents>
+                                    <DashCardBottom></DashCardBottom>
+                                </DashCard>
                             </GridResponsive>
                         </GridResponsive>
                     </Box>
