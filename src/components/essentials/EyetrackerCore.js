@@ -1,7 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import * as $ from 'jquery';
-import { Button, Dialog } from '@material-ui/core';
-import { useRef } from 'react';
 import BackdropComponent2 from './BackdropComponent2';
 import styled from 'styled-components';
 import { buildMode } from '../../configs/configs';
@@ -16,71 +15,6 @@ import StepCalibrationInfo from '../EyetrackerStep/StepCalibrationInfo';
 import StepCalibration from '../EyetrackerStep/StepCalibration';
 import StepTestStart from '../EyetrackerStep/StepTestStart';
 
-const Assistance = styled.div``;
-const CalibDot = styled.div`
-    background-color: #ffff00;
-    border: 2px solid black;
-    border-radius: 50%;
-    box-sizing: border-box;
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-
-    &.top-left {
-        top: 12px;
-        left: 12px;
-    }
-
-    &.top-center {
-        top: 12px;
-        left: calc(50% - 10px);
-    }
-
-    &.top-right {
-        top: 12px;
-        right: 12px;
-    }
-
-    &.middle-left {
-        top: calc(50% - 10px);
-        left: 12px;
-    }
-
-    &.middle-center {
-        top: calc(50% - 10px);
-        left: calc(50% - 10px);
-    }
-
-    &.middle-right {
-        top: calc(50% - 10px);
-        right: 12px;
-    }
-
-    &.bottom-left {
-        bottom: 12px;
-        left: 12px;
-    }
-
-    &.bottom-center {
-        bottom: 12px;
-        left: calc(50% - 10px);
-    }
-
-    &.bottom-right {
-        bottom: 12px;
-        right: 12px;
-    }
-
-    &:hover {
-        background-color: #dada00;
-    }
-
-    &.ok {
-        background-color: #00ac75;
-        pointer-events: none;
-    }
-`;
 const SlideUl = styled.ul`
     margin-left: ${(props) => props.translateNum + '%'};
     width: calc(100% * 3);
@@ -255,9 +189,9 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     const [start, setStart] = useState(false);
     const [webgazerLoded, setWebgazerLoaded] = useState(false);
     const [calib, setCalib] = useState(false);
-    const [calibBtnText, setCalibBtnText] = useState(
-        localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true' ? '이전 보정 사용' : '보정 완료',
-    );
+    // const [calibBtnText, setCalibBtnText] = useState(
+    //     localStorage.getItem('eye_calibrated') && localStorage.getItem('eye_calibrated') === 'true' ? '이전 보정 사용' : '보정 완료',
+    // );
     const [calibDotCounts, setCalibDotCounts] = useState({
         top_left: 0,
         top_center: 0,
@@ -269,8 +203,6 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         bottom_center: 0,
         bottom_right: 0,
     });
-
-    const backCanvas = useRef();
 
     const executeCalibration = () => {
         setCalib(true);
@@ -330,15 +262,15 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
     let lastX = null;
     let lastY = null;
     let lastElapsedTime = null;
-    let lastFixation = {};
-    let lastSentIdx = -1;
-    let accumMovedDist = 0;
-    let accumMovedDistLastX = null;
-    let accumMovedDistLastY = null;
-    let distPointLastX = null;
-    let distPointLastY = null;
+    // let lastFixation = {};
+    // let lastSentIdx = -1;
+    // let accumMovedDist = 0;
+    // let accumMovedDistLastX = null;
+    // let accumMovedDistLastY = null;
+    // let distPointLastX = null;
+    // let distPointLastY = null;
     let afterCalibAndStarted = false;
-    let startedTime = null;
+    // let startedTime = null;
 
     const updateTicker = (data, elapsedTime) => {
         //console.log(data, elapsedTime);

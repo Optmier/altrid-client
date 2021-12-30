@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Link as AnimScrollTo } from 'react-scroll';
 import LogoColor from '../../images/logos/nav_logo_color_vertical.png';
 import AccountPopOver from './AccountPopOver';
 import { useDispatch, useSelector } from 'react-redux';

@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
-import isMobile from '../../controllers/isMobile';
 
 const StyleDiv = styled.div`
     display: flex;

@@ -1,6 +1,8 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from 'react';
 import '../../styles/class_card.scss';
-import classNames from 'classnames';
 import styled from 'styled-components';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment-timezone';

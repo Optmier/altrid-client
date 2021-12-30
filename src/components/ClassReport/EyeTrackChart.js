@@ -1,98 +1,89 @@
+/* eslint-disable no-control-regex */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import EyeTrackPattern from './EyeTrackPattern';
-import EyetrackingPlayer from '../TOFELRenderer/EyetrackingPlayer';
-import { AccordionDetails, AccordionSummary, Tooltip, Typography } from '@material-ui/core';
-import TooltipCard from '../essentials/TooltipCard';
 import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
-import RestrictWrapper from '../essentials/RestrictWrapper';
-import { useSelector } from 'react-redux';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MuiAccordion from '@material-ui/core/Accordion';
-
-import { data } from 'jquery';
 import Chart from 'react-apexcharts';
 
-const StyleChartWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
+// const StyleChartWrapper = styled.div`
+//     width: 100%;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+// `;
 
-const Dataset = styled.div`
-    text-align: center;
-    margin-right: 15px;
+// const Dataset = styled.div`
+//     text-align: center;
+//     margin-right: 15px;
 
-    & span {
-        margin-right: 20px;
-    }
-    & .row-desc {
-        color: #3b1689;
-        font-weight: bold;
-    }
-`;
-const AIcomment = styled.div`
-    margin-top: 100px;
-`;
+//     & span {
+//         margin-right: 20px;
+//     }
+//     & .row-desc {
+//         color: #3b1689;
+//         font-weight: bold;
+//     }
+// `;
+// const AIcomment = styled.div`
+//     margin-top: 100px;
+// `;
 
-const Sentece = styled.div``;
+// const Sentece = styled.div``;
 
-const Playerset = styled.div`
-    /* width: 950px; */
-    box-sizing: border-box;
-    width: 100%;
-    /* padding: 0px 100px 0px 0px; */
-`;
+// const Playerset = styled.div`
+//     /* width: 950px; */
+//     box-sizing: border-box;
+//     width: 100%;
+//     /* padding: 0px 100px 0px 0px; */
+// `;
 
-const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
-    border: `none`,
-}));
+// const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
+//     border: `none`,
+// }));
 
-const StyleEyeTrackBox = styled.div`
-    display: flex;
-    flex-direction: column;
+// const StyleEyeTrackBox = styled.div`
+//     display: flex;
+//     flex-direction: column;
 
-    & .eyetrack-box {
-        margin-bottom: 18px;
-        font-weight: bold;
+//     & .eyetrack-box {
+//         margin-bottom: 18px;
+//         font-weight: bold;
 
-        & .eyetrack-left {
-            width: 100%;
-            height: 490px;
-            box-sizing: border-box;
-            background-color: white;
-            border-radius: 11px;
-            padding: 0 130px;
-            display: flex;
-            align-items: center;
+//         & .eyetrack-left {
+//             width: 100%;
+//             height: 490px;
+//             box-sizing: border-box;
+//             background-color: white;
+//             border-radius: 11px;
+//             padding: 0 130px;
+//             display: flex;
+//             align-items: center;
 
-            & .no-eyetrack {
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1rem;
-                font-weight: 500;
-                color: rgb(96, 95, 96);
-                & svg {
-                    margin-right: 10px;
-                }
-            }
-        }
-        & .eyetrack-right {
-            width: 26%;
-            box-sizing: border-box;
-            background-color: white;
-            border-radius: 11px;
-            padding: 30px 32px;
-            overflow-y: auto;
-            height: 470px;
-        }
-    }
-`;
+//             & .no-eyetrack {
+//                 width: 100%;
+//                 height: 100%;
+//                 display: flex;
+//                 align-items: center;
+//                 justify-content: center;
+//                 font-size: 1rem;
+//                 font-weight: 500;
+//                 color: rgb(96, 95, 96);
+//                 & svg {
+//                     margin-right: 10px;
+//                 }
+//             }
+//         }
+//         & .eyetrack-right {
+//             width: 26%;
+//             box-sizing: border-box;
+//             background-color: white;
+//             border-radius: 11px;
+//             padding: 30px 32px;
+//             overflow-y: auto;
+//             height: 470px;
+//         }
+//     }
+// `;
 
 function EyeTrackChart({
     hasEyetrack,
@@ -108,30 +99,30 @@ function EyeTrackChart({
     aftChangedFaileds,
     setACMS,
 }) {
-    const [trackTimeGoTo, setTrackTimeGoTo] = useState(0);
-    const [fixations, setFixations] = useState('-');
-    const [avgFixVels, setAvgFixVels] = useState('-');
-    const [regressions, setRegressions] = useState('-');
-    const [fixationsTotalAvg, setFixationsTotalAvg] = useState('-');
-    const [avgFixDurTotalAvg, setAvgFixDurTotalAvg] = useState('-');
-    const [regressionsTotalAvg, setRegressionsTotalAvg] = useState('-');
+    // const [trackTimeGoTo, setTrackTimeGoTo] = useState(0);
+    // const [fixations, setFixations] = useState('-');
+    // const [avgFixVels, setAvgFixVels] = useState('-');
+    // const [regressions, setRegressions] = useState('-');
+    // const [fixationsTotalAvg, setFixationsTotalAvg] = useState('-');
+    // const [avgFixDurTotalAvg, setAvgFixDurTotalAvg] = useState('-');
+    // const [regressionsTotalAvg, setRegressionsTotalAvg] = useState('-');
     const [mEyetrackData, setEyetrackData] = useState(eyetrackData);
 
-    const { eyetrack } = useSelector((state) => state.planInfo.restricted);
-    const { userType } = useSelector((state) => state.RdxSessions);
+    // const { eyetrack } = useSelector((state) => state.planInfo.restricted);
+    // const { userType } = useSelector((state) => state.RdxSessions);
 
     window.mEyetrackData = mEyetrackData;
     // window.setTrackTimeGoTo = setTrackTimeGoTo;
-    const handleGoTo = (time) => {
-        // console.log(time);
-        setTrackTimeGoTo(() => 0);
-        for (let i = 0; i < mEyetrackData.sequences.length; i++) {
-            if (mEyetrackData.sequences[i].elapsedTime === time) {
-                setTrackTimeGoTo(() => i);
-                break;
-            }
-        }
-    };
+    // const handleGoTo = (time) => {
+    //     // console.log(time);
+    //     setTrackTimeGoTo(() => 0);
+    //     for (let i = 0; i < mEyetrackData.sequences.length; i++) {
+    //         if (mEyetrackData.sequences[i].elapsedTime === time) {
+    //             setTrackTimeGoTo(() => i);
+    //             break;
+    //         }
+    //     }
+    // };
 
     const [chart1, setchart1] = useState({
         series: [
@@ -362,12 +353,12 @@ function EyeTrackChart({
         Object.keys(totalEyeStatsSum).forEach((name) => {
             totalEyeStatsAvg[name] = (totalEyeStatsSum[name] / totalStudentsDatas.length) * 1.0;
         });
-        setFixations(currentStudentDatas.num_of_fixs);
-        setAvgFixVels(currentStudentDatas.avg_of_fix_vels);
-        setRegressions(currentStudentDatas.num_of_regs);
-        setFixationsTotalAvg(totalEyeStatsAvg.num_of_fixs.toFixed(0));
-        setAvgFixDurTotalAvg(totalEyeStatsAvg.avg_of_fix_vels.toFixed(0));
-        setRegressionsTotalAvg(totalEyeStatsAvg.num_of_regs.toFixed(0));
+        // setFixations(currentStudentDatas.num_of_fixs);
+        // setAvgFixVels(currentStudentDatas.avg_of_fix_vels);
+        // setRegressions(currentStudentDatas.num_of_regs);
+        // setFixationsTotalAvg(totalEyeStatsAvg.num_of_fixs.toFixed(0));
+        // setAvgFixDurTotalAvg(totalEyeStatsAvg.avg_of_fix_vels.toFixed(0));
+        // setRegressionsTotalAvg(totalEyeStatsAvg.num_of_regs.toFixed(0));
         setACMS.totalFixsMine(currentStudentDatas.num_of_fixs);
         setACMS.totalFixsAvg(totalEyeStatsAvg.num_of_fixs.toFixed(0));
         setACMS.avgSpeedFixsMine(currentStudentDatas.avg_of_fix_vels);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import CheckButton from '../../images/eyetracker_logo/calibration_check.png';
 
@@ -129,17 +129,8 @@ const CalibImg = styled.img`
     }
 `;
 function StepCalibration({ onCalibDotClick, onCalibDotHover, onCalibDotLeave, calibDotCounts, relative }) {
-    const {
-        top_left,
-        top_center,
-        top_right,
-        middle_left,
-        middle_center,
-        middle_right,
-        bottom_left,
-        bottom_center,
-        bottom_right,
-    } = calibDotCounts;
+    const { top_left, top_center, top_right, middle_left, middle_center, middle_right, bottom_left, bottom_center, bottom_right } =
+        calibDotCounts;
     // const [countState, setCountState] = useState(20);
 
     // useEffect(() => {

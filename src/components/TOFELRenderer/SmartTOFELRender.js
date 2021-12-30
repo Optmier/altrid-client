@@ -1,13 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react';
-import HtmlParser from 'react-html-parser';
 import styled from 'styled-components';
 import TimerIcon from '@material-ui/icons/Timer';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { Button, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import ProblemComponent from './ProblemComponent';
 import * as $ from 'jquery';
-import { FaBeer } from 'react-icons/fa';
 import { AiOutlineClose } from 'react-icons/ai';
 
 const pad = (n, width) => {

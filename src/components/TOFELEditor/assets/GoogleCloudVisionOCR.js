@@ -1,13 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
     AppBar,
-    Button as MuiButton,
     CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
     Grow,
-    IconButton,
     makeStyles,
     Toolbar,
     Typography,
@@ -17,7 +16,6 @@ import Cropper from 'cropperjs';
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import CloseIcon from '@material-ui/icons/Close';
 import Button from '../../../AltridUI/Button/Button';
 import OCRSwapIcon from '../../../AltridUI/Icons/OCRSwapIcon';
 import OCRExtractIcon from '../../../AltridUI/Icons/OCRExtractIcon';
@@ -343,7 +341,7 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
         textsQuillRef.current.getEditor().setText('');
         problemsQuillRef.current.getEditor().setText('');
 
-        for (let { locale, description, boundingPoly } of mTextAnnotations) {
+        for (let { description, boundingPoly } of mTextAnnotations) {
             const opt = info.description[description.length];
             info.description = info.description.substr(description.length + 1, info.description.length);
 
@@ -521,9 +519,9 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
     /**
      * 이미지 작업 창 열기 또는 닫기 토글
      */
-    const toggleTaskDialog = () => {
-        setTaskDialogOpenState(!taskDialogOpenState);
-    };
+    // const toggleTaskDialog = () => {
+    //     setTaskDialogOpenState(!taskDialogOpenState);
+    // };
 
     /**
      * 가로 분할 바 드래그 시작 시 이벤트
@@ -624,9 +622,9 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
     };
 
     // 이미지 자르기 대화창 토글
-    const toggleCropDialog = () => {
-        setCropImageDialogOpenState(!cropImageDialogOpenState);
-    };
+    // const toggleCropDialog = () => {
+    //     setCropImageDialogOpenState(!cropImageDialogOpenState);
+    // };
 
     // 이미지 자르기 대화창 적용 버튼
     const applyCropDialog = () => {
@@ -734,7 +732,7 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
         <Dialog open={tipDialogOpenState} maxWidth={false} onClose={closeTipDialog}>
             <DialogTitle onClose={closeTipDialog}>문제 만들기 팁</DialogTitle>
             <DialogContent dividers>
-                <img src={tip0Img} width="768px" />
+                <img src={tip0Img} width="768px" alt="tip_image" />
                 <Typography>위의 형식에 따라 문제 및 선택지가 자동으로 생성됩니다.</Typography>
                 <Typography>
                     현재 객관식 문제만 생성이 가능하며, 생성 이후에는 문제 유형, 정답 및 해설에 대해 추가 수정이 필요합니다.
@@ -840,7 +838,7 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
                                 )}
                             </Split>
                         </div>
-                        <img src={imageFileData} alt="image file data" ref={previewRef} />
+                        <img src={imageFileData} alt="image_file_data" ref={previewRef} />
                     </div>
                     <div className="editor-container">
                         <div className="editor texts">
@@ -915,58 +913,58 @@ GoogleCloudVisionOCR.defaultProps = {
 };
 
 const ocrEditorToolbarEmpty = [];
-const ocrEditorToolbar = [
-    [{ size: ['small', false, 'large', 'huge'] }],
-    // [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-    [
-        {
-            color: [
-                '#000000',
-                '#e60000',
-                '#ff9900',
-                '#ffff00',
-                '#008a00',
-                '#0066cc',
-                '#9933ff',
-                '#ffffff',
-                '#facccc',
-                '#ffebcc',
-                '#ffffcc',
-                '#cce8cc',
-                '#cce0f5',
-                '#edb6ff',
-                '#bbbbbb',
-                '#f06666',
-                '#ffc266',
-                '#ffff66',
-                '#66b966',
-                '#66a3e0',
-                '#c285ff',
-                '#707070',
-                '#a10000',
-                '#b26b00',
-                '#b2b200',
-                '#006100',
-                '#0047b2',
-                '#6b24b6',
-                '#444444',
-                '#5c0000',
-                '#663d00',
-                '#666600',
-                '#003700',
-                '#002966',
-                '#3d1466',
-            ],
-        },
-        { background: [] },
-    ], // dropdown with defaults from theme
-    [{ align: [] }],
-    ['blockquote'],
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-    ['clean'], // remove formatting button
-];
+// const ocrEditorToolbar = [
+//     [{ size: ['small', false, 'large', 'huge'] }],
+//     // [{ header: [1, 2, 3, 4, 5, 6, false] }],
+//     ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+//     [
+//         {
+//             color: [
+//                 '#000000',
+//                 '#e60000',
+//                 '#ff9900',
+//                 '#ffff00',
+//                 '#008a00',
+//                 '#0066cc',
+//                 '#9933ff',
+//                 '#ffffff',
+//                 '#facccc',
+//                 '#ffebcc',
+//                 '#ffffcc',
+//                 '#cce8cc',
+//                 '#cce0f5',
+//                 '#edb6ff',
+//                 '#bbbbbb',
+//                 '#f06666',
+//                 '#ffc266',
+//                 '#ffff66',
+//                 '#66b966',
+//                 '#66a3e0',
+//                 '#c285ff',
+//                 '#707070',
+//                 '#a10000',
+//                 '#b26b00',
+//                 '#b2b200',
+//                 '#006100',
+//                 '#0047b2',
+//                 '#6b24b6',
+//                 '#444444',
+//                 '#5c0000',
+//                 '#663d00',
+//                 '#666600',
+//                 '#003700',
+//                 '#002966',
+//                 '#3d1466',
+//             ],
+//         },
+//         { background: [] },
+//     ], // dropdown with defaults from theme
+//     [{ align: [] }],
+//     ['blockquote'],
+//     [{ list: 'ordered' }, { list: 'bullet' }],
+//     [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+//     ['clean'], // remove formatting button
+// ];
 
 export default React.memo(GoogleCloudVisionOCR);
 

@@ -1,9 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 import Button from '../../AltridUI/Button/Button';
-import ClassWrapper from '../essentials/ClassWrapper';
 import CamstudyListItem from './components/CamstudyListItem';
 import CreateAndEditCamstudy from './components/CreateAndEditCamstudy';
 import Axios from 'axios';
@@ -32,48 +32,6 @@ const Contents = styled.div`
     width: 100%;
 `;
 
-const StyledButton = styled.button`
-    &.video-lecture {
-        background-color: #707070;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: inherit;
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: white;
-        padding: 12px 0;
-        border-radius: 11px;
-        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
-        width: 96px;
-
-        &.main {
-            background-color: #3f1990;
-            width: 96px;
-        }
-        &.sub {
-            background-color: #6d2bf5;
-            width: 190px;
-        }
-
-        & svg.MuiSvgIcon-root {
-            margin-right: 12px;
-            font-size: 1rem;
-        }
-
-        @media (min-width: 0) and (max-width: 767px) {
-            &,
-            &.main,
-            &.sub {
-                width: 100%;
-            }
-        }
-    }
-`;
-
-const camstudyCandidatedDummy = [];
-const camstudyListsDummy = [];
-
 function CamStudyMainLists({ history, match }) {
     const headerMenus = [
         {
@@ -97,7 +55,6 @@ function CamStudyMainLists({ history, match }) {
     dataListInvitedRef.current = dataListInvited;
     const dataListTotalRef = useRef();
     dataListTotalRef.current = dataListTotal;
-    const [totalDataListPage, setTotalDataListPage] = useState(0);
     const [rulesDialogOpen, setRulesDialogOpen] = useState(false);
     const [entranceData, setEntranceData] = useState({
         roomId: null,

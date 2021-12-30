@@ -1,5 +1,4 @@
 import React from 'react';
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import RestrictRoute from '../essentials/RestrictRoute';
 import ReportClass from './ReportClass';

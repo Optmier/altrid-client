@@ -1,3 +1,5 @@
+/* eslint-disable no-control-regex */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import CloseIcon from '@material-ui/icons/Close';
@@ -288,7 +290,6 @@ SelectionBox.defaultProps = {
 
 function CreateNewProblem({ subject, problemDatas, handleClose, onCreate, editmode }) {
     const rootRef = useRef();
-    const [createButtonEnabled, setCreateButtonEnabled] = useState(false);
     const [metadata, setMetadata] = useState(problemDatas);
     const [problemCategory, setProblemCategory] = useState(problemDatas.category);
     const [problemType, setProblemType] = useState(problemDatas.type);
@@ -673,13 +674,7 @@ function CreateNewProblem({ subject, problemDatas, handleClose, onCreate, editmo
                         </Collapse>
                     </GroupBoxContents>
                     <CreateButtonContainer>
-                        <CreateButton
-                            className="primary"
-                            size="large"
-                            variant="contained"
-                            disabled={createButtonEnabled}
-                            onClick={handleOnCreate}
-                        >
+                        <CreateButton className="primary" size="large" variant="contained" onClick={handleOnCreate}>
                             {editmode ? '수정하기' : '추가하기'}
                         </CreateButton>
                     </CreateButtonContainer>

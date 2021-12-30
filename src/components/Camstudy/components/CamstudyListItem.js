@@ -96,7 +96,7 @@ const Description = styled.div`
     width: 100%;
     white-space: nowrap;
 `;
-const CreatorName = styled.div``;
+// const CreatorName = styled.div``;
 const ItemActionsContainer = styled.div`
     align-items: center;
     display: flex;

@@ -1,25 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import '../../styles/class_card.scss';
-import IsPresence from '../essentials/IsPresence';
-import { IoIosArrowForward } from 'react-icons/io';
 import ModifyButton from '../essentials/ModifyButton';
 import StudentNum from '../essentials/StudentNum';
 import classNames from 'classnames';
 import ToggleSwitch from '../essentials/ToggleSwitch';
 import ClassDialog from '../essentials/ClassDialog';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
-import { SecondsToHoursAndMinutes, SecondtoMinute } from '../essentials/TimeChange';
+import { SecondsToHoursAndMinutes } from '../essentials/TimeChange';
 import { useSelector, useDispatch } from 'react-redux';
 import { patchActived, changeDueDate, deleteActived } from '../../redux_modules/assignmentActived';
 import { getServerDate } from '../../redux_modules/serverdate';
 import CardProblemPreview from '../TOFELRenderer/CardProblemPreview';
 import * as $ from 'jquery';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
-import { Tooltip } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
-import Error from '../../pages/Error';
+import Error from '../../pages/Errors/Error';
 import TooltipCard from '../essentials/TooltipCard';
 import CardPopOverShare from '../essentials/CardPopOverShare';
 import StudentState from './StudentState';
@@ -89,34 +86,34 @@ const DateItems = ({ title, start, end, userType, handleDateChange }) => {
         </div>
     );
 };
-const TriesItems = ({ title, tries }) => {
-    return (
-        <div className="card-item">
-            <div className="card-content-title-p">{title}</div>
-            <div className="card-content-p">{tries}</div>
-        </div>
-    );
-};
+// const TriesItems = ({ title, tries }) => {
+//     return (
+//         <div className="card-item">
+//             <div className="card-content-title-p">{title}</div>
+//             <div className="card-content-p">{tries}</div>
+//         </div>
+//     );
+// };
 
-const HtmlTooltip2 = withStyles((theme) => ({
-    tooltip: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'rgb(253, 236, 234)',
-        filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
-        color: '#f44336',
-        padding: '6px 16px',
-        borderRadius: '4px',
+// const HtmlTooltip2 = withStyles((theme) => ({
+//     tooltip: {
+//         display: 'flex',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         backgroundColor: 'rgb(253, 236, 234)',
+//         filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))',
+//         color: '#f44336',
+//         padding: '6px 16px',
+//         borderRadius: '4px',
 
-        '& p': {
-            margin: '0 0 0 1rem',
-            color: 'rgb(97, 26, 21)',
-            fontSize: '0.875rem',
-            fontWeight: '400',
-        },
-    },
-}))(Tooltip);
+//         '& p': {
+//             margin: '0 0 0 1rem',
+//             color: 'rgb(97, 26, 21)',
+//             fontSize: '0.875rem',
+//             fontWeight: '400',
+//         },
+//     },
+// }))(Tooltip);
 
 const CardRoot = styled.div`
     background-color: #ffffff;
@@ -310,16 +307,13 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                 );
             }
         } else {
-            let screenWidth = window.screen.availWidth;
-            let screenHeight = window.screen.availHeight;
-
-            // 스크린 크기는 일단 고정해 놓음!
-            screenWidth = 1280;
-            screenHeight = 751;
-
+            // let screenWidth = window.screen.availWidth;
+            // let screenHeight = window.screen.availHeight;
+            // // 스크린 크기는 일단 고정해 놓음!
+            // screenWidth = 1280;
+            // screenHeight = 751;
             // let centerX = window.screen.width / 2 - screenWidth / 2;
             // let centerY = window.screen.height / 2 - (screenHeight * 2) / 3;
-
             /* const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
         const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
         const width = window.innerWidth
@@ -335,16 +329,14 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         const systemZoom = width / window.screen.availWidth;
         const centerX = (width - screenWidth) / 2 / systemZoom + dualScreenLeft;
         const centerY = (height - screenHeight) / 2 / systemZoom + dualScreenTop; */
-
-            let centerX = (window.screen.width - screenWidth) / 2;
-            let centerY = (window.screen.height - screenHeight) / 4;
-
-            const open = window.open(
-                `/assignments/do-it-now/${classNumber}/${idx}`,
-                'Assignments',
-                `height=${screenHeight}, width=${screenWidth}, left=${centerX}, top=${centerY}, toolbar=no, scrollbars=no, resizable=no, status=no`,
-                true,
-            );
+            // let centerX = (window.screen.width - screenWidth) / 2;
+            // let centerY = (window.screen.height - screenHeight) / 4;
+            // const open = window.open(
+            //     `/assignments/do-it-now/${classNumber}/${idx}`,
+            //     'Assignments',
+            //     `height=${screenHeight}, width=${screenWidth}, left=${centerX}, top=${centerY}, toolbar=no, scrollbars=no, resizable=no, status=no`,
+            //     true,
+            // );
             // open.addEventListener('load', windowOpened);
         }
     };

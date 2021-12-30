@@ -1,5 +1,4 @@
 import {
-    Fab,
     fade,
     makeStyles,
     Table,
@@ -126,23 +125,23 @@ const EdTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
-const EdFabPrimary = withStyles((theme) => ({
-    root: {
-        backgroundColor: '#13e2a1',
-        margin: '6px 16px',
-        position: 'absolute',
-        zIndex: 99,
+// const EdFabPrimary = withStyles((theme) => ({
+//     root: {
+//         backgroundColor: '#13e2a1',
+//         margin: '6px 16px',
+//         position: 'absolute',
+//         zIndex: 99,
 
-        '&:hover': {
-            backgroundColor: '#12d396',
-        },
-    },
-    extended: {
-        '&.MuiFab-extended.MuiFab-sizeSmall': {
-            paddingRight: 14,
-        },
-    },
-}))(Fab);
+//         '&:hover': {
+//             backgroundColor: '#12d396',
+//         },
+//     },
+//     extended: {
+//         '&.MuiFab-extended.MuiFab-sizeSmall': {
+//             paddingRight: 14,
+//         },
+//     },
+// }))(Fab);
 
 function createData(idx, title, teacher_name, academy_name, has_contents, has_file, created, updated) {
     return { idx, title, teacher_name, academy_name, has_contents, has_file, created, updated };
@@ -236,7 +235,7 @@ function ContentsRequests({ history }) {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [rowSelected, setRowSelected] = useState('');
     const [rowDatas, setRowDatas] = useState([]);
-    const [selectedContentId, setSelectedContentId] = useState(null);
+    // const [selectedContentId, setSelectedContentId] = useState(null);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -255,7 +254,7 @@ function ContentsRequests({ history }) {
 
     const handleRowDoubleClick = (idx) => {
         setRowSelected(idx);
-        setSelectedContentId(idx);
+        // setSelectedContentId(idx);
         // window.open(`/admins/contents-requests/${idx}`);
         history.push(`/admins/contents-requests/${idx}`);
     };

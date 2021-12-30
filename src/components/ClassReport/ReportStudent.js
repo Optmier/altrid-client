@@ -1,3 +1,6 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-control-regex */
 import React, { useEffect, useState, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import ClassWrapper from '../essentials/ClassWrapper';
@@ -5,19 +8,7 @@ import Progress from './Progress';
 import styled from 'styled-components';
 import StudentTypeScore from './StudentTypeScore';
 import EyeTrackBox from './EyeTrackBox';
-import EyeTrackPattern from './EyeTrackPattern';
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    Link,
-    TextField,
-    Tooltip,
-    Typography,
-    withStyles,
-} from '@material-ui/core';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, TextField } from '@material-ui/core';
 import problemCategories from '../TOFELEditor/ProblemCategories';
 import TimeTrackBox from './TimeTrackBox';
 import Axios from 'axios';
@@ -28,7 +19,6 @@ import { Element } from 'react-scroll';
 import { useSelector, useDispatch } from 'react-redux';
 import BackdropComponent from '../essentials/BackdropComponent';
 import TooltipCard from '../essentials/TooltipCard';
-import TypeBanner from '../essentials/TypeBanner';
 import { changeParams } from '../../redux_modules/params';
 import { deleteHandsUpProblems, getHandsUpProblems, getSelectedHandsUpProblems, handsUpProblems } from './QnA/HandsUpInterface';
 import {
@@ -37,7 +27,6 @@ import {
     TeacherFeedbackWriter,
     updateTeacherFeedbackInterface,
 } from './ReportStudent/TeacherFeedback';
-import CommChart from './CommChart';
 import ScoringResults from './ReportStudent/ScoringResults';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import Button from '../../AltridUI/Button/Button';
@@ -55,17 +44,6 @@ const timeValueToTimer = (seconds) => {
     else return `${pad(parseInt(secs / 60), 1)}분 ${pad(Math.floor(secs % 60), 1)}초`;
 };
 
-const Feedback = styled.div`
-    & input {
-        width: 100%;
-        font-size: 20px;
-        height: 100%;
-    }
-`;
-const F_button = styled.div`
-    margin-top: 20px;
-`;
-
 const StyleItems = styled.div`
     display: flex;
     align-items: center;
@@ -82,64 +60,6 @@ const StyleItems = styled.div`
         font-weight: 600;
         width: 105px;
         margin-left: 10px;
-    }
-`;
-
-const StyleArrowButton = styled.div`
-    background: #20e3a1;
-    padding: 0.5rem 1.5rem;
-    border-radius: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    bottom: 4%;
-    left: 59%;
-    z-index: 9999;
-    box-shadow: rgb(128 123 123 / 13%) 2px 7px 16px 0px, rgb(109 107 107 / 5%) 0px 1px 5px 0px;
-
-    & > p {
-        margin: 0 1rem 0 0;
-        font-size: 1rem;
-        color: black;
-        font-weight: 500;
-    }
-
-    & .guide-show-analyze {
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        width: 100%;
-        text-align: center;
-        user-select: none;
-
-        & .expand-icons {
-            display: flex;
-            flex-direction: column;
-            margin-left: 6px;
-
-            & .first {
-                margin-top: -6px;
-                animation: expandIconOpacity 0.5s 0.6s infinite alternate;
-            }
-            & .second {
-                margin-top: -18px;
-                animation: expandIconOpacity 0.5s 0.8s infinite alternate;
-            }
-        }
-    }
-
-    @keyframes expandIconOpacity {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
     }
 `;
 
@@ -228,14 +148,14 @@ const division = (arr, original, n) => {
 
     return results;
 };
-const HTMLTooltip = withStyles((theme) => ({
-    tooltip: {
-        padding: '0.85rem 1rem',
-        fontSize: '0.85rem',
-        fontWeight: '500',
-        borderRadius: '5px',
-    },
-}))(Tooltip);
+// const HTMLTooltip = withStyles((theme) => ({
+//     tooltip: {
+//         padding: '0.85rem 1rem',
+//         fontSize: '0.85rem',
+//         fontWeight: '500',
+//         borderRadius: '5px',
+//     },
+// }))(Tooltip);
 
 function ReportStudent({ history, match }) {
     // console.log(history, match);
@@ -357,7 +277,7 @@ function ReportStudent({ history, match }) {
         setEraseConfirmOpen(false);
     };
     const handleEraseConfirmFieldsChange = ({ target }) => {
-        const { name, value } = target;
+        const { name } = target;
         if (eraseConfirmFieldsError[name]) {
             setEraseConfirmFieldsError({
                 ...eraseConfirmFieldsError,
@@ -593,6 +513,7 @@ function ReportStudent({ history, match }) {
                         _currentGroupedByPid[_currentPattern[s].pid].correct = _currentPattern[s].correct;
                         _currentGroupedByPid[_currentPattern[s].pid].answerChanges += _currentPattern[s].answerChanges;
                         _currentGroupedByPid[_currentPattern[s].pid].data.push(_currentPattern[s]);
+                        return null;
                     });
                     return {
                         student_id: e.student_id,
@@ -620,6 +541,7 @@ function ReportStudent({ history, match }) {
                 const count = currentCategoryScores[c].count;
                 !_currentObjs[c] && (_currentObjs[c] = 0);
                 _currentObjs[c] = (sum / count) * 1.0;
+                return null;
             });
             setCurrentScoresPerType({ ...currentScoresPerType, ..._currentObjs });
 
@@ -631,12 +553,14 @@ function ReportStudent({ history, match }) {
                     const count = categoryScores[c].count;
                     !_totals[c] && (_totals[c] = 0);
                     _totals[c] += (sum / count) * 1.0;
+                    return null;
                 });
             });
             const _averages = {};
             Object.keys(_totals).map((c) => {
                 !_averages[c] && (_averages[c] = 0);
                 _averages[c] = (_totals[c] / totalForWeaks.length) * 1.0;
+                return null;
             });
             setAverageScoresPerType({ ...averageScoresPerType, ..._averages });
         }
@@ -767,7 +691,7 @@ function ReportStudent({ history, match }) {
     const [acmRegressionsAvg, setACMRegressionsAvg] = useState(0);
 
     if (mainLoading) return <BackdropComponent open={true} />;
-    const preventDefault = (event) => event.preventDefault();
+    // const preventDefault = (event) => event.preventDefault();
     return (
         <>
             {/* <StyleArrowButton>

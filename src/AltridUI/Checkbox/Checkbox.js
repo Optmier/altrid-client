@@ -40,25 +40,6 @@ const getColorSeries300 = (colorName) => {
     }
 };
 
-const getColorSeries050 = (colorName) => {
-    switch (colorName) {
-        case 'purple':
-            return '#F4F1FA';
-        case 'blue':
-            return '#EFF3FE';
-        case 'green':
-            return '#F0FFF9';
-        case 'yellow':
-            return '#FFFAF0';
-        case 'orange':
-            return '#FFF3EF';
-        case 'red':
-            return '#FFEFED';
-        default:
-            return '#F6F8F9';
-    }
-};
-
 const CheckboxRoot = styled.div`
     align-items: center;
     color: #11171c;

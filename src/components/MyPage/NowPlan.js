@@ -8,7 +8,6 @@ import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import { withRouter } from 'react-router';
 import '../../styles/mypage.scss';
-import HeaderBar from '../essentials/HeaderBar';
 
 const StylePossible = styled.div`
     display: flex;

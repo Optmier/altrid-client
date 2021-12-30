@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-useless-concat */
 import React, { useEffect, useRef, useState } from 'react';
 import * as $ from 'jquery';
 import * as PIXI from 'pixi.js';
@@ -486,7 +488,7 @@ function EyetrackingPlayer({ data, testContent, goto, stopTrig }) {
             if (
                 Math.abs(seqIdx - lastSeqIdx) > 10 ||
                 sequences[seqIdx].problemStep !== sequences[lastSeqIdx].problemStep ||
-                seqIdx > lastSeqIdx !== forwardDirection ||
+                seqIdx > lastSeqIdx != forwardDirection ||
                 seqIdx < lastSeqIdx === forwardDirection
             ) {
                 while (fixations.length > 0) {

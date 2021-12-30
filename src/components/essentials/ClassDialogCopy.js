@@ -1,9 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles, TextField, withStyles } from '@material-ui/core';
 import { useState } from 'react';
@@ -121,12 +121,12 @@ function ClassDialogCopy({ ver, open, defaultTitle, handleDialogClose }) {
     const [copiedTitle, setCopiedTitle] = useState(defaultTitle + '의 복사본');
 
     const onChange = ({ target }) => {
-        const { value, name } = target;
+        const { value } = target;
         setCopiedTitle(value);
     };
 
     const handleClose = (e) => {
-        if (defaultTitle == copiedTitle) alert('동일한 이름을 가진 과제가 있습니다.\n다른 이름을 입력해 주세요.');
+        if (defaultTitle === copiedTitle) alert('동일한 이름을 가진 과제가 있습니다.\n다른 이름을 입력해 주세요.');
         else {
             handleDialogClose(e, copiedTitle);
         }

@@ -1,43 +1,31 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
-    Paper,
     TableHead as MuiTableHead,
     Table as MuiTable,
     TableBody as MuiTableBody,
     TableCell as MuiTableCell,
     TableContainer as MuiTableContainer,
     TableRow as MuiTableRow,
-    Tab,
     withStyles,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
-
-const StyledTableRow = styled(MuiTableRow)(({ theme }) => ({
-    '&:nth-of-type(even)': {
-        backgroundColor: '#F6F8F9',
-        border: 0,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-        border: 0,
-    },
-}));
 
 function createData(name: string, time: number, achive: number) {
     return { name, time: `${Math.floor(time / 60000)}분 ${Math.floor((time % 60000) / 1000)}초`, achive };
 }
 
-const dummyRow = [
-    createData('jaehyeon', '541', '90.7'),
-    createData('학생2', '342', '86.2'),
-    createData('학생3', '111', '60.1'),
-    createData('학생4', '841', '100'),
-    createData('학생5', '123', '62.4'),
-    createData('학생6', '321', '85.3'),
-];
+// const dummyRow = [
+//     createData('jaehyeon', '541', '90.7'),
+//     createData('학생2', '342', '86.2'),
+//     createData('학생3', '111', '60.1'),
+//     createData('학생4', '841', '100'),
+//     createData('학생5', '123', '62.4'),
+//     createData('학생6', '321', '85.3'),
+// ];
 
 const TableContainer = withStyles((theme) => ({
     root: {

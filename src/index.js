@@ -1,22 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import GuideMobileAppStore from './pages/GuideMobileAppStore';
-import { BrowserRouter, Router } from 'react-router-dom';
+// import GuideMobileAppStore from './pages/ZZZOthers/GuideMobileAppStore';
+import { Router } from 'react-router-dom';
 /** redux setup */
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import rootReducer, { rootSaga } from './redux_modules';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { createLogger } from 'redux-logger';
+// import { createLogger } from 'redux-logger';
 import ReduxThunk from 'redux-thunk';
 import { createBrowserHistory } from 'history';
-import isMobile from './controllers/isMobile';
+// import isMobile from './controllers/isMobile';
 import createSagaMiddleware from 'redux-saga';
 
 const sagaMiddleware = createSagaMiddleware();
 const customHistory = createBrowserHistory();
-const logger = createLogger();
+// const logger = createLogger();
 const reduxStore = createStore(
     rootReducer,
     composeWithDevTools(applyMiddleware(sagaMiddleware, ReduxThunk.withExtraArgument({ history: customHistory }))),

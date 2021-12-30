@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Button from '../../AltridUI/Button/Button';
 import Axios from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -141,9 +142,9 @@ const Indicator = styled.div`
 
 function LearningVocas({ history, match, children }) {
     const classNum = match.params.num;
-    const { vocaDatasOriginal, isPending, error } = useSelector((state) => state.RdxVocaLearnings);
+    const { vocaDatasOriginal, isPending } = useSelector((state) => state.RdxVocaLearnings);
     const optimerModule = useSelector((state) => state.RdxOpTimerHelper.optimer);
-    const sessions = useSelector((state) => state.RdxSessions);
+    // const sessions = useSelector((state) => state.RdxSessions);
     const [learningDatas, setLearningDatas] = useState([]);
     const [currentIdx, setCurrentIdx] = useState(0);
     const [rotation, setRotation] = useState(0);

@@ -1,7 +1,6 @@
+/* eslint-disable no-control-regex */
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
-import { MinutetoSecond } from '../components/essentials/TimeChange';
-import { $_root } from '../configs/front_urls';
 import moment from 'moment';
 
 /* 액션 타입 선언 */

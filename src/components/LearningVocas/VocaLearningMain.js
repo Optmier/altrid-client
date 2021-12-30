@@ -1,21 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+/* eslint-disable eqeqeq */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ClassWrapper from '../essentials/ClassWrapper';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import Button from '../../AltridUI/Button/Button';
-import { FormControl, Grid, Input, InputAdornment, InputLabel, LinearProgress, MenuItem, Select, TextField } from '@material-ui/core';
+import { FormControl } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { makeStyles } from '@material-ui/styles';
-import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 import CompletedListItem from './components/CompletedListItem';
 import SearchIcon from '@material-ui/icons/Search';
 import { useDispatch } from 'react-redux';
 import { fetchVocaDatas } from '../../redux_modules/vocaLearnings';
-import CheckCircle from '@material-ui/icons/CheckCircle';
-import ProgressIndicator from '../../AltridUI/Icons/ProgressIndicator';
 
 /**
  * 구현해야 할 것...
@@ -235,7 +233,6 @@ function VocaLearningMain({ history, match }) {
     const [completedListOrig, setCompletedListOrig] = useState([]);
     const [completedListPage, setCompletedListPage] = useState(0);
     const [completedListLimit, setCompletedListLimit] = useState(20);
-    const [totalCompletedList, setTotalCompletedList] = useState(0);
     const [isCompletedListSearching, setIsCompletedListSearching] = useState(false);
 
     const dispatch = useDispatch();

@@ -1,31 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/nav_left.scss';
 import { NavLink, withRouter } from 'react-router-dom';
-import People from '../../images/people.png';
-import Avatar from '../../images/avatar.png';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
-import TooltipCard from './TooltipCard';
 import { setCurrentVideoLectures, setStudentsNum, updateLiveCounts } from '../../redux_modules/currentClass';
-import Error from '../../pages/Error';
 import styled from 'styled-components';
-import VideocamIcon from '@material-ui/icons/Videocam';
-import Popover from '@material-ui/core/Popover';
-import { LeftPopOverNavigator, LeftPopOverCheck } from './LeftNavLogo';
 import { getClassLists } from '../../redux_modules/classLists';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
 import {
     Accordion as MuiAccordion,
     AccordionDetails as MuiAccordionDetails,
     AccordionSummary as MuiAccordionSummary,
-    Typography,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import ClassWrapper from './ClassWrapper';
 import { Link } from 'react-router-dom';
 import Button from '../../AltridUI/Button/Button';
 import { withStyles } from '@material-ui/core/styles';
@@ -291,10 +278,10 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     const { num, id } = match.params;
     /** redux-module 불러내기 */
     const dispatch = useDispatch();
-    const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
+    // const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
     const sessions = useSelector((state) => state.RdxSessions);
     const serverdate = useSelector((state) => state.RdxServerDate);
-    const classLists = useSelector((state) => state.classLists);
+    // const classLists = useSelector((state) => state.classLists);
 
     const setStudentsNumber = useCallback((studentsNumber) => dispatch(setStudentsNum(studentsNumber)));
     const setVideoLectures = useCallback((videoLecture) => dispatch(setCurrentVideoLectures(videoLecture)));
@@ -303,18 +290,18 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     const [studentData, setStudentData] = useState([]);
     const [teacherData, setTeacherData] = useState({});
     const [hasVideoLecture, setHasVideoLecture] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
+    // const [anchorEl, setAnchorEl] = useState(null);
     const [codestate, setCodeState] = useState('');
     const [assignment, setassignment] = useState('');
-    const open = Boolean(anchorEl);
-    const popoverId = open ? 'simple-popover' : undefined;
+    // const open = Boolean(anchorEl);
+    // const popoverId = open ? 'simple-popover' : undefined;
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    // const handleClick = (event) => {
+    //     setAnchorEl(event.currentTarget);
+    // };
+    // const handleClose = () => {
+    //     setAnchorEl(null);
+    // };
     const fetchClassLists = () => {
         Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
             .then((res) => {

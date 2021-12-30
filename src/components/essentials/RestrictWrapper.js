@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
-import Button from '../../AltridUI/Button/Button';
 import key from '../../images/key.png';
 
 const StyleWrapper = styled.div`

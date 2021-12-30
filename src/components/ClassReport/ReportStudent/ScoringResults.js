@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-useless-computed-key */
 import {
     Accordion as MuiAccordion,
@@ -12,13 +13,9 @@ import {
 import Button from '../../../AltridUI/Button/Button';
 import React, { useEffect, useState } from 'react';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import HandsUpIcon from '@material-ui/icons/PanTool';
-import StarIcon from '@material-ui/icons/Star';
 import HtmlParser from 'react-html-parser';
 import styled from 'styled-components';
 import DrawerTopCloseIcon from '../../../AltridUI/Icons/DrawerTopCloseIcon';
-import DrawerTopHelpIcon from '../../../AltridUI/Icons/DrawerTopHelpIcon';
 import ScoringDetailsChoosenIcon from '../../../AltridUI/Icons/ScoringDetailsChoosenIcon';
 import ScoringDetailsHandsUpIcon from '../../../AltridUI/Icons/ScoringDetailsHandsUpIcon';
 import ScoringDetailsStarringIcon from '../../../AltridUI/Icons/ScoringDetailsStarringIcon';
@@ -211,16 +208,16 @@ const CloseButton = styled.button`
     height: 40px;
     width: 40px;
 `;
-const HelpButton = styled.button`
-    align-items: center;
-    background-color: #f4f1fa;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    margin-left: auto;
-    height: 40px;
-    width: 40px;
-`;
+// const HelpButton = styled.button`
+//     align-items: center;
+//     background-color: #f4f1fa;
+//     border-radius: 12px;
+//     display: flex;
+//     justify-content: center;
+//     margin-left: auto;
+//     height: 40px;
+//     width: 40px;
+// `;
 
 const AltDialog = withStyles((theme) => ({
     root: {

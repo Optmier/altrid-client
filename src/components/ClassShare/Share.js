@@ -1,20 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
 import CardShare from './CardShare';
-import CardLists from '../essentials/CardLists';
-import CardRoot from '../essentials/CardRoot';
-import { Drawer, Grid, withStyles } from '@material-ui/core';
-import ClassDrawer from '../essentials/ClassDrawer';
+import { Grid, withStyles } from '@material-ui/core';
 // import ClassHeaderBox from '../essentials/ClassHeaderBox';
 import { useSelector, useDispatch } from 'react-redux';
 import { getActived } from '../../redux_modules/assignmentActived';
 import { changeParams } from '../../redux_modules/params';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
-import Error from '../../pages/Error';
-import BackdropComponent from '../essentials/BackdropComponent';
+import Error from '../../pages/Errors/Error';
 import styled from 'styled-components';
-import ClassWrapper from '../essentials/ClassWrapper';
-import TypeBanner from '../essentials/TypeBanner';
 import moment from 'moment-timezone';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 
@@ -63,10 +58,10 @@ const GoDraftDiv = styled.div`
         }
     }
 `;
-const ButtonAble = styled.button`
-    color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
-    border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
-`;
+// const ButtonAble = styled.button`
+//     color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
+//     border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
+// `;
 const HeaderContainer = styled.div`
     display: flex;
     width: 100%;
@@ -127,7 +122,7 @@ function Share({ match, history }) {
     /** redux state */
     const sessions = useSelector((state) => state.RdxSessions);
     const { datetime } = useSelector((state) => state.RdxServerDate);
-    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedDatas) || {
+    const { data, error } = useSelector((state) => state.assignmentActived.activedDatas) || {
         loading: false,
         data: null,
         error: null,
@@ -137,11 +132,11 @@ function Share({ match, history }) {
     /** component state */
     const [tries, setTries] = useState(undefined);
     const currentClass = useSelector((state) => state.RdxCurrentClass);
-    const [ableState, setAbleSate] = useState({
-        total: true,
-        ing: false,
-        done: false,
-    });
+    // const [ableState, setAbleSate] = useState({
+    //     total: true,
+    //     ing: false,
+    //     done: false,
+    // });
     const [menuStatus, setMenuStatus] = useState(1);
     const [screenWidth, setScreenWidth] = useState(window.innerWidth);
     const [gridMdBreakpoint, setGridMdBreakpoint] = useState(false);
@@ -150,22 +145,22 @@ function Share({ match, history }) {
         setMenuStatus(menuId);
     };
 
-    const handleShareCardList = useCallback(
-        (e) => {
-            const { name, value } = e.target;
+    // const handleShareCardList = useCallback(
+    //     (e) => {
+    //         const { name, value } = e.target;
 
-            setAbleSate({
-                total: false,
-                ing: false,
-                done: false,
-            });
-            setAbleSate((prevState) => ({
-                ...prevState,
-                [name]: !(value === 'true'),
-            }));
-        },
-        [ableState],
-    );
+    //         setAbleSate({
+    //             total: false,
+    //             ing: false,
+    //             done: false,
+    //         });
+    //         setAbleSate((prevState) => ({
+    //             ...prevState,
+    //             [name]: !(value === 'true'),
+    //         }));
+    //     },
+    //     [ableState],
+    // );
 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName) return;

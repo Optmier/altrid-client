@@ -1,18 +1,17 @@
-import React, { useState, useRef, useCallback } from 'react';
+/* eslint-disable react/jsx-pascal-case */
+import React, { useState, useRef } from 'react';
 import '../../styles/class_drawer.scss';
 import ToggleSwitch from './ToggleSwitch';
 import { useSelector, useDispatch } from 'react-redux';
 import { postDraft, patchDraft } from '../../redux_modules/assignmentDraft';
 import { withRouter } from 'react-router-dom';
-import { Dialog, withStyles } from '@material-ui/core';
+import { Dialog } from '@material-ui/core';
 import TOFELEditor from '../TOFELEditor/TOFELEditor';
 import styled, { css } from 'styled-components';
 import { SecondsToHoursAndMinutes } from './TimeChange';
 import ClassDialog from '../essentials/ClassDialog';
 import { changeDueDate } from '../../redux_modules/assignmentActived';
 // import BackdropComponent from './BackdropComponent';
-import CloseIcon from '@material-ui/icons/Close';
-import RestrictWrapper from './RestrictWrapper';
 import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
 import BulbIcon from '../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
 import RestricRoute_1 from './RestricRoute_1';
@@ -39,216 +38,6 @@ const StyleLabel2 = styled.label`
               `
             : ''}
 `;
-const StyleSelectdiv = styled.div`
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: ${(props) => (props.errorCheck === '생성방법을 선택해주세요!' ? 'red' : 'black')};
-
-    max-width: 300px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 1; /* 라인수 */
-    -webkit-box-orient: vertical;
-    word-wrap: break-word;
-    line-height: 1.5rem;
-`;
-
-const CreateButton = withStyles((theme) => ({
-    root: {
-        borderRadius: '10px',
-        backgroundColor: '#a6a6a6',
-        color: '#fff',
-        fontFamily: 'inherit',
-        fontSize: '0.9rem',
-        width: '150px',
-        height: '56px',
-        '&.primary': {
-            backgroundColor: '#13e2a1',
-        },
-        '& > span': {
-            pointerEvents: 'none',
-        },
-    },
-}))(Button);
-
-// const NewAssignment = styled.div`
-//     padding: 50px 80px;
-
-//     & .class-drawer-block {
-//         & input {
-//             max-width: 674px;
-//             width: 100%;
-//             background-color: #f6f8f9;
-//             padding: 16px;
-//             margin-top: 8px;
-//             border-radius: 16px;
-//             @media (min-width: 0) and (max-width: 480px) {
-//                 max-width: 328px;
-//             }
-//         }
-//         & .drawer-toggle {
-//             background: #f6f8f9;
-//             border-radius: 16px;
-//             height: 56px;
-//             display: flex;
-//             align-items: flex-start;
-//             justify-content: space-between;
-
-//             & > span {
-//                 margin: auto 11px;
-//                 max-width: 50%;
-//                 display: flex;
-//                 align-items: center;
-//                 justify-content: flex-start;
-//                 & > p {
-//                     font-size: 0.9rem;
-//                     color: #969393;
-//                     margin-right: 1rem;
-//                 }
-
-//                 & .time-inputs {
-//                     background: #f6f8f9;
-//                     font-size: 1rem;
-//                     color: #969393;
-//                     display: flex;
-//                     align-items: center;
-//                     justify-content: flex-start;
-//                     margin-right: 1rem;
-//                     & > input {
-//                         font-size: 0.9rem;
-//                         color: black;
-//                         width: 25px;
-//                         height: 25px;
-//                         text-align: center;
-//                     }
-//                     & > input::placeholder {
-//                         font-size: 0.9rem;
-//                         color: #969393;
-//                     }
-//                 }
-//             }
-//         }
-//         .drawer-selects {
-//             display: flex;
-//             & input[type='file'] {
-//                 /* 파일 필드 숨기기 */
-//                 position: absolute;
-//                 width: 1px;
-//                 height: 1px;
-//                 padding: 0;
-//                 margin: -1px;
-//                 overflow: hidden;
-//                 clip: rect(0, 0, 0, 0);
-//                 border: 0;
-//             }
-//             & #file-click {
-//                 pointer-events: none;
-//             }
-
-//             & .prepare {
-//                 margin-right: 1rem;
-
-//                 display: flex;
-//                 flex-direction: column;
-//                 align-items: center;
-//                 justify-content: center;
-//                 text-align: center;
-//                 background-color: #f6f8f9;
-//                 border-radius: 16px;
-//                 max-width: 333px;
-//                 height: 114px;
-//                 box-sizing: border-box;
-//                 @media (min-width: 0px) and (max-width: 480px) {
-//                     max-width: 160px;
-//                 }
-//                 // padding: 1rem 2rem;
-
-//                 & svg {
-//                     pointer-events: none;
-//                     width: 15px;
-//                     height: 14px;
-//                     margin-bottom: 1rem;
-//                 }
-//                 & h4 {
-//                     pointer-events: none;
-//                     margin: 0 0 0.2rem 0;
-//                     font-size: 0.9rem;
-//                 }
-//                 & p {
-//                     pointer-events: none;
-//                     color: gray;
-//                     margin: 0;
-//                     font-size: 0.75rem;
-//                 }
-//             }
-
-//             & .drawer-select + .drawer-select {
-//                 margin-left: 1rem;
-//             }
-//             & .disabled {
-//                 display: flex;
-//                 flex-direction: column;
-//                 align-items: center;
-//                 justify-content: center;
-//                 text-align: center;
-//                 background-color: #f6f8f9;
-//                 border-radius: 16px;
-//                 max-width: 333px;
-//                 height: 114px;
-//                 box-sizing: border-box;
-//                 padding: 1rem 2rem;
-//                 margin-right: 8px;
-//                 @media (min-width: 0px) and (max-width: 480px) {
-//                     max-width: 160px;
-//                 }
-//             }
-//             & .drawer-select {
-//                 cursor: pointer;
-//                 display: flex;
-//                 flex-direction: column;
-//                 align-items: center;
-//                 justify-content: center;
-//                 text-align: center;
-//                 background-color: #f4f1fa;
-//                 border-radius: 16px;
-//                 width: 333px;
-//                 height: 114px;
-//                 box-sizing: border-box;
-//                 // padding: 1rem 2rem;
-
-//                 & svg {
-//                     pointer-events: none;
-//                     width: 15px;
-//                     height: 14px;
-//                     margin-bottom: 1rem;
-//                 }
-//                 & h4 {
-//                     pointer-events: none;
-//                     margin: 0 0 0.2rem 0;
-//                     font-size: 0.9rem;
-//                 }
-//                 & p {
-//                     pointer-events: none;
-//                     color: #957fce;
-//                     margin: 0;
-//                     font-size: 0.75rem;
-//                 }
-//             }
-
-//             & .drawer-select:hover {
-//                 background-color: #ffffff;
-//                 // box-sizing: border-box;
-//                 border: 2px solid #3b1689;
-//             }
-//         }
-//         & .drawer-select-warn {
-//             font-size: 0.75rem;
-//             font-weight: 400;
-//             padding: 0.5rem 0 0 0.5rem;
-//         }
-//     }
-// `;
 const CategorySelect = styled.select`
     cursor: pointer;
     background: url(/bg_images/Vector.png) no-repeat 92% 50%;
@@ -285,7 +74,7 @@ const CategorySelect = styled.select`
 //ver : draft(생성), modify(수정)
 function ClassDrawer({ handleClose, cardData, ver, match, history }) {
     /** redux-state */
-    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas);
+    const { data } = useSelector((state) => state.assignmentDraft.draftDatas);
     const activedData = useSelector((state) => state.assignmentActived.dueData.data);
     const { fileCreation } = useSelector((state) => state.planInfo.restricted);
 

@@ -1,11 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react';
 import HtmlParser from 'react-html-parser';
 import styled from 'styled-components';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import { OutlinedInput, TextField, withStyles } from '@material-ui/core';
-import StarredImage from '../../images/starred.png';
-import ScoringDetailsStarringIcon from '../../AltridUI/Icons/ScoringDetailsStarringIcon';
+import { OutlinedInput, withStyles } from '@material-ui/core';
 import AssignmentsStarringIcon from '../../AltridUI/Icons/AssignmentsStarringIcon';
 
 const Root = styled.div`
@@ -92,7 +91,7 @@ function ProblemComponent({
     };
 
     const onTextFieldChange = ({ target }) => {
-        const { name, value } = target;
+        const { value } = target;
         onSelect(value.toUpperCase(), answer === value.toUpperCase());
     };
 

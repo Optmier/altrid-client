@@ -3,18 +3,16 @@ import styled from 'styled-components';
 import classNames from 'classnames';
 import DigitZeroPads from '../essentials/DigitsZeroPad';
 import * as $ from 'jquery';
-import { MdKeyboardArrowRight } from 'react-icons/md';
 import RestrictWrapper from '../essentials/RestrictWrapper';
 import { useSelector } from 'react-redux';
 
 const StylePatternBox = styled.div`
-    width: 100%; 
-    height:230px;
-    overflow:scroll;
+    width: 100%;
+    height: 230px;
+    overflow: scroll;
 `;
 
 const StylePatternList = styled.div`
-   
     border-bottom: 1px solid #e5e8eb;
     padding: 20px 0;
     display: flex;

@@ -44,9 +44,9 @@ const EdListItem = withStyles((theme) => ({
     },
 }))(ListItem);
 
-function ListItemLink(props) {
-    return <EdListItem button component="a" {...props} />;
-}
+// function ListItemLink(props) {
+//     return <EdListItem button component="a" {...props} />;
+// }
 
 function AccountPopOver({ targetEl, image, userName, history }) {
     const classes = useStyles();

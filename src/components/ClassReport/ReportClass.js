@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-control-regex */
+import React, { useEffect, useState } from 'react';
 import ClassWrapper from '../essentials/ClassWrapper';
-import IsPresence from '../essentials/IsPresence';
-import ToggleSwitch from '../essentials/ToggleSwitch';
 import ClassDialog from '../essentials/ClassDialog';
 import ModifyButton from '../essentials/ModifyButton';
-import StudentNum from '../essentials/StudentNum';
 import TotalProgress from './TotalProgress';
 import CardStudent from './CardStudent';
 import CardRoot from '../essentials/CardRoot';
@@ -16,34 +15,29 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
-import ProblemCategories from '../TOFELEditor/ProblemCategories';
-import CSATCategories from '../TOFELEditor/CSATCategories';
-import TypeBanner from '../essentials/TypeBanner';
 import { useSelector, useDispatch } from 'react-redux';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
-import { patchActivedOnly, changeDueDate, deleteActived, getActivedOnly, patchActived } from '../../redux_modules/assignmentActived';
+import { patchActivedOnly, changeDueDate, deleteActived, getActivedOnly } from '../../redux_modules/assignmentActived';
 import { getServerDate } from '../../redux_modules/serverdate';
 import BackdropComponent from '../essentials/BackdropComponent';
-import Error from '../../pages/Error';
+import Error from '../../pages/Errors/Error';
 import { changeParams } from '../../redux_modules/params';
 import { NavLink, withRouter } from 'react-router-dom';
 import { SecondsToHoursAndMinutes } from '../essentials/TimeChange';
-import { Link } from '@material-ui/core';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import Button from '../../AltridUI/Button/Button';
-import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
 import CategorySelector from '../../controllers/CategorySelector';
 
-const pad = (n, width) => {
-    n = n + '';
-    return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
-};
+// const pad = (n, width) => {
+//     n = n + '';
+//     return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+// };
 
-const timeValueToTimer = (seconds) => {
-    const secs = seconds < 0 ? 0 : seconds;
-    if (seconds === -2) return '제한 없음';
-    else return `${pad(parseInt(secs / 60), 2)}분 ${pad(Math.floor(secs % 60), 2)}초`;
-};
+// const timeValueToTimer = (seconds) => {
+//     const secs = seconds < 0 ? 0 : seconds;
+//     if (seconds === -2) return '제한 없음';
+//     else return `${pad(parseInt(secs / 60), 2)}분 ${pad(Math.floor(secs % 60), 2)}초`;
+// };
 
 const LimitFuncWrapper = styled.div`
     position: absolute;
@@ -74,7 +68,7 @@ function ReportClass({ match, history }) {
     const dispatch = useDispatch();
     const serverdate = useSelector((state) => state.RdxServerDate);
     const RdxDueDate = useSelector((state) => state.assignmentActived.dueData.data);
-    const { data, loading, error } = useSelector((state) => state.assignmentActived.activedData);
+    const { data, loading } = useSelector((state) => state.assignmentActived.activedData);
 
     /**전체 로딩 */
     const [mainLoading, setMainLoading] = useState({
@@ -189,12 +183,12 @@ function ReportClass({ match, history }) {
             setDeleteDialogopen(false);
         }
     };
-    const handleToggleChange = () => {
-        //setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
+    // const handleToggleChange = () => {
+    //     //setToggleState({ ...toggleState, [event.target.name]: event.target.checked });
 
-        toggleState['checked'] ? setSubTypeState('init') : setSubTypeState('modify');
-        handleDialogOpen('test');
-    };
+    //     toggleState['checked'] ? setSubTypeState('init') : setSubTypeState('modify');
+    //     handleDialogOpen('test');
+    // };
     const handleDateChange = () => {
         handleDialogOpen('date');
     };
@@ -379,6 +373,7 @@ function ReportClass({ match, history }) {
                         !_sumOfScoresPerNumbers[i] && (_sumOfScoresPerNumbers[i] = 0);
                         _sumOfScoresPerNumbers[i] += s.correct ? 1 : 0;
                     });
+                    return 1;
                 }).length;
 
             const averagesOfNumber = Object.keys(_sumOfScoresPerNumbers).map((n) => (_sumOfScoresPerNumbers[n] / len) * 100.0);
@@ -395,6 +390,7 @@ function ReportClass({ match, history }) {
                         const count = categoryScores[c].count;
                         !_totals[c] && (_totals[c] = 0);
                         _totals[c] += (sum / count) * 1.0;
+                        return null;
                     });
                 });
                 // 전체 학생 영역별 합산 점수에서 평균 구하기
@@ -402,6 +398,7 @@ function ReportClass({ match, history }) {
                 Object.keys(_totals).map((c) => {
                     !_averages[c] && (_averages[c] = 0);
                     _averages[c] = (_totals[c] / totalForWeaks.length) * 1.0;
+                    return null;
                 });
                 setAverageScoresOfType({ ...averageScoresOfType, ..._averages });
             }

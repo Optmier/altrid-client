@@ -1,7 +1,5 @@
-import { Checkbox, CircularProgress, TextField, withStyles } from '@material-ui/core';
+import { CircularProgress, TextField, withStyles } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import classNames from 'classnames';
 import React, { useState } from 'react';
 
@@ -36,35 +34,34 @@ const EdTextField = withStyles((theme) => ({
             '& .MuiOutlinedInput-notchedOutline': {
                 border: 'none',
             },
-            '& .MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input.MuiAutocomplete-inputFocused.MuiInputBase-inputAdornedEnd.MuiOutlinedInput-inputAdornedEnd': {
-                color: '#474747',
-                fontFamily: 'inherit',
-                padding: 0,
-                margin: '0 0 0 21px',
-                height: '2rem',
-                '&::placeholder': {
-                    color: '#000000',
+            '& .MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input.MuiAutocomplete-inputFocused.MuiInputBase-inputAdornedEnd.MuiOutlinedInput-inputAdornedEnd':
+                {
+                    color: '#474747',
+                    fontFamily: 'inherit',
+                    padding: 0,
+                    margin: '0 0 0 21px',
+                    height: '2rem',
+                    '&::placeholder': {
+                        color: '#000000',
+                    },
                 },
-            },
         },
         '&.error': {
             '& .MuiInputBase-root': {
                 '&.Mui-focused': {
                     boxShadow: '0 0 0 2px #ff8383',
                 },
-                '& .MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input.MuiAutocomplete-inputFocused.MuiInputBase-inputAdornedEnd.MuiOutlinedInput-inputAdornedEnd': {
-                    color: '#ff4646',
-                    '&::placeholder': {
-                        color: '#ff0000',
+                '& .MuiInputBase-input.MuiOutlinedInput-input.MuiAutocomplete-input.MuiAutocomplete-inputFocused.MuiInputBase-inputAdornedEnd.MuiOutlinedInput-inputAdornedEnd':
+                    {
+                        color: '#ff4646',
+                        '&::placeholder': {
+                            color: '#ff0000',
+                        },
                     },
-                },
             },
         },
     },
 }))(TextField);
-
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 function MultipleAutocomplete({
     id,

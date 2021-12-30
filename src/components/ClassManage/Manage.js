@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import ClassWrapper from '../essentials/ClassWrapper';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, useRef } from 'react';
 import '../../styles/manage_page.scss';
 import classNames from 'classnames';
-import MultipleAutocomplete from '../essentials/MultipleAutocomplete';
 import * as $ from 'jquery';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { withRouter } from 'react-router-dom';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
-import { Button as MuiButton, withStyles } from '@material-ui/core';
 import styled from 'styled-components';
 import PopOverClipboard from '../essentials/PopOverClipboard';
 import StudentManage from '../ClassStudentManage/StudentManage';
@@ -21,9 +19,6 @@ import BulbIcon from '../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
 import InnerPageBottomActions from '../../AltridUI/OtherContainers/InnerPageBottomActions';
 import Typography from '../../AltridUI/Typography/Typography';
 
-const CopyButton = styled.div`
-    pointer-events: ${(props) => (props.state ? 'none' : 'all')};
-`;
 const FormButton = styled.button`
     background-color: ${(props) => (props.able ? '#FFFFFF' : '#F4F1FA')};
     color: ${(props) => (props.able ? '#3B1689' : '#3B1689')};
@@ -37,30 +32,6 @@ const FormButton = styled.button`
         margin-left: 8px;
     }
 `;
-const ButtonAble = styled.button`
-    color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
-    border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
-`;
-
-const WrapperRoot = styled.div``;
-
-const CreateButton = withStyles((theme) => ({
-    root: {
-        borderRadius: '104px',
-        backgroundColor: '#3B1689',
-        color: '#FFFFFF',
-        fontFamily: 'inherit',
-        fontSize: '0.9rem',
-        width: '150px',
-        height: '56px',
-
-        '&.critical': {
-            backgroundColor: '#FFFFFF',
-            color: '#11171C',
-            border: ' 1.5px solid #9AA5AF',
-        },
-    },
-}))(Button);
 
 const ClassCopyRoot = styled.div`
     align-items: center;
@@ -193,11 +164,11 @@ function Manage({ match, history }) {
         토: false,
         일: false,
     });
-    const [ablestate, setAblesate] = useState({
-        leaderboard: true,
-        studentmanage: false,
-        classmanage: false,
-    });
+    // const [ablestate, setAblesate] = useState({
+    //     leaderboard: true,
+    //     studentmanage: false,
+    //     classmanage: false,
+    // });
 
     const handleInputChange = (e, value) => {
         if ($(e.target).hasClass('default')) {
@@ -212,22 +183,22 @@ function Manage({ match, history }) {
             });
         }
     };
-    const handleShareCardList = useCallback(
-        (e) => {
-            const { name, value } = e.target;
+    // const handleShareCardList = useCallback(
+    //     (e) => {
+    //         const { name, value } = e.target;
 
-            setAblesate({
-                leaderboard: false,
-                studentmanage: false,
-                classmanage: false,
-            });
-            setAblesate((prevState) => ({
-                ...prevState,
-                [name]: !(value === 'true'),
-            }));
-        },
-        [ablestate],
-    );
+    //         setAblesate({
+    //             leaderboard: false,
+    //             studentmanage: false,
+    //             classmanage: false,
+    //         });
+    //         setAblesate((prevState) => ({
+    //             ...prevState,
+    //             [name]: !(value === 'true'),
+    //         }));
+    //     },
+    //     [ablestate],
+    // );
 
     const fetchStudents = () => {
         Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
@@ -374,7 +345,7 @@ function Manage({ match, history }) {
     };
     /** 수정, 삭제하기 버튼 */
     const handleButton = (e) => {
-        const $target = $(e.target);
+        // const $target = $(e.target);
         const { name } = e.target;
 
         if (!inputState['entry_new_name'].trim()) {

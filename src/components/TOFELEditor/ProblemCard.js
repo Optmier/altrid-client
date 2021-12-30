@@ -2,11 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import styled from 'styled-components';
 import * as $ from 'jquery';
-import ProblemCategories from './ProblemCategories';
 import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { Checkbox, IconButton, withStyles } from '@material-ui/core';
-import { RadioButtonChecked, RadioButtonCheckedOutlined, RadioButtonUnchecked } from '@material-ui/icons';
 import EditorProblemRadioChecked from './assets/EditorProblemRadioChecked';
 import EditorProblemRadioUnchecked from './assets/EditorProblemRadioUnchecked';
 import EditorProblemCheckboxUnchecked from './assets/EditorProblemCheckboxUnchecked';
@@ -39,33 +36,6 @@ const PCardActions = styled.div`
     display: flex;
     flex-direction: column;
     margin-right: 2px;
-`;
-const HiddenBorder = styled.div`
-    cursor: move;
-    display: flex;
-    justify-content: flex-end;
-    background-color: #777777;
-    border: 2px solid #777777;
-    border-radius: 4px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    border-bottom: none;
-    height: 20px;
-    opacity: 0;
-    padding: 0 4px;
-
-    & button {
-        color: #ffffff;
-        margin-bottom: 2px;
-
-        & + button {
-            margin-left: 8px;
-        }
-    }
-
-    &.hover {
-        opacity: 1;
-    }
 `;
 const ContentsContainer = styled.div`
     display: flex;

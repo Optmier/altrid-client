@@ -1,6 +1,5 @@
-import React from 'react';
 import { FormControl as MuiFormControl } from '@material-ui/core';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 const FormControl = withStyles((theme) => ({
     root: {

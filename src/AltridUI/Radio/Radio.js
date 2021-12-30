@@ -1,7 +1,6 @@
 import classNames from 'classnames';
-import React, { useState, useRef } from 'react';
-import styled from 'styled-components';
-import { Radio as MuiRadio, withStyles, makeStyles } from '@material-ui/core';
+import React from 'react';
+import { Radio as MuiRadio, makeStyles } from '@material-ui/core';
 
 const getColorSeries400 = (colorName) => {
     switch (colorName) {
@@ -38,25 +37,6 @@ const getColorSeries300 = (colorName) => {
             return '#E85C4A';
         default:
             return '#9AA5AF';
-    }
-};
-
-const getColorSeries050 = (colorName) => {
-    switch (colorName) {
-        case 'purple':
-            return '#F4F1FA';
-        case 'blue':
-            return '#EFF3FE';
-        case 'green':
-            return '#F0FFF9';
-        case 'yellow':
-            return '#FFFAF0';
-        case 'orange':
-            return '#FFF3EF';
-        case 'red':
-            return '#FFEFED';
-        default:
-            return '#F6F8F9';
     }
 };
 

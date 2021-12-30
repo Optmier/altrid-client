@@ -4,7 +4,7 @@
 
 import React, { FC } from 'react';
 import { Route } from 'react-router-dom';
-import ErrorRestricted from '../../pages/ErrorRestricted';
+import ErrorRestricted from '../../pages/Errors/ErrorRestricted';
 
 const RestrictRoute = ({ role, allowedTypes, component: Component, ...rest }) => {
     return (

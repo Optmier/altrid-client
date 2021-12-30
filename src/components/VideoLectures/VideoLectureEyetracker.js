@@ -1,8 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { apiUrl } from '../../configs/configs';
-import ChannelService from '../ChannelIO/ChannelService';
 import EyetrackerCore from '../essentials/EyetrackerCore';
 import io from 'socket.io-client';
 import { useBeforeunload } from 'react-beforeunload';
@@ -15,7 +15,7 @@ let sAuthId = null;
 function VideoLectureEyetracker({ match, history }) {
     const sessions = useSelector((state) => state.RdxSessions);
     sAuthId = sessions.authId;
-    const serverdate = useSelector((state) => state.RdxServerDate).datetime;
+    // const serverdate = useSelector((state) => state.RdxServerDate).datetime;
     const classNum = match.params.classnum;
     const urlSearchParams = new URLSearchParams(history.location.search);
     const roomId = urlSearchParams.get('roomId');

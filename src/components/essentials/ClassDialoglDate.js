@@ -1,11 +1,11 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, withStyles } from '@material-ui/core';
 import moment from 'moment';
 import { changeDueDate } from '../../redux_modules/assignmentActived';
 import { useSelector, useDispatch } from 'react-redux';
-import Error from '../../pages/Error';
+import Error from '../../pages/Errors/Error';
 
 const useStyles = makeStyles((theme) => ({
     container: {

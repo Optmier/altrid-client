@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -7,7 +8,6 @@ import { useBeforeunload } from 'react-beforeunload';
 import styled from 'styled-components';
 import io from 'socket.io-client';
 import { Grid } from '@material-ui/core';
-import { setStudentsNum } from '../../redux_modules/currentClass';
 
 let lectureWindowCloseDetector = null;
 let sAuthId = null;
@@ -110,7 +110,7 @@ function StatusCard({ stdName, statusCode }) {
 function VideoLectureEyetrackDetectionList({ match, history }) {
     const sessions = useSelector((state) => state.RdxSessions);
     sAuthId = sessions.authId;
-    const serverdate = useSelector((state) => state.RdxServerDate).datetime;
+    // const serverdate = useSelector((state) => state.RdxServerDate).datetime;
     const classNum = match.params.classnum;
     const urlSearchParams = new URLSearchParams(history.location.search);
     const roomId = urlSearchParams.get('roomId');

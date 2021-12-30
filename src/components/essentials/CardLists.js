@@ -3,7 +3,6 @@ import * as $ from 'jquery';
 import { Grid } from '@material-ui/core';
 import classNames from 'classnames';
 import '../../styles/cards.scss';
-import BackdropComponent2 from './BackdropComponent2';
 
 /** 카드뷰 자동 정렬 */
 // window.$ = $;

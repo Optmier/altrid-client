@@ -1,25 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-control-regex */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EyeTrackPattern from './EyeTrackPattern';
 import EyetrackingPlayer from '../TOFELRenderer/EyetrackingPlayer';
-import { AccordionDetails, AccordionSummary, Tooltip, Typography } from '@material-ui/core';
+import { AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
 import TooltipCard from '../essentials/TooltipCard';
 import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
-import RestrictWrapper from '../essentials/RestrictWrapper';
 import { useSelector } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MuiAccordion from '@material-ui/core/Accordion';
-
-import { data } from 'jquery';
-import Chart from 'react-apexcharts';
-
-const StyleChartWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
 
 const Dataset = styled.div`
     /* margin: 0 auto; */
@@ -40,11 +31,6 @@ const Dataset = styled.div`
         font-weight: bold;
     }
 `;
-const AIcomment = styled.div`
-    margin-top: 100px;
-`;
-
-const Sentece = styled.div``;
 
 const Playerset = styled.div`
     /* width: 950px; */

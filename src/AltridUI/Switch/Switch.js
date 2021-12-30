@@ -1,19 +1,6 @@
 import React from 'react';
 import { Switch as MuiSwitch, withStyles } from '@material-ui/core';
-import { CheckCircle } from '@material-ui/icons';
 import styled from 'styled-components';
-
-// function Switch({ children }) {
-//   return (
-//     <div>
-
-//     </div>
-//   );
-// }
-
-// Switch.defaultProps = {
-
-// };
 
 const ThumbRoot = styled.div`
     background-color: #ffffff;

@@ -1,19 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-useless-computed-key */
 import React, { useState, useEffect } from 'react';
-import ClassWrapper from '../essentials/ClassWrapper';
 import '../../styles/student_manage_page.scss';
 import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import { makeStyles } from '@material-ui/core/styles';
 import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
 import { withRouter } from 'react-router-dom';
-import { IoMdArrowDropdown } from 'react-icons/io';
-import TooltipCard from '../essentials/TooltipCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPlanInfo } from '../../redux_modules/planInfo';
 import {
@@ -21,10 +14,8 @@ import {
     AccordionDetails as MuiAccordionDetails,
     AccordionSummary as MuiAccordionSummary,
     Button as MuiButton,
-    FilledInput,
     FormControlLabel,
     InputAdornment,
-    TextField as MuiTextField,
 } from '@material-ui/core';
 import Button from '../../AltridUI/Button/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -36,15 +27,15 @@ import TextField from '../../AltridUI/TextField/TextField';
 import styled from 'styled-components';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 
-const StyleCheckbox = withStyles({
-    root: {
-        color: '#717171',
-        '&$checked': {
-            color: '#13e2a1',
-        },
-    },
-    checked: {},
-})((props) => <Checkbox color="default" {...props} />);
+// const StyleCheckbox = withStyles({
+//     root: {
+//         color: '#717171',
+//         '&$checked': {
+//             color: '#13e2a1',
+//         },
+//     },
+//     checked: {},
+// })((props) => <Checkbox color="default" {...props} />);
 
 const Accordion = withStyles({
     root: {
@@ -350,26 +341,26 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
             history.push(`/class/${num}/share/${selectState[name]}/details?user=${name}`);
         }
     };
-    const handleDelete = () => {
-        let arr = [];
-        Object.keys(checkstate)
-            .filter((i) => checkstate[i] === true)
-            .map((i) => arr.push(`'${i}'`));
+    // const handleDelete = () => {
+    //     let arr = [];
+    //     Object.keys(checkstate)
+    //         .filter((i) => checkstate[i] === true)
+    //         .map((i) => arr.push(`'${i}'`));
 
-        Axios.delete(`${apiUrl}/students-in-class/students/${num}`, {
-            data: {
-                students: arr.join(','),
-            },
-            withCredentials: true,
-        })
-            .then((res) => {
-                alert('학생 삭제가 완료되었습니다!');
-                history.replace(`/class/${num}/student-manage`);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    };
+    //     Axios.delete(`${apiUrl}/students-in-class/students/${num}`, {
+    //         data: {
+    //             students: arr.join(','),
+    //         },
+    //         withCredentials: true,
+    //     })
+    //         .then((res) => {
+    //             alert('학생 삭제가 완료되었습니다!');
+    //             history.replace(`/class/${num}/student-manage`);
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //         });
+    // };
 
     useEffect(() => {
         Axios.get(`${apiUrl}/assignment-result/report-students/${match.params.num}`, { withCredentials: true })

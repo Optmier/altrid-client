@@ -1,56 +1,52 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect } from 'react';
 import Axios from 'axios';
 import './styles/common.scss';
 import { Element } from 'react-scroll';
-import Class from './pages/Class';
-import Main from './pages/Main/Main';
+import Class from './pages/Classes/Class';
+import Main from './pages/Mains/Main';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import ScrollTop from './components/essentials/ScrollTop';
 import TrashButton from './components/essentials/TrashButton';
-import Login from './pages/Login';
-import Error from './pages/Error';
+import Login from './pages/Logins/Login';
+import Error from './pages/Errors/Error';
 import isMobile from './controllers/isMobile';
-import LoginAdmin from './pages/LoginAdmin';
+import LoginAdmin from './pages/Logins/LoginAdmin';
 import { apiUrl } from './configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveSession, deleteSession, updateSession } from './redux_modules/sessions';
 import { getServerDate } from './redux_modules/serverdate';
 import { getPlanInfo } from './redux_modules/planInfo';
 import { $_loginAdmin, $_loginDefault, $_loginStudent, $_loginTeacher, $_root } from './configs/front_urls';
-import AdminMain from './pages/AdminMain';
-import AssignmentDoItNow from './pages/AssignmentDoItNow';
+import AdminMain from './pages/Admins/AdminMain';
+import AssignmentDoItNow from './pages/Assignments/AssignmentDoItNow';
 import RestrictRoute from './components/essentials/RestrictRoute';
 import RefreshToken from './components/essentials/Authentication';
 import channelIOAccessKey from './components/ChannelIO/accessKeys';
 import ChannelService from './components/ChannelIO/ChannelService';
 import generateHash from './components/ChannelIO/generateHash';
 import CustomChannelIOButton from './components/ChannelIO/CustomChannelIOButton';
-import LoginCandidated from './pages/LoginCandidated';
-import ErrorOS from './components/essentials/ErrorOS';
-import GooroomeeService from './components/Gooroomee/GooroomeeService';
-import MobileBody from './components/essentials/MobileBody';
-import GooroomeeTest from './pages/GooroomeeTest';
+import LoginCandidated from './pages/Logins/LoginCandidated';
 import VideoLectureEyetracker from './components/VideoLectures/VideoLectureEyetracker';
 import VideoLectureEyetrackDetectionList from './components/VideoLectures/VideoLectureEyetrackDetectionList';
-import LoginMobileAppRedirect from './pages/LoginMobileAppRedirect';
-import MyPage from './pages/MyPage';
-import Price from './pages/Price';
+import LoginMobileAppRedirect from './pages/Logins/LoginMobileAppRedirect';
+import MyPage from './pages/Accounts/MyPage';
+import Price from './pages/PriceAndPayments/Price';
 import PriceDetails from './components/Price/PriceDetails';
-import Payment from './pages/Payment';
-import Plan from './components/MyPage/Plans';
-import PayState from './pages/PayState';
+import Payment from './pages/PriceAndPayments/Payment';
+import PayState from './pages/PriceAndPayments/PayState';
 import AlertSubscribe from './components/essentials/AlertSubscribe';
 import TimerTest from './pages/_TempPages/TimerTest';
-import Dashboard_1 from './components/essentials/Dashboard_1';
 import { attachOptimer } from './redux_modules/optimerHelper';
 import ComponentTest from './pages/_TempPages/ComponentTest';
 import CamStudyEyetracker from './components/Camstudy/components/CamStudyEyetracker';
-import Calendar from './pages/Calendar';
+import Calendar from './pages/Classes/components/Calendar';
 import Profile from './components/MyPage/Profile';
 import styled from 'styled-components';
 import HeaderBar from './components/essentials/HeaderBar';
 import Footer from './components/essentials/Footer';
-import MainDraft from './pages/MainDraft/MainDraft';
+import MainDraft from './pages/MainDrafts/MainDraft';
+import Dashboard from './pages/Dashboards/Dashboard';
 
 const MainContainer = styled.main`
     flex: 1;
@@ -276,10 +272,8 @@ function App({ history, match }) {
                         <Route path="/video-lecture-eyetracker/:classnum" component={VideoLectureEyetracker} exact />
                         <Route path="/video-lecture-detect-lists/:classnum" component={VideoLectureEyetrackDetectionList} exact />
                         <Route path="/cam-study-eyetracker/:classnum" component={CamStudyEyetracker} exact />
-                        <Route path="/gooroomee-test-12345" component={GooroomeeTest} exact />
                         <Route path="/mypage/:menu" component={MyPage} />
-                        <Route path="/:num/dashboard" component={Dashboard_1} exact />
-
+                        <Route path="/:num/dashboard" component={Dashboard} exact />
                         <Route path="/pricing" component={Price} exact />
                         <Route path="/pricing/details" component={PriceDetails} exact />
                         <Route path="/payment" component={Payment} exact />

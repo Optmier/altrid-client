@@ -1,41 +1,28 @@
 import {
-    Button as MuiButton,
     Collapse,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
     Drawer,
     FormControlLabel,
     FormGroup,
     Grid,
-    IconButton,
     makeStyles,
     Switch,
     TextField,
-    Tooltip,
     withStyles,
 } from '@material-ui/core';
 import Axios from 'axios';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { apiUrl } from '../../configs/configs';
-import ClassWrapper from '../essentials/ClassWrapper';
 import moment from 'moment-timezone';
-import DateRangeOutlinedIcon from '@material-ui/icons/DateRangeOutlined';
-import GroupIcon from '@material-ui/icons/Group';
-import FaceIcon from '@material-ui/icons/Face';
-import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { getServerDate } from '../../redux_modules/serverdate';
 import isMobile from '../../controllers/isMobile';
-import { CurrentVideoLectureCard, LogsVideoLectureCard, NoLecturesCard, ScheduledVideoLectureCard } from './ListCards';
+import { NoLecturesCard } from './ListCards';
 import CreateNewVideoLecture from './CreateNewVideoLecture';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
 import AddCamstudyIcon from '../../AltridUI/Icons/AddCamstudyIcon';
@@ -49,63 +36,6 @@ const useStyles = makeStyles((theme) => ({
         flexWrap: 'wrap',
     },
 }));
-
-const HtmlTooltip = withStyles((theme) => ({
-    tooltip: {
-        padding: '0.5rem 1rem',
-        marginTop: '-0.1rem',
-        fontSize: '0.75rem',
-        fontWeight: '500',
-        borderRadius: '5px',
-    },
-}))(Tooltip);
-
-const OpenNewVidLec = styled.div`
-    margin-top: 100px;
-    min-height: calc(100vh - 80px);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-self: flex-start;
-
-    & h1 {
-        color: #706d6d;
-        font-size: 2.4rem;
-        font-weight: 600;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: 1.06;
-        letter-spacing: -2.75px;
-        text-align: left;
-
-        margin-bottom: 1.5rem;
-    }
-    & button {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        padding: 1.2rem 1.5rem;
-        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-        margin-top: 30px;
-        border-radius: 10px;
-        cursor: pointer;
-        background-color: #ff5c5cd9;
-
-        & p {
-            font-size: 1.125rem;
-            font-weight: 500;
-            font-stretch: normal;
-            font-style: normal;
-            line-height: 1.5;
-            letter-spacing: -1.2px;
-            text-align: left;
-            color: #ffffff;
-
-            margin-right: 1rem;
-        }
-    }
-`;
 
 const DateTextField = withStyles((theme) => ({
     root: {
@@ -138,108 +68,6 @@ const DialogActionButton = withStyles((theme) => ({
     },
 }))(Button);
 
-const EntranceButton = withStyles((theme) => ({
-    root: {
-        color: '#00BB35',
-        fontSize: '1.2rem',
-
-        '&:hover': {
-            backgroundColor: '#CEF4C8',
-        },
-    },
-}))(Button);
-
-const EdPaper = styled.div`
-    box-sizing: border-box;
-    padding: 1rem;
-    width: 100%;
-    min-height: 60px;
-    border-radius: 10px;
-    background-color: #ffffff;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    display: flex;
-    position: relative;
-
-    div.top-icons {
-        position: absolute;
-        top: 0.9rem;
-        right: 0.9rem;
-
-        & button {
-            & svg {
-                font-size: 1rem;
-            }
-
-            & + button {
-                margin-left: 0.5rem;
-            }
-        }
-    }
-
-    div.infos-container {
-        width: 100%;
-
-        h4 {
-            color: #333333;
-        }
-
-        p {
-            color: #666666;
-            margin-top: 0.5rem;
-        }
-
-        div.bottom-container {
-            color: #666666;
-            font-size: 0.8rem;
-            margin-top: 0.667rem;
-
-            div.element {
-                display: flex;
-
-                div.icon-item {
-                    display: flex;
-                    align-items: center;
-
-                    &.live-counts {
-                        color: #ff0000;
-                        transition: all 0.3s;
-
-                        &.no-participants {
-                            color: #999999;
-                        }
-                    }
-
-                    &.error {
-                        color: #ff5c5c;
-                    }
-
-                    & svg {
-                        margin-right: 0.333rem;
-                    }
-
-                    & + div.icon-item {
-                        margin-left: 1.2rem;
-                    }
-                }
-
-                & + div.element {
-                    margin-top: 0.333rem;
-                }
-            }
-        }
-    }
-
-    div.entrance-container {
-        display: flex;
-        align-items: center;
-    }
-`;
-
-const ButtonAble = styled.button`
-    color: ${(props) => (props.able ? '#3B168A' : '#b2b2b2')};
-    border-bottom: ${(props) => (props.able ? '2px solid #3B168A' : 'none')};
-`;
-
 const VideoLectureRoot = styled.div`
     display: flex;
     flex-direction: column;
@@ -252,78 +80,6 @@ const VideoLectureRoot = styled.div`
     }
 `;
 
-const StyledButton = styled.button`
-    &.video-lecture {
-        background-color: #707070;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: inherit;
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: white;
-        padding: 12px 0;
-        border-radius: 11px;
-        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
-        width: 96px;
-
-        &.main {
-            background-color: #3f1990;
-            width: 96px;
-        }
-        &.sub {
-            background-color: #6d2bf5;
-            width: 190px;
-        }
-
-        & svg.MuiSvgIcon-root {
-            margin-right: 12px;
-            font-size: 1rem;
-        }
-
-        @media (min-width: 0) and (max-width: 767px) {
-            &,
-            &.main,
-            &.sub {
-                width: 100%;
-            }
-        }
-    }
-`;
-
-const EdIconButton = withStyles((theme) => ({
-    root: {
-        padding: 0,
-        '&:hover': {
-            backgroundColor: '#ffffff00',
-        },
-    },
-}))(IconButton);
-
-const HeaderBox = styled.header`
-    align-items: flex-end;
-    border-bottom: 1px solid rgba(112, 112, 112, 0.7);
-    color: #000;
-    display: flex;
-    flex-direction: row;
-    font-weight: 500;
-    justify-content: space-between;
-    padding: 6px 2px 6px 2px;
-    margin-bottom: 16px;
-
-    & h5.title {
-        font-size: 1.25rem;
-        font-weight: 500;
-    }
-
-    & div.right-comp {
-        margin-left: auto;
-    }
-
-    & svg.open-commentary-dropdown-icon {
-        cursor: pointer;
-    }
-`;
 ///////////////////////////////////////////////////////////////////////
 const HeaderContainer = styled.div`
     display: flex;
@@ -372,15 +128,15 @@ function VideoLecturesManage({ match, history }) {
         description: false,
         endDate: false,
     });
-    const [ableState, setAbleState] = useState('ing');
-    const [scheduledIdxs, setScheduledIdxs] = useState([]);
+    // const [ableState, setAbleState] = useState('ing');
+    // const [scheduledIdxs, setScheduledIdxs] = useState([]);
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
 
     const dispatch = useDispatch();
 
-    const handleNewVideoLectureDialogOpen = () => {
-        setNewVidLecDlgOpen(true);
-    };
+    // const handleNewVideoLectureDialogOpen = () => {
+    //     setNewVidLecDlgOpen(true);
+    // };
 
     const handleNewVideoLectureDialogClose = ({ target }) => {
         const { id } = target;
@@ -524,39 +280,39 @@ function VideoLecturesManage({ match, history }) {
             });
     };
 
-    const closeMultipleVideoLectures = () => {
-        if (scheduledIdxs.length < 1) return;
-        const conf = window.confirm('예약된 강의들을 취소하시겠습니까?');
-        if (!conf) return;
+    // const closeMultipleVideoLectures = () => {
+    //     if (scheduledIdxs.length < 1) return;
+    //     const conf = window.confirm('예약된 강의들을 취소하시겠습니까?');
+    //     if (!conf) return;
 
-        Axios.delete(`${apiUrl}/meeting-room`, {
-            params: {
-                roomIds: scheduledIdxs,
-            },
-            withCredentials: true,
-        })
-            .then((res) => {
-                console.log(res);
-                history.replace();
-            })
-            .catch((err) => {
-                console.error(err);
-                alert('화상 강의를 닫는 중 오류가 발생했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.');
-            });
-    };
+    //     Axios.delete(`${apiUrl}/meeting-room`, {
+    //         params: {
+    //             roomIds: scheduledIdxs,
+    //         },
+    //         withCredentials: true,
+    //     })
+    //         .then((res) => {
+    //             console.log(res);
+    //             history.replace();
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //             alert('화상 강의를 닫는 중 오류가 발생했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.');
+    //         });
+    // };
 
-    const handleTopMenuClick = ({ target }) => {
-        const { name } = target;
-        setAbleState(name);
-    };
+    // const handleTopMenuClick = ({ target }) => {
+    //     const { name } = target;
+    //     setAbleState(name);
+    // };
 
-    const onScheduledCheckedChange = (targetIdx, checked) => {
-        if (checked) {
-            setScheduledIdxs([...scheduledIdxs, targetIdx]);
-        } else {
-            setScheduledIdxs(scheduledIdxs.filter((d, i) => d !== targetIdx));
-        }
-    };
+    // const onScheduledCheckedChange = (targetIdx, checked) => {
+    //     if (checked) {
+    //         setScheduledIdxs([...scheduledIdxs, targetIdx]);
+    //     } else {
+    //         setScheduledIdxs(scheduledIdxs.filter((d, i) => d !== targetIdx));
+    //     }
+    // };
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {

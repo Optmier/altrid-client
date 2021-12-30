@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-control-regex */
 import {
     AppBar,
     Button,
@@ -37,10 +39,6 @@ import { withRouter } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 import { useBeforeunload } from 'react-beforeunload';
 import { ArrowBack, ArrowDropDown, ArrowForward, Delete, DeleteForever, PostAdd, TextFields } from '@material-ui/icons';
-import { useCallback } from 'react';
-import { updateSession } from '../../redux_modules/sessions';
-import { useDispatch, useSelector } from 'react-redux';
-import RefreshToken from '../essentials/Authentication';
 /** https://github.com/jeanlescure/short-unique-id
  * Copyright (c) 2018-2020 Short Unique ID Contributors.
  * Licensed under the Apache License 2.0.
@@ -68,11 +66,11 @@ $.fn.changeSize = function (handleFunction) {
     return element;
 };
 
-const swapArray = (array, a, b) => {
-    const tmp = array[a];
-    array[a] = array[b];
-    array[b] = tmp;
-};
+// const swapArray = (array, a, b) => {
+//     const tmp = array[a];
+//     array[a] = array[b];
+//     array[b] = tmp;
+// };
 
 const fitEditorSize = (height) => {
     const rootHeight = height;
@@ -339,6 +337,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
                 break;
             case 'contents_time_limit':
                 setContentsTimeLimit(value);
+                break;
             default:
                 break;
         }
@@ -777,7 +776,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
         <Dialog open={tipDialogOpenState} maxWidth={false} onClose={closeTipDialog}>
             <DialogTitle onClose={closeTipDialog}>문제 만들기 팁</DialogTitle>
             <DialogContent dividers>
-                <img src={tip0Img} width="768px" />
+                <img src={tip0Img} width="768px" alt="tip_image" />
                 <Typography>위의 형식에 따라 문제 및 선택지가 자동으로 생성됩니다.</Typography>
                 <Typography>
                     현재 객관식 문제만 생성이 가능하며, 생성 이후에는 문제 유형, 정답 및 해설에 대해 추가 수정이 필요합니다.

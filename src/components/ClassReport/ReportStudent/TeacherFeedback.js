@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 import Axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import HtmlParser from 'react-html-parser';

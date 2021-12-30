@@ -1,6 +1,5 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
-import problemCategories from '../TOFELEditor/ProblemCategories';
 import styled from 'styled-components';
 import CategorySelector from '../../controllers/CategorySelector';
 import { makeStyles } from '@material-ui/styles';

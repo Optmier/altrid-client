@@ -1,3 +1,5 @@
+/* eslint-disable no-control-regex */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-useless-computed-key */
 import {
     Accordion as MuiAccordion,

@@ -2,7 +2,7 @@ import React from 'react';
 import '../../styles/pay_state.scss';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
-import Error from '../../pages/Error';
+import Error from '../../pages/Errors/Error';
 
 function PaySuccess({ location }) {
     //오류 코드가 없으면 404 페이지 렌더링

@@ -1,24 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+/* eslint-disable react/jsx-pascal-case */
+import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import PopOverClipboard from '../essentials/PopOverClipboard';
 /** https://github.com/jeanlescure/short-unique-id
  * Copyright (c) 2018-2020 Short Unique ID Contributors.
  * Licensed under the Apache License 2.0.
  */
 import ShortUniqueId from 'short-unique-id';
 import { withRouter } from 'react-router-dom';
-import HeaderBar from '../essentials/HeaderBar';
 import icon from '../../images/Profile_icon.png';
-import Footer from '../essentials/Footer';
-import { Helmet } from 'react-helmet';
 import BackgroundTheme from '../../AltridUI/ThemeColors/BackgroundTheme';
-
-const BtnAble = styled.button`
-    pointer-events: ${(props) => (props.btnAbleState ? 'auto' : 'none')};
-`;
 
 const Profile_Header = styled.div`
     margin: 0 auto;
@@ -162,17 +155,17 @@ const Profile_Main = styled.div`
 
 function Profile({ history }) {
     const sessions = useSelector((state) => state.RdxSessions);
-    const textCopy = useRef();
+    // const textCopy = useRef();
 
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    // const [email, setEmail] = useState('');
     const [emailWith, setEmailWith] = useState('');
     const [academyName, setAcademyName] = useState('');
     const [academyCode, setAcademyCode] = useState('');
     const [imgSrc, setImgSrc] = useState(null);
     const [imgBlob, setImgBlob] = useState(null);
     const [btnAbleState, setBtnAbleState] = useState(false);
-    const [clipboardState, setClipboardState] = useState(false);
+    // const [clipboardState, setClipboardState] = useState(false);
 
     const handleSave = () => {
         const saveDB = (_imgsrc) => {
@@ -273,25 +266,25 @@ function Profile({ history }) {
         setBtnAbleState(true);
     };
     /**  복사하기 버튼 */
-    const handleCopy = () => {
-        if (clipboardState) return;
+    // const handleCopy = () => {
+    //     if (clipboardState) return;
 
-        textCopy.current.select();
-        textCopy.current.setSelectionRange(0, 9999);
+    //     textCopy.current.select();
+    //     textCopy.current.setSelectionRange(0, 9999);
 
-        document.execCommand('copy');
+    //     document.execCommand('copy');
 
-        setClipboardState(true);
-        setTimeout(function () {
-            setClipboardState(false);
-        }, 3000);
-    };
+    //     setClipboardState(true);
+    //     setTimeout(function () {
+    //         setClipboardState(false);
+    //     }, 3000);
+    // };
 
     useEffect(() => {
         if (sessions.userType) {
             Axios.get(`${apiUrl}/my-page/profile`, { withCredentials: true })
                 .then((res) => {
-                    const { email, auth_with } = res.data;
+                    const { auth_with } = res.data;
 
                     setEmailWith(auth_with);
                     setName(sessions.userName);

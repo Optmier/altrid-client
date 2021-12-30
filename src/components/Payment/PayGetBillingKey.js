@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable eqeqeq */
 import Axios from 'axios';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';

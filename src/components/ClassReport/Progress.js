@@ -1,8 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Tooltip, withStyles } from '@material-ui/core';
-import PanToolIcon from '@material-ui/icons/PanTool';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 const StyleTestSquareList = styled.div`
     width: 100%;
@@ -49,8 +48,8 @@ function Progress({ mode, idx, selections, problemNumbers, onDoubleClick, handsU
         const limiter = mode ? selections.length : problemNumbers;
 
         for (let i = 0; i < limiter; i++) {
-            const isHandsUp = handsUp.find((d) => d === i + limiter * idx) !== undefined;
-            const isTeacherSelected = teacherSelected.find((d) => d === i + limiter * idx) !== undefined;
+            // const isHandsUp = handsUp.find((d) => d === i + limiter * idx) !== undefined;
+            // const isTeacherSelected = teacherSelected.find((d) => d === i + limiter * idx) !== undefined;
             if (!selections || !selections[i] || selections[i] === -1) {
                 setSquars((squares) => [
                     ...squares,

@@ -1,8 +1,7 @@
-import { Switch, IconButton, OutlinedInput, withStyles, FormControlLabel, makeStyles, Collapse } from '@material-ui/core';
+import { Switch, OutlinedInput, withStyles } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
-import CloseIcon from '@material-ui/icons/Close';
 import { useSelector } from 'react-redux';
 import RestrictWrapper from '../essentials/RestrictWrapper';
 import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
@@ -12,13 +11,6 @@ import Button from '../../AltridUI/Button/Button';
 import TextField from '../../AltridUI/TextField/TextField';
 import CalendarIcon from '../../AltridUI/Icons/CalendarIcon';
 
-const useStyles = makeStyles((theme) => ({
-    container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-}));
-
 const Root = styled.div`
     padding: 36px 48px;
     max-width: 600px;
@@ -26,9 +18,6 @@ const Root = styled.div`
     @media all and (max-width: 768px) {
         padding: 32px;
     }
-`;
-const CloseIconRoot = styled.div`
-    margin-top: 4px;
 `;
 const TitleContainer = styled.div`
     display: flex;
@@ -55,82 +44,6 @@ const CreateButtonContainer = styled.div`
     justify-content: center;
     margin-top: 72px;
 `;
-const AutomaticFragment = styled.div`
-    display: flex;
-    position: relative;
-
-    &.select-box + .select-box {
-        margin-top: 18px;
-    }
-`;
-
-const CreateButton = withStyles((theme) => ({
-    root: {
-        borderRadius: '10px',
-        color: '#fff',
-        fontFamily: 'Noto Sans CJK KR',
-        fontSize: '0.9rem',
-        fontWeight: 600,
-        width: '96px',
-        height: '45px',
-        '&.primary': {
-            backgroundColor: '#13e2a1',
-        },
-        '& > span': {
-            pointerEvents: 'none',
-        },
-    },
-}))(Button);
-
-const AddSelectionButton = withStyles((theme) => ({
-    root: {
-        backgroundColor: '#F6F7F9',
-        borderRadius: 14,
-        color: 'rgba(112, 112, 112, 0.8)',
-        fontFamily: 'Noto Sans CJK KR',
-        fontSize: '1rem',
-        fontWeight: 600,
-        justifyContent: 'flex-start',
-        minHeight: 70,
-        padding: '18px 24px',
-
-        '&.primary': {
-            backgroundColor: '#F6F7F9',
-        },
-    },
-}))(Button);
-
-const CategorySelect = styled.select`
-    cursor: pointer;
-    background: url(/bg_images/Vector.png) no-repeat 92% 50%;
-    width: 100%;
-    min-height: 40px;
-    padding: 0 0.8rem;
-    font-family: inherit;
-    font-size: 1.001rem;
-    border: none;
-    border: 1px solid rgba(112, 112, 112, 0.79);
-    border-radius: 0px;
-    color: #707070;
-    font-weight: 500;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    outline: none;
-
-    &.small {
-        width: 120px;
-    }
-
-    &.tiny {
-        width: 90px;
-        height: 32px;
-        min-height: initial;
-    }
-`;
-
 const HeaderBox = styled.header`
     align-items: flex-end;
     border-bottom: 1px solid #707070;
@@ -192,14 +105,6 @@ const SeletionInput = withStyles((theme) => ({
     },
 }))(OutlinedInput);
 
-const EdIconButton = withStyles((theme) => ({
-    root: {
-        '&:hover': {
-            backgroundColor: '#ffffff00',
-        },
-    },
-}))(IconButton);
-
 function GroupBoxContents({ title, description, rightComponent, onClick, children, ...rest }) {
     return (
         <div {...rest}>
@@ -219,37 +124,6 @@ GroupBoxContents.defaultProps = {
     rightComponent: <></>,
     onClick: undefined,
 };
-
-const StyleToggle = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-
-    & .toggle-on-ment {
-        font-size: 14px;
-        font-weight: 500;
-        color: white;
-        margin-left: 8px;
-    }
-    & .toggle-on-ment-right {
-        font-size: 14px;
-        font-weight: 500;
-        color: white;
-        margin-right: 8px;
-    }
-    & .toggle-off-ment {
-        font-size: 14px;
-        font-weight: 500;
-        color: white;
-        margin-left: 8px;
-    }
-    & .toggle-off-ment-right {
-        font-size: 14px;
-        font-weight: 500;
-        color: #707070;
-        margin-right: 8px;
-    }
-`;
 
 const DrawerSwitch = withStyles((theme) => ({
     root: {
@@ -290,39 +164,7 @@ const DrawerSwitch = withStyles((theme) => ({
     checked: {},
 }))(Switch);
 
-const DateTextField = withStyles((theme) => ({
-    root: {
-        border: '1px solid #707070',
-        fontFamily: 'inherit',
-
-        outline: 'none',
-        margin: '8px 0 4px 0',
-        '& .MuiInputBase-root': {
-            color: '#707070',
-            fontSize: '1rem',
-            outline: 'none',
-
-            '&.Mui-focused': {
-                backgroundColor: '#f2f3f6',
-                boxShadow: '0 0 0 2px #8f8f8f',
-            },
-            '&.MuiInput-underline:before': {
-                border: 'none',
-            },
-
-            '&.MuiInput-underline:after': {
-                border: 'none',
-            },
-            '& input': {
-                padding: 12,
-                outline: 'none !important',
-            },
-        },
-    },
-}))(TextField);
-
 function CreateNewVideoLecture({ onCreate, handleClose }) {
-    const classes = useStyles();
     const rootRef = useRef();
     const [formFields, setFormFields] = useState({
         title: '',

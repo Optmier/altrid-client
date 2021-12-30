@@ -1,9 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { IconButton, Tooltip, withStyles } from '@material-ui/core';
 import ChannelService from './ChannelService';
 import { useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { BsFillQuestionCircleFill } from 'react-icons/bs';
 
 const TalkIOButton = withStyles(() => ({
     root: {

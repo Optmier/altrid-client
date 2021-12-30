@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import CloseIcon from '@material-ui/icons/Close';
-import { withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import * as $ from 'jquery';
-import MultipleAutocomplete from '../essentials/MultipleAutocomplete';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { $_classDefault } from '../../configs/front_urls';
@@ -13,18 +10,6 @@ import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
 import BulbIcon from '../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
 import DrawerActions from '../../AltridUI/Drawer/DrawerActions';
 import Button from '../../AltridUI/Button/Button';
-
-const CreateButton = withStyles((theme) => ({
-    root: {
-        borderRadius: '10px',
-        backgroundColor: '#13E2A1',
-        color: '#fff',
-        fontFamily: 'inherit',
-        fontSize: '0.9rem',
-        width: '150px',
-        height: '56px',
-    },
-}))(Button);
 
 const FormButton = styled.button`
     background-color: ${(props) => (props.able ? '#FFFFFF' : '#F4F1FA')};

@@ -3,7 +3,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
 import CloseIcon from '@material-ui/icons/Close';
 
 const StyleModalButton = styled.button`
@@ -59,11 +58,11 @@ const ModalCloseButton = styled.div`
 
 function ClassDialogDelete({ ver, open, handleDialogClose }) {
     /** redux state */
-    const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
-        loading: false,
-        data: null,
-        error: null,
-    };
+    // const { data, loading, error } = useSelector((state) => state.assignmentDraft.draftDatas) || {
+    //     loading: false,
+    //     data: null,
+    //     error: null,
+    // };
 
     // if (loading) return <div>로딩 중....</div>; // 로딩중이고 데이터 없을때만
     // if (error) return <div>에러 발생!</div>;

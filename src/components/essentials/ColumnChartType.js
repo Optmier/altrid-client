@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
-import ProblemCategories from '../TOFELEditor/ProblemCategories';
 import CategorySelector from '../../controllers/CategorySelector';
 
 const randomArrSet = (array, length = array.length) => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import PreLogo from '../../images/eyetracker_logo/pre_logo.png';
 import NewLogo from '../../images/eyetracker_logo/new_logo.png';

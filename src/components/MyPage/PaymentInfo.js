@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { apiUrl, tossPaymentsClientKey } from '../../configs/configs';

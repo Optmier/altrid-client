@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, NavLink } from 'react-router-dom';
 import Plan from './Plan';
-import HeaderBar from '../essentials/HeaderBar';
 
 function Plans() {
     return (

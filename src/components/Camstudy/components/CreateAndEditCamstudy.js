@@ -3,13 +3,9 @@ import styled from 'styled-components';
 import DrawerGroupBox from '../../../AltridUI/Drawer/DrawerGroupBox';
 import TextField from '../../../AltridUI/TextField/TextField';
 import FormControl from '../../../AltridUI/TextField/FormControl';
-import MuiTextField from '@material-ui/core/TextField';
-import CheckIcon from '@material-ui/icons/CheckCircleOutline';
-import ErrorIcon from '@material-ui/icons/ErrorOutline';
-import TextFieldHelperText from '../../../AltridUI/TextField/TextFieldHelperText';
 import ReactQuill from 'react-quill';
 import BulbIcon from '../../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
-import { Avatar, CircularProgress, IconButton, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { Avatar, CircularProgress, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import Axios from 'axios';
 import { apiUrl } from '../../../configs/configs';
@@ -72,12 +68,6 @@ const InvitationChipsContainer = styled.div`
         margin: 4px;
     }
 `;
-
-function asyncTestSleep(delay = 0) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, delay);
-    });
-}
 
 /** 데이터 받아야 할 것...
  * 1. 방 제목
@@ -164,7 +154,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
     };
 
     const fieldOnChange = ({ target }) => {
-        const { name, value } = target;
+        const { name } = target;
         if (fieldErrorControl[name].error) setFieldErrorControl({ ...fieldErrorControl, [name]: { error: false, errorText: '' } });
     };
 
@@ -662,11 +652,11 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
     );
 }
 
-const invitationsDummy = [
-    { name: '최세인', id: '12345', image: 'null' },
-    { name: '홍길동', id: '98765', image: 'null' },
-    { name: '아무개', id: '56789', image: 'null' },
-];
+// const invitationsDummy = [
+//     { name: '최세인', id: '12345', image: 'null' },
+//     { name: '홍길동', id: '98765', image: 'null' },
+//     { name: '아무개', id: '56789', image: 'null' },
+// ];
 
 CreateAndEditCamstudy.defaultProps = {
     defaultData: null,

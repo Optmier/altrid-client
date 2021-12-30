@@ -1,9 +1,8 @@
 import Button from '../../AltridUI/Button/Button';
-import ToggleButton from '../../AltridUI/Button/ToggleButton';
 import { CheckCircle } from '@material-ui/icons';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { CircularProgress, FormControlLabel, RadioGroup } from '@material-ui/core';
+import { CircularProgress, RadioGroup } from '@material-ui/core';
 import Checkbox from '../../AltridUI/Checkbox/Checkbox';
 import Radio from '../../AltridUI/Radio/Radio';
 import RadioLabel from '../../AltridUI/Radio/RadioLabel';

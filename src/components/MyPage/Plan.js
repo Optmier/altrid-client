@@ -1,5 +1,5 @@
 import React from 'react';
-import Error from '../../pages/Error';
+import Error from '../../pages/Errors/Error';
 import { withRouter } from 'react-router-dom';
 import NowPlan from './NowPlan';
 import PaymentInfo from './PaymentInfo';

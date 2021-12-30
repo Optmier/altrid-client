@@ -1,9 +1,8 @@
+/* eslint-disable no-control-regex */
 import Axios from 'axios';
 import { apiUrl } from '../configs/configs';
 import { HoursAndMinutesToSecond } from '../components/essentials/TimeChange';
 import { postActived } from './assignmentActived';
-import { getPlanInfo } from './planInfo';
-import getAchieveValueForTypes from '../components/essentials/GetAchieveValueForTypes';
 
 /* 액션 타입 선언 */
 // draft 여러개 조회하기
@@ -11,8 +10,8 @@ const GET_DRAFTS = 'assignmentDraft/GET_DRAFTS';
 const GET_DRAFTS_SUCCESS = 'assignmentDraft/GET_DRAFTS_SUCCESS';
 
 // draft 하나 조회하기
-const GET_DRAFT = 'assignmentDraft/GET_DRAFT';
-const GET_DRAFT_SUCCESS = 'assignmentDraft/GET_DRAFT_SUCCESS';
+// const GET_DRAFT = 'assignmentDraft/GET_DRAFT';
+// const GET_DRAFT_SUCCESS = 'assignmentDraft/GET_DRAFT_SUCCESS';
 
 // draft 삽입하기
 const POST_DRAFT = 'assignmentDraft/POST_DRAFT';
@@ -231,8 +230,8 @@ export const copyDraft = (idx, title, originalCardData) => async (dispatch) => {
     try {
         const result = await Axios.post(`${apiUrl}/assignment-draft/copy/${idx}`, { title: title }, { withCredentials: true });
         const new_idx = result['data']['insertId'];
-        const actived_count = 0;
-        const class_name = null;
+        // const actived_count = 0;
+        // const class_name = null;
 
         dispatch({
             type: COPY_DRAFT_SUCCESS,
