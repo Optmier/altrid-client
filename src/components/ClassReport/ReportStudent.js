@@ -32,6 +32,8 @@ import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import Button from '../../AltridUI/Button/Button';
 import EyeTrackChart from './EyeTrackChart';
 import MakeAutoComments from '../../controllers/MakeAutoComment';
+import Typography from '../../AltridUI/Typography/Typography';
+import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
 
 const pad = (n, width) => {
     n = n + '';
@@ -63,6 +65,257 @@ const StyleItems = styled.div`
     }
 `;
 
+const ReportStudentRoot = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 36px;
+    max-width: 960px;
+    height: 100%;
+    @media (max-width: 640px) {
+        margin-top: 30px;
+    }
+`;
+/////////////////////////////////////////////////////////////////////
+const TopInfoSection = styled.section``;
+const TitleContainer = styled.div``;
+const DescriptionContainer = styled.div`
+    display: flex;
+    margin-top: 8px;
+    @media (max-width: 640px) {
+        flex-direction: column;
+    }
+`;
+const DescriptionStudentName = styled.div`
+    color: #3b1689;
+`;
+const DescriptionContents = styled.div`
+    margin-left: 8px;
+    @media (max-width: 640px) {
+        margin-left: 0;
+        margin-top: 8px;
+    }
+`;
+const AssignmentInfoBox = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    margin-top: 32px;
+    padding: 16px 32px;
+    @media (max-width: 640px) {
+        flex-direction: column;
+        margin-top: 16px;
+        padding: 16px;
+    }
+`;
+const AssignmentInfoItemGroup = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    @media (max-width: 640px) {
+        width: 100%;
+        & + & {
+            margin-top: 8px;
+        }
+    }
+`;
+const AssignmentInfoItem = styled.div`
+    align-items: center;
+    display: flex;
+    & + & {
+        margin-top: 8px;
+    }
+`;
+const InfoItemKey = styled.div``;
+const InfoItemValue = styled.div`
+    margin-left: 8px;
+`;
+const InitReports = styled.div`
+    color: ${getColorSets(500, 'red')};
+    cursor: pointer;
+`;
+/////////////////////////////////////////////////////////////////////
+const ScoringSummarySection = styled.section`
+    margin-top: 48px;
+    @media (max-width: 640px) {
+        margin-top: 48px;
+    }
+`;
+const ProgressWrapper = styled.div`
+    overflow: auto;
+`;
+/////////////////////////////////////////////////////////////////////
+const AnalyzeTimeSection = styled.section`
+    margin-top: 48px;
+    @media (max-width: 640px) {
+        margin-top: 48px;
+    }
+`;
+const AnalyzeTimeTextsContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    padding: 48px 32px;
+    @media (max-width: 640px) {
+        padding: 32px 16px;
+    }
+`;
+const AnalyzeTimeGraphContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    margin-top: 8px;
+    padding: 24px;
+    position: relative;
+    @media (max-width: 640px) {
+        padding: 12px;
+    }
+`;
+/////////////////////////////////////////////////////////////////////
+const AnalyzeTypeSection = styled.section`
+    margin-top: 48px;
+    @media (max-width: 640px) {
+        margin-top: 48px;
+    }
+`;
+const AnalyzeTypeTextsContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    padding: 24px;
+    @media (max-width: 640px) {
+        padding: 16px;
+    }
+`;
+const AnalyzeTypeGraphConatainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    margin-top: 8px;
+    padding: 24px;
+    position: relative;
+    @media (max-width: 640px) {
+        padding: 12px;
+    }
+`;
+/////////////////////////////////////////////////////////////////////
+const EyetrackAndPatternSection = styled.section`
+    margin-top: 48px;
+    @media (max-width: 640px) {
+        margin-top: 48px;
+    }
+`;
+const EyetrackVideoContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    padding: 32px;
+    position: relative;
+    @media (max-width: 640px) {
+        padding: 24px;
+    }
+`;
+const EyetrackTextsContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    margin-top: 8px;
+    padding: 38px;
+    position: relative;
+    @media (max-width: 640px) {
+        padding: 16px;
+    }
+`;
+const PatternsContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+    height: 288px;
+    @media (max-width: 640px) {
+        flex-direction: column;
+        height: initial;
+    }
+`;
+const PatternTextsContainer = styled.div`
+    align-items: center;
+    box-shadow: inset -1px 0px 0px #e9edef;
+    display: flex;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+    @media (max-width: 640px) {
+        box-shadow: inset 0px -1px 0px #e9edef;
+        padding: 38px;
+        width: calc(100% - 76px);
+    }
+`;
+const PatternListsContainer = styled.div`
+    display: flex;
+    width: 50%;
+    @media (max-width: 640px) {
+        width: 100%;
+        height: 240px;
+    }
+`;
+/////////////////////////////////////////////////////////////////////
+const AutoCommentSection = styled.section`
+    margin-top: 48px;
+    @media (max-width: 640px) {
+        margin-top: 48px;
+    }
+`;
+const AutoCommentContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-around;
+    @media (max-width: 640px) {
+        flex-direction: column;
+    }
+`;
+const AutoCommentChartContainer = styled.div`
+    box-shadow: inset -1px 0px 0px #e9edef;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+`;
+const AutoCommentCommentaryContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+`;
+const AutoCommentContainerTitle = styled.div`
+    box-shadow: inset 0px -1px 0px #e9edef;
+    padding: 16px;
+`;
+const AutoCommentContainerContents = styled.div`
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    height: 240px;
+`;
+/////////////////////////////////////////////////////////////////////
+const FeedbackSection = styled.section`
+    margin-top: 48px;
+    @media (max-width: 640px) {
+        margin-top: 48px;
+    }
+`;
+const FeedbackContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    padding: 44px 32px 32px 32px;
+    position: relative;
+    @media (max-width: 640px) {
+        padding: 28px 16px 16px 16px;
+    }
+`;
+/////////////////////////////////////////////////////////////////////
+
 const InfoItems = ({ title, contents, children }) => {
     return (
         <StyleItems>
@@ -75,18 +328,9 @@ const InfoItems = ({ title, contents, children }) => {
 const ScoreItems = ({ title, score, total, percent, children }) => {
     // let percent = ((score / total) * 100).toFixed(1);
     return (
-        <StyleItems>
-            {children}
-            <div className="header-title">{title}</div>
-            {
-                <>
-                    <div>
-                        {score}문제 / {total}문제
-                    </div>
-                    <div style={{ color: '#13e2a1', paddingLeft: '5px' }}>({percent.toFixed(1)}%)</div>
-                </>
-            }
-        </StyleItems>
+        <Typography type="label" size="l">
+            {score}문제 / {total}문제 <span style={{ color: getColorSets(400, 'green') }}>({percent.toFixed(1)}%)</span>
+        </Typography>
     );
 };
 ScoreItems.defaultProps = {
@@ -94,17 +338,15 @@ ScoreItems.defaultProps = {
 };
 const CompareItems = ({ title, contents, children }) => {
     return (
-        <StyleItems>
-            {children}
-            <div className="header-title">{title}</div>
+        <Typography type="label" size="l">
             {contents < 0 ? (
-                <div style={{ color: '#F57C7C' }}>{contents.toFixed(1)}%</div>
+                <span style={{ color: getColorSets(500, 'orange') }}>{contents.toFixed(1)}%</span>
             ) : contents === 0 ? (
-                <div style={{ color: '#C4C4C4' }}>-</div>
+                <span style={{ color: getColorSets(500, 'gray') }}>-</span>
             ) : (
-                <div style={{ color: '#7C88F5' }}>+ {contents.toFixed(1)}%</div>
+                <span style={{ color: getColorSets(500, 'blue') }}>+ {contents.toFixed(1)}%</span>
             )}
-        </StyleItems>
+        </Typography>
     );
 };
 const TriesItems = ({ title, tries, children }) => {
@@ -752,6 +994,217 @@ function ReportStudent({ history, match }) {
                 </DialogActions>
             </Dialog>
 
+            <ReportStudentRoot>
+                <TopInfoSection>
+                    <TitleContainer>
+                        <Typography type="heading" size="s" bold>
+                            학생 상세 리포트
+                        </Typography>
+                    </TitleContainer>
+                    <DescriptionContainer>
+                        <DescriptionStudentName>
+                            <Typography type="label" size="l" bold>
+                                {stdName} 학생
+                            </Typography>
+                        </DescriptionStudentName>
+                        <DescriptionContents>
+                            <Typography type="label" size="l">
+                                {title}
+                            </Typography>
+                        </DescriptionContents>
+                    </DescriptionContainer>
+                    <AssignmentInfoBox>
+                        <AssignmentInfoItemGroup>
+                            <AssignmentInfoItem>
+                                <InfoItemKey>
+                                    <Typography type="label" size="l" bold>
+                                        제출 날짜
+                                    </Typography>
+                                </InfoItemKey>
+                                <InfoItemValue>
+                                    <Typography type="label" size="l">
+                                        {submittedDate ? submittedDate : '-'}
+                                    </Typography>
+                                </InfoItemValue>
+                            </AssignmentInfoItem>
+                            <AssignmentInfoItem>
+                                <InfoItemKey>
+                                    <Typography type="label" size="l" bold>
+                                        소요 시간
+                                    </Typography>
+                                </InfoItemKey>
+                                <InfoItemValue>
+                                    <Typography type="label" size="l">
+                                        {timeValueToTimer(durTimes)}
+                                    </Typography>
+                                </InfoItemValue>
+                            </AssignmentInfoItem>
+                            <AssignmentInfoItem>
+                                <InfoItemKey>
+                                    <Typography type="label" size="l" bold>
+                                        시도 횟수
+                                    </Typography>
+                                </InfoItemKey>
+                                <InfoItemValue>
+                                    <Typography type="label" size="l">
+                                        {tries}
+                                    </Typography>
+                                </InfoItemValue>
+                            </AssignmentInfoItem>
+                            <AssignmentInfoItem>
+                                <InfoItemKey>
+                                    <Typography type="label" size="l" bold>
+                                        점수
+                                    </Typography>
+                                </InfoItemKey>
+                                <InfoItemValue>
+                                    <ScoreItems
+                                        title={'점수'}
+                                        score={correctProblems}
+                                        total={totalProblems}
+                                        percent={scorePercentage}
+                                    ></ScoreItems>
+                                </InfoItemValue>
+                            </AssignmentInfoItem>
+                        </AssignmentInfoItemGroup>
+                        <AssignmentInfoItemGroup>
+                            <AssignmentInfoItem>
+                                <InfoItemKey>
+                                    <Typography type="label" size="l" bold>
+                                        비교 성취도
+                                    </Typography>
+                                </InfoItemKey>
+                                <InfoItemValue>
+                                    <CompareItems
+                                        contents={
+                                            currentStudentData.score_percentage -
+                                            (!prevStudentData || !prevStudentData.score_percentage ? 0 : prevStudentData.score_percentage)
+                                        }
+                                    ></CompareItems>
+                                </InfoItemValue>
+                            </AssignmentInfoItem>
+                            {sessions.userType === 'students' ? null : (
+                                <AssignmentInfoItem>
+                                    <InfoItemKey>
+                                        <InitReports>
+                                            <Typography type="label" size="l" bold onClick={handleEraseResult}>
+                                                결과 초기화
+                                            </Typography>
+                                        </InitReports>
+                                    </InfoItemKey>
+                                </AssignmentInfoItem>
+                            )}
+                        </AssignmentInfoItemGroup>
+                    </AssignmentInfoBox>
+                </TopInfoSection>
+                <ScoringSummarySection>
+                    <GroupBox
+                        title="문제별 채점 결과"
+                        rightComponent={
+                            <>
+                                <Link
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setScoringResultsOpen(true);
+                                    }}
+                                >
+                                    <Button variant="light" colors="purple" sizes="small">
+                                        채점결과 상세보기
+                                    </Button>
+                                </Link>
+                            </>
+                        }
+                    >
+                        <ProgressWrapper>
+                            {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
+                                ? division(
+                                      currentStudentData.user_data.selections,
+                                      currentStudentData.contents_data.flatMap((m) => m.problemDatas),
+                                      15,
+                                  ).map((arr, idx) => (
+                                      <Progress
+                                          mode
+                                          key={idx}
+                                          idx={idx}
+                                          selections={arr}
+                                          problemNumbers={999}
+                                          handsUp={handsUpList}
+                                          teacherSelected={teacherSelectedList}
+                                          onDoubleClick={progressDoubleClick}
+                                      />
+                                  ))
+                                : null}
+                        </ProgressWrapper>
+                        <ScoringResults
+                            open={scoringResultsOpen}
+                            userData={currentStudentData.user_data.selections}
+                            handsUp={handsUpList}
+                            teacherSelected={teacherSelectedList}
+                            spentTime={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
+                            contentsData={currentStudentData.contents_data}
+                            actionClickHandsUpButton={progressDoubleClick}
+                            handleClose={() => {
+                                setScoringResultsOpen(false);
+                            }}
+                        />
+                    </GroupBox>
+                </ScoringSummarySection>
+                <AnalyzeTimeSection>
+                    <GroupBox title="문제별 시간 분석">
+                        <AnalyzeTimeTextsContainer></AnalyzeTimeTextsContainer>
+                        <AnalyzeTimeGraphContainer></AnalyzeTimeGraphContainer>
+                    </GroupBox>
+                </AnalyzeTimeSection>
+                <AnalyzeTypeSection>
+                    <GroupBox title="유형별 분석">
+                        <AnalyzeTypeTextsContainer></AnalyzeTypeTextsContainer>
+                        <AnalyzeTypeGraphConatainer></AnalyzeTypeGraphConatainer>
+                    </GroupBox>
+                </AnalyzeTypeSection>
+                <EyetrackAndPatternSection>
+                    <GroupBox title="시선흐름 및 패턴 분석">
+                        <EyetrackVideoContainer></EyetrackVideoContainer>
+                        <EyetrackTextsContainer></EyetrackTextsContainer>
+                        <PatternsContainer>
+                            <PatternTextsContainer></PatternTextsContainer>
+                            <PatternListsContainer></PatternListsContainer>
+                        </PatternsContainer>
+                    </GroupBox>
+                </EyetrackAndPatternSection>
+                <AutoCommentSection>
+                    <GroupBox title="AI-Comments">
+                        <AutoCommentContainer>
+                            <AutoCommentChartContainer>
+                                <AutoCommentContainerTitle>차트</AutoCommentContainerTitle>
+                                <AutoCommentContainerContents>차트 영역입니다.</AutoCommentContainerContents>
+                            </AutoCommentChartContainer>
+                            <AutoCommentCommentaryContainer>
+                                <AutoCommentContainerTitle>AI 코멘트</AutoCommentContainerTitle>
+                                <AutoCommentContainerContents>
+                                    {MakeAutoComments(
+                                        stdName,
+                                        acmTotalFixsMine,
+                                        acmTotalFixsAvg,
+                                        acmAvgSpeedFixsMine,
+                                        acmAvgSpeedFixsAvg,
+                                        acmRegressionsMine,
+                                        acmRegressionsAvg,
+                                    )}
+                                </AutoCommentContainerContents>
+                            </AutoCommentCommentaryContainer>
+                        </AutoCommentContainer>
+                    </GroupBox>
+                </AutoCommentSection>
+                <FeedbackSection>
+                    <GroupBox title="선생님 피드백">
+                        <FeedbackContainer></FeedbackContainer>
+                    </GroupBox>
+                </FeedbackSection>
+            </ReportStudentRoot>
+
+            {/* /////////////////////////////////////////////////////////////////// */}
+
             <ClassWrapper col={true}>
                 <div className="student-report-root">
                     <section className="student-report-header">
@@ -808,38 +1261,7 @@ function ReportStudent({ history, match }) {
                                 </>
                             }
                         />
-                        <div style={{ paddingBottom: '30px' }} className="progress">
-                            {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
-                                ? division(
-                                      currentStudentData.user_data.selections,
-                                      currentStudentData.contents_data.flatMap((m) => m.problemDatas),
-                                      15,
-                                  ).map((arr, idx) => (
-                                      <Progress
-                                          mode
-                                          key={idx}
-                                          idx={idx}
-                                          selections={arr}
-                                          problemNumbers={999}
-                                          handsUp={handsUpList}
-                                          teacherSelected={teacherSelectedList}
-                                          onDoubleClick={progressDoubleClick}
-                                      />
-                                  ))
-                                : null}
-                            <ScoringResults
-                                open={scoringResultsOpen}
-                                userData={currentStudentData.user_data.selections}
-                                handsUp={handsUpList}
-                                teacherSelected={teacherSelectedList}
-                                spentTime={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
-                                contentsData={currentStudentData.contents_data}
-                                actionClickHandsUpButton={progressDoubleClick}
-                                handleClose={() => {
-                                    setScoringResultsOpen(false);
-                                }}
-                            />
-                        </div>
+                        <div style={{ paddingBottom: '30px' }} className="progress"></div>
                     </section>
 
                     <section className="student-report-timetrack">

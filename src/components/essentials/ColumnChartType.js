@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
 import CategorySelector from '../../controllers/CategorySelector';
+import styled from 'styled-components';
+
+const ChartRoot = styled.div`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const ChartWrapper = styled.div`
+    width: 100%;
+`;
 
 const randomArrSet = (array, length = array.length) => {
     if (length > array.length) return array;
@@ -30,8 +42,9 @@ function ColumnChartProblem({ datas, subject }) {
         ],
         options: {
             chart: {
+                width: '100%',
+                height: '100%',
                 type: 'bar',
-                height: 350,
             },
             plotOptions: {
                 bar: {
@@ -73,11 +86,11 @@ function ColumnChartProblem({ datas, subject }) {
         },
     };
     return (
-        <div id="chart-wrapper">
-            <div id="chart">
+        <ChartRoot>
+            <ChartWrapper id="chart">
                 <Chart options={state.options} series={state.series} type="bar" height={350} />
-            </div>
-        </div>
+            </ChartWrapper>
+        </ChartRoot>
     );
 }
 

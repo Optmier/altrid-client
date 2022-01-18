@@ -1,13 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-control-regex */
 import React, { useEffect, useState } from 'react';
-import ClassWrapper from '../essentials/ClassWrapper';
 import ClassDialog from '../essentials/ClassDialog';
 import ModifyButton from '../essentials/ModifyButton';
 import TotalProgress from './TotalProgress';
 import CardStudent from './CardStudent';
 import CardRoot from '../essentials/CardRoot';
-import CardLists from '../essentials/CardLists';
 import styled from 'styled-components';
 import ColumnChartProblem from '../essentials/ColumnChartProblem';
 import ColumnChartType from '../essentials/ColumnChartType';
@@ -27,6 +25,8 @@ import { SecondsToHoursAndMinutes } from '../essentials/TimeChange';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import Button from '../../AltridUI/Button/Button';
 import CategorySelector from '../../controllers/CategorySelector';
+import Typography from '../../AltridUI/Typography/Typography';
+import { Grid, withStyles } from '@material-ui/core';
 
 // const pad = (n, width) => {
 //     n = n + '';
@@ -47,10 +47,13 @@ const LimitFuncWrapper = styled.div`
     width: 95%;
     height: 95%;
     background: #ffffff3c;
+    backdrop-filter: blur(4px);
     font-size: 1.2rem;
     font-weight: 500;
     z-index: 1000;
     color: rgb(96, 95, 96);
+    top: 0;
+    user-select: none;
     & svg {
         margin-right: 15px;
     }
@@ -62,6 +65,209 @@ const LimitFuncWrapper = styled.div`
         }
     }
 `;
+
+const ReportClassRoot = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 36px;
+    max-width: 960px;
+    height: 100%;
+    @media (max-width: 640px) {
+        margin-top: 30px;
+    }
+`;
+const TopInfoSection = styled.section`
+    display: flex;
+    flex-direction: column;
+`;
+const AssignmentTitle = styled.div`
+    & div.altrid-typography {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+`;
+const AssignmentDescription = styled.div`
+    margin-top: 8px;
+`;
+const AssignmentInfoBox = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 32px;
+    padding: 16px 32px;
+    @media (max-width: 640px) {
+        margin-top: 16px;
+        padding: 16px;
+    }
+`;
+const AssignmentInfoItem = styled.div`
+    align-items: center;
+    display: flex;
+    & + & {
+        margin-top: 8px;
+    }
+`;
+const InfoItemKey = styled.div``;
+const InfoItemValue = styled.div`
+    margin-left: 8px;
+`;
+////////////////////////////////////////////////////////////
+const ScoringSummarySection = styled.section`
+    margin-top: 48px;
+    @media (max-width: 640px) {
+        margin-top: 48px;
+    }
+`;
+/////////////////////////////////////////////////////////////
+const CompareGraphSection = styled.section`
+    margin-top: 48px;
+    @media (max-width: 640px) {
+        margin-top: 48px;
+    }
+`;
+const TypeAchievesIndicator = styled.div`
+    align-items: center;
+    display: flex;
+    margin-top: -8px;
+`;
+const TypeAchievesIndicatorText = styled.div`
+    margin-left: 6px;
+`;
+const TypeAchievesIndicatorLink = styled.a`
+    margin-left: 8px;
+    & div.altrid-typography {
+        text-decoration: underline;
+    }
+`;
+const CompareGraphSummary = styled.div`
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding: 34px 32px;
+    @media (max-width: 640px) {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 16px;
+    }
+`;
+const CompareGraphSummaryLeft = styled.div`
+    display: flex;
+    @media (max-width: 640px) {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+`;
+const CompareGraphSummaryItem = styled.div`
+    align-items: center;
+    display: flex;
+    & + & {
+        margin-left: 20px;
+    }
+    & span.key {
+        color: #4d5c6a;
+    }
+    & span.value {
+        color: #ff6937;
+        margin-left: 16px;
+    }
+    @media (max-width: 640px) {
+        align-items: flex-start;
+        flex-direction: column;
+
+        & + & {
+            margin-left: 0;
+            margin-top: 16px;
+        }
+        & span.key {
+        }
+        & span.value {
+            display: block;
+            margin-left: 0;
+            margin-top: 8px;
+        }
+    }
+`;
+const CompareGraphSummaryRight = styled.div`
+    @media (max-width: 640px) {
+        margin-top: 16px;
+    }
+`;
+const ChartChangeOptionSelect = styled.select`
+    background: url('../../../assets/ic_select_ext.png') no-repeat 90% 50%;
+    border: 1.5px solid #6c46a1;
+    border-radius: 104px;
+    color: #6c46a1;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: -0.02em;
+    min-width: 140px;
+    padding: 8px 16px;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    &::-ms-expand {
+        display: none;
+    }
+`;
+const CompareGraphArea = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    margin-top: 8px;
+    padding: 24px;
+    position: relative;
+    @media (max-width: 640px) {
+        padding: 12px;
+    }
+`;
+/////////////////////////////////////////////////////////
+const StudentCardsSection = styled.section`
+    margin-top: 48px;
+    @media (max-width: 640px) {
+        margin-top: 48px;
+    }
+`;
+const StudentCardsSortSelect = styled.select`
+    background: url('../../../assets/ic_select_ext.png') no-repeat 90% 50%;
+    background-color: transparent;
+    border: 1.5px solid #6c46a1;
+    border-radius: 104px;
+    color: #6c46a1;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: -0.02em;
+    width: 120px;
+    padding: 3px 12px;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    &::-ms-expand {
+        display: none;
+    }
+`;
+const GridResponsive = withStyles((theme) => ({
+    'spacing-xs-2': {
+        '@media (max-width: 640px)': {
+            width: 'calc(100% + 8px)',
+            margin: -4,
+            '& .MuiGrid-item': {
+                padding: 4,
+            },
+        },
+    },
+}))(Grid);
 
 function ReportClass({ match, history }) {
     const { num, activedNum } = match.params;
@@ -467,9 +673,30 @@ function ReportClass({ match, history }) {
 
     useEffect(() => {
         if (!studentsData || studentsData.length < 1) return;
-
         fecthCalculateStudentData();
     }, [studentsData]);
+
+    const { leftNavGlobal } = useSelector((state) => state.RdxGlobalLeftNavState);
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const [gridMdBreakpoint, setGridMdBreakpoint] = useState(false);
+    const [gridSmBreakpoint, setGridSmBreakpoint] = useState(false);
+    useEffect(() => {
+        const updateWindowDimensions = () => {
+            setScreenWidth(window.innerWidth);
+        };
+        window.addEventListener('resize', updateWindowDimensions);
+        return () => window.removeEventListener('resize', updateWindowDimensions);
+    }, []);
+
+    useEffect(() => {
+        if (screenWidth < 1100 && leftNavGlobal) {
+            setGridMdBreakpoint(true);
+        } else {
+            setGridMdBreakpoint(false);
+        }
+        if (screenWidth > 902 && leftNavGlobal) setGridSmBreakpoint(true);
+        else setGridSmBreakpoint(false);
+    }, [screenWidth, leftNavGlobal]);
 
     //error check 1. 우리반이 아닌 다른 반 리포트에 접근할려고 할때
     if (data && data.idx === undefined) return <Error />;
@@ -486,44 +713,43 @@ function ReportClass({ match, history }) {
     }
 
     return (
-        <div style={{ width: '100%', paddingBottom: '200px' }}>
+        <>
             <ClassDialog type="test" subType={subTypeState} open={testDialogopen} handleDialogClose={handleTestDialogClose} />
             <ClassDialog type="date" subType="modify" open={dateDialogopen} handleDialogClose={handleDateDialogClose} />
             <ClassDialogDelete ver="assignment" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
-
-            <ClassWrapper col={true}>
-                {/* <ClassHeaderBox /> */}
-                {/* <BranchNav deps="2" /> */}
-                <div className="class-report-root">
-                    <div className="class-report-header">
-                        <div className="class-report-header-left">
-                            <h3>{title}</h3>
-                            <p>{description}</p>
-                        </div>
-                        {/* <div className="class-report-header-right">
-                            <IsPresence type="eye" able={eyetrack} align="left" fontSize="0.94rem" />
-                            <ToggleSwitch
-                                isStarted={new Date(mainReportData ? mainReportData.created : null).getTime() <= serverdate.datetime}
-                                toggle={toggleState['checked']}
-                                handleToggleChange={handleToggleChange}
-                                type="share2"
-                                name="checked"
-                            />
-                        </div> */}
-                    </div>
-                    <section className="class-report-info">
-                        <div className="report-box">
-                            <div className="report-row">
-                                <span className="left-desc">문항수</span>
-                                <span className="left-content">
+            <ReportClassRoot>
+                <TopInfoSection>
+                    <AssignmentTitle>
+                        <Typography type="heading" size="s" bold>
+                            {title}
+                        </Typography>
+                    </AssignmentTitle>
+                    <AssignmentDescription>
+                        <Typography type="label" size="l">
+                            {description}
+                        </Typography>
+                    </AssignmentDescription>
+                    <AssignmentInfoBox>
+                        <AssignmentInfoItem>
+                            <InfoItemKey>
+                                <Typography type="label" size="l" bold>
+                                    문항 수
+                                </Typography>
+                            </InfoItemKey>
+                            <InfoItemValue>
+                                <Typography type="label" size="l">
                                     {problemNumbers}
-                                    문제
-                                </span>
-                            </div>
-
-                            <div className="report-row">
-                                <span className="left-desc">제한 시간</span>
-                                <span className="left-content">
+                                </Typography>
+                            </InfoItemValue>
+                        </AssignmentInfoItem>
+                        <AssignmentInfoItem>
+                            <InfoItemKey>
+                                <Typography type="label" size="l" bold>
+                                    제한 시간
+                                </Typography>
+                            </InfoItemKey>
+                            <InfoItemValue>
+                                <Typography type="label" size="l">
                                     {timeLimit === -2
                                         ? '없음'
                                         : ((timeLimit) => {
@@ -533,178 +759,144 @@ function ReportClass({ match, history }) {
                                               str += parted[1] + '분';
                                               return str;
                                           })(timeLimit)}
-                                </span>
-                            </div>
-                            <div className="report-row">
-                                <span className="left-desc">과제 기한</span>
-                                <span className="left-content tablet-responsive">
+                                </Typography>
+                            </InfoItemValue>
+                        </AssignmentInfoItem>
+                        <AssignmentInfoItem>
+                            <InfoItemKey>
+                                <Typography type="label" size="l" bold>
+                                    과제 기한
+                                </Typography>
+                            </InfoItemKey>
+                            <InfoItemValue>
+                                <Typography type="label" size="l">
                                     <span>{startDate} ~ </span>{' '}
                                     <span>
                                         {dueDate} <ModifyButton handleDateChange={handleDateChange} />
                                     </span>
-                                </span>
-                            </div>
-                            <div className="report-row">
-                                <span className="left-desc">제출한 학생</span>
-                                <span className="left-content">
+                                </Typography>
+                            </InfoItemValue>
+                        </AssignmentInfoItem>
+                        <AssignmentInfoItem>
+                            <InfoItemKey>
+                                <Typography type="label" size="l" bold>
+                                    제출한 학생
+                                </Typography>
+                            </InfoItemKey>
+                            <InfoItemValue>
+                                <Typography type="label" size="l">
                                     <span>
                                         {studentsData.filter((s) => s.submitted).length} / {studentsData.length}
                                     </span>
-                                </span>
-                            </div>
-                        </div>
-                        {/* <div className="report-box">
-                            <div className="report-row">
-                                <div className="right-top">제출한 학생</div>
-                            </div>
-                            <div className="report-row">
-                                <div className="right-bottom">
-                                    {studentsData.filter((s) => s.submitted).length} / {studentsData.length}
-                                </div>
-                            </div>
-                        </div> */}
-                    </section>
-                    <section className="class-report-progress">
-                        <GroupBox
-                            title="채점 결과 요약"
-                            rightComponent={
-                                <NavLink to={`${match.url}/hands-up`}>
-                                    <Button variant="light" colors="purple">
-                                        학생 손들기 목록 확인
-                                    </Button>
-                                </NavLink>
-                            }
-                        />
-                        <TotalProgress studentList={studentsData} problemNumbers={problemNumbers}></TotalProgress>
-                    </section>
-
-                    <section className="class-report-graph">
-                        <GroupBox title="점수 비교 그래프"></GroupBox>
-                        {achievesForTypes.value >= 100 ? (
-                            <div style={{ display: 'flex', alignItems: 'center' }} className="descrition">
-                                <svg
-                                    style={{ marginRight: '6px', marginBottom: '8px' }}
-                                    width="12"
-                                    height="15"
-                                    viewBox="0 0 12 15"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M3.29393 11C3.09593 10.1513 2.20259 9.45732 1.83593 8.99998C1.20805 8.21551 0.814559 7.26963 0.70077 6.27129C0.586981 5.27296 0.757528 4.26279 1.19276 3.35715C1.628 2.4515 2.31022 1.68723 3.16083 1.15237C4.01145 0.617512 4.99585 0.333824 6.00065 0.333984C7.00545 0.334145 7.98976 0.61815 8.8402 1.15328C9.69065 1.68841 10.3726 2.4529 10.8076 3.35869C11.2425 4.26447 11.4127 5.27469 11.2986 6.27299C11.1845 7.27129 10.7907 8.21705 10.1626 9.00132C9.79593 9.45798 8.90393 10.152 8.70593 11H3.29326H3.29393ZM8.66659 12.3333V13C8.66659 13.3536 8.52612 13.6927 8.27607 13.9428C8.02602 14.1928 7.68688 14.3333 7.33326 14.3333H4.66659C4.31297 14.3333 3.97383 14.1928 3.72379 13.9428C3.47374 13.6927 3.33326 13.3536 3.33326 13V12.3333H8.66659ZM6.66659 5.66998V2.99998L3.66659 7.00332H5.33326V9.66998L8.33326 5.66998H6.66659Z"
-                                        fill="#FFC043"
-                                    />
-                                </svg>
-
-                                <p style={{ marginBottom: '8px', marginRight: '6px' }}>과제 최소 조건을 만족하셨습니다.</p>
-                                <a
-                                    style={{ textDecoration: 'underline', marginBottom: '8px' }}
-                                    href="https://www.notion.so/a4daf8676b2b4460b75613f25249abf3"
-                                >
-                                    조건 확인하기
-                                </a>
-                            </div>
-                        ) : (
-                            <div style={{ display: 'flex', alignItems: 'center' }} className="descrition">
-                                <svg
-                                    style={{ marginRight: '6px', marginBottom: '8px' }}
-                                    width="12"
-                                    height="15"
-                                    viewBox="0 0 12 15"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M3.29393 11C3.09593 10.1513 2.20259 9.45732 1.83593 8.99998C1.20805 8.21551 0.814559 7.26963 0.70077 6.27129C0.586981 5.27296 0.757528 4.26279 1.19276 3.35715C1.628 2.4515 2.31022 1.68723 3.16083 1.15237C4.01145 0.617512 4.99585 0.333824 6.00065 0.333984C7.00545 0.334145 7.98976 0.61815 8.8402 1.15328C9.69065 1.68841 10.3726 2.4529 10.8076 3.35869C11.2425 4.26447 11.4127 5.27469 11.2986 6.27299C11.1845 7.27129 10.7907 8.21705 10.1626 9.00132C9.79593 9.45798 8.90393 10.152 8.70593 11H3.29326H3.29393ZM8.66659 12.3333V13C8.66659 13.3536 8.52612 13.6927 8.27607 13.9428C8.02602 14.1928 7.68688 14.3333 7.33326 14.3333H4.66659C4.31297 14.3333 3.97383 14.1928 3.72379 13.9428C3.47374 13.6927 3.33326 13.3536 3.33326 13V12.3333H8.66659ZM6.66659 5.66998V2.99998L3.66659 7.00332H5.33326V9.66998L8.33326 5.66998H6.66659Z"
-                                        fill="#FFC043"
-                                    />
-                                </svg>
-
-                                <p style={{ marginBottom: '8px', marginRight: '6px' }}>과제 최소 조건을 만족하지 못했습니다.</p>
-                                <a
-                                    style={{ textDecoration: 'underline', marginBottom: '8px' }}
-                                    href="https://www.notion.so/a4daf8676b2b4460b75613f25249abf3"
-                                >
-                                    조건 확인하기
-                                </a>
-                            </div>
-                        )}
-
-                        {/* <div className="class-report-title graph-title">
-                            점수 비교 그래프
-                            <div className="title-graph-right">
-                                <TypeBanner
-                                    situation={achievesForTypes.value < 100 ? 'warning' : 'success'}
-                                    value={achievesForTypes.value}
-                                />
-                            </div>
-                        </div> */}
-                        <div className="graph-box-header">
-                            <div className="tablet-responsive">
-                                <div>
-                                    <span>가장 취약한 문제 </span> {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
-                                    {Math.min(...avgScoresOfNumber).toFixed(1)}%)
-                                </div>
-                                <div>
-                                    <span>가장 취약한 영역 </span>
-                                    {
-                                        CategorySelector(subject).filter(
-                                            (p) =>
-                                                p.id ===
+                                </Typography>
+                            </InfoItemValue>
+                        </AssignmentInfoItem>
+                    </AssignmentInfoBox>
+                </TopInfoSection>
+                <ScoringSummarySection>
+                    <GroupBox
+                        title="채점 결과 요약"
+                        rightComponent={
+                            <NavLink to={`${match.url}/hands-up`}>
+                                <Button variant="light" colors="purple" sizes="small">
+                                    손들기 목록 보기
+                                </Button>
+                            </NavLink>
+                        }
+                    />
+                    <TotalProgress studentList={studentsData} problemNumbers={problemNumbers}></TotalProgress>
+                </ScoringSummarySection>
+                <CompareGraphSection>
+                    <GroupBox title="점수 비교 그래프">
+                        <TypeAchievesIndicator>
+                            {achievesForTypes.value >= 100 ? (
+                                <>
+                                    <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M3.29393 11C3.09593 10.1513 2.20259 9.45732 1.83593 8.99998C1.20805 8.21551 0.814559 7.26963 0.70077 6.27129C0.586981 5.27296 0.757528 4.26279 1.19276 3.35715C1.628 2.4515 2.31022 1.68723 3.16083 1.15237C4.01145 0.617512 4.99585 0.333824 6.00065 0.333984C7.00545 0.334145 7.98976 0.61815 8.8402 1.15328C9.69065 1.68841 10.3726 2.4529 10.8076 3.35869C11.2425 4.26447 11.4127 5.27469 11.2986 6.27299C11.1845 7.27129 10.7907 8.21705 10.1626 9.00132C9.79593 9.45798 8.90393 10.152 8.70593 11H3.29326H3.29393ZM8.66659 12.3333V13C8.66659 13.3536 8.52612 13.6927 8.27607 13.9428C8.02602 14.1928 7.68688 14.3333 7.33326 14.3333H4.66659C4.31297 14.3333 3.97383 14.1928 3.72379 13.9428C3.47374 13.6927 3.33326 13.3536 3.33326 13V12.3333H8.66659ZM6.66659 5.66998V2.99998L3.66659 7.00332H5.33326V9.66998L8.33326 5.66998H6.66659Z"
+                                            fill="#FFC043"
+                                        />
+                                    </svg>
+                                    <TypeAchievesIndicatorText>
+                                        <Typography type="label" size="xl">
+                                            과제 최소 조건을 만족하셨습니다.
+                                        </Typography>
+                                    </TypeAchievesIndicatorText>
+                                    <TypeAchievesIndicatorLink href="https://www.notion.so/a4daf8676b2b4460b75613f25249abf3">
+                                        <Typography type="label" size="xl">
+                                            조건 확인하기
+                                        </Typography>
+                                    </TypeAchievesIndicatorLink>
+                                </>
+                            ) : (
+                                <>
+                                    <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M3.29393 11C3.09593 10.1513 2.20259 9.45732 1.83593 8.99998C1.20805 8.21551 0.814559 7.26963 0.70077 6.27129C0.586981 5.27296 0.757528 4.26279 1.19276 3.35715C1.628 2.4515 2.31022 1.68723 3.16083 1.15237C4.01145 0.617512 4.99585 0.333824 6.00065 0.333984C7.00545 0.334145 7.98976 0.61815 8.8402 1.15328C9.69065 1.68841 10.3726 2.4529 10.8076 3.35869C11.2425 4.26447 11.4127 5.27469 11.2986 6.27299C11.1845 7.27129 10.7907 8.21705 10.1626 9.00132C9.79593 9.45798 8.90393 10.152 8.70593 11H3.29326H3.29393ZM8.66659 12.3333V13C8.66659 13.3536 8.52612 13.6927 8.27607 13.9428C8.02602 14.1928 7.68688 14.3333 7.33326 14.3333H4.66659C4.31297 14.3333 3.97383 14.1928 3.72379 13.9428C3.47374 13.6927 3.33326 13.3536 3.33326 13V12.3333H8.66659ZM6.66659 5.66998V2.99998L3.66659 7.00332H5.33326V9.66998L8.33326 5.66998H6.66659Z"
+                                            fill="#FFC043"
+                                        />
+                                    </svg>
+                                    <TypeAchievesIndicatorText>
+                                        <Typography type="label" size="xl">
+                                            과제 최소 조건을 만족하지 못했습니다.
+                                        </Typography>
+                                    </TypeAchievesIndicatorText>
+                                    <TypeAchievesIndicatorLink href="https://www.notion.so/a4daf8676b2b4460b75613f25249abf3">
+                                        <Typography type="label" size="xl">
+                                            조건 확인하기
+                                        </Typography>
+                                    </TypeAchievesIndicatorLink>
+                                </>
+                            )}
+                        </TypeAchievesIndicator>
+                        <CompareGraphSummary>
+                            <CompareGraphSummaryLeft>
+                                <CompareGraphSummaryItem>
+                                    <Typography type="label" size="xxl" bold>
+                                        <span className="key">가장 취약한 문제</span>
+                                    </Typography>
+                                    <Typography type="label" size="xxl" bold>
+                                        <span className="value">
+                                            {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
+                                            {Math.min(...avgScoresOfNumber).toFixed(1)}%)
+                                        </span>
+                                    </Typography>
+                                </CompareGraphSummaryItem>
+                                <CompareGraphSummaryItem>
+                                    <Typography type="label" size="xxl" bold>
+                                        <span className="key">가장 취약한 영역</span>
+                                    </Typography>
+                                    <Typography type="label" size="xxl" bold>
+                                        <span className="value">
+                                            {
+                                                CategorySelector(subject).filter(
+                                                    (p) =>
+                                                        p.id ===
+                                                        achievesForTypes.allExists
+                                                            .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                                            .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0]
+                                                            .category,
+                                                )[0].name
+                                            }
+                                            (
+                                            {(
                                                 achievesForTypes.allExists
                                                     .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
-                                                    .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].category,
-                                        )[0].name
-                                    }
-                                    (
-                                    {(
-                                        achievesForTypes.allExists
-                                            .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
-                                            .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
-                                    ).toFixed(1) || 0}
-                                    %)
-                                </div>
-                            </div>
-                            <div className="web-responsive">
-                                <span style={{ color: '#4D5C6A' }}>가장 취약한 문제 </span>{' '}
-                                <div style={{ color: '#FF6937' }}>
-                                    {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
-                                    {Math.min(...avgScoresOfNumber).toFixed(1)}%)
-                                </div>
-                            </div>
-                            <div className="web-responsive">
-                                <span style={{ color: '#4D5C6A' }}>가장 취약한 영역 </span>
-                                <div style={{ color: '#FF6937' }}>
-                                    {
-                                        CategorySelector(subject).filter(
-                                            (p) =>
-                                                p.id ===
-                                                achievesForTypes.allExists
-                                                    .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
-                                                    .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].category,
-                                        )[0].name
-                                    }
-                                    (
-                                    {(
-                                        achievesForTypes.allExists
-                                            .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
-                                            .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
-                                    ).toFixed(1) || 0}
-                                    %)
-                                </div>
-                            </div>
-                            <div>
-                                <select
-                                    style={{ borderRadius: '104px', color: '#6C46A1', border: '1.5px solid #6C46A1' }}
-                                    name="chart-option"
-                                    onChange={handleSelect}
-                                >
+                                                    .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
+                                            ).toFixed(1) || 0}
+                                            %)
+                                        </span>
+                                    </Typography>
+                                </CompareGraphSummaryItem>
+                            </CompareGraphSummaryLeft>
+                            <CompareGraphSummaryRight>
+                                <ChartChangeOptionSelect name="chart-option" onChange={handleSelect}>
                                     <option value="0">문제별 정답률</option>
                                     <option value="1">유형별 정답률</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className="graph-box">
+                                </ChartChangeOptionSelect>
+                            </CompareGraphSummaryRight>
+                        </CompareGraphSummary>
+                        <CompareGraphArea>
                             {selectState === '0' ? (
                                 <ColumnChartProblem datas={avgScoresOfNumber} />
                             ) : achievesForTypes.value >= 100 ? (
@@ -728,54 +920,45 @@ function ReportClass({ match, history }) {
                                     <ColumnChartType datas={0} subject={subject} />
                                 </>
                             )}
-                        </div>
-                    </section>
-                </div>
-            </ClassWrapper>
-
-            <CardLists
-                upperDeck={
-                    <>
-                        <GroupBox
-                            title="학생별 리포트"
-                            rightComponent={
-                                <select
-                                    style={{
-                                        border: ' 1.5px solid #6C46A1',
-                                        borderRadius: ' 104px',
-                                        width: '97px',
-                                        height: '28px',
-                                        backgroundColor: '#F6F8F9',
-                                        color: ' #6C46A1',
-                                        textAlign: 'center',
-                                    }}
-                                    name="student-option"
-                                    onChange={handleSortStudentsCard}
+                        </CompareGraphArea>
+                    </GroupBox>
+                </CompareGraphSection>
+                <StudentCardsSection>
+                    <GroupBox
+                        title="학생별 리포트"
+                        rightComponent={
+                            <StudentCardsSortSelect name="student-option" onChange={handleSortStudentsCard}>
+                                <option value="0">제출 순</option>
+                                <option value="1">이름 순</option>
+                                <option value="2">점수 순</option>
+                                <option value="3">소요시간 순</option>
+                            </StudentCardsSortSelect>
+                        }
+                    >
+                        <GridResponsive container spacing={2}>
+                            {studentsData.map((data) => (
+                                <GridResponsive
+                                    item
+                                    key={data.student_id}
+                                    md={gridMdBreakpoint ? 12 : 6}
+                                    sm={gridSmBreakpoint ? 12 : 6}
+                                    xs={12}
                                 >
-                                    <option value="0">제출 순</option>
-                                    <option value="1">이름 순</option>
-                                    <option value="2">점수 순</option>
-                                    <option value="3">소요시간 순</option>
-                                </select>
-                            }
-                        ></GroupBox>
-                    </>
-                }
-            >
-                {studentsData.map((data) => (
-                    <CardRoot key={data.student_id} cardHeight="inherit">
-                        <CardStudent
-                            id={data.student_id}
-                            data={data}
-                            prevData={prevStudentsDataRaw.filter((p) => p.student_id === data.student_id)[0]}
-                            totalProblems={problemNumbers}
-                            achieveRates={achievesForTypes.value}
-                            existsCategories={achievesForTypes.allExists}
-                        />
-                    </CardRoot>
-                ))}
-            </CardLists>
-        </div>
+                                    <CardStudent
+                                        id={data.student_id}
+                                        data={data}
+                                        prevData={prevStudentsDataRaw.filter((p) => p.student_id === data.student_id)[0]}
+                                        totalProblems={problemNumbers}
+                                        achieveRates={achievesForTypes.value}
+                                        existsCategories={achievesForTypes.allExists}
+                                    />
+                                </GridResponsive>
+                            ))}
+                        </GridResponsive>
+                    </GroupBox>
+                </StudentCardsSection>
+            </ReportClassRoot>
+        </>
     );
 }
 

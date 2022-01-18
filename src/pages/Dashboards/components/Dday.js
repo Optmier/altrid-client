@@ -1,28 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react';
-import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
 import DashboardDDay from '../../../controllers/DashboardDDay';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
 import styled from 'styled-components';
 import Typography from '../../../AltridUI/Typography/Typography';
 import moment from 'moment-timezone';
-import { Slide, Tooltip } from '@material-ui/core';
 import AlertSnackbar from '../../../AltridUI/Snackbar/AlertSnackbar';
-
-const useStyles = makeStyles((theme) => ({
-    container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    TextField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: 200,
-    },
-}));
+import Tooltip from '../../../AltridUI/Tooltip/Tooltip';
 
 const DDayRoot = styled.div`
     align-items: center;
@@ -82,10 +65,6 @@ const BtnCompleted = styled.button`
     margin-left: 4px;
 `;
 
-function SlideTransition(props) {
-    return <Slide {...props} direction="up" />;
-}
-
 function Dday(props) {
     const classNum = props.classNum;
     const [dDayEvent, setDDayEvent] = useState('');
@@ -138,12 +117,12 @@ function Dday(props) {
             console.log(msg, res);
             if (msg === 'success') {
                 openAlertSnackbar('D-Day 가 저장되었습니다.', 'success');
+                setDDayEvent(valueEvent);
+                setDDayDate(valueDate);
             } else {
                 openAlertSnackbar('저장에 실패했습니다.\n문제가 지속되면 문의 바랍니다.', 'error');
             }
         });
-        setDDayEvent(valueEvent);
-        setDDayDate(valueDate);
         unsetEditMode();
     };
 
@@ -217,7 +196,6 @@ function Dday(props) {
                 title={alertSnackbarConfig.title}
                 type={alertSnackbarConfig.type}
                 duration={alertSnackbarConfig.duration}
-                TransitionComponent={SlideTransition}
                 onClose={alertSnackbarClose}
             />
             <DDayRoot onClick={actionClickRoot} editMode={edit}>

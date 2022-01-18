@@ -1,44 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-
-const getColorSeries400 = (colorName) => {
-    switch (colorName) {
-        case 'purple':
-            return '#6C46A1';
-        case 'blue':
-            return '#276EF1';
-        case 'green':
-            return '#0CB573';
-        case 'yellow':
-            return '#FFC043';
-        case 'orange':
-            return '#FF6937';
-        case 'red':
-            return '#E11900';
-        default:
-            return '#77818B';
-    }
-};
-
-const getColorSeries300 = (colorName) => {
-    switch (colorName) {
-        case 'purple':
-            return '#957FCE';
-        case 'blue':
-            return '#5B91F5';
-        case 'green':
-            return '#3AE2A1';
-        case 'yellow':
-            return '#FFCF70';
-        case 'orange':
-            return '#FA9269';
-        case 'red':
-            return '#E85C4A';
-        default:
-            return '#9AA5AF';
-    }
-};
+import { getColorSets } from '../ThemeColors/ColorSets';
 
 const CheckboxRoot = styled.div`
     align-items: center;
@@ -60,14 +23,14 @@ const CheckboxRoot = styled.div`
         background-color: ${({ variant, colors, checked, disabled }) => {
             if (variant === 'lined') return disabled ? '#F6F8F9' : 'transparent';
             else if (variant === 'filled') {
-                if (checked) return disabled ? '#F6F8F9' : getColorSeries400(colors);
+                if (checked) return disabled ? '#F6F8F9' : getColorSets(400, colors);
                 else return disabled ? '#F6F8F9' : null;
             }
         }};
         border: 2px solid;
         border-color: ${({ variant, colors, disabled }) => {
             if (variant === 'lined') {
-                return disabled ? '#E9EDEF' : getColorSeries400(colors);
+                return disabled ? '#E9EDEF' : getColorSets(400, colors);
             } else if (variant === 'filled') {
                 return 'transparent';
             }
@@ -82,7 +45,7 @@ const CheckboxRoot = styled.div`
 
     & svg.alt-checkbox-icon {
         fill: ${({ variant, colors, checked, disabled }) => {
-            if (variant === 'lined' && checked) return disabled ? '#E9EDEF' : getColorSeries400(colors);
+            if (variant === 'lined' && checked) return disabled ? '#E9EDEF' : getColorSets(400, colors);
             else if (variant === 'filled' && checked) return disabled ? '#E9EDEF' : '#ffffff';
             else return 'transparent';
         }};
@@ -94,16 +57,16 @@ const CheckboxRoot = styled.div`
             background-color: ${({ variant, colors, checked, disabled }) => {
                 if (variant === 'lined') {
                 } else if (variant === 'filled') {
-                    return checked ? getColorSeries300(colors) : '#F6F8F9';
+                    return checked ? getColorSets(300, colors) : '#F6F8F9';
                 }
             }};
             border-color: ${({ variant, colors }) => {
-                if (variant === 'lined') return getColorSeries300(colors);
+                if (variant === 'lined') return getColorSets(300, colors);
             }};
         }
         & svg.alt-checkbox-icon {
             fill: ${({ variant, colors, checked, disabled }) => {
-                if (variant === 'lined' && checked) return getColorSeries300(colors);
+                if (variant === 'lined' && checked) return getColorSets(300, colors);
                 else if (variant === 'filled' && checked) return '#ffffff';
                 else return 'transparent';
             }};

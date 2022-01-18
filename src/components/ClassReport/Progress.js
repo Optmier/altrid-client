@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Tooltip, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
+import Tooltip from '../../AltridUI/Tooltip/Tooltip';
+import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
 
 const StyleTestSquareList = styled.div`
     width: 100%;
@@ -53,45 +55,45 @@ function Progress({ mode, idx, selections, problemNumbers, onDoubleClick, handsU
             if (!selections || !selections[i] || selections[i] === -1) {
                 setSquars((squares) => [
                     ...squares,
-                    <HtmlTooltip key={i} title={!idx ? i + 1 + '번' : i + 1 + limiter * idx + '번'} placement="top">
+                    <Tooltip key={i} title={!idx ? i + 1 + '번' : i + 1 + limiter * idx + '번'} placement="top">
                         <div
                             key={i}
                             className="square"
-                            style={{ backgroundColor: '#E5E5E5' }}
+                            style={{ backgroundColor: getColorSets(200, 'gray') }}
                             // onDoubleClick={() => onDoubleClick(i + limiter * idx, selections[i].qUUID, isHandsUp, isTeacherSelected)}
                         >
                             <p style={{ color: '#fff' }}>미응시</p>
                             {/* {isHandsUp ? <PanToolIcon className="inner-icon hands-up" fontSize="small" /> : null}
                             {isTeacherSelected ? <CheckCircleOutlineIcon className="inner-icon teacher-selected" fontSize="small" /> : null} */}
                         </div>
-                    </HtmlTooltip>,
+                    </Tooltip>,
                 ]);
             } else if (selections[i] === -2) {
                 setSquars((squares) => [...squares, <div key={i} className="square" style={{ backgroundColor: '#F6F8F9' }}></div>]);
             } else if (selections[i].correct) {
                 setSquars((squares) => [
                     ...squares,
-                    <HtmlTooltip key={i} title={!idx ? i + 1 + '번' : i + 1 + limiter * idx + '번'} placement="top">
+                    <Tooltip key={i} title={!idx ? i + 1 + '번' : i + 1 + limiter * idx + '번'} placement="top">
                         <div
                             key={i}
                             className="square"
-                            style={{ backgroundColor: '#13E2A1' }}
+                            style={{ backgroundColor: getColorSets(400, 'green') }}
                             // onDoubleClick={() => onDoubleClick(i + limiter * idx, selections[i].qUUID, isHandsUp, isTeacherSelected)}
                         >
                             <p style={{ color: '#fff' }}>정답</p>
                             {/* {isHandsUp ? <PanToolIcon className="inner-icon hands-up" fontSize="small" /> : null} */}
                             {/* {isTeacherSelected ? <CheckCircleOutlineIcon className="inner-icon teacher-selected" fontSize="small" /> : null} */}
                         </div>
-                    </HtmlTooltip>,
+                    </Tooltip>,
                 ]);
             } else if (!selections[i].correct) {
                 setSquars((squares) => [
                     ...squares,
-                    <HtmlTooltip key={i} title={!idx ? i + 1 + '번' : i + 1 + limiter * idx + '번'} placement="bottom-end">
+                    <Tooltip key={i} title={!idx ? i + 1 + '번' : i + 1 + limiter * idx + '번'} placement="bottom-end">
                         <div
                             key={i}
                             className="square"
-                            style={{ backgroundColor: '#FF7A60' }}
+                            style={{ backgroundColor: getColorSets(400, 'orange') }}
 
                             // onDoubleClick={() => onDoubleClick(i + limiter * idx, selections[i].qUUID, isHandsUp, isTeacherSelected)}
                         >
@@ -99,7 +101,7 @@ function Progress({ mode, idx, selections, problemNumbers, onDoubleClick, handsU
                             {/* {isHandsUp ? <PanToolIcon className="inner-icon hands-up" fontSize="small" /> : null} */}
                             {/* {isTeacherSelected ? <CheckCircleOutlineIcon className="inner-icon teacher-selected" fontSize="small" /> : null} */}
                         </div>
-                    </HtmlTooltip>,
+                    </Tooltip>,
                 ]);
             }
         }

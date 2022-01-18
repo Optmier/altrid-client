@@ -1,44 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Radio as MuiRadio, makeStyles } from '@material-ui/core';
-
-const getColorSeries400 = (colorName) => {
-    switch (colorName) {
-        case 'purple':
-            return '#6C46A1';
-        case 'blue':
-            return '#276EF1';
-        case 'green':
-            return '#0CB573';
-        case 'yellow':
-            return '#FFC043';
-        case 'orange':
-            return '#FF6937';
-        case 'red':
-            return '#E11900';
-        default:
-            return '#77818B';
-    }
-};
-
-const getColorSeries300 = (colorName) => {
-    switch (colorName) {
-        case 'purple':
-            return '#957FCE';
-        case 'blue':
-            return '#5B91F5';
-        case 'green':
-            return '#3AE2A1';
-        case 'yellow':
-            return '#FFCF70';
-        case 'orange':
-            return '#FA9269';
-        case 'red':
-            return '#E85C4A';
-        default:
-            return '#9AA5AF';
-    }
-};
+import { getColorSets } from '../ThemeColors/ColorSets';
 
 const useStyles = makeStyles({
     root: {
@@ -65,7 +28,7 @@ const useStyles = makeStyles({
         transition: 'background-color 0.2s',
     },
     checkedIcon: {
-        backgroundColor: ({ colors }) => getColorSeries400(colors),
+        backgroundColor: ({ colors }) => getColorSets(400, colors),
         '&:before': {
             display: 'block',
             width: 16,
@@ -75,7 +38,7 @@ const useStyles = makeStyles({
             content: '""',
         },
         'input:hover ~ &': {
-            backgroundColor: ({ colors, disabled }) => (disabled ? null : getColorSeries300(colors)),
+            backgroundColor: ({ colors, disabled }) => (disabled ? null : getColorSets(300, colors)),
         },
     },
 });

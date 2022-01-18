@@ -1,5 +1,17 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import styled from 'styled-components';
+
+const ChartRoot = styled.div`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const ChartWrapper = styled.div`
+    width: 100%;
+`;
 
 function ColumnChartProblem({ datas }) {
     let state = {};
@@ -15,6 +27,8 @@ function ColumnChartProblem({ datas }) {
         ],
         options: {
             chart: {
+                width: '100%',
+                height: '100%',
                 type: 'bar',
             },
             plotOptions: {
@@ -52,11 +66,11 @@ function ColumnChartProblem({ datas }) {
         },
     };
     return (
-        <div id="chart-wrapper">
-            <div id="chart">
-                <Chart options={state.options} series={state.series} type="bar" width="100%" height="300px" />
-            </div>
-        </div>
+        <ChartRoot>
+            <ChartWrapper id="chart">
+                <Chart options={state.options} series={state.series} type="bar" height={350} />
+            </ChartWrapper>
+        </ChartRoot>
     );
 }
 // function useResize(element = null) {

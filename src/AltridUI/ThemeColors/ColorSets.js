@@ -32,7 +32,7 @@ const getColors050 = (color) => {
         case 'yellow':
             return '#fffaf0';
         case 'green':
-            return '#f0fff9';
+            return '#F0FFF9';
         case 'blue':
             return '#eff3fe';
         case 'purple':
@@ -56,7 +56,7 @@ const getColors100 = (color) => {
         case 'yellow':
             return '#FFF2D9';
         case 'green':
-            return '#FFF2D9';
+            return '#BEF3DF';
         case 'blue':
             return '#D4E2FC';
         case 'purple':
@@ -80,7 +80,7 @@ const getColors200 = (color) => {
         case 'yellow':
             return '#FFE3AC';
         case 'green':
-            return '#3AE2A1';
+            return '#96EAC9';
         case 'blue':
             return '#A0BFF8';
         case 'purple':
@@ -104,7 +104,7 @@ const getColors300 = (color) => {
         case 'yellow':
             return '#FFCF70';
         case 'green':
-            return '#3AE2A1';
+            return '#66D0A7';
         case 'blue':
             return '#5B91F5';
         case 'purple':

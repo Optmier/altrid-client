@@ -1,105 +1,38 @@
 import React from 'react';
 import styled from 'styled-components';
-
-const getColorSeries400 = (colorName) => {
-    switch (colorName) {
-        case 'purple':
-            return '#6C46A1';
-        case 'blue':
-            return '#276EF1';
-        case 'green':
-            return '#0CB573';
-        case 'yellow':
-            return '#FFC043';
-        case 'orange':
-            return '#FF6937';
-        case 'red':
-            return '#E11900';
-        case 'gray':
-            return '#77818B';
-        case 'black':
-            return '#000000';
-        default:
-            return '#77818B';
-    }
-};
-
-const getColorSeries300 = (colorName) => {
-    switch (colorName) {
-        case 'purple':
-            return '#957FCE';
-        case 'blue':
-            return '#5B91F5';
-        case 'green':
-            return '#3AE2A1';
-        case 'yellow':
-            return '#FFCF70';
-        case 'orange':
-            return '#FA9269';
-        case 'red':
-            return '#E85C4A';
-        case 'gray':
-            return '#9AA5AF';
-        case 'black':
-            return '#2D3843';
-        default:
-            return '#9AA5AF';
-    }
-};
-
-const getColorSeries050 = (colorName) => {
-    switch (colorName) {
-        case 'purple':
-            return '#F4F1FA';
-        case 'blue':
-            return '#EFF3FE';
-        case 'green':
-            return '#F0FFF9';
-        case 'yellow':
-            return '#FFFAF0';
-        case 'orange':
-            return '#FFF3EF';
-        case 'red':
-            return '#FFEFED';
-        case 'gray':
-            return '#F6F8F9';
-        case 'black':
-            return '#BFC6CD';
-        default:
-            return '#F6F8F9';
-    }
-};
+import { getColorSets } from '../ThemeColors/ColorSets';
 
 const ButtonRoot = styled.button`
     align-items: center;
     background-color: ${({ colors, variant }) => {
-        if (variant === 'filled') return getColorSeries400(colors);
-        else if (variant === 'light') return getColorSeries050(colors);
+        if (variant === 'filled') return getColorSets(400, colors);
+        else if (variant === 'light') return getColorSets(50, colors);
         else if (variant === 'mono') return '#ffffff';
         else return 'rgba(255, 255, 255, 0)';
     }};
     border: ${({ variant }) => {
+        console.log(variant);
         if (variant === 'filled') return 'none';
         else if (variant === 'outlined') return '2px solid #ffffff';
         else if (variant === 'mono') return '2px solid #9AA5AF';
         else return 'none';
     }};
-    border-color: ${({ colors }) => {
-        return getColorSeries400(colors);
+    border-color: ${({ variant, colors }) => {
+        return variant === 'outlined' ? getColorSets(400, colors) : null;
     }};
     border-radius: 104px;
     color: ${({ variant, colors }) => {
         if (variant === 'filled') return '#ffffff';
         if (variant === 'mono') return '#11171C';
         else {
-            return getColorSeries400(colors);
+            return getColorSets(400, colors);
         }
     }};
     fill: ${({ variant, colors }) => {
         if (variant === 'filled') return '#ffffff';
         if (variant === 'mono') return '#11171C';
         else {
-            return getColorSeries400(colors);
+            return getColorSets(400, colors);
         }
     }};
     display: flex;
@@ -153,23 +86,23 @@ const ButtonRoot = styled.button`
             else if (variant === 'outlined') return 'transparent';
             else if (variant === 'mono') return '#ffffff';
             else if (variant === 'default') return '#E9EDEF';
-            return getColorSeries300(colors);
+            return getColorSets(300, colors);
         }};
         border-color: ${({ colors, variant }) => {
             if (variant === 'mono') return '#E9EDEF';
-            else return getColorSeries300(colors);
+            else return getColorSets(300, colors);
         }};
         color: ${({ colors, variant }) => {
             if (variant === 'filled') return '#ffffff';
             if (variant === 'mono') return '#11171C';
             else if (variant === 'default') return null;
-            return getColorSeries300(colors);
+            return getColorSets(300, colors);
         }};
         fill: ${({ colors, variant }) => {
             if (variant === 'filled') return '#ffffff';
             if (variant === 'mono') return '#11171C';
             else if (variant === 'default') return null;
-            return getColorSeries300(colors);
+            return getColorSets(300, colors);
         }};
     }
 

@@ -1,6 +1,10 @@
 import React from 'react';
 import { Slide, Snackbar, withStyles } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import Success from './Icons/Success';
+import Info from './Icons/Info';
+import Warning from './Icons/Warning';
+import Error from './Icons/Error';
 
 function SlideTransition(props) {
     return <Slide {...props} direction="up" />;
@@ -30,10 +34,14 @@ const MuiSnackbar = withStyles((theme) => ({
 const MuiAlert = withStyles((theme) => ({
     root: {
         borderRadius: 16,
-        boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.1)',
+        boxShadow: 'none',
         fontFamily: 'inherit',
         fontSize: 'inherit',
         fontWeight: 'inherit',
+    },
+    icon: {
+        alignItems: 'center',
+        opacity: 1,
     },
     standardSuccess: {
         backgroundColor: '#F0FFF9',
@@ -51,14 +59,42 @@ const MuiAlert = withStyles((theme) => ({
         backgroundColor: '#FFEFED',
         color: '#AB1300',
     },
+    filledSuccess: {
+        backgroundColor: '#008F58',
+        color: '#ffffff',
+    },
+    filledInfo: {
+        backgroundColor: '#1E54B7',
+        color: '#ffffff',
+    },
+    filledWarning: {
+        backgroundColor: '#BC8B2C',
+        color: '#ffffff',
+    },
+    filledError: {
+        backgroundColor: '#AB1300',
+        color: '#ffffff',
+    },
 }))(Alert);
 
-const InnerAlert = React.forwardRef((props, ref) => <MuiAlert elevation={6} {...props} ref={ref} />);
+const InnerAlert = React.forwardRef((props, ref) => (
+    <MuiAlert
+        elevation={6}
+        {...props}
+        ref={ref}
+        iconMapping={{
+            success: <Success fontSize="inherit" color="inherit" />,
+            info: <Info fontSize="inherit" color="inherit" />,
+            warning: <Warning fontSize="inherit" color="inherit" />,
+            error: <Error fontSize="inherit" color="inherit" />,
+        }}
+    />
+));
 
 function AlertSnackbar({ open, title, type, duration, onClose, children }) {
     return (
         <MuiSnackbar open={open} autoHideDuration={duration} TransitionComponent={SlideTransition} onClose={onClose}>
-            <InnerAlert severity={type} onClose={onClose}>
+            <InnerAlert severity={type} variant="filled" onClose={onClose}>
                 {title}
             </InnerAlert>
         </MuiSnackbar>

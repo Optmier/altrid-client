@@ -9,6 +9,8 @@ import moment from 'moment-timezone';
 import { useEffect } from 'react';
 import ProblemCategories from '../TOFELEditor/ProblemCategories';
 import TooltipCard from '../essentials/TooltipCard';
+import Typography from '../../AltridUI/Typography/Typography';
+import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
 
 const StyleState = styled.div`
     width: 60px;
@@ -24,6 +26,45 @@ const StyleState = styled.div`
     background-color: ${(props) => (props.complete ? '#FFF2D9' : '#707070')};
     color: ${(props) => (props.complete ? '#3B1689' : '#fff')};
 `;
+
+const CardRoot = styled.div`
+    background-color: white;
+    border: 1px solid #e9edef;
+    border-radius: 32px;
+    cursor: ${({ cursorEnabled }) => (cursorEnabled ? 'pointer' : null)};
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    &:hover {
+        border-color: #bfc6cd;
+        outline: 1px solid #bfc6cd;
+    }
+    @media (max-width: 640px) {
+        padding: 16px;
+    }
+`;
+const TopTagContainer = styled.div`
+    display: flex;
+`;
+const NameContainer = styled.div`
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+`;
+const InfosContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+`;
+const InfoItem = styled.div`
+    display: flex;
+    justify-content: space-between;
+    & + & {
+        margin-top: 4px;
+    }
+`;
+const ItemWrapper = styled.div``;
 
 const pad = (n, width) => {
     n = n + '';
@@ -49,50 +90,33 @@ const InfoItems = ({ title, contents, children }) => {
 };
 const ScoreItems = ({ title, score, total, percent, children }) => {
     // let percent = ((score / total) * 100).toFixed(1);
-    return (
-        <div className="card-item-student">
-            {children}
-            <div className="card-content-title-p">{title}</div>
-            {score === '' ? (
-                <div className="card-content-p">{score}</div>
-            ) : (
-                <TooltipCard title={score + '문제 / ' + total + '문제 / ' + percent.toFixed(1) + '%'}>
-                    <div className="card-content-score">
-                        <div className="card-content-p">
-                            {score}문제 / {total}문제
-                        </div>
-                        <div className="card-content-p" style={{ color: '#13e2a1', paddingLeft: '5px' }}>
-                            ({percent.toFixed(1)}%)
-                        </div>
-                    </div>
-                </TooltipCard>
-            )}
-        </div>
+    return score === '' ? (
+        <div className="card-content-p">{score}</div>
+    ) : (
+        <Typography type="label" size="l" bold>
+            {score}문제 / {total}문제 <span style={{ color: getColorSets(400, 'green') }}>({percent.toFixed(1)}%)</span>
+        </Typography>
     );
 };
 
 ScoreItems.defaultProps = {
     percent: 0,
 };
-const CompareItems = ({ title, contents, enabled, children }) => {
+const CompareItems = ({ contents, enabled, children }) => {
     return (
-        <div className="card-item-student">
-            {children}
-            <div className="card-content-title-p">{title}</div>
-            <TooltipCard title={contents.toFixed(1)}>
-                {enabled ? (
-                    contents < 0 ? (
-                        <div style={{ color: '#F57C7C', fontWeight: '500' }}>{contents.toFixed(1)}%</div>
-                    ) : contents === 0 ? (
-                        <div style={{ color: '#C4C4C4', fontWeight: '500' }}></div>
-                    ) : (
-                        <div style={{ color: '#7C88F5', fontWeight: '500' }}>+ {contents.toFixed(1)}%</div>
-                    )
+        <Typography Typography type="label" size="l" bold>
+            {enabled ? (
+                contents < 0 ? (
+                    <span style={{ color: getColorSets(500, 'orange') }}>{contents.toFixed(1)}%</span>
+                ) : contents === 0 ? (
+                    <span style={{ color: getColorSets(500, 'gray') }}></span>
                 ) : (
-                    <div style={{ color: '#C4C4C4', fontWeight: '500' }}></div>
-                )}
-            </TooltipCard>
-        </div>
+                    <span style={{ color: getColorSets(500, 'blue') }}>+ {contents.toFixed(1)}%</span>
+                )
+            ) : (
+                <span style={{ color: getColorSets(500, 'gray') }}></span>
+            )}
+        </Typography>
     );
 };
 
@@ -128,9 +152,15 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, existsCa
     }, [currentScoresPerType]);
 
     return (
-        <>
-            <div className="class-card-root" style={{ padding: '12px 0' }}>
-                <StyleState style={{ marginLeft: '20px' }} complete={data.submitted && data.tries}>
+        <CardRoot
+            cursorEnabled={data.submitted && data.tries}
+            onClick={() => {
+                if (data.submitted && data.tries) history.push(`${path}/details?user=${id}`);
+                else return;
+            }}
+        >
+            <TopTagContainer>
+                <StyleState complete={data.submitted && data.tries}>
                     {data.submitted && data.tries ? (
                         <>
                             <svg
@@ -146,62 +176,95 @@ function CardStudent({ id, data, prevData, totalProblems, achieveRates, existsCa
                                     fill="#3B1689"
                                 />
                             </svg>
-                            제출완료
+                            <Typography type="label" size="s" bold>
+                                제출완료
+                            </Typography>
                         </>
                     ) : (
-                        '미제출'
+                        <Typography type="label" size="s" bold>
+                            미제출
+                        </Typography>
                     )}
                 </StyleState>
-                <div className="class-card-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <TooltipCard title={data.name}>
-                            <div style={{ fontWeight: 'bold', fontSize: '24px' }}>{data.name}</div>
-                        </TooltipCard>
-                    </div>
-
-                    <span className="card-option">
-                        {data.submitted && data.tries ? (
-                            <Link to={`${path}/details?user=${id}`}>
-                                <p>상세 리포트</p>
-                            </Link>
-                        ) : null}
-                    </span>
-                </div>
-                <div></div>
-                <div className="class-card-contents class-card-wrapper">
-                    <div className="contents-block">
-                        <InfoItems
-                            title={'제출 날짜'}
-                            contents={!data.updated || !data.tries ? '' : moment(data.updated).format('YY.MM.DD HH:mm')}
-                        ></InfoItems>
+            </TopTagContainer>
+            <NameContainer>
+                <Typography type="label" size="xxl" bold>
+                    {data.name}
+                </Typography>
+                <span className="card-option">
+                    {data.submitted && data.tries ? (
+                        <Link to={`${path}/details?user=${id}`}>
+                            <p>상세 리포트</p>
+                        </Link>
+                    ) : null}
+                </span>
+            </NameContainer>
+            <InfosContainer>
+                <InfoItem>
+                    <Typography type="label" size="l">
+                        제출 날짜
+                    </Typography>
+                    <ItemWrapper>
+                        <Typography type="label" size="l" bold>
+                            {!data.updated || !data.tries ? '' : moment(data.updated).format('YY.MM.DD HH:mm')}
+                        </Typography>
+                    </ItemWrapper>
+                </InfoItem>
+                <InfoItem>
+                    <Typography type="label" size="l">
+                        점수
+                    </Typography>
+                    <ItemWrapper>
+                        {/* <Typography type="label" size="l" bold></Typography> */}
                         <ScoreItems
                             title={'점수'}
                             score={!data.user_data ? '' : data.user_data.selections.filter((s) => s.correct === true).length}
                             total={totalProblems}
                             percent={data.score_percentage}
                         ></ScoreItems>
-                        <InfoItems title={'소요 시간'} contents={!data.time ? '' : timeValueToTimer(data.time)}></InfoItems>
-                        {achieveRates >= 100 ? (
-                            <InfoItems
-                                title={'취약 영역'}
-                                contents={
-                                    data.submitted && data.tries
-                                        ? top3Weaks.length && top3Weaks[0]
-                                            ? ProblemCategories.filter((p) => p.id == top3Weaks[0].category)[0].name
-                                            : 'null'
-                                        : ''
-                                }
-                            ></InfoItems>
-                        ) : null}
+                    </ItemWrapper>
+                </InfoItem>
+                <InfoItem>
+                    <Typography type="label" size="l">
+                        소요 시간
+                    </Typography>
+                    <ItemWrapper>
+                        <Typography type="label" size="l" bold>
+                            {!data.time ? '' : timeValueToTimer(data.time)}
+                        </Typography>
+                    </ItemWrapper>
+                </InfoItem>
+                {achieveRates >= 100 ? (
+                    <InfoItem>
+                        <Typography type="label" size="l">
+                            취약 영역
+                        </Typography>
+                        <ItemWrapper>
+                            <Typography type="label" size="l" bold>
+                                {data.submitted && data.tries
+                                    ? top3Weaks.length && top3Weaks[0]
+                                        ? ProblemCategories.filter((p) => p.id == top3Weaks[0].category)[0].name
+                                        : 'null'
+                                    : ''}
+                            </Typography>
+                        </ItemWrapper>
+                    </InfoItem>
+                ) : null}
+                <InfoItem>
+                    <Typography type="label" size="l">
+                        비교 성취도
+                    </Typography>
+                    <ItemWrapper>
+                        {/* <Typography type="label" size="l" bold></Typography> */}
                         <CompareItems
                             title={'비교 성취도'}
                             enabled={data.updated && data.tries}
                             contents={data.score_percentage - (!prevData || !prevData.score_percentage ? 0 : prevData.score_percentage)}
                         ></CompareItems>
-                    </div>
-                </div>
-            </div>
-        </>
+                    </ItemWrapper>
+                </InfoItem>
+            </InfosContainer>
+        </CardRoot>
     );
 }
 
