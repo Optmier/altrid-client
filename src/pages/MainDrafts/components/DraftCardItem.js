@@ -141,7 +141,6 @@ function DraftCardItem({ cardData, children }) {
         if (name === 'button') {
             if (due_date && selectClassState) {
                 //과제 게시하기 버튼 클릭
-
                 setDateDialogopen(false);
                 dispatch(postActived(cardData, selectClassState, due_date));
             } else if (!due_date) {

@@ -8,18 +8,16 @@ import { useSelector } from 'react-redux';
 
 const StylePatternBox = styled.div`
     width: 100%;
-    height: 230px;
+    height: 100%;
     overflow: scroll;
 `;
 
 const StylePatternList = styled.div`
-    border-bottom: 1px solid #e5e8eb;
-    padding: 20px 0;
+    padding: 16px 32px;
     display: flex;
     flex-direction: column;
-
     &:nth-child(1) {
-        padding-top: 0;
+        /* padding-top: 0; */
     }
     & .pattern-header {
         cursor: pointer;
@@ -43,6 +41,12 @@ const StylePatternList = styled.div`
         & svg {
             pointer-events: none;
         }
+    }
+    & + & {
+        border-top: 1px solid #e9edef;
+    }
+    @media (max-width: 640px) {
+        padding: 8px;
     }
 `;
 

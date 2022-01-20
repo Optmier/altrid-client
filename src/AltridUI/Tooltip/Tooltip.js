@@ -2,7 +2,6 @@ import React from 'react';
 import { Tooltip as MuiTooltip, withStyles, Fade } from '@material-ui/core';
 
 const CustomTooltip = withStyles((theme) => ({
-    root: {},
     popper: {
         fontFamily: [
             'inter',

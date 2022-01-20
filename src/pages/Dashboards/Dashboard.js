@@ -146,13 +146,13 @@ const AssignmentListItem = styled.div`
     align-items: center;
     display: flex;
     overflow: hidden;
-    flex-direction: column;
     flex-grow: 1;
     & + & {
         margin-top: 16px;
     }
     @media all and (max-width: 640px) {
         align-items: flex-start;
+        flex-direction: column;
         & + & {
             margin-top: 16px;
         }

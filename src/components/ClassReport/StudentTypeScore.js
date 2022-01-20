@@ -6,6 +6,7 @@ import ColumnChart from '../essentials/ColumnChart';
 const StyleStudentTypeScore = styled.div`
     display: flex;
     flex-direction: column;
+    width: 100%;
 
     & .chart-header-wrapper {
         display: flex;
@@ -40,21 +41,24 @@ const StyleStudentTypeScore = styled.div`
             }
         }
         & select {
+            background: url('../../../../assets/ic_select_ext.png') no-repeat 90% 50%;
+            border: 1.5px solid #6c46a1;
+            border-radius: 104px;
+            color: #6c46a1;
             cursor: pointer;
-            background: url(/bg_images/Vector.png) no-repeat 92% 50%;
-            width: 160px;
-            padding: 0.4rem 0.8rem;
-            font-family: inherit;
-            font-size: 1.001rem;
-            border: none;
-            border: 1px solid #707070;
-            border-radius: 0px;
-            -webkit-appearance: none;
-            -moz-appearance: none;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 20px;
+            letter-spacing: -0.02em;
+            min-width: 140px;
+            padding: 8px 16px;
+            outline: none;
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            outline: none;
+            &::-ms-expand {
+                display: none;
+            }
         }
     }
     & .chart-wrapper {
@@ -91,54 +95,27 @@ function StudentTypeScore({ enabled, subject, current, total, typeSelectState, h
     const [sortedEnableCategories] = useState(enabled.sort((a, b) => a.category - b.category));
     console.log(sortedEnableCategories);
     return (
-        <div className="white-box">
-            <StyleStudentTypeScore>
-                <div className="chart-header-wrapper">
-                    <div className="chart-header-center">
-                        <span>
-                            학생 점수 <div className="circle student"></div>
-                        </span>
-                        <span>
-                            반 평균 <div className="circle class"></div>
-                        </span>
-                    </div>
-
-                    <select name="chart-option" onChange={handleTypeSelect}>
-                        <option value="0">방사형 그래프</option>
-                        <option value="1">막대형 그래프</option>
-                    </select>
+        <StyleStudentTypeScore>
+            <div className="chart-header-wrapper">
+                <div className="chart-header-center">
+                    <span>
+                        학생 점수 <div className="circle student"></div>
+                    </span>
+                    <span>
+                        반 평균 <div className="circle class"></div>
+                    </span>
                 </div>
 
-                <div className="chart-wrapper">
-                    {typeSelectState === '0' ? (
-                        current ? (
-                            <RadarChart
-                                subject={subject}
-                                currentObjs={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))}
-                                averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
-                            />
-                        ) : (
-                            <>
-                                <LimitFuncWrapper>
-                                    <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                                        <path
-                                            id="패스_35"
-                                            data-name="패스 35"
-                                            d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
-                                            fill="#605f60"
-                                        />
-                                    </svg>
-                                    과제를 더 다양한 문제로 만들어주세요!
-                                </LimitFuncWrapper>
-                                <RadarChart
-                                    isDummy
-                                    subject={subject}
-                                    averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
-                                />
-                            </>
-                        )
-                    ) : current ? (
-                        <ColumnChart
+                <select name="chart-option" onChange={handleTypeSelect}>
+                    <option value="0">방사형 그래프</option>
+                    <option value="1">막대형 그래프</option>
+                </select>
+            </div>
+
+            <div className="chart-wrapper">
+                {typeSelectState === '0' ? (
+                    current ? (
+                        <RadarChart
                             subject={subject}
                             currentObjs={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))}
                             averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
@@ -156,16 +133,41 @@ function StudentTypeScore({ enabled, subject, current, total, typeSelectState, h
                                 </svg>
                                 과제를 더 다양한 문제로 만들어주세요!
                             </LimitFuncWrapper>
-                            <ColumnChart
+                            <RadarChart
                                 isDummy
                                 subject={subject}
                                 averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
                             />
                         </>
-                    )}
-                </div>
-            </StyleStudentTypeScore>
-        </div>
+                    )
+                ) : current ? (
+                    <ColumnChart
+                        subject={subject}
+                        currentObjs={sortedEnableCategories.map((e) => ({ ...e, score: current[e.category] }))}
+                        averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
+                    />
+                ) : (
+                    <>
+                        <LimitFuncWrapper>
+                            <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <path
+                                    id="패스_35"
+                                    data-name="패스 35"
+                                    d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
+                                    fill="#605f60"
+                                />
+                            </svg>
+                            과제를 더 다양한 문제로 만들어주세요!
+                        </LimitFuncWrapper>
+                        <ColumnChart
+                            isDummy
+                            subject={subject}
+                            averageObjs={sortedEnableCategories.map((e) => ({ ...e, score: total[e.category] }))}
+                        />
+                    </>
+                )}
+            </div>
+        </StyleStudentTypeScore>
     );
 }
 

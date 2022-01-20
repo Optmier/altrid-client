@@ -4,33 +4,14 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EyeTrackPattern from './EyeTrackPattern';
 import EyetrackingPlayer from '../TOFELRenderer/EyetrackingPlayer';
-import { AccordionDetails, AccordionSummary, Typography } from '@material-ui/core';
-import TooltipCard from '../essentials/TooltipCard';
+import { AccordionDetails, AccordionSummary, withStyles } from '@material-ui/core';
 import { apiUrl } from '../../configs/configs';
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MuiAccordion from '@material-ui/core/Accordion';
-
-const Dataset = styled.div`
-    /* margin: 0 auto; */
-    /* margin-right: 15px; */
-    display: flex;
-    justify-content: center;
-    @media (min-width: 0px) and (max-width: 480px) {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        margin: 0 auto;
-    }
-    & span {
-        margin-right: 20px;
-    }
-    & .row-desc {
-        color: #3b1689;
-        font-weight: bold;
-    }
-`;
+import Accordion from '@material-ui/core/Accordion';
+import Typography from '../../AltridUI/Typography/Typography';
+import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
 
 const Playerset = styled.div`
     /* width: 950px; */
@@ -38,66 +19,129 @@ const Playerset = styled.div`
     width: 100%;
     /* padding: 0px 100px 0px 0px; */
 `;
-
-const Accordion = styled((props) => <MuiAccordion elevation={0} square {...props} />)(({ theme }) => ({
-    border: `none`,
-}));
-
-const StyleEyeTrackBox = styled.div`
+const EyetrackVideoAccordion = withStyles((theme) => ({
+    root: {
+        backgroundColor: '#ffffff00',
+        border: 'none',
+        width: '100%',
+    },
+}))(Accordion);
+const EyetrackVideoAccordionSummary = withStyles((theme) => ({
+    root: {},
+}))(AccordionSummary);
+const EyetrackVideoAccordionDetails = withStyles((theme) => ({
+    root: {},
+}))(AccordionDetails);
+const EyetrackVideoContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
     display: flex;
-    flex-direction: column;
-
-    & .ment-ai-col {
-        /* display: flex;
-        flex-direction: row; */
-        @media (min-width: 0px) and (max-width: 480px) {
-            display: flex;
-            flex-direction: column;
-            & .line {
-                display: none;
-            }
-        }
+    padding: 16px;
+    position: relative;
+    @media (max-width: 640px) {
+        padding: 0;
     }
-    & .eyetrack-box {
-        margin-bottom: 18px;
-        font-weight: bold;
-
-        & .eyetrack-left {
-            width: 100%;
-            height: 490px;
-            box-sizing: border-box;
-            background-color: white;
-            border-radius: 11px;
-            padding: 0 130px;
-            display: flex;
-            align-items: center;
-
-            & .no-eyetrack {
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1rem;
-                font-weight: 500;
-                color: rgb(96, 95, 96);
-                & svg {
-                    margin-right: 10px;
-                }
-            }
+`;
+const EyetrackTextsContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+    padding: 32px;
+    position: relative;
+    @media (max-width: 640px) {
+        align-items: center;
+        flex-direction: column;
+        padding: 16px;
+    }
+`;
+const EyetrackTextsWrapper = styled.div`
+    display: inline-flex;
+    padding: 0 16px;
+    position: relative;
+    &:first-child {
+        padding-left: 0;
+    }
+    &:last-child {
+        padding-right: 0;
+    }
+    & + &::before {
+        content: '';
+        border-left: 1px solid ${getColorSets(200, 'gray')};
+        position: absolute;
+        height: 40%;
+        left: 0;
+        top: 30%;
+    }
+    @media (max-width: 640px) {
+        padding: 0;
+        & + & {
+            margin-top: 4px;
         }
-        & .eyetrack-right {
-            width: 26%;
-            box-sizing: border-box;
-            background-color: white;
-            border-radius: 11px;
-            padding: 30px 32px;
-            overflow-y: auto;
-            height: 470px;
+        & + &::before {
+            content: none;
         }
     }
 `;
-
+const EyetrackTextsItem = styled.div`
+    align-items: center;
+    display: flex;
+`;
+const EyetrackTextsItemKey = styled.div`
+    color: ${getColorSets(700, 'gray')};
+    text-align: center;
+`;
+const EyetrackTextsItemValue = styled.div`
+    color: ${getColorSets(500, 'purple')};
+    margin-left: 4px;
+`;
+const PatternsContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+    height: 288px;
+    @media (max-width: 640px) {
+        flex-direction: column;
+        height: initial;
+    }
+`;
+const PatternTextsContainer = styled.div`
+    align-items: center;
+    box-shadow: inset -1px 0px 0px #e9edef;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+    & div.altrid-typography {
+        & span {
+            background-color: ${getColorSets(50, 'purple')};
+            border-radius: 8px;
+            color: ${getColorSets(500, 'purple')};
+            margin: -2px 0;
+            padding: 2px 4px;
+        }
+        & + div.altrid-typography {
+            margin-top: 6px;
+        }
+    }
+    @media (max-width: 640px) {
+        box-shadow: inset 0px -1px 0px #e9edef;
+        padding: 38px;
+        width: calc(100% - 76px);
+    }
+`;
+const PatternListsContainer = styled.div`
+    display: flex;
+    width: 50%;
+    @media (max-width: 640px) {
+        width: 100%;
+        height: 240px;
+    }
+`;
 function EyeTrackBox({
     hasEyetrack,
     eyetrackData,
@@ -123,7 +167,7 @@ function EyeTrackBox({
     const { eyetrack } = useSelector((state) => state.planInfo.restricted);
     const { userType } = useSelector((state) => state.RdxSessions);
 
-    window.mEyetrackData = mEyetrackData;
+    // window.mEyetrackData = mEyetrackData;
     // window.setTrackTimeGoTo = setTrackTimeGoTo;
     const handleGoTo = (time) => {
         // console.log(time);
@@ -215,15 +259,15 @@ function EyeTrackBox({
 
     return (
         // 시선 추적 영상
-
-        <StyleEyeTrackBox>
-            <div className="white-box">
-                <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-                        <Typography>시선 흐름 분석 영상</Typography>
-                    </AccordionSummary>
-
-                    <AccordionDetails>
+        <>
+            <EyetrackVideoContainer>
+                <EyetrackVideoAccordion elevation={0}>
+                    <EyetrackVideoAccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                        <Typography type="label" size="xl" bold>
+                            시선흐름 분석영상 보기
+                        </Typography>
+                    </EyetrackVideoAccordionSummary>
+                    <EyetrackVideoAccordionDetails>
                         <Playerset>
                             {hasEyetrack && mEyetrackData ? (
                                 <EyetrackingPlayer data={mEyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
@@ -241,58 +285,55 @@ function EyeTrackBox({
                                 </div>
                             )}
                         </Playerset>
-                    </AccordionDetails>
-                </Accordion>
-            </div>
-
-            {/* 자신의 데이터 결과 */}
-
-            <div className="white-box">
+                    </EyetrackVideoAccordionDetails>
+                </EyetrackVideoAccordion>
+            </EyetrackVideoContainer>
+            <EyetrackTextsContainer>
                 {hasEyetrack && mEyetrackData ? (
-                    <div className="ment-ai-col ">
-                        <Dataset>
-                            <div>
-                                <span className="row-title">총 응시점 개수 </span>
-                                <TooltipCard title={`${fixations}개`}>
-                                    <span className="row-desc">{fixations}개</span>
-                                </TooltipCard>
-                                <svg
-                                    className="line"
-                                    style={{ marginRight: '1rem' }}
-                                    width="1"
-                                    height="10"
-                                    viewBox="0 0 1 10"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <line x1="0.5" x2="0.5" y2="10" stroke="#BFC6CD" />
-                                </svg>
-                            </div>
-                            <div>
-                                <span className="row-title">평균 응시 속도</span>
-                                <TooltipCard title={`${avgFixVels}px/s`}>
-                                    <span className="row-desc">{avgFixVels}px/s</span>
-                                </TooltipCard>
-                                <svg
-                                    className="line"
-                                    style={{ marginRight: '1rem' }}
-                                    width="1"
-                                    height="10"
-                                    viewBox="0 0 1 10"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <line x1="0.5" x2="0.5" y2="10" stroke="#BFC6CD" />
-                                </svg>
-                            </div>
-                            <div>
-                                <span className="row-title">재응시 횟수</span>
-                                <TooltipCard title={`${regressions}회`}>
-                                    <span className="row-desc">{regressions}회</span>
-                                </TooltipCard>
-                            </div>
-                        </Dataset>
-                    </div>
+                    <>
+                        <EyetrackTextsWrapper>
+                            <EyetrackTextsItem>
+                                <EyetrackTextsItemKey>
+                                    <Typography type="label" size="xxl" bold>
+                                        총 응시점 개수
+                                    </Typography>
+                                </EyetrackTextsItemKey>
+                                <EyetrackTextsItemValue>
+                                    <Typography type="label" size="xxl" bold>
+                                        {fixations}개
+                                    </Typography>
+                                </EyetrackTextsItemValue>
+                            </EyetrackTextsItem>
+                        </EyetrackTextsWrapper>
+                        <EyetrackTextsWrapper>
+                            <EyetrackTextsItem>
+                                <EyetrackTextsItemKey>
+                                    <Typography type="label" size="xxl" bold>
+                                        평균 응시 속도
+                                    </Typography>
+                                </EyetrackTextsItemKey>
+                                <EyetrackTextsItemValue>
+                                    <Typography type="label" size="xxl" bold>
+                                        {avgFixVels}px/s
+                                    </Typography>
+                                </EyetrackTextsItemValue>
+                            </EyetrackTextsItem>
+                        </EyetrackTextsWrapper>
+                        <EyetrackTextsWrapper>
+                            <EyetrackTextsItem>
+                                <EyetrackTextsItemKey>
+                                    <Typography type="label" size="xxl" bold>
+                                        재응시 횟수
+                                    </Typography>
+                                </EyetrackTextsItemKey>
+                                <EyetrackTextsItemValue>
+                                    <Typography type="label" size="xxl" bold>
+                                        {regressions}회
+                                    </Typography>
+                                </EyetrackTextsItemValue>
+                            </EyetrackTextsItem>
+                        </EyetrackTextsWrapper>
+                    </>
                 ) : (
                     <div className="ment-ai-col" id="no-eyetrack">
                         <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
@@ -306,40 +347,26 @@ function EyeTrackBox({
                         시선 추적 미포함 과제
                     </div>
                 )}
-            </div>
-
-            {/* 변경 문제             */}
-
-            <div style={{ paddingLeft: '50px' }} className="white-box ment-ai">
-                <div className="ment-ai-col ment-ai-designed">
-                    <div>
-                        <span style={{ marginBottom: '6px' }} className="ment-ai-name">
-                            {stdName}
-                        </span>{' '}
-                        학생은 풀이 중
-                        <br />
-                    </div>
-                    <div>
-                        <span style={{ marginBottom: '10px' }} className="ment-ai-underline">
-                            총 {answerChangedProblems}문제
-                        </span>
-                        에서 답 변경 후,
-                        <br />
-                    </div>
-                    <div>
-                        <span className="ment-ai-underline">{aftChangedFaileds}문제</span>가 오답 처리되었습니다.
-                    </div>
-                </div>
-                <div className="ment-ai-col">
+            </EyetrackTextsContainer>
+            <PatternsContainer>
+                <PatternTextsContainer>
+                    <Typography type="label" size="xl" bold>
+                        {stdName} 학생은 풀이 중
+                    </Typography>
+                    <Typography type="label" size="xl" bold>
+                        <span>총 {answerChangedProblems}문제</span> 에서 답 변경 후,
+                    </Typography>
+                    <Typography type="label" size="xl" bold>
+                        <span>{aftChangedFaileds}문제</span> 가 오답 처리되었습니다.
+                    </Typography>
+                </PatternTextsContainer>
+                <PatternListsContainer>
                     {eyetrack && userType === 'students' ? null : (
-                        <div className="eyetrack-right">
-                            <EyeTrackPattern data={patternData} hasEyetrack={hasEyetrack} onEyetrackGoTo={handleGoTo} />
-                        </div>
+                        <EyeTrackPattern data={patternData} hasEyetrack={hasEyetrack} onEyetrackGoTo={handleGoTo} />
                     )}
-                </div>
-            </div>
-            {/* <Chart options={chart.options} series={chart.series} type="bar" height={'300px'} width={'100px'} /> */}
-        </StyleEyeTrackBox>
+                </PatternListsContainer>
+            </PatternsContainer>
+        </>
     );
 }
 

@@ -3,7 +3,6 @@
 /* eslint-disable no-control-regex */
 import React, { useEffect, useState, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
-import ClassWrapper from '../essentials/ClassWrapper';
 import Progress from './Progress';
 import styled from 'styled-components';
 import StudentTypeScore from './StudentTypeScore';
@@ -15,7 +14,6 @@ import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
-import { Element } from 'react-scroll';
 import { useSelector, useDispatch } from 'react-redux';
 import BackdropComponent from '../essentials/BackdropComponent';
 import TooltipCard from '../essentials/TooltipCard';
@@ -34,6 +32,7 @@ import EyeTrackChart from './EyeTrackChart';
 import MakeAutoComments from '../../controllers/MakeAutoComment';
 import Typography from '../../AltridUI/Typography/Typography';
 import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
+import AlertSnackbar from '../../AltridUI/Snackbar/AlertSnackbar';
 
 const pad = (n, width) => {
     n = n + '';
@@ -46,30 +45,12 @@ const timeValueToTimer = (seconds) => {
     else return `${pad(parseInt(secs / 60), 1)}분 ${pad(Math.floor(secs % 60), 1)}초`;
 };
 
-const StyleItems = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    &.critical {
-        color: #f57c7c;
-    }
-
-    & + & {
-        margin-top: 1.25rem;
-    }
-    & .header-title {
-        font-weight: 600;
-        width: 105px;
-        margin-left: 10px;
-    }
-`;
-
 const ReportStudentRoot = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
     margin-top: 36px;
+    padding-bottom: 16px;
     max-width: 960px;
     height: 100%;
     @media (max-width: 640px) {
@@ -87,7 +68,7 @@ const DescriptionContainer = styled.div`
     }
 `;
 const DescriptionStudentName = styled.div`
-    color: #3b1689;
+    color: ${getColorSets(500, 'purple')};
 `;
 const DescriptionContents = styled.div`
     margin-left: 8px;
@@ -151,26 +132,7 @@ const AnalyzeTimeSection = styled.section`
         margin-top: 48px;
     }
 `;
-const AnalyzeTimeTextsContainer = styled.div`
-    background-color: #ffffff;
-    border-radius: 8px;
-    display: flex;
-    padding: 48px 32px;
-    @media (max-width: 640px) {
-        padding: 32px 16px;
-    }
-`;
-const AnalyzeTimeGraphContainer = styled.div`
-    background-color: #ffffff;
-    border-radius: 8px;
-    display: flex;
-    margin-top: 8px;
-    padding: 24px;
-    position: relative;
-    @media (max-width: 640px) {
-        padding: 12px;
-    }
-`;
+
 /////////////////////////////////////////////////////////////////////
 const AnalyzeTypeSection = styled.section`
     margin-top: 48px;
@@ -184,8 +146,66 @@ const AnalyzeTypeTextsContainer = styled.div`
     display: flex;
     padding: 24px;
     @media (max-width: 640px) {
+        flex-direction: column;
         padding: 16px;
     }
+`;
+const WeakTypeDecoration = styled.svg`
+    margin-left: -48px;
+    position: absolute;
+    @media (max-width: 640px) {
+        margin-bottom: 8px;
+        margin-left: 0;
+        position: relative;
+    }
+`;
+const WeakTypeSectionWrapper = styled.div`
+    display: flex;
+    width: 50%;
+    @media (max-width: 640px) {
+        width: 100%;
+        & + & {
+            margin-top: 16px;
+        }
+    }
+`;
+const WeakTypeSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    &.first {
+        & div.altrid-typography {
+            margin-left: 48px;
+            & span {
+                &.weak-type-nounderline {
+                    color: ${getColorSets(200, 'gray')};
+                }
+                &.weak-type-underline {
+                    color: ${getColorSets(500, 'purple')};
+                }
+            }
+        }
+    }
+    @media (max-width: 640px) {
+        &.first {
+            & div.altrid-typography {
+                margin-left: 0;
+                &:first-child {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+        }
+    }
+`;
+const WeakTypeItem = styled.div`
+    display: flex;
+`;
+const WeakTypeItemKey = styled.div`
+    color: ${getColorSets(500, 'gray')};
+`;
+const WeakTypeItemValue = styled.div`
+    color: ${getColorSets(200, 'gray')};
+    margin-left: 28px;
 `;
 const AnalyzeTypeGraphConatainer = styled.div`
     background-color: #ffffff;
@@ -203,60 +223,6 @@ const EyetrackAndPatternSection = styled.section`
     margin-top: 48px;
     @media (max-width: 640px) {
         margin-top: 48px;
-    }
-`;
-const EyetrackVideoContainer = styled.div`
-    background-color: #ffffff;
-    border-radius: 8px;
-    display: flex;
-    padding: 32px;
-    position: relative;
-    @media (max-width: 640px) {
-        padding: 24px;
-    }
-`;
-const EyetrackTextsContainer = styled.div`
-    background-color: #ffffff;
-    border-radius: 8px;
-    display: flex;
-    margin-top: 8px;
-    padding: 38px;
-    position: relative;
-    @media (max-width: 640px) {
-        padding: 16px;
-    }
-`;
-const PatternsContainer = styled.div`
-    background-color: #ffffff;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    margin-top: 8px;
-    height: 288px;
-    @media (max-width: 640px) {
-        flex-direction: column;
-        height: initial;
-    }
-`;
-const PatternTextsContainer = styled.div`
-    align-items: center;
-    box-shadow: inset -1px 0px 0px #e9edef;
-    display: flex;
-    justify-content: center;
-    width: 50%;
-    height: 100%;
-    @media (max-width: 640px) {
-        box-shadow: inset 0px -1px 0px #e9edef;
-        padding: 38px;
-        width: calc(100% - 76px);
-    }
-`;
-const PatternListsContainer = styled.div`
-    display: flex;
-    width: 50%;
-    @media (max-width: 640px) {
-        width: 100%;
-        height: 240px;
     }
 `;
 /////////////////////////////////////////////////////////////////////
@@ -280,11 +246,18 @@ const AutoCommentChartContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 50%;
+    @media (max-width: 640px) {
+        box-shadow: inset 0px -1px 0px #e9edef;
+        width: 100%;
+    }
 `;
 const AutoCommentCommentaryContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 50%;
+    @media (max-width: 640px) {
+        width: 100%;
+    }
 `;
 const AutoCommentContainerTitle = styled.div`
     box-shadow: inset 0px -1px 0px #e9edef;
@@ -295,7 +268,12 @@ const AutoCommentContainerContents = styled.div`
     display: flex;
     justify-content: center;
     padding: 16px;
-    height: 240px;
+    height: 260px;
+    overflow: auto;
+    font-family: inherit;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 28px;
 `;
 /////////////////////////////////////////////////////////////////////
 const FeedbackSection = styled.section`
@@ -308,23 +286,18 @@ const FeedbackContainer = styled.div`
     background-color: #ffffff;
     border-radius: 8px;
     display: flex;
-    padding: 44px 32px 32px 32px;
+    flex-direction: column;
+    padding: 32px;
     position: relative;
     @media (max-width: 640px) {
-        padding: 28px 16px 16px 16px;
+        padding: 16px;
     }
 `;
+const FeedbackDecoration = styled.svg`
+    margin-bottom: 6px;
+    margin-top: -16px;
+`;
 /////////////////////////////////////////////////////////////////////
-
-const InfoItems = ({ title, contents, children }) => {
-    return (
-        <StyleItems>
-            {children}
-            <div className="header-title">{title}</div>
-            <div>{contents}</div>
-        </StyleItems>
-    );
-};
 const ScoreItems = ({ title, score, total, percent, children }) => {
     // let percent = ((score / total) * 100).toFixed(1);
     return (
@@ -347,23 +320,6 @@ const CompareItems = ({ title, contents, children }) => {
                 <span style={{ color: getColorSets(500, 'blue') }}>+ {contents.toFixed(1)}%</span>
             )}
         </Typography>
-    );
-};
-const TriesItems = ({ title, tries, children }) => {
-    return (
-        <StyleItems>
-            {children}
-            <div className="header-title">{title}</div>
-            <div>{tries}회</div>
-        </StyleItems>
-    );
-};
-const EraseResultItems = ({ title, children, ...rest }) => {
-    return (
-        <StyleItems {...rest} className="critical" style={{ cursor: 'pointer' }}>
-            {children}
-            <div className="header-title">{title}</div>
-        </StyleItems>
     );
 };
 
@@ -469,8 +425,30 @@ function ReportStudent({ history, match }) {
 
     //const [handsUpList, setHandsUpList] = useState([]);
     const [teacherFeedbackContents, setTeacherFeedbackContents] = useState({ renderContents: null, deltaContents: null });
-
     const [scoringResultsOpen, setScoringResultsOpen] = useState(false);
+    // 스낵바 관련 세팅
+    const [alertSnackbarOpen, setAlertSnackbarOpen] = useState(false);
+    const [alertSnackbarConfig, setAlertSnackbarConfig] = useState({
+        title: '',
+        type: 'success',
+        duration: 3000,
+    });
+
+    const openAlertSnackbar = (title, type, duration) => {
+        setAlertSnackbarConfig({
+            ...alertSnackbarConfig,
+            title: title.trim() ? title : alertSnackbarConfig.title,
+            type: type.trim() ? type : alertSnackbarConfig.type,
+            duration: duration ? duration : alertSnackbarConfig.duration,
+        });
+        setAlertSnackbarOpen(true);
+    };
+    const alertSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setAlertSnackbarOpen(false);
+    };
 
     const handleTypeSelect = (e) => {
         setTypeSelectState(e.target.value);
@@ -916,11 +894,11 @@ function ReportStudent({ history, match }) {
     const actionUpdateTeacherFeedback = (contentsData) => {
         updateTeacherFeedbackInterface(activedNum, queryUserId, contentsData, {
             onSuccess(res) {
-                alert('성공적으로 업데이트 되었습니다!');
+                openAlertSnackbar('성공적으로 업데이트 되었습니다.', 'success');
             },
             onFailure(err) {
                 console.error(err);
-                alert('업데이트에 실패했습니다.');
+                openAlertSnackbar('업데이트에 실패했습니다.', 'error');
             },
         });
     };
@@ -993,7 +971,13 @@ function ReportStudent({ history, match }) {
                     </Button>
                 </DialogActions>
             </Dialog>
-
+            <AlertSnackbar
+                open={alertSnackbarOpen}
+                title={alertSnackbarConfig.title}
+                type={alertSnackbarConfig.type}
+                duration={alertSnackbarConfig.duration}
+                onClose={alertSnackbarClose}
+            />
             <ReportStudentRoot>
                 <TopInfoSection>
                     <TitleContainer>
@@ -1152,120 +1136,6 @@ function ReportStudent({ history, match }) {
                 </ScoringSummarySection>
                 <AnalyzeTimeSection>
                     <GroupBox title="문제별 시간 분석">
-                        <AnalyzeTimeTextsContainer></AnalyzeTimeTextsContainer>
-                        <AnalyzeTimeGraphContainer></AnalyzeTimeGraphContainer>
-                    </GroupBox>
-                </AnalyzeTimeSection>
-                <AnalyzeTypeSection>
-                    <GroupBox title="유형별 분석">
-                        <AnalyzeTypeTextsContainer></AnalyzeTypeTextsContainer>
-                        <AnalyzeTypeGraphConatainer></AnalyzeTypeGraphConatainer>
-                    </GroupBox>
-                </AnalyzeTypeSection>
-                <EyetrackAndPatternSection>
-                    <GroupBox title="시선흐름 및 패턴 분석">
-                        <EyetrackVideoContainer></EyetrackVideoContainer>
-                        <EyetrackTextsContainer></EyetrackTextsContainer>
-                        <PatternsContainer>
-                            <PatternTextsContainer></PatternTextsContainer>
-                            <PatternListsContainer></PatternListsContainer>
-                        </PatternsContainer>
-                    </GroupBox>
-                </EyetrackAndPatternSection>
-                <AutoCommentSection>
-                    <GroupBox title="AI-Comments">
-                        <AutoCommentContainer>
-                            <AutoCommentChartContainer>
-                                <AutoCommentContainerTitle>차트</AutoCommentContainerTitle>
-                                <AutoCommentContainerContents>차트 영역입니다.</AutoCommentContainerContents>
-                            </AutoCommentChartContainer>
-                            <AutoCommentCommentaryContainer>
-                                <AutoCommentContainerTitle>AI 코멘트</AutoCommentContainerTitle>
-                                <AutoCommentContainerContents>
-                                    {MakeAutoComments(
-                                        stdName,
-                                        acmTotalFixsMine,
-                                        acmTotalFixsAvg,
-                                        acmAvgSpeedFixsMine,
-                                        acmAvgSpeedFixsAvg,
-                                        acmRegressionsMine,
-                                        acmRegressionsAvg,
-                                    )}
-                                </AutoCommentContainerContents>
-                            </AutoCommentCommentaryContainer>
-                        </AutoCommentContainer>
-                    </GroupBox>
-                </AutoCommentSection>
-                <FeedbackSection>
-                    <GroupBox title="선생님 피드백">
-                        <FeedbackContainer></FeedbackContainer>
-                    </GroupBox>
-                </FeedbackSection>
-            </ReportStudentRoot>
-
-            {/* /////////////////////////////////////////////////////////////////// */}
-
-            <ClassWrapper col={true}>
-                <div className="student-report-root">
-                    <section className="student-report-header">
-                        <div className="student-report-top">
-                            <div className="name">상세 리포트</div>
-                            <div className="class-name">
-                                <span>{stdName} 학생</span>
-                                {title}
-                            </div>
-                        </div>
-                        <div className="white-box student-report-bottom">
-                            <div className="bottom-col">
-                                <InfoItems title={'제출 날짜'} contents={submittedDate ? submittedDate : '-'}></InfoItems>
-                                <InfoItems title={'소요 시간'} contents={timeValueToTimer(durTimes)}></InfoItems>
-                                <TriesItems title={'시도 횟수'} tries={tries}></TriesItems>
-                            </div>
-                            <div className="bottom-col">
-                                <ScoreItems
-                                    title={'점수'}
-                                    score={correctProblems}
-                                    total={totalProblems}
-                                    percent={scorePercentage}
-                                ></ScoreItems>
-                                <CompareItems
-                                    title={'비교 성취도'}
-                                    contents={
-                                        currentStudentData.score_percentage -
-                                        (!prevStudentData || !prevStudentData.score_percentage ? 0 : prevStudentData.score_percentage)
-                                    }
-                                ></CompareItems>
-                                {sessions.userType === 'students' ? null : (
-                                    <EraseResultItems title={'결과 초기화'} onClick={handleEraseResult}></EraseResultItems>
-                                )}
-                            </div>
-                        </div>
-                    </section>
-
-                    <section className="student-report-progress">
-                        <GroupBox
-                            title="문제별 채점 결과"
-                            rightComponent={
-                                <>
-                                    <Link
-                                        href="#"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            setScoringResultsOpen(true);
-                                        }}
-                                    >
-                                        <Button variant="light" colors="purple">
-                                            채점결과 상세보기
-                                        </Button>
-                                    </Link>
-                                </>
-                            }
-                        />
-                        <div style={{ paddingBottom: '30px' }} className="progress"></div>
-                    </section>
-
-                    <section className="student-report-timetrack">
-                        <GroupBox title="문제별 시간 분석" />
                         {currentStudentData && patternDatas.length ? (
                             <TimeTrackBox
                                 data={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
@@ -1273,96 +1143,92 @@ function ReportStudent({ history, match }) {
                                 totalProblems={totalProblems}
                             />
                         ) : null}
-                    </section>
-
-                    {sessions.userType === 'students' && achievesForTypes.value < 100 ? null : (
-                        <section className="student-report-type-analysis">
-                            <GroupBox
-                                title="유형별 분석"
-                                // rightComponent={
-                                //     sessions.userType === 'students' ? null : (
-                                //         <div className="title-graph-right">
-                                //             <TypeBanner
-                                //                 situation={achievesForTypes.value < 100 ? 'warning' : 'success'}
-                                //                 value={achievesForTypes.value}
-                                //             />
-                                //         </div>
-                                //     )
-                                // }
-                            />
-
-                            <div className="white-box">
-                                <div className="ment-ai">
-                                    <div className="ment-ai-col">
-                                        <div>
-                                            <svg
-                                                style={{ marginRight: '16px' }}
-                                                width="34"
-                                                height="22"
-                                                viewBox="0 0 34 22"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <path
-                                                    d="M11.1755 0.0157251C11.4912 -0.047176 11.6806 0.0786284 11.7437 0.393139C11.8069 0.644745 11.6806 0.802003 11.3649 0.864904C9.02877 1.36812 7.10308 2.18585 5.58773 3.31808C4.13556 4.38742 3.40947 5.55112 3.40947 6.80914C3.40947 7.56397 3.66203 8.16153 4.16713 8.60186C4.73538 9.04219 6.40852 9.57683 9.18661 10.2058C11.1439 10.7091 12.5645 11.4325 13.4485 12.376C14.3956 13.3195 14.8691 14.5461 14.8691 16.0557C14.8691 17.7541 14.2693 19.1694 13.0696 20.3016C11.87 21.4339 10.3231 22 8.42898 22C5.96657 22 3.94615 21.1508 2.36769 19.4524C0.789231 17.6912 0 15.4582 0 12.7534C0 9.48247 0.978645 6.74623 2.93593 4.54467C4.95634 2.3431 7.70287 0.833454 11.1755 0.0157251ZM30.2117 0.0157251C30.5274 -0.047176 30.7168 0.0786284 30.78 0.393139C30.9062 0.644745 30.8115 0.802003 30.4958 0.864904C28.1597 1.36812 26.234 2.18585 24.7187 3.31808C23.2665 4.38742 22.5404 5.55112 22.5404 6.80914C22.5404 7.56397 22.7929 8.16153 23.298 8.60186C23.8032 9.04219 25.4447 9.57683 28.2228 10.2058C30.2433 10.7091 31.6954 11.4325 32.5794 12.376C33.5264 13.3195 34 14.5461 34 16.0557C34 17.7541 33.4002 19.1694 32.2005 20.3016C31.0009 21.4339 29.4541 22 27.5599 22C25.0975 22 23.077 21.1194 21.4986 19.3581C19.9202 17.534 19.1309 15.238 19.1309 12.4703C19.1309 9.26233 20.1096 6.589 22.0669 4.45032C24.0242 2.31165 26.7391 0.833454 30.2117 0.0157251Z"
-                                                    fill="#AEFFE0"
-                                                />
-                                            </svg>
-                                            <TooltipCard title={stdName}>
-                                                <b className="ment-ai-name">{stdName} </b>
-                                            </TooltipCard>
-                                            학생의 취약 영역은
-                                        </div>
-                                        <div>
-                                            {achievesForTypes.value < 100 ? (
-                                                <span className="ment-ai-nounderline">-</span>
-                                            ) : (
-                                                <span className="ment-ai-underline">
-                                                    {top3Weaks.length && top3Weaks[0] ? (
-                                                        <TooltipCard
-                                                            title={
+                    </GroupBox>
+                </AnalyzeTimeSection>
+                <AnalyzeTypeSection>
+                    <GroupBox title="유형별 분석">
+                        <AnalyzeTypeTextsContainer>
+                            <WeakTypeSectionWrapper>
+                                <WeakTypeSection className="first">
+                                    <Typography type="label" size="xxl" bold>
+                                        <WeakTypeDecoration
+                                            width="34"
+                                            height="22"
+                                            viewBox="0 0 34 22"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M11.1755 0.0157251C11.4912 -0.047176 11.6806 0.0786284 11.7437 0.393139C11.8069 0.644745 11.6806 0.802003 11.3649 0.864904C9.02877 1.36812 7.10308 2.18585 5.58773 3.31808C4.13556 4.38742 3.40947 5.55112 3.40947 6.80914C3.40947 7.56397 3.66203 8.16153 4.16713 8.60186C4.73538 9.04219 6.40852 9.57683 9.18661 10.2058C11.1439 10.7091 12.5645 11.4325 13.4485 12.376C14.3956 13.3195 14.8691 14.5461 14.8691 16.0557C14.8691 17.7541 14.2693 19.1694 13.0696 20.3016C11.87 21.4339 10.3231 22 8.42898 22C5.96657 22 3.94615 21.1508 2.36769 19.4524C0.789231 17.6912 0 15.4582 0 12.7534C0 9.48247 0.978645 6.74623 2.93593 4.54467C4.95634 2.3431 7.70287 0.833454 11.1755 0.0157251ZM30.2117 0.0157251C30.5274 -0.047176 30.7168 0.0786284 30.78 0.393139C30.9062 0.644745 30.8115 0.802003 30.4958 0.864904C28.1597 1.36812 26.234 2.18585 24.7187 3.31808C23.2665 4.38742 22.5404 5.55112 22.5404 6.80914C22.5404 7.56397 22.7929 8.16153 23.298 8.60186C23.8032 9.04219 25.4447 9.57683 28.2228 10.2058C30.2433 10.7091 31.6954 11.4325 32.5794 12.376C33.5264 13.3195 34 14.5461 34 16.0557C34 17.7541 33.4002 19.1694 32.2005 20.3016C31.0009 21.4339 29.4541 22 27.5599 22C25.0975 22 23.077 21.1194 21.4986 19.3581C19.9202 17.534 19.1309 15.238 19.1309 12.4703C19.1309 9.26233 20.1096 6.589 22.0669 4.45032C24.0242 2.31165 26.7391 0.833454 30.2117 0.0157251Z"
+                                                fill="#AEFFE0"
+                                            />
+                                        </WeakTypeDecoration>
+                                        {stdName} 학생의 취약 영역은
+                                    </Typography>
+                                    <Typography type="label" size="xxl" bold>
+                                        {achievesForTypes.value < 100 ? (
+                                            <span className="weak-type-nounderline">-</span>
+                                        ) : (
+                                            <span className="weak-type-underline">
+                                                {top3Weaks.length && top3Weaks[0] ? (
+                                                    <TooltipCard
+                                                        title={
+                                                            problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0]
+                                                                .name
+                                                        }
+                                                    >
+                                                        <>
+                                                            {
                                                                 problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0]
                                                                     .name
                                                             }
-                                                        >
-                                                            <>
-                                                                {
-                                                                    problemCategories.filter(
-                                                                        (p) => p.id === parseInt(top3Weaks[0].category),
-                                                                    )[0].name
-                                                                }
-                                                            </>
-                                                        </TooltipCard>
-                                                    ) : null}
-                                                </span>
-                                            )}{' '}
-                                            영역입니다.
-                                        </div>
-                                    </div>
-                                    <div className="ment-ai-col">
-                                        <div className="ment-ai-row">
-                                            <span className="row-title">2번째 취약 영역</span>
-                                            <span className="row-desc">
+                                                        </>
+                                                    </TooltipCard>
+                                                ) : null}
+                                            </span>
+                                        )}{' '}
+                                        영역입니다.
+                                    </Typography>
+                                </WeakTypeSection>
+                            </WeakTypeSectionWrapper>
+                            <WeakTypeSectionWrapper>
+                                <WeakTypeSection>
+                                    <WeakTypeItem>
+                                        <WeakTypeItemKey>
+                                            <Typography type="label" size="xxl" bold>
+                                                2번째 취약 영역
+                                            </Typography>
+                                        </WeakTypeItemKey>
+                                        <WeakTypeItemValue>
+                                            <Typography type="label" size="xxl" bold>
                                                 {achievesForTypes.value < 100
                                                     ? '-'
                                                     : top3Weaks.length && top3Weaks[1]
                                                     ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0].name
                                                     : 'null'}
-                                            </span>
-                                        </div>
-                                        <div className="ment-ai-row">
-                                            <span className="row-title">3번째 취약 영역</span>
-                                            <span className="row-desc">
+                                            </Typography>
+                                        </WeakTypeItemValue>
+                                    </WeakTypeItem>
+                                    <WeakTypeItem>
+                                        <WeakTypeItemKey>
+                                            <Typography type="label" size="xxl" bold>
+                                                3번째 취약 영역
+                                            </Typography>
+                                        </WeakTypeItemKey>
+                                        <WeakTypeItemValue>
+                                            <Typography type="label" size="xxl" bold>
                                                 {achievesForTypes.value < 100
                                                     ? '-'
                                                     : top3Weaks.length && top3Weaks[2]
                                                     ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0].name
                                                     : 'null'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                            </Typography>
+                                        </WeakTypeItemValue>
+                                    </WeakTypeItem>
+                                </WeakTypeSection>
+                            </WeakTypeSectionWrapper>
+                        </AnalyzeTypeTextsContainer>
+                        <AnalyzeTypeGraphConatainer>
                             {achievesForTypes.value < 100 ? (
                                 <StudentTypeScore
                                     enabled={achievesForTypes.allExists}
@@ -1386,26 +1252,11 @@ function ReportStudent({ history, match }) {
                                     stdName={stdName}
                                 />
                             )}
-                        </section>
-                    )}
-
-                    <Element name="analyze_page_start"></Element>
-                    <section className="student-report-observe">
-                        <GroupBox title="시선 흐름 및 패턴 분석" />
-                        {/* 시선 흐름 및 패턴 분석
-                                <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
-                                            fill="#A9ACAF"
-                                        />
-                                    </svg>
-                                </HTMLTooltip> */}
-
-                        {/* <div className="title-graph-right">
-                                <TypeBanner situation={'info'} value={achievesForTypes.value} />
-                            </div> */}
-
+                        </AnalyzeTypeGraphConatainer>
+                    </GroupBox>
+                </AnalyzeTypeSection>
+                <EyetrackAndPatternSection>
+                    <GroupBox title="시선흐름 및 패턴 분석">
                         {currentStudentData && patternDatas.length ? (
                             <EyeTrackBox
                                 hasEyetrack={currentStudentData.eyetrack}
@@ -1420,46 +1271,53 @@ function ReportStudent({ history, match }) {
                                 answerChangedProblems={answerChangedProblems}
                                 aftChangedFaileds={aftChangedFaileds}
                             />
-                        ) : // </Typography>
-                        // </AccordionDetails>
-                        // </Accordion>
-                        null}
-                    </section>
-
-                    <section className="AI-comment">
-                        <GroupBox title="AI-Comment" />
-
-                        <div className="white-box ment-ai">
-                            <div className="ment-ai-col">
-                                {currentStudentData && patternDatas.length ? (
-                                    <EyeTrackChart
-                                        hasEyetrack={currentStudentData.eyetrack}
-                                        eyetrackData={currentStudentData.eyetrack_data}
-                                        contentsData={currentStudentData.contents_data}
-                                        patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
-                                        totalStudentsDatas={studentsData.filter((d) => d.submitted)}
-                                        currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
-                                        userId={queryUserId}
-                                        activedNum={activedNum}
-                                        stdName={stdName}
-                                        answerChangedProblems={answerChangedProblems}
-                                        aftChangedFaileds={aftChangedFaileds}
-                                        setACMS={{
-                                            totalFixsMine: setACMTotalFixsMine,
-                                            totalFixsAvg: setACMTotalFixsAvg,
-                                            avgSpeedFixsMine: setACMAvgSpeedFixsMine,
-                                            avgSpeedFixsAvg: setACMAvgSpeedFixsAvg,
-                                            regressionsMine: setACMRegressionsMine,
-                                            regressionsAvg: setACMRegressionsAvg,
-                                        }}
-                                    />
-                                ) : (
-                                    <p>시선추적이 포함되지 않은 과제입니다.</p>
-                                )}
-                            </div>
-                            <div className="ment-ai-col" id="no-eyetrack">
-                                <h5>
-                                    {/* AI comment 영역 */}
+                        ) : null}
+                    </GroupBox>
+                </EyetrackAndPatternSection>
+                <AutoCommentSection>
+                    <GroupBox title="AI-Comments">
+                        <AutoCommentContainer>
+                            <AutoCommentChartContainer>
+                                <AutoCommentContainerTitle>
+                                    <Typography type="label" size="xl" bold>
+                                        차트
+                                    </Typography>
+                                </AutoCommentContainerTitle>
+                                <AutoCommentContainerContents>
+                                    {currentStudentData && patternDatas.length ? (
+                                        <EyeTrackChart
+                                            hasEyetrack={currentStudentData.eyetrack}
+                                            eyetrackData={currentStudentData.eyetrack_data}
+                                            contentsData={currentStudentData.contents_data}
+                                            patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
+                                            totalStudentsDatas={studentsData.filter((d) => d.submitted)}
+                                            currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
+                                            userId={queryUserId}
+                                            activedNum={activedNum}
+                                            stdName={stdName}
+                                            answerChangedProblems={answerChangedProblems}
+                                            aftChangedFaileds={aftChangedFaileds}
+                                            setACMS={{
+                                                totalFixsMine: setACMTotalFixsMine,
+                                                totalFixsAvg: setACMTotalFixsAvg,
+                                                avgSpeedFixsMine: setACMAvgSpeedFixsMine,
+                                                avgSpeedFixsAvg: setACMAvgSpeedFixsAvg,
+                                                regressionsMine: setACMRegressionsMine,
+                                                regressionsAvg: setACMRegressionsAvg,
+                                            }}
+                                        />
+                                    ) : (
+                                        <p>시선추적이 포함되지 않은 과제입니다.</p>
+                                    )}
+                                </AutoCommentContainerContents>
+                            </AutoCommentChartContainer>
+                            <AutoCommentCommentaryContainer>
+                                <AutoCommentContainerTitle>
+                                    <Typography type="label" size="xl" bold>
+                                        AI 코멘트
+                                    </Typography>
+                                </AutoCommentContainerTitle>
+                                <AutoCommentContainerContents>
                                     {MakeAutoComments(
                                         stdName,
                                         acmTotalFixsMine,
@@ -1469,51 +1327,46 @@ function ReportStudent({ history, match }) {
                                         acmRegressionsMine,
                                         acmRegressionsAvg,
                                     )}
-                                    <br />
-                                </h5>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section className="student-report-observe">
-                        <GroupBox title="선생님 피드백" />
-                        {/* <div className="observe-header">
-                                선생님 피드백
-                                {/* <HTMLTooltip title="문제풀이가 진행되는 동안 발생한 시선 이동을 나타냅니다. 시선흐름 측정이 없는 과제의 경우 학습자 문제풀이 패턴 목록만 보여집니다.">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 8.8H7.2L7.2 4ZM7.2 10.4H8.8V12H7.2V10.4Z"
-                                            fill="#A9ACAF"
-                                        />
-                                    </svg>
-                                </HTMLTooltip>
-                            </div> */}
-                        <div className="title-graph-right">{/* <TypeBanner situation={'info'} value={achievesForTypes.value} /> */}</div>
-                        {sessions.userType === 'students' ? (
-                            <>
-                                {!teacherFeedbackContents.renderContents ? (
-                                    <>피드백이 없습니다.</>
-                                ) : (
-                                    <>
-                                        <svg width="34" height="22" viewBox="0 0 34 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M11.1755 0.0157251C11.4912 -0.047176 11.6806 0.0786284 11.7437 0.393139C11.8069 0.644745 11.6806 0.802003 11.3649 0.864904C9.02877 1.36812 7.10308 2.18585 5.58773 3.31808C4.13556 4.38742 3.40947 5.55112 3.40947 6.80914C3.40947 7.56397 3.66203 8.16153 4.16713 8.60186C4.73538 9.04219 6.40852 9.57683 9.18661 10.2058C11.1439 10.7091 12.5645 11.4325 13.4485 12.376C14.3956 13.3195 14.8691 14.5461 14.8691 16.0557C14.8691 17.7541 14.2693 19.1694 13.0696 20.3016C11.87 21.4339 10.3231 22 8.42898 22C5.96657 22 3.94615 21.1508 2.36769 19.4524C0.789231 17.6912 0 15.4582 0 12.7534C0 9.48247 0.978645 6.74623 2.93593 4.54467C4.95634 2.3431 7.70287 0.833454 11.1755 0.0157251ZM30.2117 0.0157251C30.5274 -0.047176 30.7168 0.0786284 30.78 0.393139C30.9062 0.644745 30.8115 0.802003 30.4958 0.864904C28.1597 1.36812 26.234 2.18585 24.7187 3.31808C23.2665 4.38742 22.5404 5.55112 22.5404 6.80914C22.5404 7.56397 22.7929 8.16153 23.298 8.60186C23.8032 9.04219 25.4447 9.57683 28.2228 10.2058C30.2433 10.7091 31.6954 11.4325 32.5794 12.376C33.5264 13.3195 34 14.5461 34 16.0557C34 17.7541 33.4002 19.1694 32.2005 20.3016C31.0009 21.4339 29.4541 22 27.5599 22C25.0975 22 23.077 21.1194 21.4986 19.3581C19.9202 17.534 19.1309 15.238 19.1309 12.4703C19.1309 9.26233 20.1096 6.589 22.0669 4.45032C24.0242 2.31165 26.7391 0.833454 30.2117 0.0157251Z"
-                                                fill="#AEFFE0"
-                                            />
-                                        </svg>
-                                        <TeacherFeedbackViewer contents={teacherFeedbackContents.renderContents} />
-                                    </>
-                                )}
-                            </>
-                        ) : (
-                            <TeacherFeedbackWriter
-                                deltaContents={teacherFeedbackContents.deltaContents}
-                                actionUpdateClick={actionUpdateTeacherFeedback}
-                            />
-                        )}
-                    </section>
-                </div>
-            </ClassWrapper>
+                                </AutoCommentContainerContents>
+                            </AutoCommentCommentaryContainer>
+                        </AutoCommentContainer>
+                    </GroupBox>
+                </AutoCommentSection>
+                <FeedbackSection>
+                    <GroupBox title="선생님 피드백">
+                        <FeedbackContainer>
+                            {sessions.userType === 'students' ? (
+                                <>
+                                    {!teacherFeedbackContents.renderContents ? (
+                                        <>피드백이 없습니다.</>
+                                    ) : (
+                                        <>
+                                            <FeedbackDecoration
+                                                width="34"
+                                                height="22"
+                                                viewBox="0 0 34 22"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    d="M11.1755 0.0157251C11.4912 -0.047176 11.6806 0.0786284 11.7437 0.393139C11.8069 0.644745 11.6806 0.802003 11.3649 0.864904C9.02877 1.36812 7.10308 2.18585 5.58773 3.31808C4.13556 4.38742 3.40947 5.55112 3.40947 6.80914C3.40947 7.56397 3.66203 8.16153 4.16713 8.60186C4.73538 9.04219 6.40852 9.57683 9.18661 10.2058C11.1439 10.7091 12.5645 11.4325 13.4485 12.376C14.3956 13.3195 14.8691 14.5461 14.8691 16.0557C14.8691 17.7541 14.2693 19.1694 13.0696 20.3016C11.87 21.4339 10.3231 22 8.42898 22C5.96657 22 3.94615 21.1508 2.36769 19.4524C0.789231 17.6912 0 15.4582 0 12.7534C0 9.48247 0.978645 6.74623 2.93593 4.54467C4.95634 2.3431 7.70287 0.833454 11.1755 0.0157251ZM30.2117 0.0157251C30.5274 -0.047176 30.7168 0.0786284 30.78 0.393139C30.9062 0.644745 30.8115 0.802003 30.4958 0.864904C28.1597 1.36812 26.234 2.18585 24.7187 3.31808C23.2665 4.38742 22.5404 5.55112 22.5404 6.80914C22.5404 7.56397 22.7929 8.16153 23.298 8.60186C23.8032 9.04219 25.4447 9.57683 28.2228 10.2058C30.2433 10.7091 31.6954 11.4325 32.5794 12.376C33.5264 13.3195 34 14.5461 34 16.0557C34 17.7541 33.4002 19.1694 32.2005 20.3016C31.0009 21.4339 29.4541 22 27.5599 22C25.0975 22 23.077 21.1194 21.4986 19.3581C19.9202 17.534 19.1309 15.238 19.1309 12.4703C19.1309 9.26233 20.1096 6.589 22.0669 4.45032C24.0242 2.31165 26.7391 0.833454 30.2117 0.0157251Z"
+                                                    fill="#AEFFE0"
+                                                />
+                                            </FeedbackDecoration>
+                                            <TeacherFeedbackViewer contents={teacherFeedbackContents.renderContents} />
+                                        </>
+                                    )}
+                                </>
+                            ) : (
+                                <TeacherFeedbackWriter
+                                    deltaContents={teacherFeedbackContents.deltaContents}
+                                    actionUpdateClick={actionUpdateTeacherFeedback}
+                                />
+                            )}
+                        </FeedbackContainer>
+                    </GroupBox>
+                </FeedbackSection>
+            </ReportStudentRoot>
         </>
     );
 }

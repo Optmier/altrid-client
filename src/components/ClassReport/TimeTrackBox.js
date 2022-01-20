@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
+import Typography from '../../AltridUI/Typography/Typography';
 import LineChartTime from '../essentials/LineChartTime';
 import { SecondtoMinute } from '../essentials/TimeChange';
 
@@ -15,79 +17,52 @@ const timeValueToTimer = (seconds) => {
     else return `${pad(parseInt(secs / 60), 1)}분 ${pad(Math.floor(secs % 60), 1)}초`;
 };
 
-const StyleTimeTrackWrapper = styled.div`
+const AnalyzeTimeTextsContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    padding: 48px 32px;
+    @media (max-width: 640px) {
+        padding: 32px 16px;
+    }
+`;
+const AnalyzeTimeTextsSection = styled.div`
+    align-items: center;
     display: flex;
     flex-direction: column;
-
-    & .time-box {
-        display: flex;
-        align-items: center;
-
-        & .time-header-col {
-            width: 50%;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 1.18rem;
-            font-weight: 500;
-            color: #707070;
-
-            & .purple-time {
-                font-weight: bold;
-                font-size: 48px;
-                line-height: 52px;
-                text-align: center;
-                color: #6c46a1;
-                margin-bottom: 8px;
-
-                @media (min-width: 0px) and (max-width: 480px) {
-                    font-size: 28px;
-                }
-            }
-            & .subtitle {
-                font-weight: normal;
-                font-size: 16px;
-                line-height: 20px;
-                text-align: center;
-                letter-spacing: -0.02em;
-                color: #11171c;
-            }
-            & > div {
-                color: black;
-                margin-right: 1.5rem;
-            }
-        }
-
-        & .time-header-col + .time-header-col {
-            border-left: #7070704e 1px solid;
-            padding-left: 32px;
-        }
-        @media (min-width: 0px) and (max-width: 480px) {
-            & .time-box {
-                display: flex;
-                flex-direction: row;
-            }
+    width: 50%;
+    &.section1 {
+        flex-basis: 282px;
+        flex-grow: 1;
+        flex-shrink: 0;
+    }
+    & div.altrid-typography.heading {
+        color: ${getColorSets(400, 'purple')};
+    }
+    & div.altrid-typography.label {
+        color: ${getColorSets(700, 'gray')};
+        margin-top: 8px;
+    }
+    @media (max-width: 960px) {
+        &.section1 {
+            flex-basis: 240px;
         }
     }
-
-    & .time-box + .time-box {
-        margin-top: 24px;
-    }
-
-    & .time-header {
-        width: 100%;
-        text-align: right;
-        display: flex;
-        justify-content: flex-end;
-        color: #706d6d;
-        font-size: 14px;
-        font-weight: 400;
-
-        & > div {
-            font-weight: 600;
-            margin-right: 1rem;
+    @media (max-width: 640px) {
+        &.section1 {
+            flex: initial;
         }
+    }
+`;
+const AnalyzeTimeGraphContainer = styled.div`
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    margin-top: 8px;
+    padding: 24px;
+    position: relative;
+    @media (max-width: 640px) {
+        padding: 12px;
     }
 `;
 
@@ -121,28 +96,31 @@ function TimeTrackBox({ data, total, totalProblems }) {
     }, [data]);
 
     return (
-        <StyleTimeTrackWrapper>
-            <div className="white-box time-box">
-                <div className="time-header-col">
-                    <div className="purple-time">
+        <>
+            <AnalyzeTimeTextsContainer>
+                <AnalyzeTimeTextsSection className="section1">
+                    <Typography type="heading" size="m" bold>
                         {timeValueToTimer(arranged[0].time)} ({arranged[0].pid + 1}번)
-                    </div>
-
-                    <div className="subtitle">최장 소요시간(문제)</div>
-                </div>
-                <div className="time-header-col">
-                    <div className="purple-time">
+                    </Typography>
+                    <Typography type="label" size="l">
+                        최장 소요시간(문제)
+                    </Typography>
+                </AnalyzeTimeTextsSection>
+                <AnalyzeTimeTextsSection>
+                    <Typography type="heading" size="m" bold>
                         {SecondtoMinute(personalAvg)[0]
                             ? SecondtoMinute(personalAvg)[0] + '분 ' + SecondtoMinute(personalAvg)[1] + '초'
                             : SecondtoMinute(personalAvg)[1] + '초'}
-                    </div>
-                    <div className="subtitle">문제당 평균 풀이시간</div>
-                </div>
-            </div>
-            <div className="white-box time-box">
+                    </Typography>
+                    <Typography type="label" size="l">
+                        문제당 평균 풀이시간
+                    </Typography>
+                </AnalyzeTimeTextsSection>
+            </AnalyzeTimeTextsContainer>
+            <AnalyzeTimeGraphContainer>
                 {data ? <LineChartTime currents={data.map((d) => d.time)} averages={totalAvgs} totalProblems={totalProblems} /> : null}
-            </div>
-        </StyleTimeTrackWrapper>
+            </AnalyzeTimeGraphContainer>
+        </>
     );
 }
 

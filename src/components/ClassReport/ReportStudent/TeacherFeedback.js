@@ -8,23 +8,26 @@ import { apiUrl } from '../../../configs/configs';
 
 // 루트 페이퍼 스타일
 const RootContainer = styled.div`
-    background-color: #ffffff;
-    border-radius: 11px;
     width: 100%;
-    padding: 30px 32px;
     box-sizing: border-box;
+    &.viewer,
+    &.viewer > p {
+        font-family: inherit;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 28px;
+    }
     & .quill.feedback-editor {
         & .ql-toolbar {
-            border-top-left-radius: 11px;
-            border-top-right-radius: 11px;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
         }
         & .ql-container {
-            border-bottom-left-radius: 11px;
-            border-bottom-right-radius: 11px;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
         }
     }
     @media all and (max-width: 799px) {
-        padding: 16px;
     }
 `;
 // 피드백 에디터 액션 버튼 컨테이너 스타일
@@ -49,7 +52,7 @@ const ActionButton = styled.button`
  * @param {string} contents HTML DOM string
  */
 function TeacherFeedbackViewer({ contents }) {
-    return <RootContainer>{HtmlParser(contents)}</RootContainer>;
+    return <RootContainer className="viewer">{HtmlParser(contents)}</RootContainer>;
 }
 // 선생님 피드백 뷰어 컴포넌트 기본 프로퍼티
 TeacherFeedbackViewer.defaultProps = {

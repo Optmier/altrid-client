@@ -11,7 +11,6 @@ const ButtonRoot = styled.button`
         else return 'rgba(255, 255, 255, 0)';
     }};
     border: ${({ variant }) => {
-        console.log(variant);
         if (variant === 'filled') return 'none';
         else if (variant === 'outlined') return '2px solid #ffffff';
         else if (variant === 'mono') return '2px solid #9AA5AF';
