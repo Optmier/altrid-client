@@ -20,13 +20,14 @@ import { getServerDate } from '../../redux_modules/serverdate';
 import BackdropComponent from '../essentials/BackdropComponent';
 import Error from '../../pages/Errors/Error';
 import { changeParams } from '../../redux_modules/params';
-import { NavLink, withRouter } from 'react-router-dom';
+import { Link, NavLink, withRouter } from 'react-router-dom';
 import { SecondsToHoursAndMinutes } from '../essentials/TimeChange';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import Button from '../../AltridUI/Button/Button';
 import CategorySelector from '../../controllers/CategorySelector';
 import Typography from '../../AltridUI/Typography/Typography';
 import { Grid, withStyles } from '@material-ui/core';
+import ReportWarningTags, { LimitFuncWrapper } from './ReportStudent/ReportWarningTags';
 
 // const pad = (n, width) => {
 //     n = n + '';
@@ -38,33 +39,6 @@ import { Grid, withStyles } from '@material-ui/core';
 //     if (seconds === -2) return '제한 없음';
 //     else return `${pad(parseInt(secs / 60), 2)}분 ${pad(Math.floor(secs % 60), 2)}초`;
 // };
-
-const LimitFuncWrapper = styled.div`
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 95%;
-    height: 95%;
-    background: #ffffff3c;
-    backdrop-filter: blur(4px);
-    font-size: 1.2rem;
-    font-weight: 500;
-    z-index: 1000;
-    color: rgb(96, 95, 96);
-    top: 0;
-    user-select: none;
-    & svg {
-        margin-right: 15px;
-    }
-    @media (min-width: 0) and (max-width: 663px) {
-        font-size: 0.85rem;
-        text-align: center;
-        & svg {
-            margin-right: 5px;
-        }
-    }
-`;
 
 const ReportClassRoot = styled.div`
     display: flex;
@@ -819,7 +793,7 @@ function ReportClass({ match, history }) {
                                     </svg>
                                     <TypeAchievesIndicatorText>
                                         <Typography type="label" size="xl">
-                                            과제 최소 조건을 만족하셨습니다.
+                                            유형별 분석 조건을 만족하셨습니다.
                                         </Typography>
                                     </TypeAchievesIndicatorText>
                                     <TypeAchievesIndicatorLink href="https://www.notion.so/a4daf8676b2b4460b75613f25249abf3">
@@ -838,7 +812,7 @@ function ReportClass({ match, history }) {
                                     </svg>
                                     <TypeAchievesIndicatorText>
                                         <Typography type="label" size="xl">
-                                            과제 최소 조건을 만족하지 못했습니다.
+                                            유형별 분석 최소 조건을 만족하지 못했습니다.
                                         </Typography>
                                     </TypeAchievesIndicatorText>
                                     <TypeAchievesIndicatorLink href="https://www.notion.so/a4daf8676b2b4460b75613f25249abf3">
@@ -907,15 +881,16 @@ function ReportClass({ match, history }) {
                             ) : (
                                 <>
                                     <LimitFuncWrapper>
-                                        <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                                            <path
-                                                id="패스_35"
-                                                data-name="패스 35"
-                                                d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
-                                                fill="#605f60"
-                                            />
-                                        </svg>
-                                        과제를 더 다양한 문제로 만들어주세요!
+                                        <ReportWarningTags
+                                            title={
+                                                <Link
+                                                    to={{ pathname: 'https://www.notion.so/a4daf8676b2b4460b75613f25249abf3' }}
+                                                    target="_blank"
+                                                >
+                                                    유형 분석 조건을 충족하지 않았습니다.
+                                                </Link>
+                                            }
+                                        />
                                     </LimitFuncWrapper>
                                     <ColumnChartType datas={0} subject={subject} />
                                 </>

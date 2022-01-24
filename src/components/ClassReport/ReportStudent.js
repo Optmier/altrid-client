@@ -33,6 +33,7 @@ import MakeAutoComments from '../../controllers/MakeAutoComment';
 import Typography from '../../AltridUI/Typography/Typography';
 import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
 import AlertSnackbar from '../../AltridUI/Snackbar/AlertSnackbar';
+import ReportWarningTags, { LimitFuncWrapper } from './ReportStudent/ReportWarningTags';
 
 const pad = (n, width) => {
     n = n + '';
@@ -237,6 +238,7 @@ const AutoCommentContainer = styled.div`
     border-radius: 8px;
     display: flex;
     justify-content: space-around;
+    position: relative;
     @media (max-width: 640px) {
         flex-direction: column;
     }
@@ -1277,6 +1279,11 @@ function ReportStudent({ history, match }) {
                 <AutoCommentSection>
                     <GroupBox title="AI-Comments">
                         <AutoCommentContainer>
+                            {!currentStudentData.eyetrack ? (
+                                <LimitFuncWrapper>
+                                    <ReportWarningTags title="시선 추적 미포함 과제" />
+                                </LimitFuncWrapper>
+                            ) : null}
                             <AutoCommentChartContainer>
                                 <AutoCommentContainerTitle>
                                     <Typography type="label" size="xl" bold>

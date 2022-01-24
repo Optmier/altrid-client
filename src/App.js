@@ -47,6 +47,8 @@ import HeaderBar from './components/essentials/HeaderBar';
 import Footer from './components/essentials/Footer';
 import MainDraft from './pages/MainDrafts/MainDraft';
 import Dashboard from './pages/Dashboards/Dashboard';
+import AlertSnackbar from './AltridUI/Snackbar/AlertSnackbar';
+import { closeAlertSnackbar } from './redux_modules/alertMaker';
 
 const MainContainer = styled.main`
     flex: 1;
@@ -70,6 +72,8 @@ function App({ history, match }) {
     const deleteSessions = useCallback(() => dispatch(deleteSession()), [dispatch]);
     const sessions = useSelector((state) => state.RdxSessions);
     const optimerModule = useSelector((state) => state.RdxOpTimerHelper);
+    const globalAlertSnackbarConfigs = useSelector((state) => state.RdxAlertSnackbar);
+    const closeSnackbar = useCallback(() => dispatch(closeAlertSnackbar()), [dispatch]);
 
     if (!loginUrls.includes(history.location.pathname)) window.lastUrl = history.location.pathname;
 
@@ -244,8 +248,22 @@ function App({ history, match }) {
         } else return null;
     };
 
+    const alertSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        closeSnackbar();
+    };
+
     return (
         <>
+            <AlertSnackbar
+                open={globalAlertSnackbarConfigs.open}
+                title={globalAlertSnackbarConfigs.message}
+                type={globalAlertSnackbarConfigs.alertType}
+                duration={globalAlertSnackbarConfigs.duration}
+                onClose={alertSnackbarClose}
+            />
             <AlertSubscribe />
 
             <CustomChannelIOButton />

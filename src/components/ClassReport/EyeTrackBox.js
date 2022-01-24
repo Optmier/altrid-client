@@ -12,6 +12,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Accordion from '@material-ui/core/Accordion';
 import Typography from '../../AltridUI/Typography/Typography';
 import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
+import ReportWarningTags, { LimitFuncWrapper } from './ReportStudent/ReportWarningTags';
 
 const Playerset = styled.div`
     /* width: 950px; */
@@ -36,6 +37,7 @@ const EyetrackVideoContainer = styled.div`
     background-color: #ffffff;
     border-radius: 8px;
     display: flex;
+    min-height: 32px;
     padding: 16px;
     position: relative;
     @media (max-width: 640px) {
@@ -48,6 +50,7 @@ const EyetrackTextsContainer = styled.div`
     display: flex;
     justify-content: center;
     margin-top: 8px;
+    min-height: 28px;
     padding: 32px;
     position: relative;
     @media (max-width: 640px) {
@@ -261,17 +264,16 @@ function EyeTrackBox({
         // 시선 추적 영상
         <>
             <EyetrackVideoContainer>
-                <EyetrackVideoAccordion elevation={0}>
-                    <EyetrackVideoAccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-                        <Typography type="label" size="xl" bold>
-                            시선흐름 분석영상 보기
-                        </Typography>
-                    </EyetrackVideoAccordionSummary>
-                    <EyetrackVideoAccordionDetails>
-                        <Playerset>
-                            {hasEyetrack && mEyetrackData ? (
+                {hasEyetrack && mEyetrackData ? (
+                    <EyetrackVideoAccordion elevation={0}>
+                        <EyetrackVideoAccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                            <Typography type="label" size="xl" bold>
+                                시선흐름 분석영상 보기
+                            </Typography>
+                        </EyetrackVideoAccordionSummary>
+                        <EyetrackVideoAccordionDetails>
+                            <Playerset>
                                 <EyetrackingPlayer data={mEyetrackData} testContent={contentsData} goto={trackTimeGoTo} />
-                            ) : (
                                 <div className="no-eyetrack">
                                     <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                                         <path
@@ -283,10 +285,14 @@ function EyeTrackBox({
                                     </svg>
                                     시선 추적이 포함되지 않은 과제입니다.
                                 </div>
-                            )}
-                        </Playerset>
-                    </EyetrackVideoAccordionDetails>
-                </EyetrackVideoAccordion>
+                            </Playerset>
+                        </EyetrackVideoAccordionDetails>
+                    </EyetrackVideoAccordion>
+                ) : (
+                    <LimitFuncWrapper>
+                        <ReportWarningTags title="시선 추적 미포함 과제" />
+                    </LimitFuncWrapper>
+                )}
             </EyetrackVideoContainer>
             <EyetrackTextsContainer>
                 {hasEyetrack && mEyetrackData ? (
@@ -335,17 +341,9 @@ function EyeTrackBox({
                         </EyetrackTextsWrapper>
                     </>
                 ) : (
-                    <div className="ment-ai-col" id="no-eyetrack">
-                        <svg id="Warning" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                            <path
-                                id="패스_35"
-                                data-name="패스 35"
-                                d="M8,0a8,8,0,1,0,8,8A8.024,8.024,0,0,0,8,0ZM9.1,12.2H6.9V10.3H9.2v1.9Zm.1-7.4L8.6,9.2H7.4L6.8,4.8v-1H9.3v1Z"
-                                fill="#605f60"
-                            />
-                        </svg>
-                        시선 추적 미포함 과제
-                    </div>
+                    <LimitFuncWrapper>
+                        <ReportWarningTags title="시선 추적 미포함 과제" />
+                    </LimitFuncWrapper>
                 )}
             </EyetrackTextsContainer>
             <PatternsContainer>
