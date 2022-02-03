@@ -28,6 +28,7 @@ import CategorySelector from '../../controllers/CategorySelector';
 import Typography from '../../AltridUI/Typography/Typography';
 import { Grid, withStyles } from '@material-ui/core';
 import ReportWarningTags, { LimitFuncWrapper } from './ReportStudent/ReportWarningTags';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 // const pad = (n, width) => {
 //     n = n + '';
@@ -593,9 +594,7 @@ function ReportClass({ match, history }) {
 
     useEffect(() => {
         let abortController = new AbortController();
-
         fecthMainData();
-
         return () => {
             abortController.abort();
         };
@@ -603,8 +602,6 @@ function ReportClass({ match, history }) {
 
     useEffect(() => {
         if (!mainReportData) return;
-        console.log(mainReportData);
-
         setTitle(mainReportData.title);
         setDescription(mainReportData.description);
         setSubject(mainReportData.subject);
@@ -647,6 +644,11 @@ function ReportClass({ match, history }) {
 
     useEffect(() => {
         if (!studentsData || studentsData.length < 1) return;
+        if (!studentsData.filter(({ submitted }) => submitted !== null && submitted !== undefined).length) {
+            dispatch(openAlertSnackbar('제출한 학생이 없습니다.', 'info'));
+            history.replace(`/class/${num}/share`);
+            return;
+        }
         fecthCalculateStudentData();
     }, [studentsData]);
 
@@ -675,13 +677,15 @@ function ReportClass({ match, history }) {
     //error check 1. 우리반이 아닌 다른 반 리포트에 접근할려고 할때
     if (data && data.idx === undefined) return <Error />;
 
+    console.log(studentsData);
+
     //error check 2. 데이터 전체가 로딩 완료될때까지는 back-drop
     if (
         data === null ||
-        avgScoresOfNumber.length === 0 ||
-        mainLoading.mainReportData ||
-        mainLoading.reduxData ||
+        mainLoading.mainReportDataLoading ||
+        mainLoading.reduxDataLoading ||
         mainLoading.studentsDataLoading
+        // !avgScoresOfNumber.length
     ) {
         return <BackdropComponent open={true} />;
     }
@@ -830,10 +834,14 @@ function ReportClass({ match, history }) {
                                         <span className="key">가장 취약한 문제</span>
                                     </Typography>
                                     <Typography type="label" size="xxl" bold>
-                                        <span className="value">
-                                            {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
-                                            {Math.min(...avgScoresOfNumber).toFixed(1)}%)
-                                        </span>
+                                        {avgScoresOfNumber.length ? (
+                                            <span className="value">
+                                                {avgScoresOfNumber.indexOf(Math.min(...avgScoresOfNumber)) + 1}번 (
+                                                {Math.min(...avgScoresOfNumber).toFixed(1)}%)
+                                            </span>
+                                        ) : (
+                                            ' -'
+                                        )}
                                     </Typography>
                                 </CompareGraphSummaryItem>
                                 <CompareGraphSummaryItem>
@@ -841,25 +849,29 @@ function ReportClass({ match, history }) {
                                         <span className="key">가장 취약한 영역</span>
                                     </Typography>
                                     <Typography type="label" size="xxl" bold>
-                                        <span className="value">
-                                            {
-                                                CategorySelector(subject).filter(
-                                                    (p) =>
-                                                        p.id ===
-                                                        achievesForTypes.allExists
-                                                            .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
-                                                            .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0]
-                                                            .category,
-                                                )[0].name
-                                            }
-                                            (
-                                            {(
-                                                achievesForTypes.allExists
-                                                    .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
-                                                    .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
-                                            ).toFixed(1) || 0}
-                                            %)
-                                        </span>
+                                        {avgScoresOfNumber.length ? (
+                                            <span className="value">
+                                                {
+                                                    CategorySelector(subject).filter(
+                                                        (p) =>
+                                                            p.id ===
+                                                            achievesForTypes.allExists
+                                                                .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                                                .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0]
+                                                                .category,
+                                                    )[0].name
+                                                }
+                                                (
+                                                {(
+                                                    achievesForTypes.allExists
+                                                        .map((e) => ({ ...e, score: averageScoresOfType[e.category] }))
+                                                        .sort((a, b) => (a.score > b.score ? 1 : b.score > a.score ? -1 : 0))[0].score * 100
+                                                ).toFixed(1) || 0}
+                                                %)
+                                            </span>
+                                        ) : (
+                                            ' -'
+                                        )}
                                     </Typography>
                                 </CompareGraphSummaryItem>
                             </CompareGraphSummaryLeft>

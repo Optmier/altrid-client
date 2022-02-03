@@ -12,7 +12,7 @@ import Login from './pages/Logins/Login';
 import Error from './pages/Errors/Error';
 import isMobile from './controllers/isMobile';
 import LoginAdmin from './pages/Logins/LoginAdmin';
-import { apiUrl } from './configs/configs';
+import { apiUrl, googleAuthClientId } from './configs/configs';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveSession, deleteSession, updateSession } from './redux_modules/sessions';
 import { getServerDate } from './redux_modules/serverdate';
@@ -48,7 +48,10 @@ import Footer from './components/essentials/Footer';
 import MainDraft from './pages/MainDrafts/MainDraft';
 import Dashboard from './pages/Dashboards/Dashboard';
 import AlertSnackbar from './AltridUI/Snackbar/AlertSnackbar';
-import { closeAlertSnackbar } from './redux_modules/alertMaker';
+import { closeAlertSnackbar, closeAlertDialog, openAlertSnackbar } from './redux_modules/alertMaker';
+import { AlertDialog } from './AltridUI/AlertnDialog/AlertnDialog';
+import { useGoogleLogin } from 'react-google-login';
+import { useRef } from 'react';
 
 const MainContainer = styled.main`
     flex: 1;
@@ -74,8 +77,40 @@ function App({ history, match }) {
     const optimerModule = useSelector((state) => state.RdxOpTimerHelper);
     const globalAlertSnackbarConfigs = useSelector((state) => state.RdxAlertSnackbar);
     const closeSnackbar = useCallback(() => dispatch(closeAlertSnackbar()), [dispatch]);
+    const globalAlertDialogConfigs = useSelector((state) => state.RdxAlertDialog);
+    const closeAlert = useCallback(() => dispatch(closeAlertDialog()), [dispatch]);
+
+    const googleLoginApiRef = useRef();
+    googleLoginApiRef.current = useGoogleLogin({
+        clientId: googleAuthClientId,
+        onSuccess: () => {},
+        onFailure: () => {},
+        cookiePolicy: 'single_host_origin',
+    });
 
     if (!loginUrls.includes(history.location.pathname)) window.lastUrl = history.location.pathname;
+
+    const onCompleteGoogleLogoutSuccess = () => {
+        console.info('구글 로그아웃:: 완전히 로그아웃 완료됨.');
+    };
+
+    const onCompleteGoogleLogoutFailed = (err) => {
+        console.warn('구글 로그아웃:: 완전히 로그아웃 되지 않음.', err);
+    };
+
+    const onCompleteGoogleLogout = () => {
+        if (window.gapi) {
+            const googleAuth2Instance = window.gapi.auth2.getAuthInstance();
+            if (!googleAuth2Instance) {
+                onCompleteGoogleLogoutFailed('객체가 비어 있음.');
+                return;
+            }
+            googleAuth2Instance
+                .signOut()
+                .then(googleAuth2Instance.disconnect().then(() => onCompleteGoogleLogoutSuccess()))
+                .catch((err) => onCompleteGoogleLogoutFailed(err));
+        }
+    };
 
     window.logout = () => {
         Axios.delete(`${apiUrl}/auth`, { withCredentials: true })
@@ -87,6 +122,7 @@ function App({ history, match }) {
                 try {
                     window.Android.CallMobAndroidLogin();
                 } catch (error) {}
+                onCompleteGoogleLogout();
             })
             .catch((err) => {
                 console.error(err);
@@ -94,6 +130,7 @@ function App({ history, match }) {
     };
 
     useEffect(() => {
+        if (!window.gapi) return;
         Axios.get(apiUrl + '/auth', { withCredentials: true })
             .then((res1) => {
                 if (loginUrls.includes(history.location.pathname)) history.replace(window.lastUrl);
@@ -146,19 +183,21 @@ function App({ history, match }) {
             })
             .catch((err) => {
                 if (err.response.status === 401) {
+                    onCompleteGoogleLogout();
                     if (!loginUrls.includes(history.location.pathname)) {
                         // alert('로그인이 필요합니다.');
+                        dispatch(openAlertSnackbar('로그인이 필요합니다.', 'error', 2000));
                         history.replace($_loginDefault);
                         try {
                             window.Android.CallMobAndroidLogin();
                         } catch (error) {}
                     }
                 } else if (err.response.data.code === 'TokenExpiredError') {
-                    alert('세션이 만료되어 다시 로그인 해야합니다.');
+                    dispatch(openAlertSnackbar('세션이 만료되어 다시 로그인 해야합니다.', 'warning', 5000));
                     window.logout();
                 }
             });
-    }, [history.location]);
+    }, [history.location, window.gapi]);
 
     useEffect(() => {
         if (channelIOAccessKey.pluginKey) {
@@ -249,14 +288,33 @@ function App({ history, match }) {
     };
 
     const alertSnackbarClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
+        if (reason === 'clickaway') return;
         closeSnackbar();
+    };
+
+    const alertDialogCloseFn = (event, reason) => {
+        if (reason === 'backdropClick' && globalAlertDialogConfigs.disableBackdropClick) return;
+        closeAlert();
     };
 
     return (
         <>
+            <AlertDialog
+                open={globalAlertDialogConfigs.open}
+                alertType={globalAlertDialogConfigs.alertType}
+                title={globalAlertDialogConfigs.title}
+                message={globalAlertDialogConfigs.message}
+                actionButtons={globalAlertDialogConfigs.actionButtons}
+                actionNamesMapping={globalAlertDialogConfigs.actionNamesMapping}
+                actionPrimaryColor={globalAlertDialogConfigs.actionPrimaryColor}
+                actionSecondaryColor={globalAlertDialogConfigs.actionSecondaryColor}
+                actionFirst={globalAlertDialogConfigs.actionFirst}
+                actionSecond={globalAlertDialogConfigs.actionSecond}
+                actionThird={globalAlertDialogConfigs.actionThird}
+                disableEscapeKeyDown={globalAlertDialogConfigs.disableEscapeKeyDown}
+                transitionDuration={globalAlertDialogConfigs.transitionDuration}
+                onClose={alertDialogCloseFn}
+            />
             <AlertSnackbar
                 open={globalAlertSnackbarConfigs.open}
                 title={globalAlertSnackbarConfigs.message}

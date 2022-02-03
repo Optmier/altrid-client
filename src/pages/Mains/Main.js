@@ -231,8 +231,8 @@ function Main({ history }) {
                     </GreetingsTopAdornmentContainer>
                     <GreetingsMessagesContainer>
                         <AltTypo type="heading" isHeadingComponent size="l" bold>
-                            {sessions.userType === 'student' ? '반가워요, ' : '반갑습니다, '} {sessions.userName}{' '}
-                            {sessions.userType === 'student' ? '학생!' : '선생님!'}
+                            {sessions.userType === 'students' ? '반가워요, ' : '반갑습니다, '} {sessions.userName}{' '}
+                            {sessions.userType === 'students' ? '학생!' : '선생님!'}
                         </AltTypo>
                     </GreetingsMessagesContainer>
                 </GreetingsLeftContainer>

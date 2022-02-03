@@ -6,9 +6,7 @@ import * as $ from 'jquery';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import { withRouter } from 'react-router-dom';
-import ClassDialogDelete from '../essentials/ClassDialogDelete';
 import styled from 'styled-components';
-import PopOverClipboard from '../essentials/PopOverClipboard';
 import StudentManage from '../ClassStudentManage/StudentManage';
 import Leaderboard from '../ClassStudentManage/Leaderboard';
 import HeaderMenu from '../../AltridUI/HeaderMenu/HeaderMenu';
@@ -18,6 +16,8 @@ import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
 import BulbIcon from '../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
 import InnerPageBottomActions from '../../AltridUI/OtherContainers/InnerPageBottomActions';
 import Typography from '../../AltridUI/Typography/Typography';
+import { useDispatch } from 'react-redux';
+import { closeAlertDialog, openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const FormButton = styled.button`
     background-color: ${(props) => (props.able ? '#FFFFFF' : '#F4F1FA')};
@@ -143,6 +143,7 @@ const ContentsWrapper = styled.div`
 function Manage({ match, history }) {
     const textCopy = useRef();
 
+    const dispatch = useDispatch();
     const { num } = match.params;
     const [inputState, setInputState] = useState({
         entry_new_name: '',
@@ -164,11 +165,6 @@ function Manage({ match, history }) {
         토: false,
         일: false,
     });
-    // const [ablestate, setAblesate] = useState({
-    //     leaderboard: true,
-    //     studentmanage: false,
-    //     classmanage: false,
-    // });
 
     const handleInputChange = (e, value) => {
         if ($(e.target).hasClass('default')) {
@@ -183,22 +179,6 @@ function Manage({ match, history }) {
             });
         }
     };
-    // const handleShareCardList = useCallback(
-    //     (e) => {
-    //         const { name, value } = e.target;
-
-    //         setAblesate({
-    //             leaderboard: false,
-    //             studentmanage: false,
-    //             classmanage: false,
-    //         });
-    //         setAblesate((prevState) => ({
-    //             ...prevState,
-    //             [name]: !(value === 'true'),
-    //         }));
-    //     },
-    //     [ablestate],
-    // );
 
     const fetchStudents = () => {
         Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
@@ -224,23 +204,6 @@ function Manage({ match, history }) {
     useEffect(() => {
         Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
             .then((res1) => {
-                // Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
-                //     .then((res2) => {
-                //         setInputState({
-                //             ...inputState,
-                //             entry_new_name: res1.data[0]['class_name'],
-                //             entry_new_description: res1.data[0]['description'],
-                //             entry_new_students: res2.data.map(({ name, student_id }) => ({
-                //                 ...inputState.entry_new_students,
-                //                 name: name,
-                //                 student_id: student_id,
-                //             })),
-                //         });
-                //     })
-                //     .catch((err) => {
-                //         console.error(err);
-                //     });
-
                 setInputState({
                     ...inputState,
                     entry_new_name: res1.data[0]['class_name'],
@@ -261,10 +224,6 @@ function Manage({ match, history }) {
             .catch((err) => {
                 console.error(err);
             });
-
-        // return () => {
-        //     setInputState(null);
-        // };
     }, []);
 
     useEffect(() => {
@@ -275,60 +234,18 @@ function Manage({ match, history }) {
         }
     }, [selectOpen]);
 
-    /** delete-dialog 메소드 */
-    const [deleteDialogopen, setDeleteDialogopen] = useState(false);
-    const handleDeleteDialogOpen = () => {
-        setDeleteDialogopen(true);
-    };
-    const handleDeleteDateDialogClose = (e) => {
-        const { name } = e.target;
-
-        if (name === 'yes') {
-            handleClassDelete(name);
-            setDeleteDialogopen(false);
-        } else {
-            setDeleteDialogopen(false);
-        }
-    };
-
     /** 수강생 데이터 처리 */
     const handleStudentInClass = (name) => {
         //수정의 경우 : 학생 데이터 없는 경우-> delete만 진행 // 있는 경우 -> delete 후 post작업 진행
         //삭제의 경우 : 무조건 delete
-
         Axios.delete(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
             .then((res1) => {
-                // // 수정버튼 클릭시
-                // if (name === 'modify') {
-                //     //수강생이 있는 경우에만, post 작업
-                //     if (inputState.entry_new_students.length === 0) {
-                //         alert('클래스 정보 수정이 완료되었습니다!');
-                //     } else {
-                //         Axios.post(
-                //             `${apiUrl}/students-in-class`,
-                //             {
-                //                 classNumber: num,
-                //                 students: inputState.entry_new_students,
-                //             },
-                //             { withCredentials: true },
-                //         )
-                //             .then((res2) => {
-                //                 alert('클래스 정보 수정이 완료되었습니다!');
-                //             })
-                //             .catch((err) => {
-                //                 console.error(err);
-                //             });
-                //     }
-                //     history.replace(`/class/${num}/manage`);
-                // }
-                // // 삭제버튼 클릭시, 삭제만 진행
-                // else {
-                alert('삭제 완료되었습니다!');
+                dispatch(openAlertSnackbar('삭제 되었습니다.', 'success'));
                 history.replace('/');
-                //}
             })
             .catch((err) => {
                 console.error(err);
+                dispatch(openAlertSnackbar('수강생 삭제에 실패했습니다.', 'error'));
             });
     };
 
@@ -341,6 +258,10 @@ function Manage({ match, history }) {
             })
             .catch((err) => {
                 console.error(err);
+                dispatch(openAlertSnackbar('클래스 삭제에 실패했습니다.', 'error'));
+            })
+            .finally(() => {
+                dispatch(closeAlertDialog());
             });
     };
     /** 수정, 삭제하기 버튼 */
@@ -355,12 +276,6 @@ function Manage({ match, history }) {
             setInputError(false);
         }
 
-        // let name = '';
-        // if ($target.parents('.button-modify').length !== 0 || $target.attr('class').includes('button-modify')) {
-        //     name = 'modify';
-        // } else if ($target.parents('.button-delete').length !== 0 || $target.attr('class').includes('button-delete')) {
-        //     name = 'delete';
-        // }
         if (name === 'modify') {
             let daysArr = [];
             Object.keys(buttonAble)
@@ -378,13 +293,26 @@ function Manage({ match, history }) {
             )
                 .then((res) => {
                     //name, description 수정 완료!
-                    alert('클래스 정보 수정이 완료되었습니다!');
+                    dispatch(openAlertSnackbar('클래스 정보 수정이 완료되었습니다.', 'success'));
                 })
                 .catch((err) => {
                     console.error(err);
+                    dispatch(openAlertSnackbar('클래스 정보 수정에 실패했습니다..', 'error'));
                 });
         } else if (name === 'delete') {
-            handleDeleteDialogOpen();
+            dispatch(
+                openAlertDialog(
+                    'warning',
+                    '정말로 클래스를 삭제하시겠습니까?',
+                    '삭제된 클래스는 복구가 불가능합니다.',
+                    'no|yes',
+                    '아니오|삭제하기',
+                    'red|light',
+                    'white|light',
+                    'defaultClose',
+                    handleClassDelete,
+                ),
+            );
         }
     };
     /**  수업 요일 버튼 */
@@ -399,15 +327,12 @@ function Manage({ match, history }) {
     /**  복사하기 버튼 */
     const handleCopy = () => {
         if (clipboardState) return;
-
         textCopy.current.select();
         textCopy.current.setSelectionRange(0, 9999);
-
         document.execCommand('copy');
 
-        console.log(clipboardState);
-
         setClipboardState(true);
+        dispatch(openAlertSnackbar('클래스 코드가 복사되었습니다.', 'info'));
         setTimeout(function () {
             setClipboardState(false);
         }, 3000);
@@ -448,11 +373,12 @@ function Manage({ match, history }) {
             withCredentials: true,
         })
             .then((res) => {
-                alert('학생 삭제가 완료되었습니다!');
+                dispatch(openAlertSnackbar('학생 삭제가 완료되었습니다.', 'success'));
                 history.go(0);
             })
             .catch((err) => {
                 console.error(err);
+                dispatch(openAlertSnackbar('학생 삭제에 실패했습니다.', 'error'));
             });
     };
 
@@ -479,8 +405,6 @@ function Manage({ match, history }) {
                     <StudentManage onChangeStudentSelection={actionChangeStudentsSelection} />
                 ) : selectedMenu === 1 ? (
                     <>
-                        <PopOverClipboard state={clipboardState} />
-                        <ClassDialogDelete ver="class" open={deleteDialogopen} handleDialogClose={handleDeleteDateDialogClose} />
                         <div className="class-manage-root" style={{ width: '100%' }}>
                             <div>
                                 <ClassCopyRoot>

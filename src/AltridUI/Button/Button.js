@@ -23,6 +23,7 @@ const ButtonRoot = styled.button`
     color: ${({ variant, colors }) => {
         if (variant === 'filled') return '#ffffff';
         if (variant === 'mono') return '#11171C';
+        if (variant === 'light' && colors === 'white') return getColorSets(700, 'gray');
         else {
             return getColorSets(400, colors);
         }
@@ -30,6 +31,7 @@ const ButtonRoot = styled.button`
     fill: ${({ variant, colors }) => {
         if (variant === 'filled') return '#ffffff';
         if (variant === 'mono') return '#11171C';
+        if (variant === 'light' && colors === 'white') return getColorSets(700, 'gray');
         else {
             return getColorSets(400, colors);
         }
@@ -93,14 +95,16 @@ const ButtonRoot = styled.button`
         }};
         color: ${({ colors, variant }) => {
             if (variant === 'filled') return '#ffffff';
-            if (variant === 'mono') return '#11171C';
+            else if (variant === 'mono') return '#11171C';
             else if (variant === 'default') return null;
+            else if (variant === 'light' && colors === 'white') return getColorSets(600, 'gray');
             return getColorSets(300, colors);
         }};
         fill: ${({ colors, variant }) => {
             if (variant === 'filled') return '#ffffff';
-            if (variant === 'mono') return '#11171C';
+            else if (variant === 'mono') return '#11171C';
             else if (variant === 'default') return null;
+            else if (variant === 'light' && colors === 'white') return getColorSets(600, 'gray');
             return getColorSets(300, colors);
         }};
     }

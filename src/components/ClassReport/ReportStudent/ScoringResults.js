@@ -4,10 +4,6 @@ import {
     Accordion as MuiAccordion,
     AccordionDetails as MuiAccordionDetails,
     AccordionSummary as MuiAccordionSummary,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
     withStyles,
 } from '@material-ui/core';
 import Button from '../../../AltridUI/Button/Button';
@@ -15,11 +11,11 @@ import React, { useEffect, useState } from 'react';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import HtmlParser from 'react-html-parser';
 import styled from 'styled-components';
-import DrawerTopCloseIcon from '../../../AltridUI/Icons/DrawerTopCloseIcon';
 import ScoringDetailsChoosenIcon from '../../../AltridUI/Icons/ScoringDetailsChoosenIcon';
 import ScoringDetailsHandsUpIcon from '../../../AltridUI/Icons/ScoringDetailsHandsUpIcon';
 import ScoringDetailsStarringIcon from '../../../AltridUI/Icons/ScoringDetailsStarringIcon';
 import AccordionArrowIcon from '../../../AltridUI/Icons/AccordionArrowIcon';
+import { Dialog as AltridDialog } from '../../../AltridUI/AlertnDialog/AlertnDialog';
 
 const TextsContentsRenderRoot = styled.div`
     border: 1px solid transparent;
@@ -115,6 +111,9 @@ const SummaryTextInfos = styled.div`
     align-items: center;
     display: flex;
     width: 55%;
+    @media all and (max-width: 768px) {
+        width: 48%;
+    }
     @media all and (max-width: 640px) {
         align-self: flex-start;
         width: 100%;
@@ -149,11 +148,15 @@ const SummaryIcons = styled.div`
     display: flex;
     justify-content: flex-end;
     margin-left: auto;
-    margin-right: 32px;
+    margin-right: 24px;
     width: 92px;
-    @media all and (max-width: 768px) {
+    @media all and (max-width: 840px) {
         align-self: flex-start;
         margin-right: 16px;
+    }
+    @media all and (max-width: 680px) {
+        align-self: flex-start;
+        margin-right: 2px;
     }
     @media all and (max-width: 640px) {
         align-self: flex-start;
@@ -192,99 +195,6 @@ const DetailActions = styled.div`
     width: 100%;
     @media all and (max-width: 640px) {
         display: flex;
-    }
-`;
-const TopIconContainer = styled.div`
-    display: flex;
-    margin-bottom: 32px;
-`;
-const CloseButton = styled.button`
-    align-items: center;
-    background-color: #f4f1fa;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    margin-right: auto;
-    height: 40px;
-    width: 40px;
-`;
-// const HelpButton = styled.button`
-//     align-items: center;
-//     background-color: #f4f1fa;
-//     border-radius: 12px;
-//     display: flex;
-//     justify-content: center;
-//     margin-left: auto;
-//     height: 40px;
-//     width: 40px;
-// `;
-
-const AltDialog = withStyles((theme) => ({
-    root: {
-        fontFamily: [
-            'inter',
-            '-apple-system',
-            'BlinkMacSystemFont',
-            '"Segoe UI"',
-            'Roboto',
-            '"Helvetica Neue"',
-            'Arial',
-            'sans-serif',
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
-        ],
-    },
-    paper: {
-        borderRadius: 16,
-        maxWidth: 800,
-        width: '100%',
-        '@media (min-width: 0) and (max-width: 640px)': {
-            borderRadius: 0,
-            margin: 0,
-            maxHeight: '100%',
-        },
-    },
-}))(Dialog);
-
-const AltDialogTitle = withStyles((theme) => ({
-    root: {
-        padding: '48px 48px 0 48px',
-        '@media (min-width: 0) and (max-width: 640px)': {
-            padding: '16px 16px 0 16px',
-        },
-    },
-}))(DialogTitle);
-
-const AltDialogContent = withStyles((theme) => ({
-    root: {
-        padding: '0 48px 0 48px',
-        marginTop: 32,
-        '@media (min-width: 0) and (max-width: 640px)': {
-            padding: '0 16px 0 16px',
-        },
-    },
-}))(DialogContent);
-
-const AltDialogActions = withStyles((theme) => ({
-    root: {
-        padding: '13px 48px 13px 48px',
-        '@media (min-width: 0) and (max-width: 640px)': {
-            padding: '13px 16px 13px 16px',
-        },
-    },
-}))(DialogActions);
-
-const TitleText = styled.div`
-    font-family: inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
-        'Segoe UI Emoji', 'Segoe UI Symbol';
-    font-size: 3rem;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 3.25rem;
-    @media all and (max-width: 640px) {
-        font-size: 28px;
-        line-height: 32px;
     }
 `;
 
@@ -355,6 +265,9 @@ const AccordionSummary = withStyles({
         },
         ['@media (min-width: 0) and (max-width: 768px)']: {
             margin: '0 10px 0 16px',
+            '&$expanded': {
+                margin: '0 10px 0 16px',
+            },
         },
         ['@media all and (max-width: 640px)']: {
             // flexDirection: 'column',
@@ -451,90 +364,44 @@ function ScoringResults({
     }, [userData, contentsData, handsUp, teacherSelected]);
 
     return (
-        <AltDialog open={open} onClose={handleClose}>
-            <AltDialogTitle>
-                <TopIconContainer>
-                    {handleClose ? (
-                        <CloseButton onClick={handleClose}>
-                            <DrawerTopCloseIcon />
-                        </CloseButton>
-                    ) : null}
-                    {/* {handleHelp ? (
-                        <HelpButton onClick={handleHelp}>
-                            <DrawerTopHelpIcon />
-                        </HelpButton>
-                    ) : null} */}
-                </TopIconContainer>
-                <TitleText>상세한 채점 결과</TitleText>
-            </AltDialogTitle>
-            <AltDialogContent>
-                {totalProblems.map((d, idx) => (
-                    <Accordion key={d.uuid} expanded={expanded === d.uuid} onChange={handleChange(d.uuid, d.passageUid)}>
-                        <AccordionSummary
-                            mark={idx}
-                            expandIcon={<AccordionArrowIcon />}
-                            aria-controls={`${d.uuid}bh-content`}
-                            id={`${d.uuid}bh-header`}
-                        >
-                            <SummaryRoot onClick={(e) => e.stopPropagation()}>
-                                <SummaryTextInfos>
-                                    <SummaryNoTitle>#{idx + 1}</SummaryNoTitle>
-                                    <SummarySpentTime>{d.spentTime === null ? '' : d.spentTime + '초'}</SummarySpentTime>
-                                    <SummaryIsCorrect userAnswer={d.userAnswer} isCorrect={d.isCorrect}>
-                                        {!d.userAnswer ? '미응답' : d.isCorrect ? '정답' : '오답'}
-                                    </SummaryIsCorrect>
-                                </SummaryTextInfos>
+        <AltridDialog
+            open={open}
+            onClose={handleClose}
+            title="상세한 채점 결과"
+            actionFirst={handleClose}
+            fullWidth
+            fullMobile
+            maxWidth={768}
+        >
+            {totalProblems.map((d, idx) => (
+                <Accordion key={d.uuid} expanded={expanded === d.uuid} onChange={handleChange(d.uuid, d.passageUid)}>
+                    <AccordionSummary
+                        mark={idx}
+                        expandIcon={<AccordionArrowIcon />}
+                        aria-controls={`${d.uuid}bh-content`}
+                        id={`${d.uuid}bh-header`}
+                    >
+                        <SummaryRoot onClick={(e) => e.stopPropagation()}>
+                            <SummaryTextInfos>
+                                <SummaryNoTitle>#{idx + 1}</SummaryNoTitle>
+                                <SummarySpentTime>{d.spentTime === null ? '' : d.spentTime + '초'}</SummarySpentTime>
+                                <SummaryIsCorrect userAnswer={d.userAnswer} isCorrect={d.isCorrect}>
+                                    {!d.userAnswer ? '미응답' : d.isCorrect ? '정답' : '오답'}
+                                </SummaryIsCorrect>
+                            </SummaryTextInfos>
 
-                                <SummaryIcons>
-                                    <SummaryIconHandsUp>
-                                        <ScoringDetailsHandsUpIcon fillColor={d.handsUp ? '#6C46A1' : '#BFC6CD'} />
-                                    </SummaryIconHandsUp>
-                                    <SummaryIconStarred>
-                                        <ScoringDetailsStarringIcon fillColor={d.starred ? '#6C46A1' : '#BFC6CD'} />
-                                    </SummaryIconStarred>
-                                    <SummaryIconTeacherSelected>
-                                        <ScoringDetailsChoosenIcon fillColor={d.teacherSelected ? '#6C46A1' : '#BFC6CD'} />
-                                    </SummaryIconTeacherSelected>
-                                </SummaryIcons>
-                                <SummaryActions>
-                                    <Button
-                                        fullWidth
-                                        sizes="small"
-                                        colors="purple"
-                                        variant={d.handsUp ? 'filled' : 'light'}
-                                        leftIcon={
-                                            <ScoringDetailsHandsUpIcon fontSize="inherit" fillColor={d.handsUp ? '#ffffff' : '#6C46A1'} />
-                                        }
-                                        onClick={() => {
-                                            actionClickHandsUp(idx, d.handsUp, d.teacherSelected);
-                                        }}
-                                    >
-                                        {d.handsUp ? '손 내리기' : '손 들기'}
-                                    </Button>
-                                </SummaryActions>
-                            </SummaryRoot>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <TextsContentsRenderRoot>
-                                <TextsContentsTitle>{selectedPassage.title}</TextsContentsTitle>
-                                <TextContentsBody>
-                                    <PassageContainer>{HtmlParser(selectedPassage.renderContents)}</PassageContainer>
-                                    <QuestionContainer>
-                                        <Question>{HtmlParser(selectedQuestion.renderContents)}</Question>
-                                        <Selections>
-                                            {selectedQuestion.type === 'multiple-choice' ? (
-                                                <SelectionsComp
-                                                    selections={selectedQuestion.selections}
-                                                    selected={selectedQuestion.userAnswer}
-                                                />
-                                            ) : (
-                                                selectedQuestion.userAnswer
-                                            )}
-                                        </Selections>
-                                    </QuestionContainer>
-                                </TextContentsBody>
-                            </TextsContentsRenderRoot>
-                            <DetailActions>
+                            <SummaryIcons>
+                                <SummaryIconHandsUp>
+                                    <ScoringDetailsHandsUpIcon fillColor={d.handsUp ? '#6C46A1' : '#BFC6CD'} />
+                                </SummaryIconHandsUp>
+                                <SummaryIconStarred>
+                                    <ScoringDetailsStarringIcon fillColor={d.starred ? '#6C46A1' : '#BFC6CD'} />
+                                </SummaryIconStarred>
+                                <SummaryIconTeacherSelected>
+                                    <ScoringDetailsChoosenIcon fillColor={d.teacherSelected ? '#6C46A1' : '#BFC6CD'} />
+                                </SummaryIconTeacherSelected>
+                            </SummaryIcons>
+                            <SummaryActions>
                                 <Button
                                     fullWidth
                                     sizes="small"
@@ -549,17 +416,47 @@ function ScoringResults({
                                 >
                                     {d.handsUp ? '손 내리기' : '손 들기'}
                                 </Button>
-                            </DetailActions>
-                        </AccordionDetails>
-                    </Accordion>
-                ))}
-            </AltDialogContent>
-            <AltDialogActions>
-                <Button variant="filled" colors="purple" sizes="medium" onClick={handleClose}>
-                    확인
-                </Button>
-            </AltDialogActions>
-        </AltDialog>
+                            </SummaryActions>
+                        </SummaryRoot>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <TextsContentsRenderRoot>
+                            <TextsContentsTitle>{selectedPassage.title}</TextsContentsTitle>
+                            <TextContentsBody>
+                                <PassageContainer>{HtmlParser(selectedPassage.renderContents)}</PassageContainer>
+                                <QuestionContainer>
+                                    <Question>{HtmlParser(selectedQuestion.renderContents)}</Question>
+                                    <Selections>
+                                        {selectedQuestion.type === 'multiple-choice' ? (
+                                            <SelectionsComp
+                                                selections={selectedQuestion.selections}
+                                                selected={selectedQuestion.userAnswer}
+                                            />
+                                        ) : (
+                                            selectedQuestion.userAnswer
+                                        )}
+                                    </Selections>
+                                </QuestionContainer>
+                            </TextContentsBody>
+                        </TextsContentsRenderRoot>
+                        <DetailActions>
+                            <Button
+                                fullWidth
+                                sizes="small"
+                                colors="purple"
+                                variant={d.handsUp ? 'filled' : 'light'}
+                                leftIcon={<ScoringDetailsHandsUpIcon fontSize="inherit" fillColor={d.handsUp ? '#ffffff' : '#6C46A1'} />}
+                                onClick={() => {
+                                    actionClickHandsUp(idx, d.handsUp, d.teacherSelected);
+                                }}
+                            >
+                                {d.handsUp ? '손 내리기' : '손 들기'}
+                            </Button>
+                        </DetailActions>
+                    </AccordionDetails>
+                </Accordion>
+            ))}
+        </AltridDialog>
     );
 }
 

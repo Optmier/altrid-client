@@ -6,7 +6,7 @@ import Typography from '../../../AltridUI/Typography/Typography';
 import moment from 'moment-timezone';
 import Tooltip from '../../../AltridUI/Tooltip/Tooltip';
 import { useDispatch } from 'react-redux';
-import { openAlertSnackbar as RdxOpenAlertSnackbar } from '../../../redux_modules/alertMaker';
+import { openAlertSnackbar } from '../../../redux_modules/alertMaker';
 
 const DDayRoot = styled.div`
     align-items: center;
@@ -97,12 +97,12 @@ function Dday(props) {
     const actionSave = () => {
         const valueEvent = inputTitleRef.current.value;
         if (!valueEvent.trim()) {
-            dispatch(RdxOpenAlertSnackbar('일정 내용을 입력해주세요.', 'warning'));
+            dispatch(openAlertSnackbar('일정 내용을 입력해주세요.', 'warning'));
             return;
         }
         const valueDate = inputDateRef.current.value;
         if (!valueDate.trim()) {
-            dispatch(RdxOpenAlertSnackbar('날짜를 입력해주세요', 'warning'));
+            dispatch(openAlertSnackbar('날짜를 입력해주세요', 'warning'));
             return;
         }
         const saveDB = JSON.stringify({
@@ -112,11 +112,11 @@ function Dday(props) {
         dashboardDDay.current.save(saveDB, null, (msg, res) => {
             console.log(msg, res);
             if (msg === 'success') {
-                dispatch(RdxOpenAlertSnackbar('D-Day 가 저장되었습니다.', 'success'));
+                dispatch(openAlertSnackbar('D-Day 가 저장되었습니다.', 'success'));
                 setDDayEvent(valueEvent);
                 setDDayDate(valueDate);
             } else {
-                dispatch(RdxOpenAlertSnackbar('저장에 실패했습니다.\n문제가 지속되면 문의 바랍니다.', 'error'));
+                dispatch(openAlertSnackbar('저장에 실패했습니다.\n문제가 지속되면 문의 바랍니다.', 'error'));
             }
         });
         unsetEditMode();

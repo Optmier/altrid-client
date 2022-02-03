@@ -5,9 +5,9 @@ import classNames from 'classnames';
 import * as $ from 'jquery';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { $_classDefault } from '../../configs/front_urls';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const AddButton = withStyles((theme) => ({
     root: {
@@ -23,7 +23,7 @@ const AddButton = withStyles((theme) => ({
 
 function AddClass({ handleClose, history }) {
     const sessions = useSelector((state) => state.RdxSessions);
-
+    const dispatch = useDispatch();
     const [addButtonEnabled, setAddButtonEnabled] = useState(false);
     const [inputState, setInputState] = useState('');
     const [inputError, setInputError] = useState(false);
@@ -108,10 +108,9 @@ function AddClass({ handleClose, history }) {
                     { withCredentials: true },
                 )
                     .then((res2) => {
-                        alert('클래스에 성공적으로 입장하였습니다 :)');
-
+                        dispatch(openAlertSnackbar('클래스에 성공적으로 입장하였습니다.'));
                         /** 클래스 페이지로 redirect  */
-                        history.push(`${$_classDefault}/${res[0].data[0]['idx']}/share`);
+                        history.push(`/${res[0].data[0]['idx']}/dashboard`);
                     })
                     .catch((err) => {
                         console.log('post error...');
@@ -125,7 +124,7 @@ function AddClass({ handleClose, history }) {
                 setInputError(false);
             }
         } catch (e) {
-            alert('서버 에러입니다:(\n아래 기술 지원으로 메일 문의 또는 고객센터로 전화 문의 부탁드리겠습니다.');
+            dispatch(openAlertSnackbar('서버 에러입니다. 지속될 시 기술 지원 문의 바랍니다.', 'error', 5000));
             console.error(e);
         }
     };

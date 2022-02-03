@@ -15,6 +15,7 @@ import BackgroundTheme from '../../AltridUI/ThemeColors/BackgroundTheme';
 import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
 import { withStyles } from '@material-ui/core';
 import Typography from '../../AltridUI/Typography/Typography';
+import moment from 'moment-timezone';
 
 const Container = styled.div`
     margin: 0px auto;
@@ -656,12 +657,12 @@ function Dashboard({ match, history }) {
                             newAssignment.map((d) => (
                                 <AssignmentListItem key={d.idx}>
                                     <AssignmentListItemDDayTag
-                                        dday={Math.ceil((today.getTime() - new Date(d.due_date).getTime()) / (1000 * 3600 * 24)) === 0}
+                                        dday={Math.ceil(moment.duration(moment(d.due_date).diff(moment())).asDays()) === 0}
                                     >
                                         <Typography type="label" size="s" bold>
-                                            {Math.ceil((today.getTime() - new Date(d.due_date).getTime()) / (1000 * 3600 * 24)) === 0
+                                            {Math.ceil(moment.duration(moment(d.due_date).diff(moment())).asDays()) === 0
                                                 ? 'D-Day'
-                                                : 'D' + Math.ceil((today.getTime() - new Date(d.due_date).getTime()) / (1000 * 3600 * 24))}
+                                                : 'D-' + Math.ceil(moment.duration(moment(d.due_date).diff(moment())).asDays())}
                                         </Typography>
                                     </AssignmentListItemDDayTag>
                                     <AssignmentListItemTexts>

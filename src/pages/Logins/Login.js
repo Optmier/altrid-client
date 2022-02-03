@@ -1117,7 +1117,7 @@ function Login({ history }) {
                                     marginTop: '32px',
                                     marginBottom: '44px',
                                 }}
-                                classNames="code"
+                                className="code"
                             >
                                 {inputState['academy_code']}
                             </div>

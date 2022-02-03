@@ -7,7 +7,7 @@ import Progress from './Progress';
 import styled from 'styled-components';
 import StudentTypeScore from './StudentTypeScore';
 import EyeTrackBox from './EyeTrackBox';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, TextField } from '@material-ui/core';
+import { Link } from '@material-ui/core';
 import problemCategories from '../TOFELEditor/ProblemCategories';
 import TimeTrackBox from './TimeTrackBox';
 import Axios from 'axios';
@@ -32,8 +32,11 @@ import EyeTrackChart from './EyeTrackChart';
 import MakeAutoComments from '../../controllers/MakeAutoComment';
 import Typography from '../../AltridUI/Typography/Typography';
 import { getColorSets } from '../../AltridUI/ThemeColors/ColorSets';
-import AlertSnackbar from '../../AltridUI/Snackbar/AlertSnackbar';
 import ReportWarningTags, { LimitFuncWrapper } from './ReportStudent/ReportWarningTags';
+import { closeAlertDialog, openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
+import { stringifiedJsonUnparser } from '../../controllers/stringifiedJsonUnparser';
+import TextField from '../../AltridUI/TextField/TextField';
+import { AlertDialog } from '../../AltridUI/AlertnDialog/AlertnDialog';
 
 const pad = (n, width) => {
     n = n + '';
@@ -300,6 +303,33 @@ const FeedbackDecoration = styled.svg`
     margin-top: -16px;
 `;
 /////////////////////////////////////////////////////////////////////
+const RenderExceptionWaring = styled.div`
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 8px;
+    color: ${getColorSets(600, 'red')};
+    display: flex;
+    fill: ${getColorSets(600, 'red')};
+    justify-content: center;
+    margin-top: 48px;
+    padding: 32px;
+    & div.altrid-typography {
+        margin-left: 8px;
+    }
+`;
+//////////////////////////////////////////////////////////////////////
+const EraseReportFormRoot = styled.div`
+    & p {
+        font: inherit;
+        & + p {
+            margin-bottom: 16px;
+            margin-top: 4px;
+        }
+    }
+`;
+const EraseReportFormPlacer = styled.div`
+    margin-top: 8px;
+`;
 const ScoreItems = ({ title, score, total, percent, children }) => {
     // let percent = ((score / total) * 100).toFixed(1);
     return (
@@ -348,14 +378,6 @@ const division = (arr, original, n) => {
 
     return results;
 };
-// const HTMLTooltip = withStyles((theme) => ({
-//     tooltip: {
-//         padding: '0.85rem 1rem',
-//         fontSize: '0.85rem',
-//         fontWeight: '500',
-//         borderRadius: '5px',
-//     },
-// }))(Tooltip);
 
 function ReportStudent({ history, match }) {
     // console.log(history, match);
@@ -424,39 +446,11 @@ function ReportStudent({ history, match }) {
     const [mainLoading, setMainLoading] = useState(true);
     /** 유형별 분석 select state */
     const [typeSelectState, setTypeSelectState] = useState('0');
-
-    //const [handsUpList, setHandsUpList] = useState([]);
     const [teacherFeedbackContents, setTeacherFeedbackContents] = useState({ renderContents: null, deltaContents: null });
     const [scoringResultsOpen, setScoringResultsOpen] = useState(false);
-    // 스낵바 관련 세팅
-    const [alertSnackbarOpen, setAlertSnackbarOpen] = useState(false);
-    const [alertSnackbarConfig, setAlertSnackbarConfig] = useState({
-        title: '',
-        type: 'success',
-        duration: 3000,
-    });
-
-    const openAlertSnackbar = (title, type, duration) => {
-        setAlertSnackbarConfig({
-            ...alertSnackbarConfig,
-            title: title.trim() ? title : alertSnackbarConfig.title,
-            type: type.trim() ? type : alertSnackbarConfig.type,
-            duration: duration ? duration : alertSnackbarConfig.duration,
-        });
-        setAlertSnackbarOpen(true);
-    };
-    const alertSnackbarClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setAlertSnackbarOpen(false);
-    };
 
     const handleTypeSelect = (e) => {
         setTypeSelectState(e.target.value);
-    };
-    const handleEraseResult = () => {
-        setEraseConfirmOpen(true);
     };
 
     const handleEraseConfirm = () => {
@@ -471,19 +465,33 @@ function ReportStudent({ history, match }) {
             .then((res) => {
                 // console.log(res);
                 if (res.data.ok) {
-                    const conf = window.confirm('정말로 이 학생의 리포트를 초기화 하시겠습니까?');
-                    if (!conf) return;
-                    Axios.delete(`${apiUrl}/assignment-result/${activedNum}/${queryUserId}`, { withCredentials: true })
-                        .then((res) => {
-                            // console.log(res);
-                            history.replace(`/class/${num}/share/${activedNum}`);
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                        })
-                        .finally(() => {
-                            handleEraseConfirmClose();
-                        });
+                    handleEraseConfirmClose();
+                    dispatch(
+                        openAlertDialog(
+                            'warning',
+                            '경고',
+                            '정말로 이 학생의 리포트를 초기화 하시겠습니까?',
+                            'no|yes',
+                            '아니오|예',
+                            'red|light',
+                            'white|light',
+                            'defaultClose',
+                            () => {
+                                dispatch(closeAlertDialog());
+                                Axios.delete(`${apiUrl}/assignment-result/${activedNum}/${queryUserId}`, { withCredentials: true })
+                                    .then((res) => {
+                                        // console.log(res);
+                                        dispatch(openAlertSnackbar('리포트 초기화가 완료되었습니다.'));
+                                        history.replace(`/class/${num}/share/${activedNum}`);
+                                    })
+                                    .catch((err) => {
+                                        dispatch(openAlertSnackbar('리포트 초기화 오류가 발생했습니다.', 'error'));
+                                        console.error(err);
+                                    })
+                                    .finally(() => {});
+                            },
+                        ),
+                    );
                 } else {
                     setEraseConfirmFieldsError({
                         ...eraseConfirmFieldsError,
@@ -495,7 +503,10 @@ function ReportStudent({ history, match }) {
                 console.error(err);
             });
     };
-    const handleEraseConfirmClose = () => {
+    const handleEraseResult = () => {
+        setEraseConfirmOpen(true);
+    };
+    const handleEraseConfirmClose = (event, reason) => {
         setEraseConfirmOpen(false);
     };
     const handleEraseConfirmFieldsChange = ({ target }) => {
@@ -507,6 +518,46 @@ function ReportStudent({ history, match }) {
             });
         }
     };
+
+    const EraseReportForm = (
+        <EraseReportFormRoot>
+            <p>과제 수행에 문제가 발생한 경우 이 학생의 리포트를 초기화 할 수 있습니다.</p>
+            <p>{stdName} 학생의 리포트를 초기화 하려면 학생 성명이랑 선생님 본인의 이메일을 입력하고 초기화를 눌러주세요.</p>
+            <EraseReportFormPlacer>
+                <TextField
+                    autoFocus
+                    required
+                    fullWidth
+                    id="student_name"
+                    name="student_name"
+                    label="학생 성명"
+                    type="text"
+                    inputRef={eraseConfirmStudentNameField}
+                    status={eraseConfirmFieldsError['student_name'] ? 'error' : null}
+                    helperText={eraseConfirmFieldsError.student_name ? '리포트와 동일한 학생 성명을 입력해 주세요.' : ''}
+                    variant="filled"
+                    InputProps={{ disableUnderline: true }}
+                    onChange={handleEraseConfirmFieldsChange}
+                />
+            </EraseReportFormPlacer>
+            <EraseReportFormPlacer>
+                <TextField
+                    required
+                    fullWidth
+                    id="teacher_email"
+                    name="teacher_email"
+                    label="본인 이메일"
+                    type="email"
+                    inputRef={eraseConfirmTeacherEmailField}
+                    status={eraseConfirmFieldsError['teacher_email'] ? 'error' : null}
+                    helperText={eraseConfirmFieldsError.teacher_email ? '본인 이메일 주소를 입력해 주세요.' : ''}
+                    variant="filled"
+                    InputProps={{ disableUnderline: true }}
+                    onChange={handleEraseConfirmFieldsChange}
+                />
+            </EraseReportFormPlacer>
+        </EraseReportFormRoot>
+    );
 
     useEffect(() => {
         Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
@@ -527,55 +578,9 @@ function ReportStudent({ history, match }) {
                     .then((contentsData) => {
                         setStudentsData(
                             res.data['curr'].map((e) => {
-                                let unparsedUserData = e.user_data;
-                                try {
-                                    unparsedUserData
-                                        .replace(/\\n/g, '\\n')
-                                        .replace(/\\'/g, "\\'")
-                                        .replace(/\\"/g, '\\"')
-                                        .replace(/\\&/g, '\\&')
-                                        .replace(/\\r/g, '\\r')
-                                        .replace(/\\t/g, '\\t')
-                                        .replace(/\\b/g, '\\b')
-                                        .replace(/\\f/g, '\\f')
-                                        .replace(/[\u0000-\u0019]+/g, '');
-                                } catch (e) {
-                                    unparsedUserData = null;
-                                }
-                                let unparsedEyetrackData = e.eyetrack_data;
-                                try {
-                                    unparsedEyetrackData
-                                        .replace(/\\n/g, '\\n')
-                                        .replace(/\\'/g, "\\'")
-                                        .replace(/\\"/g, '\\"')
-                                        .replace(/\\&/g, '\\&')
-                                        .replace(/\\r/g, '\\r')
-                                        .replace(/\\t/g, '\\t')
-                                        .replace(/\\b/g, '\\b')
-                                        .replace(/\\f/g, '\\f')
-                                        .replace(/[\u0000-\u0019]+/g, '');
-                                } catch (e) {
-                                    unparsedEyetrackData = null;
-                                }
-                                let unparsedContentsData = contentsData.data.contents_data;
-                                try {
-                                    unparsedContentsData
-                                        .replace(/\\n/g, '\\n')
-                                        .replace(/\\'/g, "\\'")
-                                        .replace(/\\"/g, '\\"')
-                                        .replace(/\\&/g, '\\&')
-                                        .replace(/\\r/g, '\\r')
-                                        .replace(/\\t/g, '\\t')
-                                        .replace(/\\b/g, '\\b')
-                                        .replace(/\\f/g, '\\f')
-                                        .replace(/[\u0000-\u0019]+/g, '');
-                                } catch (e) {
-                                    unparsedContentsData = null;
-                                }
-
                                 const _categoryScore = {};
                                 if (e.user_data) {
-                                    const userSelections = JSON.parse(unparsedUserData).selections;
+                                    const userSelections = stringifiedJsonUnparser(e.user_data, null).selections;
                                     userSelections.forEach((e) => {
                                         !_categoryScore[e.category] && (_categoryScore[e.category] = {});
                                         !_categoryScore[e.category].sum && (_categoryScore[e.category].sum = 0);
@@ -587,9 +592,9 @@ function ReportStudent({ history, match }) {
 
                                 return {
                                     ...e,
-                                    user_data: JSON.parse(unparsedUserData),
-                                    eyetrack_data: JSON.parse(unparsedEyetrackData),
-                                    contents_data: JSON.parse(unparsedContentsData),
+                                    user_data: stringifiedJsonUnparser(e.user_data, null),
+                                    eyetrack_data: stringifiedJsonUnparser(e.eyetrack_data, null),
+                                    contents_data: stringifiedJsonUnparser(contentsData.data.contents_data, null),
                                     category_score: _categoryScore,
                                 };
                             }),
@@ -896,11 +901,12 @@ function ReportStudent({ history, match }) {
     const actionUpdateTeacherFeedback = (contentsData) => {
         updateTeacherFeedbackInterface(activedNum, queryUserId, contentsData, {
             onSuccess(res) {
-                openAlertSnackbar('성공적으로 업데이트 되었습니다.', 'success');
+                dispatch(openAlertSnackbar('성공적으로 업데이트 되었습니다.'));
             },
             onFailure(err) {
                 console.error(err);
                 openAlertSnackbar('업데이트에 실패했습니다.', 'error');
+                dispatch(openAlertSnackbar('업데이트에 실패했습니다.', 'error'));
             },
         });
     };
@@ -927,58 +933,16 @@ function ReportStudent({ history, match }) {
               
                 </AnimScrollTo>
             </StyleArrowButton> */}
-            <Dialog open={eraseConfirmOpen} onClose={handleEraseConfirmClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title" color="secondary">
-                    리포트 초기화
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        과제 수행에 문제가 발생한 경우 이 학생의 리포트를 초기화 할 수 있습니다.<br></br>
-                        {stdName} 학생의 리포트를 초기화 하려면 학생 성명이랑 선생님 본인의 이메일을 입력하고 초기화를 눌러주세요.
-                    </DialogContentText>
-                    <TextField
-                        autoFocus
-                        error={eraseConfirmFieldsError.student_name}
-                        required
-                        margin="dense"
-                        id="student_name"
-                        name="student_name"
-                        label="학생 성명"
-                        type="text"
-                        fullWidth
-                        inputRef={eraseConfirmStudentNameField}
-                        helperText={eraseConfirmFieldsError.student_name ? '리포트와 동일한 학생 성명을 입력해 주세요.' : ''}
-                        onChange={handleEraseConfirmFieldsChange}
-                    />
-                    <TextField
-                        error={eraseConfirmFieldsError.teacher_email}
-                        required
-                        margin="dense"
-                        id="teacher_email"
-                        name="teacher_email"
-                        label="본인 이메일"
-                        type="email"
-                        fullWidth
-                        inputRef={eraseConfirmTeacherEmailField}
-                        helperText={eraseConfirmFieldsError.teacher_email ? '본인 이메일 주소를 입력해 주세요.' : ''}
-                        onChange={handleEraseConfirmFieldsChange}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleEraseConfirmClose} color="default">
-                        취소
-                    </Button>
-                    <Button onClick={handleEraseConfirm} color="secondary">
-                        초기화
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <AlertSnackbar
-                open={alertSnackbarOpen}
-                title={alertSnackbarConfig.title}
-                type={alertSnackbarConfig.type}
-                duration={alertSnackbarConfig.duration}
-                onClose={alertSnackbarClose}
+            <AlertDialog
+                open={eraseConfirmOpen}
+                alertType="warning"
+                title="리포트 초기화"
+                message={EraseReportForm}
+                actionButtons="no|yes"
+                actionNamesMapping="취소|초기화"
+                actionFirst={handleEraseConfirmClose}
+                actionSecond={handleEraseConfirm}
+                onClose={handleEraseConfirmClose}
             />
             <ReportStudentRoot>
                 <TopInfoSection>
@@ -1083,262 +1047,281 @@ function ReportStudent({ history, match }) {
                         </AssignmentInfoItemGroup>
                     </AssignmentInfoBox>
                 </TopInfoSection>
-                <ScoringSummarySection>
-                    <GroupBox
-                        title="문제별 채점 결과"
-                        rightComponent={
-                            <>
-                                <Link
-                                    href="#"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        setScoringResultsOpen(true);
-                                    }}
-                                >
-                                    <Button variant="light" colors="purple" sizes="small">
-                                        채점결과 상세보기
-                                    </Button>
-                                </Link>
-                            </>
-                        }
-                    >
-                        <ProgressWrapper>
-                            {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
-                                ? division(
-                                      currentStudentData.user_data.selections,
-                                      currentStudentData.contents_data.flatMap((m) => m.problemDatas),
-                                      15,
-                                  ).map((arr, idx) => (
-                                      <Progress
-                                          mode
-                                          key={idx}
-                                          idx={idx}
-                                          selections={arr}
-                                          problemNumbers={999}
-                                          handsUp={handsUpList}
-                                          teacherSelected={teacherSelectedList}
-                                          onDoubleClick={progressDoubleClick}
-                                      />
-                                  ))
-                                : null}
-                        </ProgressWrapper>
-                        <ScoringResults
-                            open={scoringResultsOpen}
-                            userData={currentStudentData.user_data.selections}
-                            handsUp={handsUpList}
-                            teacherSelected={teacherSelectedList}
-                            spentTime={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
-                            contentsData={currentStudentData.contents_data}
-                            actionClickHandsUpButton={progressDoubleClick}
-                            handleClose={() => {
-                                setScoringResultsOpen(false);
-                            }}
-                        />
-                    </GroupBox>
-                </ScoringSummarySection>
-                <AnalyzeTimeSection>
-                    <GroupBox title="문제별 시간 분석">
-                        {currentStudentData && patternDatas.length ? (
-                            <TimeTrackBox
-                                data={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
-                                total={patternDatas}
-                                totalProblems={totalProblems}
-                            />
-                        ) : null}
-                    </GroupBox>
-                </AnalyzeTimeSection>
-                <AnalyzeTypeSection>
-                    <GroupBox title="유형별 분석">
-                        <AnalyzeTypeTextsContainer>
-                            <WeakTypeSectionWrapper>
-                                <WeakTypeSection className="first">
-                                    <Typography type="label" size="xxl" bold>
-                                        <WeakTypeDecoration
-                                            width="34"
-                                            height="22"
-                                            viewBox="0 0 34 22"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                d="M11.1755 0.0157251C11.4912 -0.047176 11.6806 0.0786284 11.7437 0.393139C11.8069 0.644745 11.6806 0.802003 11.3649 0.864904C9.02877 1.36812 7.10308 2.18585 5.58773 3.31808C4.13556 4.38742 3.40947 5.55112 3.40947 6.80914C3.40947 7.56397 3.66203 8.16153 4.16713 8.60186C4.73538 9.04219 6.40852 9.57683 9.18661 10.2058C11.1439 10.7091 12.5645 11.4325 13.4485 12.376C14.3956 13.3195 14.8691 14.5461 14.8691 16.0557C14.8691 17.7541 14.2693 19.1694 13.0696 20.3016C11.87 21.4339 10.3231 22 8.42898 22C5.96657 22 3.94615 21.1508 2.36769 19.4524C0.789231 17.6912 0 15.4582 0 12.7534C0 9.48247 0.978645 6.74623 2.93593 4.54467C4.95634 2.3431 7.70287 0.833454 11.1755 0.0157251ZM30.2117 0.0157251C30.5274 -0.047176 30.7168 0.0786284 30.78 0.393139C30.9062 0.644745 30.8115 0.802003 30.4958 0.864904C28.1597 1.36812 26.234 2.18585 24.7187 3.31808C23.2665 4.38742 22.5404 5.55112 22.5404 6.80914C22.5404 7.56397 22.7929 8.16153 23.298 8.60186C23.8032 9.04219 25.4447 9.57683 28.2228 10.2058C30.2433 10.7091 31.6954 11.4325 32.5794 12.376C33.5264 13.3195 34 14.5461 34 16.0557C34 17.7541 33.4002 19.1694 32.2005 20.3016C31.0009 21.4339 29.4541 22 27.5599 22C25.0975 22 23.077 21.1194 21.4986 19.3581C19.9202 17.534 19.1309 15.238 19.1309 12.4703C19.1309 9.26233 20.1096 6.589 22.0669 4.45032C24.0242 2.31165 26.7391 0.833454 30.2117 0.0157251Z"
-                                                fill="#AEFFE0"
-                                            />
-                                        </WeakTypeDecoration>
-                                        {stdName} 학생의 취약 영역은
-                                    </Typography>
-                                    <Typography type="label" size="xxl" bold>
-                                        {achievesForTypes.value < 100 ? (
-                                            <span className="weak-type-nounderline">-</span>
-                                        ) : (
-                                            <span className="weak-type-underline">
-                                                {top3Weaks.length && top3Weaks[0] ? (
-                                                    <TooltipCard
-                                                        title={
-                                                            problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0]
-                                                                .name
-                                                        }
-                                                    >
-                                                        <>
-                                                            {
-                                                                problemCategories.filter((p) => p.id === parseInt(top3Weaks[0].category))[0]
-                                                                    .name
-                                                            }
-                                                        </>
-                                                    </TooltipCard>
-                                                ) : null}
-                                            </span>
-                                        )}{' '}
-                                        영역입니다.
-                                    </Typography>
-                                </WeakTypeSection>
-                            </WeakTypeSectionWrapper>
-                            <WeakTypeSectionWrapper>
-                                <WeakTypeSection>
-                                    <WeakTypeItem>
-                                        <WeakTypeItemKey>
-                                            <Typography type="label" size="xxl" bold>
-                                                2번째 취약 영역
-                                            </Typography>
-                                        </WeakTypeItemKey>
-                                        <WeakTypeItemValue>
-                                            <Typography type="label" size="xxl" bold>
-                                                {achievesForTypes.value < 100
-                                                    ? '-'
-                                                    : top3Weaks.length && top3Weaks[1]
-                                                    ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0].name
-                                                    : 'null'}
-                                            </Typography>
-                                        </WeakTypeItemValue>
-                                    </WeakTypeItem>
-                                    <WeakTypeItem>
-                                        <WeakTypeItemKey>
-                                            <Typography type="label" size="xxl" bold>
-                                                3번째 취약 영역
-                                            </Typography>
-                                        </WeakTypeItemKey>
-                                        <WeakTypeItemValue>
-                                            <Typography type="label" size="xxl" bold>
-                                                {achievesForTypes.value < 100
-                                                    ? '-'
-                                                    : top3Weaks.length && top3Weaks[2]
-                                                    ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0].name
-                                                    : 'null'}
-                                            </Typography>
-                                        </WeakTypeItemValue>
-                                    </WeakTypeItem>
-                                </WeakTypeSection>
-                            </WeakTypeSectionWrapper>
-                        </AnalyzeTypeTextsContainer>
-                        <AnalyzeTypeGraphConatainer>
-                            {achievesForTypes.value < 100 ? (
-                                <StudentTypeScore
-                                    enabled={achievesForTypes.allExists}
-                                    current={0}
-                                    total={0}
-                                    subject={subject}
-                                    typeSelectState={typeSelectState}
-                                    handleTypeSelect={handleTypeSelect}
-                                    achieveValue={achievesForTypes.value}
-                                    stdName={stdName}
-                                />
-                            ) : (
-                                <StudentTypeScore
-                                    enabled={achievesForTypes.allExists}
-                                    current={currentScoresPerType}
-                                    total={averageScoresPerType}
-                                    subject={subject}
-                                    typeSelectState={typeSelectState}
-                                    handleTypeSelect={handleTypeSelect}
-                                    achieveValue={achievesForTypes.value}
-                                    stdName={stdName}
-                                />
-                            )}
-                        </AnalyzeTypeGraphConatainer>
-                    </GroupBox>
-                </AnalyzeTypeSection>
-                <EyetrackAndPatternSection>
-                    <GroupBox title="시선흐름 및 패턴 분석">
-                        {currentStudentData && patternDatas.length ? (
-                            <EyeTrackBox
-                                hasEyetrack={currentStudentData.eyetrack}
-                                eyetrackData={currentStudentData.eyetrack_data}
-                                contentsData={currentStudentData.contents_data}
-                                patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
-                                totalStudentsDatas={studentsData.filter((d) => d.submitted)}
-                                currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
-                                userId={queryUserId}
-                                activedNum={activedNum}
-                                stdName={stdName}
-                                answerChangedProblems={answerChangedProblems}
-                                aftChangedFaileds={aftChangedFaileds}
-                            />
-                        ) : null}
-                    </GroupBox>
-                </EyetrackAndPatternSection>
-                <AutoCommentSection>
-                    <GroupBox title="AI-Comments">
-                        <AutoCommentContainer>
-                            {!currentStudentData.eyetrack ? (
-                                <LimitFuncWrapper>
-                                    <ReportWarningTags title="시선 추적 미포함 과제" />
-                                </LimitFuncWrapper>
-                            ) : null}
-                            <AutoCommentChartContainer>
-                                <AutoCommentContainerTitle>
-                                    <Typography type="label" size="xl" bold>
-                                        차트
-                                    </Typography>
-                                </AutoCommentContainerTitle>
-                                <AutoCommentContainerContents>
-                                    {currentStudentData && patternDatas.length ? (
-                                        <EyeTrackChart
-                                            hasEyetrack={currentStudentData.eyetrack}
-                                            eyetrackData={currentStudentData.eyetrack_data}
-                                            contentsData={currentStudentData.contents_data}
-                                            patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
-                                            totalStudentsDatas={studentsData.filter((d) => d.submitted)}
-                                            currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
-                                            userId={queryUserId}
-                                            activedNum={activedNum}
-                                            stdName={stdName}
-                                            answerChangedProblems={answerChangedProblems}
-                                            aftChangedFaileds={aftChangedFaileds}
-                                            setACMS={{
-                                                totalFixsMine: setACMTotalFixsMine,
-                                                totalFixsAvg: setACMTotalFixsAvg,
-                                                avgSpeedFixsMine: setACMAvgSpeedFixsMine,
-                                                avgSpeedFixsAvg: setACMAvgSpeedFixsAvg,
-                                                regressionsMine: setACMRegressionsMine,
-                                                regressionsAvg: setACMRegressionsAvg,
+                {currentStudentData.user_data ? (
+                    <>
+                        <ScoringSummarySection>
+                            <GroupBox
+                                title="문제별 채점 결과"
+                                rightComponent={
+                                    <>
+                                        <Link
+                                            href="#"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setScoringResultsOpen(true);
                                             }}
+                                        >
+                                            <Button variant="light" colors="purple" sizes="small">
+                                                채점결과 상세보기
+                                            </Button>
+                                        </Link>
+                                    </>
+                                }
+                            >
+                                <ProgressWrapper>
+                                    {currentStudentData.user_data && currentStudentData.user_data.selections.length > 0
+                                        ? division(
+                                              currentStudentData.user_data.selections,
+                                              currentStudentData.contents_data.flatMap((m) => m.problemDatas),
+                                              15,
+                                          ).map((arr, idx) => (
+                                              <Progress
+                                                  mode
+                                                  key={idx}
+                                                  idx={idx}
+                                                  selections={arr}
+                                                  problemNumbers={999}
+                                                  handsUp={handsUpList}
+                                                  teacherSelected={teacherSelectedList}
+                                                  onDoubleClick={progressDoubleClick}
+                                              />
+                                          ))
+                                        : null}
+                                </ProgressWrapper>
+                                <ScoringResults
+                                    open={scoringResultsOpen}
+                                    userData={currentStudentData.user_data.selections}
+                                    handsUp={handsUpList}
+                                    teacherSelected={teacherSelectedList}
+                                    spentTime={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
+                                    contentsData={currentStudentData.contents_data}
+                                    actionClickHandsUpButton={progressDoubleClick}
+                                    handleClose={() => {
+                                        setScoringResultsOpen(false);
+                                    }}
+                                />
+                            </GroupBox>
+                        </ScoringSummarySection>
+                        <AnalyzeTimeSection>
+                            <GroupBox title="문제별 시간 분석">
+                                {currentStudentData && patternDatas.length ? (
+                                    <TimeTrackBox
+                                        data={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternsGroupedByPid}
+                                        total={patternDatas}
+                                        totalProblems={totalProblems}
+                                    />
+                                ) : null}
+                            </GroupBox>
+                        </AnalyzeTimeSection>
+                        <AnalyzeTypeSection>
+                            <GroupBox title="유형별 분석">
+                                <AnalyzeTypeTextsContainer>
+                                    <WeakTypeSectionWrapper>
+                                        <WeakTypeSection className="first">
+                                            <Typography type="label" size="xxl" bold>
+                                                <WeakTypeDecoration
+                                                    width="34"
+                                                    height="22"
+                                                    viewBox="0 0 34 22"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        d="M11.1755 0.0157251C11.4912 -0.047176 11.6806 0.0786284 11.7437 0.393139C11.8069 0.644745 11.6806 0.802003 11.3649 0.864904C9.02877 1.36812 7.10308 2.18585 5.58773 3.31808C4.13556 4.38742 3.40947 5.55112 3.40947 6.80914C3.40947 7.56397 3.66203 8.16153 4.16713 8.60186C4.73538 9.04219 6.40852 9.57683 9.18661 10.2058C11.1439 10.7091 12.5645 11.4325 13.4485 12.376C14.3956 13.3195 14.8691 14.5461 14.8691 16.0557C14.8691 17.7541 14.2693 19.1694 13.0696 20.3016C11.87 21.4339 10.3231 22 8.42898 22C5.96657 22 3.94615 21.1508 2.36769 19.4524C0.789231 17.6912 0 15.4582 0 12.7534C0 9.48247 0.978645 6.74623 2.93593 4.54467C4.95634 2.3431 7.70287 0.833454 11.1755 0.0157251ZM30.2117 0.0157251C30.5274 -0.047176 30.7168 0.0786284 30.78 0.393139C30.9062 0.644745 30.8115 0.802003 30.4958 0.864904C28.1597 1.36812 26.234 2.18585 24.7187 3.31808C23.2665 4.38742 22.5404 5.55112 22.5404 6.80914C22.5404 7.56397 22.7929 8.16153 23.298 8.60186C23.8032 9.04219 25.4447 9.57683 28.2228 10.2058C30.2433 10.7091 31.6954 11.4325 32.5794 12.376C33.5264 13.3195 34 14.5461 34 16.0557C34 17.7541 33.4002 19.1694 32.2005 20.3016C31.0009 21.4339 29.4541 22 27.5599 22C25.0975 22 23.077 21.1194 21.4986 19.3581C19.9202 17.534 19.1309 15.238 19.1309 12.4703C19.1309 9.26233 20.1096 6.589 22.0669 4.45032C24.0242 2.31165 26.7391 0.833454 30.2117 0.0157251Z"
+                                                        fill="#AEFFE0"
+                                                    />
+                                                </WeakTypeDecoration>
+                                                {stdName} 학생의 취약 영역은
+                                            </Typography>
+                                            <Typography type="label" size="xxl" bold>
+                                                {achievesForTypes.value < 100 ? (
+                                                    <span className="weak-type-nounderline">-</span>
+                                                ) : (
+                                                    <span className="weak-type-underline">
+                                                        {top3Weaks.length && top3Weaks[0] ? (
+                                                            <TooltipCard
+                                                                title={
+                                                                    problemCategories.filter(
+                                                                        (p) => p.id === parseInt(top3Weaks[0].category),
+                                                                    )[0].name
+                                                                }
+                                                            >
+                                                                <>
+                                                                    {
+                                                                        problemCategories.filter(
+                                                                            (p) => p.id === parseInt(top3Weaks[0].category),
+                                                                        )[0].name
+                                                                    }
+                                                                </>
+                                                            </TooltipCard>
+                                                        ) : null}
+                                                    </span>
+                                                )}{' '}
+                                                영역입니다.
+                                            </Typography>
+                                        </WeakTypeSection>
+                                    </WeakTypeSectionWrapper>
+                                    <WeakTypeSectionWrapper>
+                                        <WeakTypeSection>
+                                            <WeakTypeItem>
+                                                <WeakTypeItemKey>
+                                                    <Typography type="label" size="xxl" bold>
+                                                        2번째 취약 영역
+                                                    </Typography>
+                                                </WeakTypeItemKey>
+                                                <WeakTypeItemValue>
+                                                    <Typography type="label" size="xxl" bold>
+                                                        {achievesForTypes.value < 100
+                                                            ? '-'
+                                                            : top3Weaks.length && top3Weaks[1]
+                                                            ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0]
+                                                                  .name
+                                                            : 'null'}
+                                                    </Typography>
+                                                </WeakTypeItemValue>
+                                            </WeakTypeItem>
+                                            <WeakTypeItem>
+                                                <WeakTypeItemKey>
+                                                    <Typography type="label" size="xxl" bold>
+                                                        3번째 취약 영역
+                                                    </Typography>
+                                                </WeakTypeItemKey>
+                                                <WeakTypeItemValue>
+                                                    <Typography type="label" size="xxl" bold>
+                                                        {achievesForTypes.value < 100
+                                                            ? '-'
+                                                            : top3Weaks.length && top3Weaks[2]
+                                                            ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0]
+                                                                  .name
+                                                            : 'null'}
+                                                    </Typography>
+                                                </WeakTypeItemValue>
+                                            </WeakTypeItem>
+                                        </WeakTypeSection>
+                                    </WeakTypeSectionWrapper>
+                                </AnalyzeTypeTextsContainer>
+                                <AnalyzeTypeGraphConatainer>
+                                    {achievesForTypes.value < 100 ? (
+                                        <StudentTypeScore
+                                            enabled={achievesForTypes.allExists}
+                                            current={0}
+                                            total={0}
+                                            subject={subject}
+                                            typeSelectState={typeSelectState}
+                                            handleTypeSelect={handleTypeSelect}
+                                            achieveValue={achievesForTypes.value}
+                                            stdName={stdName}
                                         />
                                     ) : (
-                                        <p>시선추적이 포함되지 않은 과제입니다.</p>
+                                        <StudentTypeScore
+                                            enabled={achievesForTypes.allExists}
+                                            current={currentScoresPerType}
+                                            total={averageScoresPerType}
+                                            subject={subject}
+                                            typeSelectState={typeSelectState}
+                                            handleTypeSelect={handleTypeSelect}
+                                            achieveValue={achievesForTypes.value}
+                                            stdName={stdName}
+                                        />
                                     )}
-                                </AutoCommentContainerContents>
-                            </AutoCommentChartContainer>
-                            <AutoCommentCommentaryContainer>
-                                <AutoCommentContainerTitle>
-                                    <Typography type="label" size="xl" bold>
-                                        AI 코멘트
-                                    </Typography>
-                                </AutoCommentContainerTitle>
-                                <AutoCommentContainerContents>
-                                    {MakeAutoComments(
-                                        stdName,
-                                        acmTotalFixsMine,
-                                        acmTotalFixsAvg,
-                                        acmAvgSpeedFixsMine,
-                                        acmAvgSpeedFixsAvg,
-                                        acmRegressionsMine,
-                                        acmRegressionsAvg,
-                                    )}
-                                </AutoCommentContainerContents>
-                            </AutoCommentCommentaryContainer>
-                        </AutoCommentContainer>
-                    </GroupBox>
-                </AutoCommentSection>
+                                </AnalyzeTypeGraphConatainer>
+                            </GroupBox>
+                        </AnalyzeTypeSection>
+                        <EyetrackAndPatternSection>
+                            <GroupBox title="시선흐름 및 패턴 분석">
+                                {currentStudentData && patternDatas.length ? (
+                                    <EyeTrackBox
+                                        hasEyetrack={currentStudentData.eyetrack}
+                                        eyetrackData={currentStudentData.eyetrack_data}
+                                        contentsData={currentStudentData.contents_data}
+                                        patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
+                                        totalStudentsDatas={studentsData.filter((d) => d.submitted)}
+                                        currentStudentDatas={studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]}
+                                        userId={queryUserId}
+                                        activedNum={activedNum}
+                                        stdName={stdName}
+                                        answerChangedProblems={answerChangedProblems}
+                                        aftChangedFaileds={aftChangedFaileds}
+                                    />
+                                ) : null}
+                            </GroupBox>
+                        </EyetrackAndPatternSection>
+                        <AutoCommentSection>
+                            <GroupBox title="AI-Comments">
+                                <AutoCommentContainer>
+                                    {!currentStudentData.eyetrack ? (
+                                        <LimitFuncWrapper>
+                                            <ReportWarningTags title="시선 추적 미포함 과제" />
+                                        </LimitFuncWrapper>
+                                    ) : null}
+                                    <AutoCommentChartContainer>
+                                        <AutoCommentContainerTitle>
+                                            <Typography type="label" size="xl" bold>
+                                                차트
+                                            </Typography>
+                                        </AutoCommentContainerTitle>
+                                        <AutoCommentContainerContents>
+                                            {currentStudentData && patternDatas.length ? (
+                                                <EyeTrackChart
+                                                    hasEyetrack={currentStudentData.eyetrack}
+                                                    eyetrackData={currentStudentData.eyetrack_data}
+                                                    contentsData={currentStudentData.contents_data}
+                                                    patternData={patternDatas.filter((d) => d.student_id === queryUserId)[0].patternData}
+                                                    totalStudentsDatas={studentsData.filter((d) => d.submitted)}
+                                                    currentStudentDatas={
+                                                        studentsData.filter((d) => d.submitted && d.student_id === queryUserId)[0]
+                                                    }
+                                                    userId={queryUserId}
+                                                    activedNum={activedNum}
+                                                    stdName={stdName}
+                                                    answerChangedProblems={answerChangedProblems}
+                                                    aftChangedFaileds={aftChangedFaileds}
+                                                    setACMS={{
+                                                        totalFixsMine: setACMTotalFixsMine,
+                                                        totalFixsAvg: setACMTotalFixsAvg,
+                                                        avgSpeedFixsMine: setACMAvgSpeedFixsMine,
+                                                        avgSpeedFixsAvg: setACMAvgSpeedFixsAvg,
+                                                        regressionsMine: setACMRegressionsMine,
+                                                        regressionsAvg: setACMRegressionsAvg,
+                                                    }}
+                                                />
+                                            ) : (
+                                                <p>시선추적이 포함되지 않은 과제입니다.</p>
+                                            )}
+                                        </AutoCommentContainerContents>
+                                    </AutoCommentChartContainer>
+                                    <AutoCommentCommentaryContainer>
+                                        <AutoCommentContainerTitle>
+                                            <Typography type="label" size="xl" bold>
+                                                AI 코멘트
+                                            </Typography>
+                                        </AutoCommentContainerTitle>
+                                        <AutoCommentContainerContents>
+                                            {MakeAutoComments(
+                                                stdName,
+                                                acmTotalFixsMine,
+                                                acmTotalFixsAvg,
+                                                acmAvgSpeedFixsMine,
+                                                acmAvgSpeedFixsAvg,
+                                                acmRegressionsMine,
+                                                acmRegressionsAvg,
+                                            )}
+                                        </AutoCommentContainerContents>
+                                    </AutoCommentCommentaryContainer>
+                                </AutoCommentContainer>
+                            </GroupBox>
+                        </AutoCommentSection>
+                    </>
+                ) : (
+                    <RenderExceptionWaring>
+                        <svg width="18" height="18" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 0C15.523 0 20 4.478 20 10C20 15.522 15.523 20 10 20C4.477 20 0 15.522 0 10C0 4.478 4.477 0 10 0ZM10.0018 13.0037C9.45025 13.0037 9.00314 13.4508 9.00314 14.0024C9.00314 14.5539 9.45025 15.001 10.0018 15.001C10.5533 15.001 11.0005 14.5539 11.0005 14.0024C11.0005 13.4508 10.5533 13.0037 10.0018 13.0037ZM9.99964 5C9.4868 5.00018 9.06427 5.38638 9.00669 5.88374L9 6.00036L9.0018 11.0012L9.00857 11.1179C9.06651 11.6152 9.48932 12.0011 10.0022 12.0009C10.515 12.0007 10.9375 11.6145 10.9951 11.1171L11.0018 11.0005L11 5.99964L10.9932 5.88302C10.9353 5.3857 10.5125 4.99982 9.99964 5Z" />
+                        </svg>
+                        <Typography type="label" size="xl" bold>
+                            사용자가 문제풀이를 제대로 진행하지 않았습니다. 문제가 발생하였다면 초기화를 진행하실 수 있습니다.
+                        </Typography>
+                    </RenderExceptionWaring>
+                )}
                 <FeedbackSection>
                     <GroupBox title="선생님 피드백">
                         <FeedbackContainer>

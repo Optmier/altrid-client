@@ -70,6 +70,7 @@ const TextField = withStyles((theme) => ({
             fontFamily: 'inherit',
             minHeight: 64,
             '& input, & textarea': {
+                borderRadius: 'inherit',
                 color: '#11171C',
                 fontSize: 18,
                 fontWeight: 500,

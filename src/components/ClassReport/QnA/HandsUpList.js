@@ -24,6 +24,8 @@ import AltUncheckedIcon from '../../../AltridUI/Icons/AltUncheckedIcon';
 import AccordionArrowIcon from '../../../AltridUI/Icons/AccordionArrowIcon';
 import InnerPageBottomActions from '../../../AltridUI/OtherContainers/InnerPageBottomActions';
 import HeaderMenu from '../../../AltridUI/HeaderMenu/HeaderMenu';
+import { openAlertSnackbar } from '../../../redux_modules/alertMaker';
+import { stringifiedJsonUnparser } from '../../../controllers/stringifiedJsonUnparser';
 
 const HandsUpListRoot = styled.div`
     display: flex;
@@ -384,10 +386,10 @@ function HandsUpList({ match }) {
 
         Promise.all(updateTasks)
             .then((res) => {
-                alert('응답이 업데이트 되었습니다.');
+                dispatch(openAlertSnackbar('응답이 업데이트 되었습니다.', 'success'));
             })
             .catch((err) => {
-                alert('업데이트에 실패했습니다.');
+                dispatch(openAlertSnackbar('업데이트에 실패했습니다', 'error'));
                 console.error(err);
             });
     };
@@ -420,38 +422,22 @@ function HandsUpList({ match }) {
                     }
                     setSelectedIds(obj);
                 } else {
-                    alert('데이터 불러오기에 실패했습니다.');
+                    dispatch(openAlertSnackbar('데이터 불러오기에 실패했습니다.', 'error'));
                 }
             },
             onFailure() {
-                alert('데이터 불러오기에 실패했습니다.');
+                dispatch(openAlertSnackbar('데이터 불러오기에 실패했습니다.', 'error'));
             },
         });
         Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, {
             withCredentials: true,
         })
             .then((res) => {
-                let parsedContents = null;
-                try {
-                    parsedContents = JSON.parse(
-                        res.data.contents_data
-                            .replace(/\\n/g, '\\n')
-                            .replace(/\\'/g, "\\'")
-                            .replace(/\\"/g, '\\"')
-                            .replace(/\\&/g, '\\&')
-                            .replace(/\\r/g, '\\r')
-                            .replace(/\\t/g, '\\t')
-                            .replace(/\\b/g, '\\b')
-                            .replace(/\\f/g, '\\f')
-                            .replace(/[\u0000-\u0019]+/g, ''),
-                    );
-                } catch (parseError) {
-                    alert('과제 컨텐츠 파싱 에러');
-                }
-                setAssignmentData({ ...res.data, contents_data: parsedContents });
+                if (!res.data || !res.data.contents_data) return;
+                setAssignmentData({ ...res.data, contents_data: stringifiedJsonUnparser(res.data.contents_data, null) });
             })
             .catch((err) => {
-                alert('과제 데이터를 불러오지 못했습니다.');
+                dispatch(openAlertSnackbar('과제 데이터를 불러오지 못했습니다.', 'error'));
             });
     }, []);
     const [rootHasBottomActions, setRootHasBottomActions] = useState(false);
