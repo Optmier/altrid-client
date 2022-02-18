@@ -95,7 +95,15 @@ function AlertSnackbar({ open, title, type, duration, onClose, children }) {
     return (
         <MuiSnackbar open={open} autoHideDuration={duration} TransitionComponent={SlideTransition} onClose={onClose}>
             <InnerAlert severity={type} variant="filled" onClose={onClose}>
-                {title}
+                {((title) => {
+                    const titleArr = title.split('\n');
+                    const returnArr = [titleArr[0]];
+                    for (let i = 1; i < titleArr.length; i++) {
+                        returnArr.push(<br key={i} />);
+                        returnArr.push(titleArr[i]);
+                    }
+                    return returnArr;
+                })(title)}
             </InnerAlert>
         </MuiSnackbar>
     );

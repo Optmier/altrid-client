@@ -8,6 +8,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles, TextField, withStyles } from '@material-ui/core';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -119,6 +121,7 @@ function ClassDialogCopy({ ver, open, defaultTitle, handleDialogClose }) {
 
     const classes = useStyles();
     const [copiedTitle, setCopiedTitle] = useState(defaultTitle + '의 복사본');
+    const dispatch = useDispatch();
 
     const onChange = ({ target }) => {
         const { value } = target;
@@ -126,7 +129,8 @@ function ClassDialogCopy({ ver, open, defaultTitle, handleDialogClose }) {
     };
 
     const handleClose = (e) => {
-        if (defaultTitle === copiedTitle) alert('동일한 이름을 가진 과제가 있습니다.\n다른 이름을 입력해 주세요.');
+        if (defaultTitle === copiedTitle)
+            dispatch(openAlertSnackbar('동일한 이름을 가진 과제가 있습니다.\n다른 이름을 입력해 주세요.', 'warning'));
         else {
             handleDialogClose(e, copiedTitle);
         }

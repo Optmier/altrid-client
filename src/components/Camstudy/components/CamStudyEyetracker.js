@@ -2,10 +2,11 @@
 import Axios from 'axios';
 import React, { useEffect, useRef } from 'react';
 import { useBeforeunload } from 'react-beforeunload';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { apiUrl } from '../../../configs/configs';
 import io from 'socket.io-client';
 import EyetrackerCore from '../../essentials/EyetrackerCore';
+import { openAlertSnackbar } from '../../../redux_modules/alertMaker';
 
 let eyetrackModerator = null;
 let eyetrackDetectedTime = 0;
@@ -24,6 +25,7 @@ function CamStudyEyetracker({ history, match }) {
     const socket = useRef();
     const detectionTimeLimit = 3000;
     window.camStudyEyetrackCablib = false;
+    const dispatch = useDispatch();
 
     const onAfterCalib = () => {
         console.log('calibration completed!');
@@ -64,7 +66,9 @@ function CamStudyEyetracker({ history, match }) {
             })
             .catch((err) => {
                 console.error(err);
-                alert('캠 스터디에 입장하지 못했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.');
+                dispatch(
+                    openAlertSnackbar('캠 스터디에 입장하지 못했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.', 'error', 5000),
+                );
             });
     };
 

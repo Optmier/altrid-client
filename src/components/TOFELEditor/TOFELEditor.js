@@ -48,6 +48,8 @@ import CompanyLogo from '../../images/logos/nav_logo_white.png';
 import { Helmet } from 'react-helmet';
 import GoogleCloudVisionOCR from './assets/GoogleCloudVisionOCR';
 import tip0Img from './assets/tip0.png';
+import { useDispatch } from 'react-redux';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 $.fn.changeSize = function (handleFunction) {
     let element = this;
@@ -316,6 +318,8 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
     const [tipDialogOpenState, setTipDialogOpenState] = useState(false);
     const [addProblemTextDialogOpenState, setAddProblemTextDialogOpenState] = useState(false);
 
+    const dispatch = useDispatch();
+
     let forceUpdate = useForceUpdate();
 
     const handleAlertBarOpen = () => {
@@ -356,7 +360,8 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
 
     const handlePreviewOpen = () => {
         if (metadata.flatMap((m) => m.problemDatas).length === 0) {
-            return alert('문항이 없습니다!\n에디터에서 문항을 하나 이상 추가해야 합니다.');
+            dispatch(openAlertSnackbar('문항이 없습니다!\n에디터에서 문항을 하나 이상 추가해야 합니다.', 'error'));
+            return;
         }
         setOpenPreview(true);
     };

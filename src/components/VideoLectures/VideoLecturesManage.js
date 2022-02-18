@@ -29,6 +29,7 @@ import AddCamstudyIcon from '../../AltridUI/Icons/AddCamstudyIcon';
 import Button from '../../AltridUI/Button/Button';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import VideoLectureListItem from './components/VideoLectureListItem';
+import { openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -170,13 +171,16 @@ function VideoLecturesManage({ match, history }) {
 
     const submitNewVideoLectures = ({ title, description, startDate, endDate, hasStartDate, hasEyetrack }) => {
         if (!title || !title.trim()) {
-            return alert('강의 제목은 필수입니다.');
+            dispatch(openAlertSnackbar('강의 제목은 필수입니다.', 'warning'));
+            return;
         }
         if (!description || !description.trim()) {
-            return alert('강의 설명은 필수입니다.');
+            dispatch(openAlertSnackbar('강의 설명은 필수입니다.', 'warning'));
+            return;
         }
         if (!endDate || !endDate.trim()) {
-            return alert('종료 날짜를 설정해 주세요.');
+            dispatch(openAlertSnackbar('종료 날짜를 설정해 주세요.', 'warning'));
+            return;
         }
 
         Axios.post(
@@ -199,15 +203,24 @@ function VideoLecturesManage({ match, history }) {
             })
             .catch((err) => {
                 console.error(err);
-                alert('화상 강의 개설 중 오류가 발생했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.');
+                dispatch(
+                    openAlertSnackbar('화상 강의 개설 중 오류가 발생했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.', 'error'),
+                );
             });
     };
 
     const enterVideoLecture = (data) => (event) => {
         dispatch(getServerDate());
-        if (new Date(data.start_at).getTime() > serverdate.datetime) return alert('아작 세션이 시작되지 않은 강의 입니다.');
-        if (isMobile && data.eyetrack)
-            return alert('모바일에서는 시선추적이 있는 강의는 입장이 불가합니다.\n데스크탑 또는 랩탑을 이용해 주세요.');
+        if (new Date(data.start_at).getTime() > serverdate.datetime) {
+            dispatch(openAlertSnackbar('아직 세션이 시작되지 않았습니다.', 'warning'));
+            return;
+        }
+        if (isMobile && data.eyetrack) {
+            dispatch(
+                openAlertSnackbar('모바일에서는 시선추적이 있는 강의는 입장이 불가합니다.\n데스크탑 또는 랩탑을 이용해 주세요.', 'error'),
+            );
+            return;
+        }
         // 시선흐름 감시 기능이 있고, 학생인 경우, 시선추적 보정 창 띄움
         if (data.eyetrack && sessions.userType === 'students') {
             window.open(
@@ -260,24 +273,40 @@ function VideoLecturesManage({ match, history }) {
                 })
                 .catch((err) => {
                     console.error(err);
-                    alert('화상 강의에 입장하지 못했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.');
+                    dispatch(openAlertSnackbar('화상 강의에 입장하지 못했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.', 'error'));
                 });
         }
     };
 
     const closeVideoLecture = (data) => (event) => {
-        const conf = window.confirm('정말로 화상 강의를 닫으시겠습니까?');
-        if (!conf) return;
-
-        Axios.delete(`${apiUrl}/meeting-room/${data.room_id}`, { withCredentials: true })
-            .then((res) => {
-                console.log(res);
-                history.replace();
-            })
-            .catch((err) => {
-                console.error(err);
-                alert('화상 강의를 닫는 중 오류가 발생했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.');
-            });
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                '정말로 화상 강의를 닫으시겠습니까?',
+                'no|yes',
+                '아니오|예',
+                'red|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    Axios.delete(`${apiUrl}/meeting-room/${data.room_id}`, { withCredentials: true })
+                        .then((res) => {
+                            console.log(res);
+                            history.replace();
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                            dispatch(
+                                openAlertSnackbar(
+                                    '화상 강의를 닫는 중 오류가 발생했습니다.\n증상이 지속될 경우 고객센터로 문의 바랍니다.',
+                                    'error',
+                                ),
+                            );
+                        });
+                },
+            ),
+        );
     };
 
     // const closeMultipleVideoLectures = () => {

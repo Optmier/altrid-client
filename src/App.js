@@ -116,8 +116,6 @@ function App({ history, match }) {
         Axios.delete(`${apiUrl}/auth`, { withCredentials: true })
             .then((res) => {
                 deleteSessions();
-                // document.body.innerHTML = '로그아웃 되었습니다.';
-                // alert('성공적으로 로그아웃 되었습니다!');
                 document.location.replace($_loginDefault);
                 try {
                     window.Android.CallMobAndroidLogin();
@@ -185,8 +183,7 @@ function App({ history, match }) {
                 if (err.response.status === 401) {
                     onCompleteGoogleLogout();
                     if (!loginUrls.includes(history.location.pathname)) {
-                        // alert('로그인이 필요합니다.');
-                        dispatch(openAlertSnackbar('로그인이 필요합니다.', 'error', 2000));
+                        if (!history.location.pathname === '/') dispatch(openAlertSnackbar('로그인이 필요합니다.', 'error', 2000));
                         history.replace($_loginDefault);
                         try {
                             window.Android.CallMobAndroidLogin();
@@ -296,6 +293,8 @@ function App({ history, match }) {
         if (reason === 'backdropClick' && globalAlertDialogConfigs.disableBackdropClick) return;
         closeAlert();
     };
+
+    window.alertTest = (message, type, duration) => dispatch(openAlertSnackbar(message, type, duration));
 
     return (
         <>

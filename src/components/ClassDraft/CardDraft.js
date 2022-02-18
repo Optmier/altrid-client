@@ -21,6 +21,7 @@ import ClassDialogCopy from '../essentials/ClassDialogCopy';
 import TooltipCard from '../essentials/TooltipCard';
 import LaunchIcon from '@material-ui/icons/Launch';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const StyleDraftIng = styled.div`
     width: 100%;
@@ -147,9 +148,9 @@ function CardDraft({ cardData, match, history }) {
                 setDateDialogopen(false);
                 dispatch(postActived(cardData, selectClassState, due_date));
             } else if (!due_date) {
-                alert('과제 기한 변경은 필수사항 입니다.');
+                dispatch(openAlertSnackbar('과제 기한 변경은 필수사항 입니다.', 'warning'));
             } else if (!selectClassState) {
-                alert('클래스 선택은 필수사항 입니다.');
+                dispatch(openAlertSnackbar('클래스 선택은 필수사항 입니다.', 'warning'));
             }
         } else {
             setDateDialogopen(false);
@@ -191,7 +192,8 @@ function CardDraft({ cardData, match, history }) {
     const handlePreviewOpen = () => {
         handleOptionClose();
         if (cardData['contents_data'].flatMap((m) => m.problemDatas).length === 0) {
-            return alert('과제 수정을 통해 에디터에서 문항을 추가해주세요 !');
+            dispatch(openAlertSnackbar('문항이 없습니다.\n수정을 통해 에디터에서 문항을 추가해주세요.', 'warning'));
+            return null;
         }
         setOpenPreview(true);
     };

@@ -17,8 +17,9 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Button from '@material-ui/core/Button';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import TextField from '../../../AltridUI/TextField/TextField';
+import { openAlertSnackbar } from '../../../redux_modules/alertMaker';
 
 const FormButton = styled.button`
     background-color: ${(props) => (props.able ? '#FFFFFF' : '#FFFFFF')};
@@ -192,6 +193,8 @@ function Calendar({ match }) {
     //     setdialog(true);
     // };
 
+    const dispatch = useDispatch();
+
     //  닫는 동시에 DB에 업데이트 하기
     const handleSave = () => {
         setdialog(false);
@@ -201,7 +204,7 @@ function Calendar({ match }) {
             .map((i) => daysArr.push(i));
         setdialog(false);
         if (AddEvent.title == '') {
-            alert('일정 제목을 입력해주세요');
+            dispatch(openAlertSnackbar('일정 제목을 입력해주세요.', 'warning'));
         } else if (sessions.userType === 'students') {
             console.log(daysArr);
             const New_event = {
@@ -244,7 +247,7 @@ function Calendar({ match }) {
                 { withCredentials: true },
             )
                 .then((result) => {
-                    alert('일정이  추가 되었습니다.');
+                    dispatch(openAlertSnackbar('일정이 추가되었습니다.'));
                     setAdd('');
                     setEvents(CalEvents.concat(New_event));
                 })
@@ -292,7 +295,7 @@ function Calendar({ match }) {
                 { withCredentials: true },
             )
                 .then((result) => {
-                    alert('일정이  추가 되었습니다.');
+                    dispatch(openAlertSnackbar('일정이 추가되었습니다.'));
                     setEvents(CalEvents.concat(New_event));
                     setAdd('');
                 })
@@ -383,7 +386,7 @@ function Calendar({ match }) {
     const changetitle = () => {
         for (var i = 0; i < CalEvents.length; i++) {
             if (temp.color == '#D4E2FC') {
-                alert('학원 수업은 변경할 수 없습니다.');
+                dispatch(openAlertSnackbar('학원 수업은 변경할 수 없습니다.', 'error'));
                 setopen(false);
                 break;
             } else if (temp.id == CalEvents[i].id) {
@@ -409,7 +412,7 @@ function Calendar({ match }) {
                     },
                     { withCredentials: true },
                 ).then((res) => {
-                    alert('수정이 완료되었습니다.');
+                    dispatch(openAlertSnackbar('수정이 완료되었습니다.'));
                 });
                 setopen(false);
                 CalEvents[i].title = temp.title;
@@ -442,13 +445,13 @@ function Calendar({ match }) {
         const copy = [...CalEvents];
         for (var i = 0; i < copy.length; i++) {
             if (temp.color === '#D4E2FC') {
-                alert('학원 수업 일정은 삭제 할 수 없습니다.');
+                dispatch(openAlertSnackbar('학원 수업 일정은 삭제할 수 없습니다.', 'error'));
                 setopen(false);
                 break;
             } else if (CalEvents[i].id == temp.id) {
                 Axios.delete(`${apiUrl}/calendar-events/${temp.id}`, { withCredentials: true })
                     .then((res) => {
-                        alert('삭제 되었습니다.');
+                        dispatch(openAlertSnackbar('삭제 되었습니다.'));
                     })
                     .catch((err) => {
                         console.log(err);

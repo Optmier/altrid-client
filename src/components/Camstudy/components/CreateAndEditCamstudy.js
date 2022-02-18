@@ -13,11 +13,12 @@ import moment from 'moment-timezone';
 import Drawer from '../../../AltridUI/Drawer/Drawer';
 import DrawerActions from '../../../AltridUI/Drawer/DrawerActions';
 import Button from '../../../AltridUI/Button/Button';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ArrowDropDownIcon from '../../../AltridUI/Icons/ArrowDropDownIcon';
 import CalendarIcon from '../../../AltridUI/Icons/CalendarIcon';
 import Chip from '../../../AltridUI/Accounts/Chip';
 import ChipDeleteIcon from '../../../AltridUI/Icons/ChipDeleteIcon';
+import { openAlertSnackbar } from '../../../redux_modules/alertMaker';
 
 const ContentsRoot = styled.div``;
 const TitleContainer = styled.div`
@@ -81,6 +82,7 @@ const InvitationChipsContainer = styled.div`
  */
 function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOrModify, children }) {
     const sessions = useSelector((state) => state.RdxSessions);
+    const dispatch = useDispatch();
 
     const titleFieldRef = useRef();
     const descriptionFieldRef = useRef();
@@ -226,7 +228,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
             .then((res) => {
                 onDrawerClose();
                 onAfterCreateOrModify();
-                alert('개설 완료되었습니다.');
+                dispatch(openAlertSnackbar('개설 완료되었습니다.'));
             })
             .catch((err) => {});
 
@@ -242,6 +244,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
 
         if (!defaultData.room_id) {
             console.error('세션 아이디를 알 수 없습니다.');
+            dispatch(openAlertSnackbar('세션 아이디를 알 수 없습니다.', 'error'));
             return;
         }
 
@@ -256,7 +259,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
             .then((res) => {
                 onDrawerClose();
                 onAfterCreateOrModify();
-                alert('수정 완료되었습니다.');
+                dispatch(openAlertSnackbar('수정 완료되었습니다.'));
             })
             .catch((err) => {
                 console.error(err);

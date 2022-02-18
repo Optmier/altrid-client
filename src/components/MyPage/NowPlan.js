@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PlanInfo from '../../datas/PlanInfo.json';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BackdropComponent from '../essentials/BackdropComponent';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
 import moment from 'moment-timezone';
 import { withRouter } from 'react-router';
 import '../../styles/mypage.scss';
+import { closeAlertDialog, openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const StylePossible = styled.div`
     display: flex;
@@ -88,14 +89,30 @@ function NowPlan({ history }) {
     const { data } = useSelector((state) => state.planInfo);
     const [planDurationDate, setPlanDurationDate] = useState('-');
 
+    const dispatch = useDispatch();
+
     const handlePlanBtn = () => {
         // alert('현재는 베타 서비스 기간으로, 플랜변경이 불가능합니다!');
         history.push('/pricing');
     };
 
     const handleUnsubscribe = () => {
-        const confirm = window.confirm('플랜 구독을 해지하시겠습니까?\n현재 플랜 이용일 이후에 해지됩니다.');
-        if (confirm) history.push('/payment?type=Free');
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                '플랜 구독을 해지하시겠습니까?\n현재 플랜 이용일 이후에 해지됩니다.',
+                'no|yes',
+                '아니오|예',
+                'red|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    history.push('/payment?type=Free');
+                    dispatch(closeAlertDialog());
+                },
+            ),
+        );
     };
 
     const handleCancelModifPlan = () => {
@@ -124,6 +141,7 @@ function NowPlan({ history }) {
                     }
                 })
                 .catch((validPlanError) => {
+                    dispatch(openAlertSnackbar('현재 유효한 플랜 정보를 불러오는데 오류가 발생했습니다.', 'error', 5000));
                     console.error('현재 유효한 플랜 정보를 불러오는데 오류가 발생했습니다.', validPlanError);
                 });
         }

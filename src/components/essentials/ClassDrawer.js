@@ -17,6 +17,7 @@ import BulbIcon from '../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
 import RestricRoute_1 from './RestricRoute_1';
 import DrawerActions from '../../AltridUI/Drawer/DrawerActions';
 import Button from '../../AltridUI/Button/Button';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const StyleLabel = styled.label`
     ${(props) =>
@@ -304,9 +305,9 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                     postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, activedDirect, selectedSubject),
                 );
             } else if (!due_date) {
-                alert('과제 기한 변경은 필수사항 입니다.');
+                dispatch(openAlertSnackbar('과제 기한 변경은 필수사항 입니다.', 'warning'));
             } else if (!selectClassState) {
-                alert('클래스 선택은 필수사항 입니다.');
+                dispatch(openAlertSnackbar('클래스 선택은 필수사항 입니다.'));
             }
         } else {
             setDateDialogopen(false);
@@ -370,7 +371,7 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
                 if (selectState === 'right') {
                     handleDialogOpen();
                 } else {
-                    alert('파일 업로드시, 과제 생성 기간이 필요하므로 바로 게시할 수 없습니다 :(');
+                    dispatch(openAlertSnackbar('파일 업로드시, 과제 생성 기간이 필요하므로 바로 게시할 수 없습니다.', 'warning', 5000));
                 }
             }
         } else if (ver === 'modify') {

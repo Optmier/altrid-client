@@ -39,6 +39,7 @@ import Button from '../AltridUI/Button/Button';
 import { withStyles } from '@material-ui/core/styles';
 import MuiAccordion from '@material-ui/core/Accordion';
 import BackgroundTheme from '../AltridUI/ThemeColors/BackgroundTheme';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const Accordion = withStyles({
     root: {
@@ -270,7 +271,8 @@ function MainDraft({ match, cardData, history }) {
     const handlePreviewOpen = () => {
         handleOptionClose();
         if (cardData['contents_data'].flatMap((m) => m.problemDatas).length === 0) {
-            return alert('과제 수정을 통해 에디터에서 문항을 추가해주세요 !');
+            dispatch(openAlertSnackbar('과제 수정을 통해 에디터에서 문항을 추가해주세요.', 'warning'));
+            return;
         }
         setOpenPreview(true);
     };
@@ -305,7 +307,6 @@ function MainDraft({ match, cardData, history }) {
         if (name === 'button') {
             if (due_date && selectClassState) {
                 //과제 게시하기 버튼 클릭
-
                 setDateDialogopen(false);
                 dispatch(postActived(cardData, selectClassState, due_date));
             } else if (!due_date) {
@@ -373,7 +374,7 @@ function MainDraft({ match, cardData, history }) {
                 // // 삭제버튼 클릭시, 삭제만 진행
                 // else {
                 console.log(res1);
-                alert('삭제 완료되었습니다!');
+                dispatch(openAlertSnackbar('삭제 완료되었습니다.'));
                 history.replace('/');
                 //}
             })

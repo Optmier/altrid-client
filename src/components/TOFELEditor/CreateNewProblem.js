@@ -14,6 +14,8 @@ import { Helmet } from 'react-helmet';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon, RadioButtonChecked } from '@material-ui/icons';
+import { useDispatch } from 'react-redux';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const Root = styled.div`
     padding: 36px 48px;
@@ -308,6 +310,8 @@ function CreateNewProblem({ subject, problemDatas, handleClose, onCreate, editmo
     );
     const [commentOpen, setCommentOpen] = useState(false);
 
+    const dispatch = useDispatch();
+
     const handleChangeCategory = (e) => {
         const cat = e.target.value;
         setProblemCategory(parseInt(cat));
@@ -364,18 +368,30 @@ function CreateNewProblem({ subject, problemDatas, handleClose, onCreate, editmo
         if (!metadata.score) metadata.score = 0;
         /** 유효성 검사 */
         // 문제 유형 선택했는지 검사
-        if (metadata.category === '' || metadata.category === null) return alert('문제 유형을 선택해 주세요.');
+        if (metadata.category === '' || metadata.category === null) {
+            dispatch(openAlertSnackbar('문제 유형을 선택해 주세요.', 'warning'));
+            return;
+        }
         // 배점 선택했는지 검사
-        if (!metadata.score) return alert('배점을 선택해 주세요.');
+        if (!metadata.score) {
+            dispatch(openAlertSnackbar('배점을 선택해 주세요.', 'warning'));
+            return;
+        }
         // 문제 텍스트 비어있는지 검사
-        if (!metadata.textForRender.trim()) return alert('문제 내용을 입력해 주세요.');
+        if (!metadata.textForRender.trim()) {
+            dispatch(openAlertSnackbar('문제 내용을 입력해 주세요.', 'warning'));
+            return;
+        }
         // 선택지 입력 검사
-        if (metadata.type === 'multiple-choice' && !Object.keys(metadata.selections).filter((s) => metadata.selections[s]).length)
-            return alert('선택지를 하나 이상 입력해 주세요.');
+        if (metadata.type === 'multiple-choice' && !Object.keys(metadata.selections).filter((s) => metadata.selections[s]).length) {
+            dispatch(openAlertSnackbar('선택지를 하나 이상 입력해 주세요.', 'warning'));
+            return;
+        }
         // 정답 입력 여부 검사
-        if ((metadata.type === 'multiple-choice' && !metadata.answer) || (metadata.type === 'short-answer' && !metadata.answer.trim()))
-            return alert('정답을 선택 또는 입력해 주세요.');
-
+        if ((metadata.type === 'multiple-choice' && !metadata.answer) || (metadata.type === 'short-answer' && !metadata.answer.trim())) {
+            dispatch(openAlertSnackbar('정답을 선택 또는 입력해 주세요.', 'warning'));
+            return;
+        }
         onCreate(metadata);
         handleClose(false);
     };

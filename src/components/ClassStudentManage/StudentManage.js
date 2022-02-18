@@ -26,6 +26,8 @@ import AltUncheckedIcon from '../../AltridUI/Icons/AltUncheckedIcon';
 import TextField from '../../AltridUI/TextField/TextField';
 import styled from 'styled-components';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
+import Typography from '../../AltridUI/Typography/Typography';
 
 // const StyleCheckbox = withStyles({
 //     root: {
@@ -341,26 +343,6 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
             history.push(`/class/${num}/share/${selectState[name]}/details?user=${name}`);
         }
     };
-    // const handleDelete = () => {
-    //     let arr = [];
-    //     Object.keys(checkstate)
-    //         .filter((i) => checkstate[i] === true)
-    //         .map((i) => arr.push(`'${i}'`));
-
-    //     Axios.delete(`${apiUrl}/students-in-class/students/${num}`, {
-    //         data: {
-    //             students: arr.join(','),
-    //         },
-    //         withCredentials: true,
-    //     })
-    //         .then((res) => {
-    //             alert('학생 삭제가 완료되었습니다!');
-    //             history.replace(`/class/${num}/student-manage`);
-    //         })
-    //         .catch((err) => {
-    //             console.error(err);
-    //         });
-    // };
 
     useEffect(() => {
         Axios.get(`${apiUrl}/assignment-result/report-students/${match.params.num}`, { withCredentials: true })
@@ -427,7 +409,7 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
             { withCredentials: true },
         )
             .then((res) => {
-                alert('저장되었습니다.');
+                dispatch(openAlertSnackbar('기록이 저장되었습니다.'));
             })
             .catch((err) => {
                 console.error(err);
@@ -436,128 +418,114 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
 
     return (
         <StudentManagementRoot>
-            <div className="manage-inputs">
-                {/* <div className="manage-inputs-header">
-                    <div className="header-left">
-                        수강 학생 <span>({Object.keys(studentDatas).length}명)</span>
-                    </div>
-                    <div className="header-right" onClick={handleDelete}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16">
-                            <path
-                                id="_22"
-                                dataname="22"
-                                d="M1,16a2.006,2.006,0,0,0,2,2h8a2.006,2.006,0,0,0,2-2V4H1ZM14,1H10.5l-1-1h-5l-1,1H0V3H14Z"
-                                fill="#707070"
-                            />
-                        </svg>
-                        선택 삭제
-                    </div>
-                </div> */}
-                <GroupBox
-                    fullWidth
-                    title={
-                        <>
-                            수강 학생 <span style={{ color: '#3AE2A1' }}>{Object.keys(studentDatas).length}</span>
-                        </>
-                    }
-                >
-                    {Object.keys(studentDatas).map((key, idx) => (
-                        <Accordion
-                            key={key}
-                            expanded={expanded === key}
+            <GroupBox
+                fullWidth
+                title={
+                    <>
+                        수강 학생 <span style={{ color: '#3AE2A1' }}>{Object.keys(studentDatas).length}</span>
+                    </>
+                }
+            >
+                {Object.keys(studentDatas).map((key, idx) => (
+                    <Accordion
+                        key={key}
+                        expanded={expanded === key}
+                        leftnavstate={(window.innerWidth > 902 && leftNavGlobal) + ''}
+                        onChange={actionExpand(key)}
+                    >
+                        <AccordionSummary
                             leftnavstate={(window.innerWidth > 902 && leftNavGlobal) + ''}
-                            onChange={actionExpand(key)}
+                            expandIcon={<ExpandMoreIcon />}
+                            mark={idx}
+                            aria-controls={`${key}bh-content`}
+                            id={`${key}bh-header`}
                         >
-                            <AccordionSummary
-                                leftnavstate={(window.innerWidth > 902 && leftNavGlobal) + ''}
-                                expandIcon={<ExpandMoreIcon />}
-                                mark={idx}
-                                aria-controls={`${key}bh-content`}
-                                id={`${key}bh-header`}
-                            >
-                                <StudentNameWrapper leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
-                                    <FormControlLabel
-                                        aria-label={'select_' + key}
-                                        onClick={(event) => event.stopPropagation()}
-                                        onFocus={(event) => event.stopPropagation()}
-                                        control={
-                                            <Checkbox
-                                                disableRipple
-                                                disableTouchRipple
-                                                disableFocusRipple
-                                                color="default"
-                                                icon={<AltUncheckedIcon />}
-                                                checkedIcon={<AltCheckedIcon />}
-                                                name={key}
-                                                onChange={handleChange}
-                                            />
-                                        }
-                                    />
-                                    <SummaryStudentName>{studentDatas[key][0]['name']}</SummaryStudentName>
-                                </StudentNameWrapper>
-                                <StudentInfoWrapper leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
-                                    <SummaryStudentAddress leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
-                                        <HomeIcon fontSize="inherit" />
-                                        <p>주소</p>
-                                        {studentDatas[key][0]['address'] ? studentDatas[key][0]['address'] : '-'}
-                                    </SummaryStudentAddress>
-                                    <SummaryStudentPhone leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
-                                        <PhoneIcon fontSize="inherit" />
-                                        <p>연락처</p>
-                                        {studentDatas[key][0]['phone'] ? studentDatas[key][0]['phone'] : '-'}
-                                    </SummaryStudentPhone>
-                                </StudentInfoWrapper>
-                            </AccordionSummary>
-                            <AccordionDetails leftnavstate={(window.innerWidth > 902 && leftNavGlobal) + ''}>
-                                <DetailsRoot>
-                                    <Notes>
-                                        <TextField
-                                            multiline
-                                            minRows={4}
-                                            fullWidth
-                                            id={'input-notes-id_' + key}
-                                            value={notes['notes-input-' + key]}
-                                            variant="filled"
-                                            label="특이사항 입력"
-                                            name={'notes-input-' + key}
-                                            onChange={onNotesInputChange(key)}
-                                            InputProps={{
-                                                disableUnderline: true,
-                                                endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        <MuiButton
-                                                            onClick={() => {
-                                                                updateStudentNotes(key);
-                                                            }}
-                                                        >
-                                                            저장
-                                                        </MuiButton>
-                                                    </InputAdornment>
-                                                ),
-                                            }}
+                            <StudentNameWrapper leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
+                                <FormControlLabel
+                                    aria-label={'select_' + key}
+                                    onClick={(event) => event.stopPropagation()}
+                                    onFocus={(event) => event.stopPropagation()}
+                                    control={
+                                        <Checkbox
+                                            disableRipple
+                                            disableTouchRipple
+                                            disableFocusRipple
+                                            color="default"
+                                            icon={<AltUncheckedIcon />}
+                                            checkedIcon={<AltCheckedIcon />}
+                                            name={key}
+                                            onChange={handleChange}
                                         />
-                                    </Notes>
-                                    <ReportSelectContainer>
-                                        <ReportSelect name={key} onChange={handleSelectChange}>
-                                            <option value="">과제 리포트 선택</option>
-                                            {studentDatas[key]
-                                                .filter((item) => item['idx'] !== null)
-                                                .map((j) => (
-                                                    <option key={j['actived_number']} value={j['actived_number']}>
-                                                        {j['title']}
-                                                    </option>
-                                                ))}
-                                        </ReportSelect>
-                                        <Button sizes="medium" colors="purple" name={key} onClick={handleMoveReport}>
-                                            리포트 보기
-                                        </Button>
-                                    </ReportSelectContainer>
-                                </DetailsRoot>
-                            </AccordionDetails>
-                        </Accordion>
-                    ))}
-                </GroupBox>
-            </div>
+                                    }
+                                />
+                                <SummaryStudentName>
+                                    <Typography type="label" size="xl" bold>
+                                        {studentDatas[key][0]['name']}
+                                    </Typography>
+                                </SummaryStudentName>
+                            </StudentNameWrapper>
+                            <StudentInfoWrapper leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
+                                <SummaryStudentAddress leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
+                                    <HomeIcon fontSize="inherit" />
+                                    <p>주소</p>
+                                    {studentDatas[key][0]['address'] ? studentDatas[key][0]['address'] : '-'}
+                                </SummaryStudentAddress>
+                                <SummaryStudentPhone leftnavstate={window.innerWidth > 902 && leftNavGlobal}>
+                                    <PhoneIcon fontSize="inherit" />
+                                    <p>연락처</p>
+                                    {studentDatas[key][0]['phone'] ? studentDatas[key][0]['phone'] : '-'}
+                                </SummaryStudentPhone>
+                            </StudentInfoWrapper>
+                        </AccordionSummary>
+                        <AccordionDetails leftnavstate={(window.innerWidth > 902 && leftNavGlobal) + ''}>
+                            <DetailsRoot>
+                                <Notes>
+                                    <TextField
+                                        multiline
+                                        minRows={4}
+                                        fullWidth
+                                        id={'input-notes-id_' + key}
+                                        value={notes['notes-input-' + key]}
+                                        variant="filled"
+                                        label="특이사항 입력"
+                                        name={'notes-input-' + key}
+                                        onChange={onNotesInputChange(key)}
+                                        InputProps={{
+                                            disableUnderline: true,
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <MuiButton
+                                                        onClick={() => {
+                                                            updateStudentNotes(key);
+                                                        }}
+                                                    >
+                                                        저장
+                                                    </MuiButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                </Notes>
+                                <ReportSelectContainer>
+                                    <ReportSelect name={key} onChange={handleSelectChange}>
+                                        <option value="">과제 리포트 선택</option>
+                                        {studentDatas[key]
+                                            .filter((item) => item['idx'] !== null)
+                                            .map((j) => (
+                                                <option key={j['actived_number']} value={j['actived_number']}>
+                                                    {j['title']}
+                                                </option>
+                                            ))}
+                                    </ReportSelect>
+                                    <Button sizes="medium" colors="purple" name={key} onClick={handleMoveReport}>
+                                        리포트 보기
+                                    </Button>
+                                </ReportSelectContainer>
+                            </DetailsRoot>
+                        </AccordionDetails>
+                    </Accordion>
+                ))}
+            </GroupBox>
         </StudentManagementRoot>
     );
 }

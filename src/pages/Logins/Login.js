@@ -17,6 +17,8 @@ import styled from 'styled-components';
  */
 import ShortUniqueId from 'short-unique-id';
 import BackgroundTheme from '../../AltridUI/ThemeColors/BackgroundTheme';
+import { useDispatch } from 'react-redux';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const LoginMain = styled.div`
     max-width: 672px;
@@ -271,6 +273,8 @@ function Login({ history }) {
     const [requestButtonEnable, setRequestButtonEnable] = useState(false);
     const generateUid = useRef();
 
+    const dispatch = useDispatch();
+
     const loginMethod = (email, authId) => {
         Axios.post(
             apiUrl + '/auth/' + usertype,
@@ -291,10 +295,15 @@ function Login({ history }) {
                 console.error(err);
                 switch (err.response.data.code) {
                     case 'not-in-database':
-                        alert('회원 정보가 없습니다.\n등록을 해주세요.');
+                        dispatch(openAlertSnackbar('회원 정보가 없습니다.\n등록을 해주세요.', 'error'));
                         break;
                     case 'not-approved':
-                        alert(`승인이 필요한 계정입니다.\n${usertype === 'students' ? '선생님의' : '관리자의'} 승인을 기다려주세요!`);
+                        dispatch(
+                            openAlertSnackbar(
+                                `승인이 필요한 계정입니다.\n${usertype === 'students' ? '선생님의' : '관리자의'} 승인을 기다려주세요!`,
+                                'warning',
+                            ),
+                        );
                         break;
                     default:
                         break;
@@ -346,7 +355,7 @@ function Login({ history }) {
             case 'popup_closed_by_user':
                 break;
             default:
-                alert('로그인에 실패했습니다. 에러코드 :: ' + err.error);
+                dispatch(openAlertSnackbar('로그인에 실패했습니다. 에러코드 :: ' + err.error, 'error'));
                 break;
         }
     };
@@ -384,7 +393,7 @@ function Login({ history }) {
 
     const onFailedKakaoAuth = (err) => {
         console.error(err);
-        alert('로그인에 실패했습니다. 에러코드 :: ' + err);
+        dispatch(openAlertSnackbar('로그인에 실패했습니다. 에러코드 :: ' + err, 'error'));
     };
 
     const handleChangeUsertype = (e, newValue) => {
@@ -474,8 +483,10 @@ function Login({ history }) {
                     //     alert('계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요 :)');
                     //     loginMethod(email, authId);
                     // }
-                    alert('계정 등록이 완료 되었습니다 :)');
-                    loginMethod(email, authId);
+                    dispatch(openAlertSnackbar('계정 등록이 완료되었습니다.'));
+                    setTimeout(() => {
+                        loginMethod(email, authId);
+                    }, 2000);
                 })
                 .catch((err) => {
                     console.error(err);
@@ -497,8 +508,10 @@ function Login({ history }) {
                     { withCredentials: true },
                 )
                     .then((res) => {
-                        alert('계정 등록이 완료 되었습니다:)');
-                        loginMethod(email, authId);
+                        dispatch(openAlertSnackbar('계정 등록이 완료되었습니다.'));
+                        setTimeout(() => {
+                            loginMethod(email, authId);
+                        }, 2000);
                     })
                     .catch((err) => {
                         console.error(err);
@@ -538,7 +551,7 @@ function Login({ history }) {
                         if ((planId === 1 && teacherNums < 1) || (planId === 2 && teacherNums < 5) || (planId === 3 && teacherNums < 10))
                             addTeacherMethod();
                         else {
-                            alert('선생님 초대인원이 초과되었습니다:(\n학원 개설자에게 문의해주세요!');
+                            dispatch(openAlertSnackbar('선생님 초대인원이 초과되었습니다.\n학원 개설자에게 문의해주세요', 'error'));
                         }
                     })
                     .catch((err) => {
@@ -581,6 +594,7 @@ function Login({ history }) {
                                 });
                             })
                             .catch((err) => {
+                                dispatch(openAlertSnackbar('학원 조회 중 오류가 발생했습니다.\n증상 지속시 문의 바랍니다.', 'error'));
                                 console.error(err);
                             });
                     } else if (usertype === 'teachers') {

@@ -23,6 +23,7 @@ import StudentState from './StudentState';
 import styled from 'styled-components';
 import CardEyetrackIcon from '../../AltridUI/Icons/CardEyetrackIcon';
 import CardTypeCheckIcon from '../../AltridUI/Icons/CardTypeCheckIcon';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const pad = (n, width) => {
     n = n + '';
@@ -248,7 +249,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                 //console.log(cardData['idx'], data);
                 dispatch(patchActived(cardData['idx'], data));
             } else {
-                alert('과제 기한 변경은 필수사항 입니다.');
+                dispatch(openAlertSnackbar('과제 기한 변경은 필수사항 입니다.', 'warning'));
             }
             setTestDialogopen(false);
             dispatch(changeDueDate(''));
@@ -280,7 +281,7 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                 dispatch(patchActived(cardData['idx'], data));
                 setDateDialogopen(false);
             } else {
-                alert('과제 기한 변경은 필수사항 입니다.');
+                dispatch(openAlertSnackbar('과제 기한 변경은 필수사항 입니다.', 'warning'));
             }
         } else {
             setDateDialogopen(false);
@@ -300,10 +301,14 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         if (!conf) return;
         if (window.mobile || (window.screen.width < 1440 && window.screen.height < 900)) {
             if (window.mobile) {
-                alert('시선흐름 분석 서비스는\n테스크탑 브라우저에서만\n지원하고 있습니다.');
+                dispatch(openAlertSnackbar('시선흐름 분석 서비스는 데스크탑 브라우저에서만 지원하고 있습니다.', 'warning'));
             } else {
-                alert(
-                    '시선흐름 분석 서비스를 위한 최소 해상도를 지켜주세요 :(\n최소 해상도 : 1440*900\n권장 해상도 : 1920*1080 (125% 이하)',
+                dispatch(
+                    openAlertSnackbar(
+                        '시선흐름 분석 서비스를 위한 최소 해상도를 지켜주세요:\n(최소 해상도 : 1440*900 / 권장 해상도 : 1920*1080 (125% 이하)',
+                        'warning',
+                        5000,
+                    ),
                 );
             }
         } else {
@@ -347,7 +352,8 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
     };
     const handlePreviewOpen = () => {
         if (cardData['contents_data'].flatMap((m) => m.problemDatas).length === 0) {
-            return alert('과제 수정을 통해 에디터에서 문항을 추가해주세요 !');
+            dispatch(openAlertSnackbar('문항이 없습니다.\n수정을 통해 에디터에서 문항을 추가해 주세요.', 'warning'));
+            return null;
         }
         setOpenPreview(true);
     };
@@ -361,10 +367,16 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
             history.push(`${path}/${testNum}/details?user=${sessions.authId}`);
         } else {
             if (!totalStudents) {
-                alert('아직 클래스에 초대된 학생이 없습니다.\n학생들을 클래스에 초대 후, 이용 부탁드립니다.');
+                dispatch(
+                    openAlertSnackbar(
+                        '아직 클래스에 초대된 학생이 없습니다.\n학생들을 클래스에 초대 후, 이용 부탁드립니다.',
+                        'warning',
+                        5000,
+                    ),
+                );
                 return;
             } else if (!cardData['submitted_number']) {
-                alert('아직 제출한 학생이 없습니다.');
+                dispatch(openAlertSnackbar('아직 제출한 학생이 없습니다.', 'warning'));
                 return;
             } else {
                 history.push(`${path}/${testNum}`);

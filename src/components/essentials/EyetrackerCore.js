@@ -451,7 +451,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         });
         if (allCalibrated) {
             localStorage.setItem('eye_calibrated', true);
-            alert('보정완료되었습니다 !');
+            alert('보정 완료되었습니다!');
 
             setCalibBtnDisabled(false);
             setTranslateNum(translateNum - 100);

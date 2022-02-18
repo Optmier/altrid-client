@@ -8,6 +8,7 @@ import BackdropComponent from '../../components/essentials/BackdropComponent';
 import { updateVocaDatas } from '../../redux_modules/vocaLearnings';
 import finish from '../../images/finish.png';
 import ProgressIndicator from '../../AltridUI/Icons/ProgressIndicator';
+import { openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 /** https://codingbroker.tistory.com/86 */
 const arrShuffle = function (arr) {
@@ -248,7 +249,7 @@ function LearningVocas({ history, match, children }) {
 
     useEffect(() => {
         if (!isPending && !vocaDatasOriginal) {
-            alert('잘못된 접근 또는 학습 데이터가 없습니다!');
+            dispatch(openAlertSnackbar('잘못된 접근 또는 학습 데이터가 없습니다.', 'error'));
             history.goBack();
             return;
         }
@@ -270,7 +271,7 @@ function LearningVocas({ history, match, children }) {
 
     useEffect(() => {
         if (finished) {
-            alert('학습이 완료되었습니다.');
+            dispatch(openAlertDialog('info', '알림', '학습이 종료되었습니다.', 'ok', '확인', 'purple|light', '', 'defaultClose'));
         }
         return () => {
             if (finished) return;

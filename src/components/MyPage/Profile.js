@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 /** https://github.com/jeanlescure/short-unique-id
  * Copyright (c) 2018-2020 Short Unique ID Contributors.
@@ -12,6 +12,7 @@ import ShortUniqueId from 'short-unique-id';
 import { withRouter } from 'react-router-dom';
 import icon from '../../images/Profile_icon.png';
 import BackgroundTheme from '../../AltridUI/ThemeColors/BackgroundTheme';
+import { closeAlertDialog, openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const Profile_Header = styled.div`
     margin: 0 auto;
@@ -167,6 +168,8 @@ function Profile({ history }) {
     const [btnAbleState, setBtnAbleState] = useState(false);
     // const [clipboardState, setClipboardState] = useState(false);
 
+    const dispatch = useDispatch();
+
     const handleSave = () => {
         const saveDB = (_imgsrc) => {
             // 1. db에 저장...
@@ -216,7 +219,7 @@ function Profile({ history }) {
                     saveDB(apiUrl + '/files/' + res.data.file_name);
                 })
                 .catch((err) => {
-                    alert('프로필 이미지를 저장하는 도중 오류가 발생했습니다.');
+                    dispatch(openAlertSnackbar('프로필 이미지를 저장하는 도중 오류가 발생했습니다.', 'error'));
                     console.error(err);
                 });
         } else {
@@ -232,7 +235,7 @@ function Profile({ history }) {
     const handleChangeFile = (e) => {
         if (!e.target.files[0]) return;
         if (e.target.files[0].size > 3 * 1024 * 1024) {
-            alert('이미지 최대 크기는 3MB입니다.');
+            dispatch(openAlertSnackbar('이미지 최대 제한 크기는 3MB 입니다.', 'error'));
             return;
         }
 
@@ -301,16 +304,32 @@ function Profile({ history }) {
     }, [sessions]);
 
     const handleDelete = () => {
-        const confirm = window.confirm('정말 계정을 삭제하시겠습니까?\n삭제된 계정의 데이터는 복구되지 않습니다.');
-        if (!confirm) return;
-        Axios.delete(`${apiUrl}/my-page/profile`, { withCredentials: true })
-            .then((res) => {
-                alert('회원 탈퇴가 완료되었습니다.');
-                window.logout();
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                '정말로 계정을 삭제하시겠습니까?\n삭제된 계정의 데이터는 복구되지 않습니다.',
+                'no|yes',
+                '아니오|예',
+                'red|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    dispatch(closeAlertDialog());
+                    Axios.delete(`${apiUrl}/my-page/profile`, { withCredentials: true })
+                        .then((res) => {
+                            dispatch(openAlertSnackbar('회원 탈퇴가 완료되었습니다.'));
+                            setTimeout(() => {
+                                window.logout();
+                            }, 3000);
+                        })
+                        .catch((err) => {
+                            dispatch(openAlertSnackbar('회원 탈퇴 오류가 발생했습니다.\n증상이 지속되면 기술 문의 바랍니다.', 'error'));
+                            console.error(err);
+                        });
+                },
+            ),
+        );
     };
 
     return (

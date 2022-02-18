@@ -314,7 +314,7 @@ function ReportClass({ match, history }) {
                 //console.log(mainReportData.idx, RdxDueDate);
                 dispatch(patchActivedOnly(mainReportData.idx, RdxDueDate));
             } else {
-                alert('과제 기한 변경은 필수사항 입니다.');
+                dispatch(openAlertSnackbar('과제 기한 변경은 필수사항 입니다.', 'warning'));
             }
             setTestDialogopen(false);
             dispatch(changeDueDate(''));
@@ -345,7 +345,7 @@ function ReportClass({ match, history }) {
                 dispatch(patchActivedOnly(mainReportData.idx, RdxDueDate));
                 setDateDialogopen(false);
             } else {
-                alert('과제 기한 변경은 필수사항 입니다.');
+                dispatch(openAlertSnackbar('과제 기한 변경은 필수사항 입니다.', 'warning'));
             }
         } else {
             setDateDialogopen(false);

@@ -2,7 +2,7 @@
 /* eslint-disable eqeqeq */
 import Axios from 'axios';
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { apiUrl } from '../../configs/configs';
 import MenuData from '../../datas/MenuData.json';
 /** https://github.com/jeanlescure/short-unique-id
@@ -10,9 +10,11 @@ import MenuData from '../../datas/MenuData.json';
  * Licensed under the Apache License 2.0.
  */
 import ShortUniqueId from 'short-unique-id';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 function PayGetBillingKey({ method, history }) {
     const sessions = useSelector((state) => state.RdxSessions);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (!sessions || !sessions.authId || !sessions.userType || !sessions.academyName) {
@@ -35,7 +37,7 @@ function PayGetBillingKey({ method, history }) {
             withCredentials: true,
         }).catch((err) => {
             console.error(err.response);
-            alert('키를 발급하는 중 문제가 발생했습니다.');
+            dispatch(openAlertSnackbar('결제 키 생성 중 오류가 발생했습니다.\n문제 지속 시 기술문의 바랍니다.', 'error'));
             history.goBack();
         });
 
@@ -79,7 +81,7 @@ function PayGetBillingKey({ method, history }) {
                     window.location.href = window.location.origin + '/pay-state/success';
                 })
                 .catch((giveCouponErr) => {
-                    alert('쿠폰을 등록 오류가 발생하였습니다.\n관리자의 조치를 받으시기 바랍니다.');
+                    dispatch(openAlertSnackbar('쿠폰 등록 오류가 발생하였습니다.\n문제 지속 시 기술문의 바랍니다.', 'error'));
                     console.error(giveCouponErr);
                 });
         };
@@ -105,11 +107,10 @@ function PayGetBillingKey({ method, history }) {
                             { withCredentials: true },
                         )
                             .then((updatePlanResult) => {
-                                console.log(updatePlanResult);
                                 giveCouponsFn(true, currentPlans);
                             })
                             .catch((updatePlanErr) => {
-                                alert('플랜 변경에 오류가 발생하였습니다.\n관리자의 조치를 받으시기 바랍니다.');
+                                dispatch(openAlertSnackbar('플랜 변경에 오류가 발생하였습니다.\n문제 지속 시 기술문의 바랍니다.', 'error'));
                                 console.error(updatePlanErr);
                             });
                     } else {
@@ -132,12 +133,20 @@ function PayGetBillingKey({ method, history }) {
                                 giveCouponsFn(false, null);
                             })
                             .catch((orderErr) => {
-                                alert('플랜 구독 설정에 오류가 발생하였습니다.\n관리자의 조치를 받으시기 바랍니다.');
+                                dispatch(
+                                    openAlertSnackbar('플랜 구독 설정에 오류가 발생하였습니다.\n문제 지속 시 기술문의 바랍니다.', 'error'),
+                                );
                                 console.error(orderErr);
                             });
                     }
                 })
                 .catch((validPlanError) => {
+                    dispatch(
+                        openAlertSnackbar(
+                            '현재 유효한 플랜 정보를 불러오는데 오류가 발생했습니다.\n문제 지속 시 기술문의 바랍니다.',
+                            'error',
+                        ),
+                    );
                     console.error('현재 유효한 플랜 정보를 불러오는데 오류가 발생했습니다.', validPlanError);
                 });
         };
@@ -158,13 +167,12 @@ function PayGetBillingKey({ method, history }) {
                             { withCredentials: true },
                         )
                             .then((afterAdd) => {
-                                console.log(afterAdd);
                                 if (method === 'updatePlan') {
                                     // 플랜 정보 업데이트 하는 거라면 플랜 업데이트 하기
                                     updatePlanMethod();
                                 } else {
                                     // 카드 추가만 하는 경우
-                                    alert('결제 카드가 성공적으로 추가되었습니다.');
+                                    dispatch(openAlertSnackbar('결제 카드가 성공적으로 추가되었습니다.'));
                                     history.goBack();
                                 }
                             })
@@ -187,8 +195,7 @@ function PayGetBillingKey({ method, history }) {
                             { withCredentials: true },
                         )
                             .then((afterModify) => {
-                                console.log(afterModify);
-                                alert('결제 카드가 성공적으로 변경되었습니다.');
+                                dispatch(openAlertSnackbar('결제 카드가 성공적으로 변경되었습니다.'));
                                 history.goBack();
                             })
                             .catch((err) => {
@@ -198,7 +205,7 @@ function PayGetBillingKey({ method, history }) {
                 });
                 break;
             default:
-                alert('잘못된 접근입니다');
+                dispatch(openAlertSnackbar('잘못된 접근입니다.', 'error'));
                 history.goBack();
                 return;
         }

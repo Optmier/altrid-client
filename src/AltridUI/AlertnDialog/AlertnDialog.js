@@ -207,7 +207,15 @@ function AlertDialog({
             </AltridAlertDialogTitle>
             <AltridAlertDialogContent>
                 <Typography type="label" size="xl">
-                    {message}
+                    {((message) => {
+                        const messageArr = message.split('\n');
+                        const returnArr = [messageArr[0]];
+                        for (let i = 1; i < messageArr.length; i++) {
+                            returnArr.push(<br key={i} />);
+                            returnArr.push(messageArr[i]);
+                        }
+                        return returnArr;
+                    })(message)}
                 </Typography>
             </AltridAlertDialogContent>
             <AltridAlertDialogActions>{makeAlertDialogActions()}</AltridAlertDialogActions>

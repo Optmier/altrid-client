@@ -23,6 +23,8 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import 'cropperjs/dist/cropper.css';
 import tip0Img from './tip0.png';
+import { useDispatch } from 'react-redux';
+import { openAlertSnackbar } from '../../../redux_modules/alertMaker';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -311,6 +313,8 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
     const [isImgChanged, setIsImgChanged] = useState(true);
     const [tipDialogOpenState, setTipDialogOpenState] = useState(false);
 
+    const dispatch = useDispatch();
+
     // 다이얼로그 데이터 초기화
     const dataInit = () => {
         setImageFileData(null);
@@ -330,7 +334,10 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
     // 지문 및 문제영역 텍스트 분류
     const classifyTexts = (data, left) => {
         const x = currentImageWidth * 0.01 * (left > 95 ? 100 : left < 5 ? 0 : left);
-        if (!data.responses || data.responses.length < 1) return alert('데이터가 없습니다!');
+        if (!data.responses || data.responses.length < 1) {
+            dispatch(openAlertSnackbar('데이터가 없습니다.', 'error'));
+            return;
+        }
 
         const { textAnnotations, fullTextAnnotations } = data.responses[0];
         const mTextAnnotations = textAnnotations.slice().map((d) => Object.assign({}, d));
@@ -375,7 +382,10 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
 
     // 구글 비전 텍스트 감지 API 호출
     const callGoogleVisionTextDetectionAPI = (forceFetch = false) => {
-        if (imageFileData === null || imageFileBase64 === null) return alert('이미지가 없습니다!');
+        if (imageFileData === null || imageFileBase64 === null) {
+            dispatch(openAlertSnackbar('이미지가 없습니다', 'error'));
+            return;
+        }
 
         if (!forceFetch && detectionData) {
             classifyTexts(detectionData, horizontalSplitSizes[0]);
@@ -434,9 +444,13 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
         const fileList = e.target.files;
         if (fileList.length < 1) {
             setImageFileData(null);
-            return alert('이미지 파일이 제거되었습니다.');
+            dispatch(openAlertSnackbar('이미지 파일이 제거되었습니다.', 'info'));
+            return;
         }
-        if (!/^image\//.test(fileList[0].type)) return alert('이미지 파일만 업로드 가능합니다.');
+        if (!/^image\//.test(fileList[0].type)) {
+            dispatch(openAlertSnackbar('이미지 파일만 업로드 가능합니다.', 'error'));
+            return;
+        }
 
         const fileReader = new FileReader();
         /** @param {ProgressEvent<FileReader>} fileReaderEvent */

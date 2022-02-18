@@ -6,6 +6,7 @@ import moment from 'moment';
 import { changeDueDate } from '../../redux_modules/assignmentActived';
 import { useSelector, useDispatch } from 'react-redux';
 import Error from '../../pages/Errors/Error';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -131,7 +132,7 @@ function ClassDialoglDate({ subType, setSelectClassState }) {
     };
 
     if (error) {
-        alert('class 데이터 베이스 오류입니다.\n1대1 문의를 남겨주시면 빠른 시일내에 조치해드리겠습니다.');
+        dispatch(openAlertSnackbar('데이터베이스 오류가 발생했습니다.\n문제 지속시 기술지원 문의 부탁드리겠습니다.', 'error', 5000));
         console.error(error);
 
         return <Error />;
