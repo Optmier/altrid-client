@@ -23,7 +23,7 @@ import StudentState from './StudentState';
 import styled from 'styled-components';
 import CardEyetrackIcon from '../../AltridUI/Icons/CardEyetrackIcon';
 import CardTypeCheckIcon from '../../AltridUI/Icons/CardTypeCheckIcon';
-import { openAlertSnackbar } from '../../redux_modules/alertMaker';
+import { closeAlertDialog, openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const pad = (n, width) => {
     n = n + '';
@@ -297,8 +297,6 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
     };
     /** 학생인 경우 과제 수행 */
     const onAssignmentCardItemClick = (idx, classNumber, assignmentTitle) => {
-        const conf = window.confirm('과제를 시작하시겠습니까?');
-        if (!conf) return;
         if (window.mobile || (window.screen.width < 1440 && window.screen.height < 900)) {
             if (window.mobile) {
                 dispatch(openAlertSnackbar('시선흐름 분석 서비스는 데스크탑 브라우저에서만 지원하고 있습니다.', 'warning'));
@@ -311,16 +309,28 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
                     ),
                 );
             }
-        } else {
-            console.log('asdfasf');
-            let screenWidth = window.screen.availWidth;
-            let screenHeight = window.screen.availHeight;
-            // // 스크린 크기는 일단 고정해 놓음!
-            screenWidth = 1280;
-            screenHeight = 751;
-            // let centerX = window.screen.width / 2 - screenWidth / 2;
-            // let centerY = window.screen.height / 2 - (screenHeight * 2) / 3;
-            /* const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+            return;
+        }
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                '과제를 시작하시겠습니까?',
+                'no|yes',
+                '아니오|예',
+                'purple|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    dispatch(closeAlertDialog());
+                    let screenWidth = window.screen.availWidth;
+                    let screenHeight = window.screen.availHeight;
+                    // // 스크린 크기는 일단 고정해 놓음!
+                    screenWidth = 1280;
+                    screenHeight = 751;
+                    // let centerX = window.screen.width / 2 - screenWidth / 2;
+                    // let centerY = window.screen.height / 2 - (screenHeight * 2) / 3;
+                    /* const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
         const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
         const width = window.innerWidth
             ? window.innerWidth
@@ -335,16 +345,18 @@ function CardShare({ testNum, cardData, tries, totalStudents, history, match }) 
         const systemZoom = width / window.screen.availWidth;
         const centerX = (width - screenWidth) / 2 / systemZoom + dualScreenLeft;
         const centerY = (height - screenHeight) / 2 / systemZoom + dualScreenTop; */
-            let centerX = (window.screen.width - screenWidth) / 2;
-            let centerY = (window.screen.height - screenHeight) / 4;
-            const open = window.open(
-                `/assignments/do-it-now/${classNumber}/${idx}`,
-                'Assignments',
-                `height=${screenHeight}, width=${screenWidth}, left=${centerX}, top=${centerY}, toolbar=no, scrollbars=no, resizable=no, status=no`,
-                true,
-            );
-            // open.addEventListener('load', windowOpened);
-        }
+                    let centerX = (window.screen.width - screenWidth) / 2;
+                    let centerY = (window.screen.height - screenHeight) / 4;
+                    const open = window.open(
+                        `/assignments/do-it-now/${classNumber}/${idx}`,
+                        'Assignments',
+                        `height=${screenHeight}, width=${screenWidth}, left=${centerX}, top=${centerY}, toolbar=no, scrollbars=no, resizable=no, status=no`,
+                        true,
+                    );
+                    // open.addEventListener('load', windowOpened);
+                },
+            ),
+        );
     };
     /** modify state */
     const handleDateChange = () => {

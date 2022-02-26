@@ -24,7 +24,7 @@ import 'react-quill/dist/quill.snow.css';
 import 'cropperjs/dist/cropper.css';
 import tip0Img from './tip0.png';
 import { useDispatch } from 'react-redux';
-import { openAlertSnackbar } from '../../../redux_modules/alertMaker';
+import { closeAlertDialog, openAlertDialog, openAlertSnackbar } from '../../../redux_modules/alertMaker';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -519,9 +519,22 @@ function GoogleCloudVisionOCR({ testMode, apiKey, maxImgSize, onApply, applyButt
      * 이미지 작업 창 닫기
      */
     const closeTaskDialog = () => {
-        const confirm = window.confirm('정말로 작업을 끝내시겠습니까?\n내용은 적용되지 않습니다.');
-        if (!confirm) return;
-        closeTasks();
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                '정말로 작업을 끝내시겠습니까?\n내용은 적용되지 않습니다.',
+                'no|yes',
+                '아니오|예',
+                'red|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    dispatch(closeAlertDialog());
+                    closeTasks();
+                },
+            ),
+        );
     };
 
     const closeTasks = () => {

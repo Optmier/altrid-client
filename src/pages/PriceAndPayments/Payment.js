@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import '../../styles/payment_page.scss';
 import queryString from 'query-string';
 import MenuData from '../../datas/MenuData.json';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Axios from 'axios';
 import { apiUrl, tossPaymentsClientKey } from '../../configs/configs';
 import { loadTossPayments } from '@tosspayments/sdk';
@@ -13,6 +13,7 @@ import { loadTossPayments } from '@tosspayments/sdk';
  * Licensed under the Apache License 2.0.
  */
 import ShortUniqueId from 'short-unique-id';
+import { closeAlertDialog, openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 function Confirm({ location, history }) {
     const sessions = useSelector((state) => state.RdxSessions);
@@ -47,6 +48,8 @@ function Confirm({ location, history }) {
 
     // 현재 구독중인 플랜 데이터 불러오기
     const [currentPlans, setCurrentPlans] = useState(null);
+
+    const dispatch = useDispatch();
 
     const handleCalculator = (num, discount) => {
         setPayPrice(productPice * num - discount);
@@ -136,127 +139,157 @@ function Confirm({ location, history }) {
                 window.location.replace(window.location.origin + '/pay-state/success');
             })
             .catch((giveCouponErr) => {
-                alert('쿠폰을 등록 오류가 발생하였습니다.\n관리자의 조치를 받으시기 바랍니다.');
+                dispatch(openAlertSnackbar('쿠폰 등록 오류가 발생했습니다.\n증상 지속 시 문의 바랍니다.', 'error'));
                 console.error(giveCouponErr);
             });
     };
 
     const planChangeActionClick = () => {
-        if (!sessions.authId) return alert('사용자 인증에 실패하였습니다.');
+        if (!sessions.authId) {
+            dispatch(openAlertSnackbar('사용자 인증에 실패했습니다.', 'error'));
+            return;
+        }
         if (currentPlans && currentPlans.next_plan_id === productPlanId) {
-            const conf = window.confirm('플랜 변경을 취소하시겠습니까?');
-            if (!conf) return;
-            // 플랜 변경 신청을 취소하면 현재 플랜으로 업데이트 해서 원래 플랜으로 돌아감
-            const idx = currentPlans.idx;
-            Axios.patch(
-                `${apiUrl}/payments/order-history/mod-next-plan`,
-                {
-                    orderIdx: idx,
-                    nextPlanId: currentPlans.plan_id,
-                },
-                { withCredentials: true },
-            )
-                .then((updatePlanResult) => {
-                    console.log(updatePlanResult);
-                    window.history.back();
-                })
-                .catch((updatePlanErr) => {
-                    alert('플랜 변경에 오류가 발생하였습니다.\n관리자의 조치를 받으시기 바랍니다.');
-                    console.error(updatePlanErr);
-                });
-        } else {
-            const conf = window.confirm('선택하신 플랜을 신청하시겠습니까?');
-            if (!conf) return;
-            const currentDate = new Date();
-            if (isPaymentsExists || productPlan === 'Free') {
-                // 결제정보가 존재하면 쿠폰데이터 및 플랜 주문 정보 넣고 성공 페이지로 넘김
-                console.log('결제정보 존재');
-                console.log(couponSelectId);
-
-                // 현재 유효한 플랜이 있는지 검사
-                if (currentPlans) {
-                    // 유효한 플랜이 있으면 현재 유효한 플랜에서 다음 플랜을 변동시킴
-                    const idx = currentPlans.idx;
-                    Axios.patch(
-                        `${apiUrl}/payments/order-history/mod-next-plan`,
-                        {
-                            orderIdx: idx,
-                            nextPlanId: productPlanId,
-                        },
-                        { withCredentials: true },
-                    )
-                        .then((updatePlanResult) => {
-                            console.log(updatePlanResult);
-                            giveCouponsFn(true);
-                        })
-                        .catch((updatePlanErr) => {
-                            alert('플랜 변경에 오류가 발생하였습니다.\n관리자의 조치를 받으시기 바랍니다.');
-                            console.error(updatePlanErr);
-                        });
-                } else {
-                    // 유효한 플랜이 없으면 새로 주문으로 플랜을 추가함
-                    // 다만 무료 플랜을 선택한 경우에는 원래 유효한 플랜이 있는 상태에서 변경 가능하므로, 없는 경우는 에러처리함.
-                    if (productPlan === 'Free') {
-                        // alert('오류 발생으로 관리자에게 문의 바랍니다!');
-                        Axios.patch(`${apiUrl}/payments/plan-free`, {}, { withCredentials: true })
-                            .then((res) => {
-                                console.log(res);
-                                window.location.href = window.location.origin + '/pay-state/success';
+            dispatch(
+                openAlertDialog(
+                    'warning',
+                    '경고',
+                    '플랜 변경을 취소하시겠습니까?',
+                    'no|yes',
+                    '아니오|예',
+                    'red|light',
+                    'white|light',
+                    'defaultClose',
+                    () => {
+                        dispatch(closeAlertDialog());
+                        // 플랜 변경 신청을 취소하면 현재 플랜으로 업데이트 해서 원래 플랜으로 돌아감
+                        const idx = currentPlans.idx;
+                        Axios.patch(
+                            `${apiUrl}/payments/order-history/mod-next-plan`,
+                            {
+                                orderIdx: idx,
+                                nextPlanId: currentPlans.plan_id,
+                            },
+                            { withCredentials: true },
+                        )
+                            .then((updatePlanResult) => {
+                                console.log(updatePlanResult);
+                                window.history.back();
                             })
-                            .catch((err) => {
-                                console.error(err);
+                            .catch((updatePlanErr) => {
+                                dispatch(openAlertSnackbar('플랜 변경에 오류가 발생했습니다.\n증상 지속시 문의 바랍니다.', 'error'));
+                                console.error(updatePlanErr);
                             });
-                        return;
-                    }
-                    const newOrderNo = currentDate.getTime() + '_' + generateUid.current(11);
-                    Axios.post(
-                        `${apiUrl}/payments/order-history`,
-                        {
-                            orderNo: newOrderNo,
-                            planId: productPlanId,
-                            orderPrice: 0,
-                            paymentPrice: 0,
-                            startDate: currentDate,
-                        },
-                        { withCredentials: true },
-                    )
-                        .then((orderResults) => {
-                            console.log(orderResults);
-                            // 쿠폰 발급 메소드 실행
-                            giveCouponsFn(false);
-                        })
-                        .catch((orderErr) => {
-                            alert('플랜 구독 설정에 오류가 발생하였습니다.\n관리자의 조치를 받으시기 바랍니다.');
-                            console.error(orderErr);
-                        });
-                }
-                // Axios.post(`${apiUrl}/payments/order-history`, {}, { withCredentials: true })
-                //     .then((orderResults) => {
-                //         console.log(orderResults);
+                    },
+                ),
+            );
+        } else {
+            dispatch(
+                openAlertDialog(
+                    'warning',
+                    '경고',
+                    '선택하신 플랜을 신청하시겠습니까?',
+                    'no|yes',
+                    '아니오|예',
+                    'purple|light',
+                    'white|light',
+                    'defaultClose',
+                    () => {
+                        dispatch(closeAlertDialog());
+                        const currentDate = new Date();
+                        if (isPaymentsExists || productPlan === 'Free') {
+                            // 결제정보가 존재하면 쿠폰데이터 및 플랜 주문 정보 넣고 성공 페이지로 넘김
+                            console.log('결제정보 존재');
+                            // 현재 유효한 플랜이 있는지 검사
+                            if (currentPlans) {
+                                // 유효한 플랜이 있으면 현재 유효한 플랜에서 다음 플랜을 변동시킴
+                                const idx = currentPlans.idx;
+                                Axios.patch(
+                                    `${apiUrl}/payments/order-history/mod-next-plan`,
+                                    {
+                                        orderIdx: idx,
+                                        nextPlanId: productPlanId,
+                                    },
+                                    { withCredentials: true },
+                                )
+                                    .then((updatePlanResult) => {
+                                        giveCouponsFn(true);
+                                    })
+                                    .catch((updatePlanErr) => {
+                                        dispatch(
+                                            openAlertSnackbar('플랜 변경에 오류가 발생했습니다.\n증상 지속시 문의 바랍니다.', 'error'),
+                                        );
+                                        console.error(updatePlanErr);
+                                    });
+                            } else {
+                                // 유효한 플랜이 없으면 새로 주문으로 플랜을 추가함
+                                // 다만 무료 플랜을 선택한 경우에는 원래 유효한 플랜이 있는 상태에서 변경 가능하므로, 없는 경우는 에러처리함.
+                                if (productPlan === 'Free') {
+                                    // alert('오류 발생으로 관리자에게 문의 바랍니다!');
+                                    Axios.patch(`${apiUrl}/payments/plan-free`, {}, { withCredentials: true })
+                                        .then((res) => {
+                                            window.location.href = window.location.origin + '/pay-state/success';
+                                        })
+                                        .catch((err) => {
+                                            console.error(err);
+                                        });
+                                    return;
+                                }
+                                const newOrderNo = currentDate.getTime() + '_' + generateUid.current(11);
+                                Axios.post(
+                                    `${apiUrl}/payments/order-history`,
+                                    {
+                                        orderNo: newOrderNo,
+                                        planId: productPlanId,
+                                        orderPrice: 0,
+                                        paymentPrice: 0,
+                                        startDate: currentDate,
+                                    },
+                                    { withCredentials: true },
+                                )
+                                    .then((orderResults) => {
+                                        console.log(orderResults);
+                                        // 쿠폰 발급 메소드 실행
+                                        giveCouponsFn(false);
+                                    })
+                                    .catch((orderErr) => {
+                                        dispatch(
+                                            openAlertSnackbar('플랜 구독 설정에 오류가 발생했습니다\n증상 지속 시 문의 바랍니다.', 'error'),
+                                        );
+                                        console.error(orderErr);
+                                    });
+                            }
+                            // Axios.post(`${apiUrl}/payments/order-history`, {}, { withCredentials: true })
+                            //     .then((orderResults) => {
+                            //         console.log(orderResults);
 
-                //         Axios.post(`${apiUrl}/payments/coupon-history`, {}, { withCredentials: true })
-                //             .then((giveCouponResults) => {
-                //                 console.log(giveCouponResults);
-                //             })
-                //             .catch((giveCouponErr) => {
-                //                 console.error(giveCouponErr);
-                //             });
-                //     })
-                //     .catch((orderErr) => {
-                //         console.error(orderErr);
-                //     });
-            } else {
-                /* 결제정보가 존재하지 않으면 paygetbillingkey로 보내서 우선 빌링키를 발급받아 결제정보에 넣고
-                쿠폰데이터 및 플랜 주문 정보를 넣는다.
-             */
-                console.log('결제정보 없음');
-                let successUrl = window.location.origin + `/pay-state/billingkey-updateplan?plan=${productPlan}&coupon=${couponSelectId}`;
-                tossPayments.current.requestBillingAuth('카드', {
-                    customerKey: sessions.authId,
-                    successUrl: successUrl,
-                    failUrl: window.location.origin + '/pay-state/fail',
-                });
-            }
+                            //         Axios.post(`${apiUrl}/payments/coupon-history`, {}, { withCredentials: true })
+                            //             .then((giveCouponResults) => {
+                            //                 console.log(giveCouponResults);
+                            //             })
+                            //             .catch((giveCouponErr) => {
+                            //                 console.error(giveCouponErr);
+                            //             });
+                            //     })
+                            //     .catch((orderErr) => {
+                            //         console.error(orderErr);
+                            //     });
+                        } else {
+                            /* 결제정보가 존재하지 않으면 paygetbillingkey로 보내서 우선 빌링키를 발급받아 결제정보에 넣고
+                            쿠폰데이터 및 플랜 주문 정보를 넣는다.
+                         */
+                            console.log('결제정보 없음');
+                            let successUrl =
+                                window.location.origin + `/pay-state/billingkey-updateplan?plan=${productPlan}&coupon=${couponSelectId}`;
+                            tossPayments.current.requestBillingAuth('카드', {
+                                customerKey: sessions.authId,
+                                successUrl: successUrl,
+                                failUrl: window.location.origin + '/pay-state/fail',
+                            });
+                        }
+                    },
+                ),
+            );
         }
     };
 

@@ -366,20 +366,35 @@ function Manage({ match, history }) {
             .filter((i) => toDeleteStudentData[i] === true)
             .map((i) => arr.push(`'${i}'`));
 
-        Axios.delete(`${apiUrl}/students-in-class/students/${num}`, {
-            data: {
-                students: arr.join(','),
-            },
-            withCredentials: true,
-        })
-            .then((res) => {
-                dispatch(openAlertSnackbar('학생 삭제가 완료되었습니다.', 'success'));
-                history.go(0);
-            })
-            .catch((err) => {
-                console.error(err);
-                dispatch(openAlertSnackbar('학생 삭제에 실패했습니다.', 'error'));
-            });
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                `선택하신 학생${arr.length > 1 ? '들' : ''}을 삭제하시겠습니까?`,
+                'no|yes',
+                '아니오|예',
+                'red|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    dispatch(closeAlertDialog());
+                    Axios.delete(`${apiUrl}/students-in-class/students/${num}`, {
+                        data: {
+                            students: arr.join(','),
+                        },
+                        withCredentials: true,
+                    })
+                        .then((res) => {
+                            dispatch(openAlertSnackbar('학생 삭제가 완료되었습니다.', 'success'));
+                            history.go(0);
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                            dispatch(openAlertSnackbar('학생 삭제에 실패했습니다.', 'error'));
+                        });
+                },
+            ),
+        );
     };
 
     const [rootHasBottomActions, setRootHasBottomActions] = useState(false);

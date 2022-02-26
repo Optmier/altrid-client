@@ -257,9 +257,8 @@ function Dashboard({ match, history }) {
     const [total, settotal] = useState('');
     const [assignment, setassignment] = useState([]);
     // 현재 날짜
-    const [today, setdate] = useState(new Date());
     const [room, setroom] = useState([]);
-    const [todo, settodo] = useState([]);
+    const [todos, setTodos] = useState([]);
     const [studentsData, setStudentsData] = useState([]);
     const [chart, setchart] = useState({
         series: [0],
@@ -280,7 +279,7 @@ function Dashboard({ match, history }) {
                         strokeWidth: '97%',
                         margin: 5,
                         dropShadow: {
-                            enabled: true,
+                            enabled: false,
                             top: 2,
                             left: 0,
                             color: '#999',
@@ -293,6 +292,7 @@ function Dashboard({ match, history }) {
                             show: false,
                         },
                         value: {
+                            color: getColorSets(500, 'yellow'),
                             offsetY: -2,
                             fontSize: '22px',
                         },
@@ -306,15 +306,7 @@ function Dashboard({ match, history }) {
                 },
             },
             fill: {
-                type: 'gradient',
-                gradient: {
-                    shade: 'light',
-                    shadeIntensity: 0.4,
-                    inverseColors: false,
-                    opacityFrom: 1,
-                    opacityTo: 1,
-                    stops: [0, 50, 53, 91],
-                },
+                colors: [getColorSets(400, 'yellow')],
             },
             labels: ['WordProgress'],
         },
@@ -423,15 +415,11 @@ function Dashboard({ match, history }) {
             .catch((err) => console.log(err));
 
         // 진행중인 과제 목록 불러오기
-        Axios.get(`${apiUrl}/assignment-actived/${num}`, { withCredentials: true })
+        Axios.get(`${apiUrl}/assignment-actived/${num}/last-three`, { withCredentials: true })
             .then((result) => {
                 // console.log(result.data);
                 if (!result.data || !result.data.length) return;
-                setassignment(
-                    result.data
-                        .filter(({ due_date }) => Math.ceil((new Date(due_date).getTime() - today.getTime()) / (1000 * 3600 * 24)) > 0)
-                        .slice(0, 3),
-                );
+                setassignment(result.data);
             })
             .catch((err) => console.log(err));
 
@@ -460,17 +448,17 @@ function Dashboard({ match, history }) {
             })
             .catch((err) => console.log(err));
 
-        Axios.get(`${apiUrl}/calendar-events/my/${num}/current`, { withCredentials: true })
+        // 오늘 할 일 가져오기
+        Axios.get(`${apiUrl}/calendar-events/my/${num}/current/last-three`, { withCredentials: true })
             .then((result) => {
-                // console.log(result.data);
-                settodo(result.data);
+                setTodos(result.data);
             })
             .catch((err) => console.log(err));
 
         // 최근 과제 데이터 가져오기
         Axios.get(`${apiUrl}/assignment-result/last-my-actived/${classNum}`, { withCredentials: true })
             .then((result) => {
-                // console.log(result.data);
+                if (!result.data) return;
                 Axios.get(`${apiUrl}/assignment-result/${result.data.actived_number}`, {
                     params: {
                         classNumber: classNum,
@@ -484,32 +472,32 @@ function Dashboard({ match, history }) {
                     .catch((err) => {
                         console.error(err);
                     });
+            })
+            .catch((err) => console.log(err));
 
-                // 옵타이머 데이터
-                Axios.get(`${apiUrl}/optimer/${num}/${result.data.student_id}`, { withCredentials: true })
-                    .then((result) => {
-                        if (!result.data.time_mon) {
-                            return;
-                        }
-                        setoptimer({
-                            ...optimer,
-                            series: [
-                                {
-                                    name: 'optimer',
-                                    data: [
-                                        Math.floor(result.data.time_mon / 60000),
-                                        Math.floor(result.data.time_tue / 60000),
-                                        Math.floor(result.data.time_wed / 60000),
-                                        Math.floor(result.data.time_thu / 60000),
-                                        Math.floor(result.data.time_fri / 60000),
-                                        Math.floor(result.data.time_sat / 60000),
-                                        Math.floor(result.data.time_sun / 60000),
-                                    ],
-                                },
+        // 옵타이머 데이터
+        Axios.get(`${apiUrl}/optimer/${num}/${sessions.authId}`, { withCredentials: true })
+            .then((result) => {
+                if (!result.data.time_mon) {
+                    return;
+                }
+                setoptimer({
+                    ...optimer,
+                    series: [
+                        {
+                            name: 'optimer',
+                            data: [
+                                Math.floor(result.data.time_mon / 60000),
+                                Math.floor(result.data.time_tue / 60000),
+                                Math.floor(result.data.time_wed / 60000),
+                                Math.floor(result.data.time_thu / 60000),
+                                Math.floor(result.data.time_fri / 60000),
+                                Math.floor(result.data.time_sat / 60000),
+                                Math.floor(result.data.time_sun / 60000),
                             ],
-                        });
-                    })
-                    .catch((err) => console.log(err));
+                        },
+                    ],
+                });
             })
             .catch((err) => console.log(err));
     }, []);
@@ -654,8 +642,8 @@ function Dashboard({ match, history }) {
                     <DashCardContents color="gray" disabled={!newAssignment.length}>
                         {/* {console.log(newAssignment)} */}
                         {newAssignment.length > 0 ? (
-                            newAssignment.map((d) => (
-                                <AssignmentListItem key={d.idx}>
+                            newAssignment.map((d, idx) => (
+                                <AssignmentListItem key={idx}>
                                     <AssignmentListItemDDayTag
                                         dday={Math.ceil(moment.duration(moment(d.due_date).diff(moment())).asDays()) === 0}
                                     >
@@ -869,13 +857,13 @@ function Dashboard({ match, history }) {
                                         오늘의 할 일
                                     </Typography>
                                 </DashCardTitle>
-                                <DashCardContents color="green" disabled={!todo.length}>
-                                    {!todo.length ? (
+                                <DashCardContents color="green" disabled={!todos.length}>
+                                    {!todos.length ? (
                                         <Typography type="label" size="xl" bold>
                                             일정이 없습니다.
                                         </Typography>
                                     ) : (
-                                        todo.slice(0, 3).map((d, i) => (
+                                        todos.map((d, i) => (
                                             <TodoListItem key={i}>
                                                 <Typography type="label" size="xl" bold title={`${i + 1}. ${d.title}`}>
                                                     {i + 1}. {d.title}
@@ -887,7 +875,7 @@ function Dashboard({ match, history }) {
                                 <DashCardBottom>
                                     <Link to={`/class/${num}/calendar`}>
                                         <Button fullWidth variant="filled" colors="green">
-                                            나의 일정 보러가기
+                                            나의 일정 더보기
                                         </Button>
                                     </Link>
                                 </DashCardBottom>

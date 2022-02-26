@@ -16,6 +16,7 @@ import Error from '../Errors/Error';
 import ClassDialogDelete from '../../components/essentials/ClassDialogDelete';
 import CardPopOver from '../../components/essentials/CardPopOverShare';
 import ClassDrawer from '../../components/essentials/ClassDrawer';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const DraftPageRoot = styled.div`
     display: flex;
@@ -193,7 +194,8 @@ function MainDraft({ match, history, cardData, children }) {
     const handlePreviewOpen = () => {
         handleOptionClose();
         if (cardData['contents_data'].flatMap((m) => m.problemDatas).length === 0) {
-            return alert('과제 수정을 통해 에디터에서 문항을 추가해주세요 !');
+            dispatch(openAlertSnackbar('과제 수정을 통해 에디터에서 문항을 추가해주세요.', 'warning'));
+            return;
         }
         setOpenPreview(true);
     };
@@ -296,7 +298,7 @@ function MainDraft({ match, history, cardData, children }) {
                 // // 삭제버튼 클릭시, 삭제만 진행
                 // else {
                 console.log(res1);
-                alert('삭제 완료되었습니다!');
+                dispatch(openAlertSnackbar('삭제 완료되었습니다.'));
                 history.replace('/');
                 //}
             })

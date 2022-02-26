@@ -11,6 +11,8 @@ import { apiUrl } from '../../configs/configs';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@material-ui/core';
 import HtmlParser from 'react-html-parser';
 import AddCamstudyIcon from '../../AltridUI/Icons/AddCamstudyIcon';
+import { useDispatch } from 'react-redux';
+import { closeAlertDialog, openAlertDialog } from '../../redux_modules/alertMaker';
 
 const CamstudyMainRoot = styled.div`
     display: flex;
@@ -61,6 +63,8 @@ function CamStudyMainLists({ history, match }) {
         rules: null,
     });
 
+    const dispatch = useDispatch();
+
     const actionClickHeaderMenuItem = (menuId) => {
         setMenuStatus(menuId);
     };
@@ -84,20 +88,33 @@ function CamStudyMainLists({ history, match }) {
     };
 
     const actionDeleteStudy = (roomId) => {
-        const conf = window.confirm('세션을 종료하시겠습니까?');
-        if (conf)
-            Axios.delete(`${apiUrl}/cam-study/${roomId}`, { withCredentials: true })
-                .then((res) => {
-                    if (menuStatus === 0) {
-                        fetchListMine(true);
-                        fetchListInvited(true);
-                    } else {
-                        setMenuStatus(() => 0);
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                '세션을 종료하시겠습니까?',
+                'no|yes',
+                '아니오|예',
+                'red|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    dispatch(closeAlertDialog());
+                    Axios.delete(`${apiUrl}/cam-study/${roomId}`, { withCredentials: true })
+                        .then((res) => {
+                            if (menuStatus === 0) {
+                                fetchListMine(true);
+                                fetchListInvited(true);
+                            } else {
+                                setMenuStatus(() => 0);
+                            }
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
+                },
+            ),
+        );
     };
 
     const fetchListMine = (actived) => {

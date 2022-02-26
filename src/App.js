@@ -294,7 +294,13 @@ function App({ history, match }) {
         closeAlert();
     };
 
-    window.alertTest = (message, type, duration) => dispatch(openAlertSnackbar(message, type, duration));
+    window.openGlAlertSnackbar = function (message, alertType, duration) {
+        dispatch(openAlertSnackbar(message, alertType, duration));
+    };
+
+    window.chromeAlert = (message) => {
+        alert(message);
+    };
 
     return (
         <>

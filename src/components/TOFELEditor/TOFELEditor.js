@@ -49,7 +49,8 @@ import { Helmet } from 'react-helmet';
 import GoogleCloudVisionOCR from './assets/GoogleCloudVisionOCR';
 import tip0Img from './assets/tip0.png';
 import { useDispatch } from 'react-redux';
-import { openAlertSnackbar } from '../../redux_modules/alertMaker';
+import { closeAlertDialog, openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
+import { stringifiedJsonUnparser } from '../../controllers/stringifiedJsonUnparser';
 
 $.fn.changeSize = function (handleFunction) {
     let element = this;
@@ -306,11 +307,6 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
     const [openCreateNewDrawer, setOpenCreateNewDrawer] = useState(false);
     const [openPreview, setOpenPreview] = useState(false);
 
-    const [alertBarOpen, setAlertBarOpen] = useState(false);
-    const [alertBarOption, setAlertBarOption] = useState({
-        message: '',
-        severity: 'success',
-    });
     const [setNum, setSetNum] = useState(0);
     const [deleteIdxs, setDeleteIdxs] = useState([]);
 
@@ -321,17 +317,6 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
     const dispatch = useDispatch();
 
     let forceUpdate = useForceUpdate();
-
-    const handleAlertBarOpen = () => {
-        setAlertBarOpen(true);
-    };
-
-    const handleAlertBarClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setAlertBarOpen(false);
-    };
 
     const onTextFieldChange = ({ target }) => {
         const { name, value } = target;
@@ -408,13 +393,41 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
     };
 
     const onProblemDelete = (delIdx) => (event) => {
-        const confirmDialog = window.confirm('정말로 삭제하시겠어요?');
-        if (confirmDialog) setContentsProblemDatas(contentsProblemDatas.filter((origData, idx) => idx !== delIdx));
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                '정말로 삭제하시겠어요?',
+                'no|yes',
+                '아니오|예',
+                'red|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    dispatch(closeAlertDialog());
+                    setContentsProblemDatas(contentsProblemDatas.filter((origData, idx) => idx !== delIdx));
+                },
+            ),
+        );
     };
 
     const onMultipleProlemsDelete = () => {
-        const confirmDialog = window.confirm('선택한 항목들을 삭제하시겠어요?');
-        if (confirmDialog) setContentsProblemDatas(contentsProblemDatas.filter((origData, idx) => !deleteIdxs.includes(idx)));
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                '선택한 항목들을 삭제하시겠어요?',
+                'no|yes',
+                '아니오|예',
+                'red|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    dispatch(closeAlertDialog());
+                    setContentsProblemDatas(contentsProblemDatas.filter((origData, idx) => !deleteIdxs.includes(idx)));
+                },
+            ),
+        );
     };
 
     const onProblemCardCheckChanged = (number, checked) => {
@@ -426,6 +439,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
     };
 
     const handleSaveContents = () => {
+        console.log(id);
         if (id)
             Axios.patch(
                 `${apiUrl}/assignment-admin/${id}`,
@@ -435,31 +449,42 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
                 { withCredentials: true },
             )
                 .then((res) => {
-                    setAlertBarOption({ message: '저장되었습니다.', severity: 'success' });
-                    handleAlertBarOpen();
+                    dispatch(openAlertSnackbar('저장되었습니다.'));
                 })
                 .catch((err) => {
-                    setAlertBarOption({ message: '저장에 실패했습니다.', severity: 'error' });
-                    handleAlertBarOpen();
+                    dispatch(openAlertSnackbar('저장에 실패했습니다.\n증상 지속 시 문의 바랍니다.', 'error'));
                     console.error(err);
                 });
     };
 
     const handleDeleteContents = () => {
-        const conf = window.confirm('정말로 삭제하시겠습니까?\n삭제 후에는 복구가 불가합니다.');
-        if (!conf) return;
-        if (id)
-            Axios.delete(`${apiUrl}/assignment-admin/${id}`, { withCredentials: true })
-                .then((res) => {
-                    setAlertBarOption({ message: '삭제되었습니다.', severity: 'success' });
-                    handleAlertBarOpen();
-                    history.replace('/admins/contents-requests');
-                })
-                .catch((err) => {
-                    setAlertBarOption({ message: '삭제에 실패했습니다.', severity: 'error' });
-                    handleAlertBarOpen();
-                    console.error(err);
-                });
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                '정말로 삭제하시겠습니까?\n삭제 후에는 복구가 불가능합니다.',
+                'no|yes',
+                '아니오|예',
+                'red|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    dispatch(closeAlertDialog());
+                    if (id)
+                        Axios.delete(`${apiUrl}/assignment-admin/${id}`, { withCredentials: true })
+                            .then((res) => {
+                                dispatch(openAlertSnackbar('삭제되었습니다.'));
+                                setTimeout(() => {
+                                    history.replace('/admins/contents-requests');
+                                }, 2000);
+                            })
+                            .catch((err) => {
+                                dispatch(openAlertSnackbar('삭제에 실패했습니다.\n증상 지속시 문의 바랍니다.', 'error'));
+                                console.error(err);
+                            });
+                },
+            ),
+        );
     };
 
     const handlePrevSet = () => {
@@ -490,58 +515,55 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
     };
 
     const removeCurrentSet = () => {
-        const conf = window.confirm('정말로 내용을 삭제하시겠습니까?');
-        if (!conf) return;
-        if (metadata.length < 2) {
-            setContentsSetData({
-                title: '',
-                passageForRender: '',
-                passageForEditor: `{"ops":[{"insert":"\n"}]}`,
-                uuid: generateUid.current(7),
-                problemDatas: [],
-            });
-            setContentsTitle('');
-            setContentsPassage({ render: '', editor: `{"ops":[{"insert":"\n"}]}` });
-            setContentsProblemDatas([]);
-            let s = `{"ops":[{"insert":"\n"}]}`
-                .replace(/\\n/g, '\\n')
-                .replace(/\\'/g, "\\'")
-                .replace(/\\"/g, '\\"')
-                .replace(/\\&/g, '\\&')
-                .replace(/\\r/g, '\\r')
-                .replace(/\\t/g, '\\t')
-                .replace(/\\b/g, '\\b')
-                .replace(/\\f/g, '\\f');
-            s = s.replace(/[\u0000-\u0019]+/g, '');
-            quillRef.current.editor.setContents(JSON.parse(s));
-        }
-        setMetadata((arr) => {
-            if (arr.length < 2) return arr;
-            const f = arr.filter((d, i) => i !== setNum);
-            if (setNum < 1) {
-                setContentsSetData(f[0]);
-                setContentsTitle(f[0].title);
-                setContentsPassage({ render: f[0].passageForRender, editor: f[0].passageForEditor });
-                setContentsProblemDatas(f[0].problemDatas);
-                if (f[0].passageForEditor) {
-                    let s = f[0].passageForEditor
-                        .replace(/\\n/g, '\\n')
-                        .replace(/\\'/g, "\\'")
-                        .replace(/\\"/g, '\\"')
-                        .replace(/\\&/g, '\\&')
-                        .replace(/\\r/g, '\\r')
-                        .replace(/\\t/g, '\\t')
-                        .replace(/\\b/g, '\\b')
-                        .replace(/\\f/g, '\\f');
-                    s = s.replace(/[\u0000-\u0019]+/g, '');
-                    quillRef.current.editor.setContents(JSON.parse(s));
-                }
-            } else {
-                setSetNum(setNum - 1);
-            }
-            return f;
-        });
-        forceUpdate();
+        dispatch(
+            openAlertDialog(
+                'warning',
+                '경고',
+                '정말로 내용을 삭제하시겠습니까?',
+                'no|yes',
+                '아니오|예',
+                'red|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    dispatch(closeAlertDialog());
+                    if (metadata.length < 2) {
+                        setContentsSetData({
+                            title: '',
+                            passageForRender: '',
+                            passageForEditor: `{"ops":[{"insert":"\n"}]}`,
+                            uuid: generateUid.current(7),
+                            problemDatas: [],
+                        });
+                        setContentsTitle('');
+                        setContentsPassage({ render: '', editor: `{"ops":[{"insert":"\n"}]}` });
+                        setContentsProblemDatas([]);
+                        quillRef.current.editor.setContents(
+                            stringifiedJsonUnparser(`{"ops":[{"insert":"\n"}]}`, `{"ops":[{"insert":"\n"}]}`),
+                        );
+                    }
+                    setMetadata((arr) => {
+                        if (arr.length < 2) return arr;
+                        const f = arr.filter((d, i) => i !== setNum);
+                        if (setNum < 1) {
+                            setContentsSetData(f[0]);
+                            setContentsTitle(f[0].title);
+                            setContentsPassage({ render: f[0].passageForRender, editor: f[0].passageForEditor });
+                            setContentsProblemDatas(f[0].problemDatas);
+                            if (f[0].passageForEditor) {
+                                quillRef.current.editor.setContents(
+                                    stringifiedJsonUnparser(`{"ops":[{"insert":"\n"}]}`, `{"ops":[{"insert":"\n"}]}`),
+                                );
+                            }
+                        } else {
+                            setSetNum(setNum - 1);
+                        }
+                        return f;
+                    });
+                    forceUpdate();
+                },
+            ),
+        );
     };
 
     useEffect(() => {
@@ -583,17 +605,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
         setContentsPassage({ render: datas[0].passageForRender, editor: datas[0].passageForEditor });
         setContentsProblemDatas(datas[0].problemDatas);
         if (datas[0].passageForEditor) {
-            let s = datas[0].passageForEditor
-                .replace(/\\n/g, '\\n')
-                .replace(/\\'/g, "\\'")
-                .replace(/\\"/g, '\\"')
-                .replace(/\\&/g, '\\&')
-                .replace(/\\r/g, '\\r')
-                .replace(/\\t/g, '\\t')
-                .replace(/\\b/g, '\\b')
-                .replace(/\\f/g, '\\f');
-            s = s.replace(/[\u0000-\u0019]+/g, '');
-            quillRef.current.editor.setContents(JSON.parse(s));
+            quillRef.current.editor.setContents(stringifiedJsonUnparser(datas[0].passageForEditor, ''));
         }
     }, [datas]);
 
@@ -607,17 +619,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
         setContentsPassage({ render: metadata[setNum].passageForRender, editor: metadata[setNum].passageForEditor });
         setContentsProblemDatas(metadata[setNum].problemDatas);
         if (metadata[setNum].passageForEditor) {
-            let s = metadata[setNum].passageForEditor
-                .replace(/\\n/g, '\\n')
-                .replace(/\\'/g, "\\'")
-                .replace(/\\"/g, '\\"')
-                .replace(/\\&/g, '\\&')
-                .replace(/\\r/g, '\\r')
-                .replace(/\\t/g, '\\t')
-                .replace(/\\b/g, '\\b')
-                .replace(/\\f/g, '\\f');
-            s = s.replace(/[\u0000-\u0019]+/g, '');
-            quillRef.current.editor.setContents(JSON.parse(s));
+            quillRef.current.editor.setContents(stringifiedJsonUnparser(metadata[setNum].passageForEditor, ''));
         }
     }, [setNum]);
 
@@ -868,11 +870,6 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
             {TipDialog}
             {AddProblemFromTextDialog}
             <Root className="tofel-editor-root">
-                <Snackbar open={alertBarOpen} autoHideDuration={5000} onClose={handleAlertBarClose}>
-                    <Alert onClose={handleAlertBarClose} severity={alertBarOption.severity}>
-                        {alertBarOption.message}
-                    </Alert>
-                </Snackbar>
                 <PreviewDialog open={openPreview} onClose={handlePreviewClose}>
                     <PreviewContainer>
                         <SmartTOFELRender

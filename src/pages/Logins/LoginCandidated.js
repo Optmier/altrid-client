@@ -12,6 +12,8 @@ import styled from 'styled-components';
 import Button from '../../AltridUI/Button/Button';
 import TextField from '../../AltridUI/TextField/TextField';
 import BackgroundTheme from '../../AltridUI/ThemeColors/BackgroundTheme';
+import { useDispatch } from 'react-redux';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const MainContainer = styled.div`
     align-items: center;
@@ -80,6 +82,8 @@ function LoginCandidated({ history }) {
     });
     const [requestButtonEnable, setRequestButtonEnable] = useState(true);
 
+    const dispatch = useDispatch();
+
     const loginMethod = (email, authId) => {
         Axios.post(
             apiUrl + '/auth/' + usertype,
@@ -96,10 +100,15 @@ function LoginCandidated({ history }) {
                 console.error(err);
                 switch (err.response.data.code) {
                     case 'not-in-database':
-                        alert('회원 정보가 없습니다.\n등록을 해주세요.');
+                        dispatch(openAlertSnackbar('회원 정보가 없습니다.\n등록을 해주세요.', 'error'));
                         break;
                     case 'not-approved':
-                        alert(`승인이 필요한 계정입니다.\n${usertype === 'students' ? '선생님의' : '관리자의'} 승인을 기다려주세요!`);
+                        dispatch(
+                            openAlertSnackbar(
+                                `승인이 필요한 계정입니다.\n${usertype === 'students' ? '선생님의' : '관리자의'} 승인을 기다려주세요!`,
+                                'warning',
+                            ),
+                        );
                         break;
                     default:
                         break;
@@ -174,14 +183,21 @@ function LoginCandidated({ history }) {
                     if (teachers.length > 0)
                         Axios.post(`${apiUrl}/students-in-teacher/first`, { teachers: teachers }, { withCredentials: true })
                             .then((res2) => {
-                                alert('계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요 :)');
+                                dispatch(
+                                    openAlertSnackbar(
+                                        '계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요.',
+                                        'success',
+                                    ),
+                                );
                                 loginMethod(email, authId);
                             })
                             .catch((err) => {
                                 console.error(err);
                             });
                     else {
-                        alert('계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요 :)');
+                        dispatch(
+                            openAlertSnackbar('계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요.', 'success'),
+                        );
                         loginMethod(email, authId);
                     }
                 })
@@ -202,8 +218,10 @@ function LoginCandidated({ history }) {
                 { withCredentials: true },
             )
                 .then((res) => {
-                    alert('계정 등록이 완료 되었습니다.\n승인이 될때까지 기다려 주세요 :)');
-                    document.location.replace('/login');
+                    dispatch(openAlertSnackbar('계정 등록이 완료 되었습니다.\n승인이 될때까지 기다려 주세요', 'success'));
+                    setTimeout(() => {
+                        document.location.replace('/login');
+                    }, 2000);
                 })
                 .catch((err) => {
                     console.error(err);

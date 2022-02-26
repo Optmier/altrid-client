@@ -365,7 +365,6 @@ function ClassDrawer({ handleClose, cardData, ver, match, history }) {
         if (ver === 'draft') {
             if (name === 'drawer-draft') {
                 dispatch(postDraft(inputs, timeInputs, toggleState, selectState, attachFiles, contentsData, null, selectedSubject));
-
                 handleClose(e);
             } else if (name === 'drawer-share') {
                 if (selectState === 'right') {

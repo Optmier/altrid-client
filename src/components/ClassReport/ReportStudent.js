@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import StudentTypeScore from './StudentTypeScore';
 import EyeTrackBox from './EyeTrackBox';
 import { Link } from '@material-ui/core';
-import problemCategories from '../TOFELEditor/ProblemCategories';
 import TimeTrackBox from './TimeTrackBox';
 import Axios from 'axios';
 import { apiUrl } from '../../configs/configs';
@@ -37,6 +36,7 @@ import { closeAlertDialog, openAlertDialog, openAlertSnackbar } from '../../redu
 import { stringifiedJsonUnparser } from '../../controllers/stringifiedJsonUnparser';
 import TextField from '../../AltridUI/TextField/TextField';
 import { AlertDialog } from '../../AltridUI/AlertnDialog/AlertnDialog';
+import CategorySelector from '../../controllers/CategorySelector';
 
 const pad = (n, width) => {
     n = n + '';
@@ -828,74 +828,85 @@ function ReportStudent({ history, match }) {
 
     const progressDoubleClick = (index, qUUID, handsUp, teacherSelected) => {
         if (sessions.userType !== 'students') return;
-        const confirm = window.confirm(
-            !handsUp
-                ? '정말로 이 문제에 대해 손들기를 하시겠습니까?'
-                : teacherSelected
-                ? '손들기를 취소하시겠습니까?\n다른 학생이 손을 들지 않은 경우 선생님 선택 목록에도 삭제됩니다!'
-                : '손들기를 취소하시겠습니까?',
+        dispatch(
+            openAlertDialog(
+                'info',
+                '확인',
+                !handsUp
+                    ? '정말로 이 문제에 대해 손들기를 하시겠습니까?'
+                    : teacherSelected
+                    ? '손들기를 취소하시겠습니까?\n다른 학생이 손을 들지 않은 경우 선생님 선택 목록에도 삭제됩니다!'
+                    : '손들기를 취소하시겠습니까?',
+                'no|yes',
+                '아니오|예',
+                'purple|light',
+                'white|light',
+                'defaultClose',
+                () => {
+                    dispatch(closeAlertDialog());
+                    let count = 0;
+                    let result = {};
+                    for (let c of currentStudentData.contents_data) {
+                        const length = c.problemDatas.length;
+                        if (index < count + length) {
+                            const problemData = c.problemDatas[index - count];
+                            result.assignmentNo = currentStudentData.actived_number;
+                            try {
+                                result.studentAnswer = currentStudentData.user_data.selections[index].answerUser;
+                            } catch (error) {
+                                result.studentAnswer = null;
+                            }
+                            result.correctAnswer = problemData.answer;
+                            result.studentId = currentStudentData.student_id;
+                            result.questionId = problemData.uuid;
+                            break;
+                        }
+                        count += length;
+                    }
+                    if (handsUp) {
+                        deleteHandsUpProblems([result.questionId], {
+                            onSuccess() {
+                                setHandsUpList(handsUpList.filter((idx) => idx !== index));
+                                Axios.patch(
+                                    `${apiUrl}/data-analytics/hands-up`,
+                                    {
+                                        assignmentNo: result.assignmentNo,
+                                        questionIds: [result.questionId],
+                                        isHandsUp: false,
+                                    },
+                                    { withCredentials: true },
+                                )
+                                    .then((res) => {})
+                                    .catch((err) => {
+                                        console.error(err);
+                                    });
+                            },
+                            onFailure() {},
+                        });
+                    } else {
+                        handsUpProblems([result], {
+                            onSuccess() {
+                                setHandsUpList([...handsUpList, index]);
+                                Axios.patch(
+                                    `${apiUrl}/data-analytics/hands-up`,
+                                    {
+                                        assignmentNo: result.assignmentNo,
+                                        questionIds: [result.questionId],
+                                        isHandsUp: true,
+                                    },
+                                    { withCredentials: true },
+                                )
+                                    .then((res) => {})
+                                    .catch((err) => {
+                                        console.error(err);
+                                    });
+                            },
+                            onFailure() {},
+                        });
+                    }
+                },
+            ),
         );
-        if (!confirm) return;
-        let count = 0;
-        let result = {};
-        for (let c of currentStudentData.contents_data) {
-            const length = c.problemDatas.length;
-            if (index < count + length) {
-                const problemData = c.problemDatas[index - count];
-                result.assignmentNo = currentStudentData.actived_number;
-                try {
-                    result.studentAnswer = currentStudentData.user_data.selections[index].answerUser;
-                } catch (error) {
-                    result.studentAnswer = null;
-                }
-                result.correctAnswer = problemData.answer;
-                result.studentId = currentStudentData.student_id;
-                result.questionId = problemData.uuid;
-                break;
-            }
-            count += length;
-        }
-        if (handsUp) {
-            deleteHandsUpProblems([result.questionId], {
-                onSuccess() {
-                    setHandsUpList(handsUpList.filter((idx) => idx !== index));
-                    Axios.patch(
-                        `${apiUrl}/data-analytics/hands-up`,
-                        {
-                            assignmentNo: result.assignmentNo,
-                            questionIds: [result.questionId],
-                            isHandsUp: false,
-                        },
-                        { withCredentials: true },
-                    )
-                        .then((res) => {})
-                        .catch((err) => {
-                            console.error(err);
-                        });
-                },
-                onFailure() {},
-            });
-        } else {
-            handsUpProblems([result], {
-                onSuccess() {
-                    setHandsUpList([...handsUpList, index]);
-                    Axios.patch(
-                        `${apiUrl}/data-analytics/hands-up`,
-                        {
-                            assignmentNo: result.assignmentNo,
-                            questionIds: [result.questionId],
-                            isHandsUp: true,
-                        },
-                        { withCredentials: true },
-                    )
-                        .then((res) => {})
-                        .catch((err) => {
-                            console.error(err);
-                        });
-                },
-                onFailure() {},
-            });
-        }
     };
 
     const actionUpdateTeacherFeedback = (contentsData) => {
@@ -905,7 +916,6 @@ function ReportStudent({ history, match }) {
             },
             onFailure(err) {
                 console.error(err);
-                openAlertSnackbar('업데이트에 실패했습니다.', 'error');
                 dispatch(openAlertSnackbar('업데이트에 실패했습니다.', 'error'));
             },
         });
@@ -1141,14 +1151,14 @@ function ReportStudent({ history, match }) {
                                                         {top3Weaks.length && top3Weaks[0] ? (
                                                             <TooltipCard
                                                                 title={
-                                                                    problemCategories.filter(
+                                                                    CategorySelector(subject).filter(
                                                                         (p) => p.id === parseInt(top3Weaks[0].category),
                                                                     )[0].name
                                                                 }
                                                             >
                                                                 <>
                                                                     {
-                                                                        problemCategories.filter(
+                                                                        CategorySelector(subject).filter(
                                                                             (p) => p.id === parseInt(top3Weaks[0].category),
                                                                         )[0].name
                                                                     }
@@ -1174,8 +1184,9 @@ function ReportStudent({ history, match }) {
                                                         {achievesForTypes.value < 100
                                                             ? '-'
                                                             : top3Weaks.length && top3Weaks[1]
-                                                            ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[1].category))[0]
-                                                                  .name
+                                                            ? CategorySelector(subject).filter(
+                                                                  (p) => p.id === parseInt(top3Weaks[1].category),
+                                                              )[0].name
                                                             : 'null'}
                                                     </Typography>
                                                 </WeakTypeItemValue>
@@ -1191,8 +1202,9 @@ function ReportStudent({ history, match }) {
                                                         {achievesForTypes.value < 100
                                                             ? '-'
                                                             : top3Weaks.length && top3Weaks[2]
-                                                            ? problemCategories.filter((p) => p.id === parseInt(top3Weaks[2].category))[0]
-                                                                  .name
+                                                            ? CategorySelector(subject).filter(
+                                                                  (p) => p.id === parseInt(top3Weaks[2].category),
+                                                              )[0].name
                                                             : 'null'}
                                                     </Typography>
                                                 </WeakTypeItemValue>

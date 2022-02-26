@@ -1,9 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Axios from 'axios';
 import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { apiUrl } from '../../configs/configs';
+import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 function LoginMobileAppRedirect({ match, history }) {
+    const dispatch = useDispatch();
+
     useEffect(() => {
         const urlSearchParams = new URLSearchParams(history.location.search);
         const authId = urlSearchParams.get('authId');
@@ -26,10 +30,13 @@ function LoginMobileAppRedirect({ match, history }) {
                 console.error(err);
                 switch (err.response.data.code) {
                     case 'not-in-database':
-                        alert('회원 정보가 없습니다.\n등록을 해주세요.');
+                        dispatch(openAlertSnackbar('회원 정보가 없습니다.\n등록을 해주세요.', 'error'));
                         break;
                     case 'not-approved':
-                        alert(`승인이 필요한 계정입니다.\n${userType === 'students' ? '선생님의' : '관리자의'} 승인을 기다려주세요!`);
+                        dispatch(
+                            `승인이 필요한 계정입니다.\n${userType === 'students' ? '선생님의' : '관리자의'} 승인을 기다려주세요!`,
+                            'warning',
+                        );
                         break;
                     default:
                         break;

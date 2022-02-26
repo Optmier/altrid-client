@@ -108,8 +108,8 @@ function NowPlan({ history }) {
                 'white|light',
                 'defaultClose',
                 () => {
-                    history.push('/payment?type=Free');
                     dispatch(closeAlertDialog());
+                    history.push('/payment?type=Free');
                 },
             ),
         );

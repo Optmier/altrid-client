@@ -310,9 +310,9 @@ function MainDraft({ match, cardData, history }) {
                 setDateDialogopen(false);
                 dispatch(postActived(cardData, selectClassState, due_date));
             } else if (!due_date) {
-                alert('과제 기한 변경은 필수사항 입니다.');
+                dispatch(openAlertSnackbar('과제 기한 변경은 필수사항 입니다.', 'warning'));
             } else if (!selectClassState) {
-                alert('클래스 선택은 필수사항 입니다.');
+                dispatch(openAlertSnackbar('클래스 선택은 필수사항 입니다.'));
             }
         } else {
             setDateDialogopen(false);

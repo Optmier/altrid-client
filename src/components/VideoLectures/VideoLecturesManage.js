@@ -29,7 +29,7 @@ import AddCamstudyIcon from '../../AltridUI/Icons/AddCamstudyIcon';
 import Button from '../../AltridUI/Button/Button';
 import GroupBox from '../../AltridUI/GroupBox/GroupBox';
 import VideoLectureListItem from './components/VideoLectureListItem';
-import { openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
+import { closeAlertDialog, openAlertDialog, openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -290,6 +290,7 @@ function VideoLecturesManage({ match, history }) {
                 'white|light',
                 'defaultClose',
                 () => {
+                    dispatch(closeAlertDialog());
                     Axios.delete(`${apiUrl}/meeting-room/${data.room_id}`, { withCredentials: true })
                         .then((res) => {
                             console.log(res);
