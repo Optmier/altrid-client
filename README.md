@@ -1,7 +1,10 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 # Altrid(알트리드) 서비스 플랫폼 프론트엔드 소스
-> [@Sain-Tech](https://github.com/Sain-Tech) 의 [altrid-client](https://github.com/Sain-Tech/altrid-client) 에서 옮겨짐.
+> [@Sain-Tech](https://github.com/Sain-Tech) 의 [altrid-client](https://github.com/Sain-Tech/altrid-client) 에서 옮겨짐.   
+   
+![image](https://user-images.githubusercontent.com/5365310/162238030-b286a7ac-d18d-4fb6-9399-c0ba0e55f9be.png)
+
 
 ## 실행 방법
 
