@@ -3,7 +3,6 @@ import Chart from 'react-apexcharts';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
 
 const StyleChartWrapper = styled.div`
     width: 100%;

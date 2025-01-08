@@ -14,7 +14,7 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { apiUrl } from '../../../configs/configs';
+import * as configs from '../../../configs/config.json';
 import { changeParams } from '../../../redux_modules/params';
 import CardProblemPreview from '../../TOFELRenderer/CardProblemPreview';
 import { getHandsUpFromStudents, selectHansUpProblems, unselectHandsUpProblems } from './HandsUpInterface';
@@ -429,7 +429,7 @@ function HandsUpList({ match }) {
                 dispatch(openAlertSnackbar('데이터 불러오기에 실패했습니다.', 'error'));
             },
         });
-        Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, {
+        Axios.get(`${configs.SERVER_HOST}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, {
             withCredentials: true,
         })
             .then((res) => {

@@ -8,7 +8,7 @@ import Button from '../../AltridUI/Button/Button';
 import { FormControl } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { makeStyles } from '@material-ui/styles';
 import CompletedListItem from './components/CompletedListItem';
 import SearchIcon from '@material-ui/icons/Search';
@@ -265,7 +265,7 @@ function VocaLearningMain({ history, match }) {
     const actionChangeCompletedSearchbox = ({ target }) => {
         setIsCompletedListSearching(Boolean(target.value));
         if (Boolean(target.value)) {
-            Axios.get(`${apiUrl}/vocas/completed/search`, { params: { q: target.value, classNum: classNum }, withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/vocas/completed/search`, { params: { q: target.value, classNum: classNum }, withCredentials: true })
                 .then((res) => {
                     if (res.data) {
                         setCompletedList(res.data);
@@ -282,7 +282,7 @@ function VocaLearningMain({ history, match }) {
 
     const actionScrollBottomEdge = () => {
         if (!isCompletedListSearching) {
-            Axios.get(`${apiUrl}/vocas/completed`, {
+            Axios.get(`${configs.SERVER_HOST}/vocas/completed`, {
                 params: {
                     limit: completedListLimit,
                     page: completedListPage,
@@ -305,7 +305,7 @@ function VocaLearningMain({ history, match }) {
 
     useEffect(() => {
         // 전체 진행도 가져오기
-        Axios.get(`${apiUrl}/vocas/progress`, { params: { classNum: classNum }, withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/vocas/progress`, { params: { classNum: classNum }, withCredentials: true })
             .then((res) => {
                 const { total, progress } = res.data;
                 if (total < 1) return;
@@ -316,7 +316,7 @@ function VocaLearningMain({ history, match }) {
             });
 
         // 완료된 목록 가져오기 (초기 구성)
-        Axios.get(`${apiUrl}/vocas/completed`, {
+        Axios.get(`${configs.SERVER_HOST}/vocas/completed`, {
             params: {
                 limit: completedListLimit,
                 page: completedListPage,

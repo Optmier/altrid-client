@@ -18,7 +18,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import moment from 'moment-timezone';
 import { getServerDate } from '../../redux_modules/serverdate';
 import isMobile from '../../controllers/isMobile';
@@ -184,7 +184,7 @@ function VideoLecturesManage({ match, history }) {
         }
 
         Axios.post(
-            `${apiUrl}/meeting-room`,
+            `${configs.SERVER_HOST}/meeting-room`,
             {
                 roomTitle: title,
                 description: description,
@@ -252,7 +252,7 @@ function VideoLecturesManage({ match, history }) {
         else {
             // otp 생성
             Axios.post(
-                `${apiUrl}/meeting-room/otp`,
+                `${configs.SERVER_HOST}/meeting-room/otp`,
                 {
                     roomId: data.room_id,
                     username: sessions.userName,
@@ -291,7 +291,7 @@ function VideoLecturesManage({ match, history }) {
                 'defaultClose',
                 () => {
                     dispatch(closeAlertDialog());
-                    Axios.delete(`${apiUrl}/meeting-room/${data.room_id}`, { withCredentials: true })
+                    Axios.delete(`${configs.SERVER_HOST}/meeting-room/${data.room_id}`, { withCredentials: true })
                         .then((res) => {
                             console.log(res);
                             history.replace();
@@ -315,7 +315,7 @@ function VideoLecturesManage({ match, history }) {
     //     const conf = window.confirm('예약된 강의들을 취소하시겠습니까?');
     //     if (!conf) return;
 
-    //     Axios.delete(`${apiUrl}/meeting-room`, {
+    //     Axios.delete(`${configs.SERVER_HOST}/meeting-room`, {
     //         params: {
     //             roomIds: scheduledIdxs,
     //         },

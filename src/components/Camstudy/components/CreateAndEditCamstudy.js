@@ -8,7 +8,7 @@ import BulbIcon from '../../../AltridUI/Icons/drawer-groupbox-icon-bulb.svg';
 import { Avatar, CircularProgress, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import Axios from 'axios';
-import { apiUrl } from '../../../configs/configs';
+import * as configs from '../../../configs/config.json';
 import moment from 'moment-timezone';
 import Drawer from '../../../AltridUI/Drawer/Drawer';
 import DrawerActions from '../../../AltridUI/Drawer/DrawerActions';
@@ -212,7 +212,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
         if (!Boolean(sessionEndDate.trim())) return;
 
         Axios.post(
-            `${apiUrl}/cam-study`,
+            `${configs.SERVER_HOST}/cam-study`,
             {
                 title: title,
                 description: description,
@@ -249,7 +249,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
         }
 
         Axios.patch(
-            `${apiUrl}/cam-study/${defaultData.room_id}`,
+            `${configs.SERVER_HOST}/cam-study/${defaultData.room_id}`,
             {
                 description: description,
                 rules: JSON.stringify(rules),
@@ -273,7 +273,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
             return undefined;
         }
         setInvitationLoading(true);
-        Axios.get(`${apiUrl}/students/current-academy`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/students/current-academy`, { withCredentials: true })
             .then((res) => {
                 setInvitationLoading(false);
                 if (!res.data || !res.data.length) return;
@@ -345,7 +345,7 @@ function CreateAndEditCamstudy({ open, handleClose, defaultData, onAfterCreateOr
         }
         if (defaultData.max_joins) setDefaultMaxJoins(defaultData.max_joins);
         if (defaultData.invitation_ids) {
-            Axios.get(`${apiUrl}/students/current-academy`, { withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/students/current-academy`, { withCredentials: true })
                 .then((res) => {
                     if (!res.data || !res.data.length) return;
                     const data = res.data

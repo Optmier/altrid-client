@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import moment from 'moment-timezone';
 
 function CouponInfo() {
@@ -23,7 +23,7 @@ function CouponInfo() {
 
     useEffect(() => {
         if (!academyPlanId) return;
-        Axios.get(`${apiUrl}/payments/coupon-history`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/payments/coupon-history`, { withCredentials: true })
             .then((resCouponHistory) => {
                 setCouponHistory(resCouponHistory.data);
             })

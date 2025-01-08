@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getActived } from '../../redux_modules/assignmentActived';
 import { changeParams } from '../../redux_modules/params';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import Error from '../../pages/Errors/Error';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
@@ -168,7 +168,7 @@ function Share({ match, history }) {
         dispatch(changeParams(1, num));
 
         if (sessions.userType === 'students') {
-            Axios.get(`${apiUrl}/others/assignment-tries/${num}`, { withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/others/assignment-tries/${num}`, { withCredentials: true })
                 .then((res) => {
                     setTries(res.data);
                 })

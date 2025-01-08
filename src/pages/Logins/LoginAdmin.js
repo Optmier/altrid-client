@@ -4,13 +4,13 @@ import LogoWhite from '../../images/logos/nav_logo_white.png';
 import Footer from '../../components/essentials/Footer';
 import LoginButtons from '../../components/Login/LoginButtons';
 import '../../styles/logins.scss';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { withRouter } from 'react-router-dom';
 
 function LoginAdmin({ history }) {
     const onSuccessGoogleAuth = ({ profileObj }) => {
         Axios.post(
-            apiUrl + '/auth/admins',
+            configs.SERVER_HOST + '/auth/admins',
             {
                 email: profileObj.email,
                 authId: profileObj.authId + '',
@@ -50,7 +50,7 @@ function LoginAdmin({ history }) {
 
     const onSuccessKakaoAuth = ({ profile }) => {
         Axios.post(
-            apiUrl + '/auth/admins',
+            configs.SERVER_HOST + '/auth/admins',
             {
                 email: profile.kakao_account.email,
                 authId: profile.id + '',

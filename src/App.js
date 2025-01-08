@@ -12,17 +12,16 @@ import Login from './pages/Logins/Login';
 import Error from './pages/Errors/Error';
 import isMobile from './controllers/isMobile';
 import LoginAdmin from './pages/Logins/LoginAdmin';
-import { apiUrl, googleAuthClientId } from './configs/configs';
+import * as configs from './configs/config.json'
 import { useDispatch, useSelector } from 'react-redux';
 import { saveSession, deleteSession, updateSession } from './redux_modules/sessions';
 import { getServerDate } from './redux_modules/serverdate';
 import { getPlanInfo } from './redux_modules/planInfo';
-import { $_loginAdmin, $_loginDefault, $_loginStudent, $_loginTeacher, $_root } from './configs/front_urls';
+import { $_loginAdmin, $_loginDefault, $_loginStudent, $_loginTeacher, $_root } from './constants/front_urls';
 import AdminMain from './pages/Admins/AdminMain';
 import AssignmentDoItNow from './pages/Assignments/AssignmentDoItNow';
 import RestrictRoute from './components/essentials/RestrictRoute';
 import RefreshToken from './components/essentials/Authentication';
-import channelIOAccessKey from './components/ChannelIO/accessKeys';
 import ChannelService from './components/ChannelIO/ChannelService';
 import generateHash from './components/ChannelIO/generateHash';
 import CustomChannelIOButton from './components/ChannelIO/CustomChannelIOButton';
@@ -82,7 +81,7 @@ function App({ history, match }) {
 
     const googleLoginApiRef = useRef();
     googleLoginApiRef.current = useGoogleLogin({
-        clientId: googleAuthClientId,
+        clientId: configs.GOOGLE_AUTH_CLIENT_ID,
         onSuccess: () => {},
         onFailure: () => {},
         cookiePolicy: 'single_host_origin',
@@ -113,7 +112,7 @@ function App({ history, match }) {
     };
 
     window.logout = () => {
-        Axios.delete(`${apiUrl}/auth`, { withCredentials: true })
+        Axios.delete(`${configs.SERVER_HOST}/auth`, { withCredentials: true })
             .then((res) => {
                 deleteSessions();
                 document.location.replace($_loginDefault);
@@ -129,7 +128,7 @@ function App({ history, match }) {
 
     useEffect(() => {
         if (!window.gapi) return;
-        Axios.get(apiUrl + '/auth', { withCredentials: true })
+        Axios.get(configs.SERVER_HOST + '/auth', { withCredentials: true })
             .then((res1) => {
                 if (loginUrls.includes(history.location.pathname)) history.replace(window.lastUrl);
                 // switch (res1.data.userType) {
@@ -156,7 +155,7 @@ function App({ history, match }) {
                 const { authId, exp, academyCode, iat, iss, userName, userType, image } = res1.data;
                 saveSessions(authId, userName, userType, academyCode, null, iss, iat, exp, image);
 
-                Axios.get(`${apiUrl}/academies/current/name`, { withCredentials: true })
+                Axios.get(`${configs.SERVER_HOST}/academies/current/name`, { withCredentials: true })
                     .then((res2) => {
                         const academyName = res2.data.name;
                         const academyApproved = res2.data.approved;
@@ -197,10 +196,10 @@ function App({ history, match }) {
     }, [history.location, window.gapi]);
 
     useEffect(() => {
-        if (channelIOAccessKey.pluginKey) {
+        if (configs.CHANNEL_TALK_PLUGIN_KEY) {
             ChannelService.shutdown();
             ChannelService.boot({
-                pluginKey: channelIOAccessKey.pluginKey, //please fill with your plugin key
+                pluginKey: configs.CHANNEL_TALK_PLUGIN_KEY, //please fill with your plugin key
                 memberId: sessions.authId,
                 hideChannelButtonOnBoot: true,
                 profile: {

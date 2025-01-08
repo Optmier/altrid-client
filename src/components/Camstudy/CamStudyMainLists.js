@@ -7,7 +7,7 @@ import Button from '../../AltridUI/Button/Button';
 import CamstudyListItem from './components/CamstudyListItem';
 import CreateAndEditCamstudy from './components/CreateAndEditCamstudy';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@material-ui/core';
 import HtmlParser from 'react-html-parser';
 import AddCamstudyIcon from '../../AltridUI/Icons/AddCamstudyIcon';
@@ -100,7 +100,7 @@ function CamStudyMainLists({ history, match }) {
                 'defaultClose',
                 () => {
                     dispatch(closeAlertDialog());
-                    Axios.delete(`${apiUrl}/cam-study/${roomId}`, { withCredentials: true })
+                    Axios.delete(`${configs.SERVER_HOST}/cam-study/${roomId}`, { withCredentials: true })
                         .then((res) => {
                             if (menuStatus === 0) {
                                 fetchListMine(true);
@@ -118,7 +118,7 @@ function CamStudyMainLists({ history, match }) {
     };
 
     const fetchListMine = (actived) => {
-        Axios.get(`${apiUrl}/cam-study/mine`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/cam-study/mine`, { withCredentials: true })
             .then((res) => {
                 if (!actived || !res.data || !res.data.length) return;
                 setDataListMine(res.data);
@@ -130,7 +130,7 @@ function CamStudyMainLists({ history, match }) {
     };
 
     const fetchListInvited = (actived) => {
-        Axios.get(`${apiUrl}/cam-study/invited`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/cam-study/invited`, { withCredentials: true })
             .then((res) => {
                 if (!actived || !res.data || !res.data.length) return;
                 setDataListInvited(res.data);
@@ -142,7 +142,7 @@ function CamStudyMainLists({ history, match }) {
     };
 
     const fetchListTotal = (actived, limit = 10, page = 0, addition = false) => {
-        Axios.get(`${apiUrl}/cam-study/total`, {
+        Axios.get(`${configs.SERVER_HOST}/cam-study/total`, {
             params: {
                 limit: limit,
                 page: page,
@@ -164,7 +164,7 @@ function CamStudyMainLists({ history, match }) {
         const tasks = dataListMineRef.current.map(async (d) => {
             let counts = 0;
             try {
-                counts = await (await Axios.get(`${apiUrl}/cam-study/live-counts/${d.room_id}`, { withCredentials: true })).data;
+                counts = await (await Axios.get(`${configs.SERVER_HOST}/cam-study/live-counts/${d.room_id}`, { withCredentials: true })).data;
             } catch (fetchError) {
                 console.error(fetchError);
             }
@@ -182,7 +182,7 @@ function CamStudyMainLists({ history, match }) {
         const tasks = dataListInvitedRef.current.map(async (d) => {
             let counts = 0;
             try {
-                counts = await (await Axios.get(`${apiUrl}/cam-study/live-counts/${d.room_id}`, { withCredentials: true })).data;
+                counts = await (await Axios.get(`${configs.SERVER_HOST}/cam-study/live-counts/${d.room_id}`, { withCredentials: true })).data;
             } catch (fetchError) {
                 console.error(fetchError);
             }
@@ -200,7 +200,7 @@ function CamStudyMainLists({ history, match }) {
         const tasks = dataListTotalRef.current.map(async (d) => {
             let counts = 0;
             try {
-                counts = await (await Axios.get(`${apiUrl}/cam-study/live-counts/${d.room_id}`, { withCredentials: true })).data;
+                counts = await (await Axios.get(`${configs.SERVER_HOST}/cam-study/live-counts/${d.room_id}`, { withCredentials: true })).data;
             } catch (fetchError) {
                 console.error(fetchError);
             }

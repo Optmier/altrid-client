@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import listPlugin from '@fullcalendar/list';
 import moment from 'moment';
 import Axios from 'axios';
-import { apiUrl } from '../../../configs/configs';
+import * as configs from '../../../configs/config.json';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -230,7 +230,7 @@ function Calendar({ match }) {
                 allDay: 1,
             };
             Axios.post(
-                `${apiUrl}/calendar-events/students/my`,
+                `${configs.SERVER_HOST}/calendar-events/students/my`,
                 {
                     calId: Math.floor(Math.random() * 1001),
                     title: AddEvent.title,
@@ -277,7 +277,7 @@ function Calendar({ match }) {
                 shared: AddEvent.shared,
             };
             Axios.post(
-                `${apiUrl}/calendar-events/teachers/my`,
+                `${configs.SERVER_HOST}/calendar-events/teachers/my`,
                 {
                     calId: Math.floor(Math.random() * 1001),
                     title: AddEvent.title,
@@ -393,7 +393,7 @@ function Calendar({ match }) {
                 CalEvents[i].title = temp.title;
                 CalEvents[i].description = temp.description;
                 Axios.patch(
-                    `${apiUrl}/calendar-events/students/my/${temp.id}`,
+                    `${configs.SERVER_HOST}/calendar-events/students/my/${temp.id}`,
                     {
                         title: temp.title,
                         starts: moment(temp.start).format('YYYY-MM-DD HH:mm:ss'),
@@ -449,7 +449,7 @@ function Calendar({ match }) {
                 setopen(false);
                 break;
             } else if (CalEvents[i].id == temp.id) {
-                Axios.delete(`${apiUrl}/calendar-events/${temp.id}`, { withCredentials: true })
+                Axios.delete(`${configs.SERVER_HOST}/calendar-events/${temp.id}`, { withCredentials: true })
                     .then((res) => {
                         dispatch(openAlertSnackbar('삭제 되었습니다.'));
                     })
@@ -471,7 +471,7 @@ function Calendar({ match }) {
 
     useEffect(() => {
         if (sessions.userType === 'students') {
-            Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/classes/class/${num}`, { withCredentials: true })
                 .then((result) => {
                     setEvents((events) =>
                         events.concat({
@@ -492,7 +492,7 @@ function Calendar({ match }) {
                 })
                 .catch((err) => console.log(err));
             // 개인적인 이벤트
-            Axios.get(`${apiUrl}/calendar-events/my/${num}`, {
+            Axios.get(`${configs.SERVER_HOST}/calendar-events/my/${num}`, {
                 params: { currentDate: moment(day).format('YYYY-MM-DD') },
                 withCredentials: true,
             })
@@ -524,7 +524,7 @@ function Calendar({ match }) {
                 })
                 .catch((err) => console.log(err));
             // 선생님 공유 이벤트
-            Axios.get(`${apiUrl}/calendar-events/class-shared/${num}`, {
+            Axios.get(`${configs.SERVER_HOST}/calendar-events/class-shared/${num}`, {
                 params: { currentDate: moment(day).format('YYYY-MM-DD') },
                 withCredentials: true,
             }).then((result) => {
@@ -554,7 +554,7 @@ function Calendar({ match }) {
                 );
             });
         } else if (sessions.userType === 'teachers') {
-            Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/classes/class/${num}`, { withCredentials: true })
                 .then((result) => {
                     setEvents((events) =>
                         events.concat({
@@ -575,7 +575,7 @@ function Calendar({ match }) {
                 })
                 .catch((err) => console.log(err));
             // 개인적인 이벤트
-            Axios.get(`${apiUrl}/calendar-events/my/${num}`, {
+            Axios.get(`${configs.SERVER_HOST}/calendar-events/my/${num}`, {
                 params: { currentDate: moment(day).format('YYYY-MM-DD') },
                 withCredentials: true,
             })

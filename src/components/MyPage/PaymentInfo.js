@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
-import { apiUrl, tossPaymentsClientKey } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import moment from 'moment-timezone';
 import { loadTossPayments } from '@tosspayments/sdk';
 import { useSelector } from 'react-redux';
@@ -45,7 +45,7 @@ function PaymentInfo() {
     useEffect(() => {
         if (!sessions || !sessions.authId || !sessions.userType || !sessions.academyName) return;
         if (sessions.userType === 'teachers') {
-            Axios.get(`${apiUrl}/payments/payment-info`, { withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/payments/payment-info`, { withCredentials: true })
                 .then((res) => {
                     if (res.data && res.data.length > 0) {
                         setPaymentsInfo({
@@ -64,7 +64,7 @@ function PaymentInfo() {
                     console.error(err);
                 });
 
-            loadTossPayments(tossPaymentsClientKey)
+            loadTossPayments(configs.TOSS_PAYMENTS_CLIENT_KEY)
                 .then((res) => {
                     tossPayments.current = res;
                 })
@@ -73,7 +73,7 @@ function PaymentInfo() {
                 });
 
             // 결제 내역 불러오기
-            Axios.get(`${apiUrl}/payments/payment-history`, { withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/payments/payment-history`, { withCredentials: true })
                 .then((resPaymentHistory) => {
                     if (resPaymentHistory && resPaymentHistory.data) {
                         setPaymentHistory(resPaymentHistory.data);

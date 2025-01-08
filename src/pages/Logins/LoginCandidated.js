@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import '../../styles/logins.scss';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { withRouter } from 'react-router-dom';
 import { Link, withStyles } from '@material-ui/core';
 import classNames from 'classnames';
@@ -86,7 +86,7 @@ function LoginCandidated({ history }) {
 
     const loginMethod = (email, authId) => {
         Axios.post(
-            apiUrl + '/auth/' + usertype,
+            configs.SERVER_HOST + '/auth/' + usertype,
             {
                 email: email || '',
                 authId: authId || '',
@@ -167,7 +167,7 @@ function LoginCandidated({ history }) {
 
         if (usertype === 'students') {
             Axios.post(
-                `${apiUrl}/students`,
+                `${configs.SERVER_HOST}/students`,
                 {
                     email: email || '',
                     name: name || '',
@@ -181,7 +181,7 @@ function LoginCandidated({ history }) {
                 .then((res1) => {
                     // console.log(res1);
                     if (teachers.length > 0)
-                        Axios.post(`${apiUrl}/students-in-teacher/first`, { teachers: teachers }, { withCredentials: true })
+                        Axios.post(`${configs.SERVER_HOST}/students-in-teacher/first`, { teachers: teachers }, { withCredentials: true })
                             .then((res2) => {
                                 dispatch(
                                     openAlertSnackbar(
@@ -206,7 +206,7 @@ function LoginCandidated({ history }) {
                 });
         } else if (usertype === 'teachers') {
             Axios.post(
-                `${apiUrl}/teachers`,
+                `${configs.SERVER_HOST}/teachers`,
                 {
                     email: email || '',
                     name: name || '',
@@ -232,11 +232,11 @@ function LoginCandidated({ history }) {
     useEffect(() => {
         if (!inputState.academy_code.trim()) return;
         // 학원 코드 조회 및 검증하기
-        Axios.get(`${apiUrl}/academies/exists/${inputState['academy_code']}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/academies/exists/${inputState['academy_code']}`, { withCredentials: true })
             .then((res1) => {
                 setUsertype((usertype) => {
                     if (usertype === 'students') {
-                        Axios.get(`${apiUrl}/teachers/in-class/${inputState.academy_code}`, { withCredentials: true })
+                        Axios.get(`${configs.SERVER_HOST}/teachers/in-class/${inputState.academy_code}`, { withCredentials: true })
                             .then((res2) => {
                                 setAcademyInfo({
                                     ...academyInfo,

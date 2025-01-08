@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import WarningIcon from '@material-ui/icons/Warning';
 import '../../styles/pay_state.scss';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import Axios from 'axios';
 import MenuData from '../../datas/MenuData.json';
 import PriceData from '../../datas/PriceData.json';
@@ -29,7 +29,7 @@ function PaySuccess() {
 
     //카드 정보 및 회원 정보 setState
     useEffect(() => {
-        Axios.get(`${apiUrl}/payments/payment-info`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/payments/payment-info`, { withCredentials: true })
             .then((res) => {
                 setCardCompany(res.data[0].card_company);
                 setCardNum(res.data[0].card_number);
@@ -50,7 +50,7 @@ function PaySuccess() {
                 setOrderPlan('Free');
             }
             // 현재 유효한 플랜이 있는지 검사
-            Axios.get(`${apiUrl}/payments/order-history/current-valid`, {
+            Axios.get(`${configs.SERVER_HOST}/payments/order-history/current-valid`, {
                 params: { planId: sessions.academyPlanId },
                 withCredentials: true,
             })
