@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+    altrid-lms-client:
+        image: altrid-lms-client
+        environment:
+            NODE_ENV: production
+        stdin_open: true
+        tty: true
+        volumes:
+            - ./src/configs/config.json:/app/src/configs/config.json
+        ports:
+            - 3000:3000
