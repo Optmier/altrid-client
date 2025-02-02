@@ -1,6 +1,6 @@
 /* eslint-disable no-control-regex */
 import Axios from 'axios';
-import { apiUrl } from '../configs/configs';
+import * as configs from '../configs/config.json';
 import { HoursAndMinutesToSecond } from '../components/essentials/TimeChange';
 import { postActived } from './assignmentActived';
 
@@ -36,7 +36,7 @@ const DRAFT_ERROR = 'assignmentDraft/DRAFT_ERROR';
 export const getDrafts = () => async (dispatch) => {
     dispatch({ type: GET_DRAFTS }); // 요청이 시작됨
     try {
-        const drafts = await Axios.get(`${apiUrl}/assignment-draft`, { withCredentials: true }); // API 호출
+        const drafts = await Axios.get(`${configs.SERVER_HOST}/assignment-draft`, { withCredentials: true }); // API 호출
         let draftDatas = drafts.data.map((d) => {
             if (d.contents_data) {
                 let unparsed = d.contents_data
@@ -123,7 +123,7 @@ export const postDraft =
             }
 
             const result = await Axios.post(
-                `${apiUrl}/assignment-draft`,
+                `${configs.SERVER_HOST}/assignment-draft`,
                 {
                     title: title,
                     description: description,
@@ -143,7 +143,7 @@ export const postDraft =
             //파일 업로드 선택시,
             let file_url = null;
             if (selectState === 'left') {
-                const result = await Axios.post(`${apiUrl}/files/requests-contents/${idx}`, attachFiles, { withCredentials: true });
+                const result = await Axios.post(`${configs.SERVER_HOST}/files/requests-contents/${idx}`, attachFiles, { withCredentials: true });
                 file_url = result.data.file_name;
             }
 
@@ -199,7 +199,7 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsDa
         }
 
         await Axios.patch(
-            `${apiUrl}/assignment-draft`,
+            `${configs.SERVER_HOST}/assignment-draft`,
             {
                 idx: idx,
                 title: title,
@@ -230,7 +230,7 @@ export const patchDraft = (cardData, inputs, timeInputs, toggleState, contentsDa
 export const copyDraft = (idx, title, originalCardData) => async (dispatch) => {
     dispatch({ type: COPY_DRAFT });
     try {
-        const result = await Axios.post(`${apiUrl}/assignment-draft/copy/${idx}`, { title: title }, { withCredentials: true });
+        const result = await Axios.post(`${configs.SERVER_HOST}/assignment-draft/copy/${idx}`, { title: title }, { withCredentials: true });
         const new_idx = result['data']['insertId'];
         // const actived_count = 0;
         // const class_name = null;
@@ -249,7 +249,7 @@ export const deleteDraft = (idx) => async (dispatch) => {
     dispatch({ type: DELETE_DRAFT }); // 요청이 시작됨
 
     try {
-        await Axios.delete(`${apiUrl}/assignment-draft/${idx}`, { withCredentials: true }); // API 호출
+        await Axios.delete(`${configs.SERVER_HOST}/assignment-draft/${idx}`, { withCredentials: true }); // API 호출
 
         dispatch({ type: DELETE_DRAFT_SUCCESS, idx }); // 성공
     } catch (e) {

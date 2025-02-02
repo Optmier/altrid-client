@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import GooglePlayBadge from '../../images/logos/google-play-badge.png';
-import channelIOAccessKey from '../../components/ChannelIO/accessKeys';
+import * as configs from '../../configs/config.json';
 import ChannelService from '../../components/ChannelIO/ChannelService';
 import generateHash from '../../components/ChannelIO/generateHash';
 import { Helmet } from 'react-helmet';
@@ -86,9 +86,9 @@ const Footer = styled.footer`
 
 function GuideMobileAppStore() {
     useEffect(() => {
-        if (channelIOAccessKey.pluginKey) {
+        if (configs.CHANNEL_TALK_PLUGIN_KEY) {
             ChannelService.boot({
-                pluginKey: channelIOAccessKey.pluginKey,
+                pluginKey: configs.CHANNEL_TALK_PLUGIN_KEY,
                 memberId: null,
                 hideChannelButtonOnBoot: true,
                 profile: {

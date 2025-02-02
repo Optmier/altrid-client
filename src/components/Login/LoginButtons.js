@@ -1,7 +1,7 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
 import KakaoLogin from 'react-kakao-login';
-import { googleAuthClientId, kakaoAuthJSKey } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import SimbolLoginWithKakao from '../../images/logos/simbol_login_with_kakao.svg';
 import styled from 'styled-components';
 
@@ -70,7 +70,7 @@ function LoginButtons({ onSuccessGoogleAuth, onFailedGoogleAuth, onSuccessKakaoA
             <AuthButtonsRoot {...rest} className="auth-buttons">
                 <GoogleLogin
                     className="button-auth google"
-                    clientId={googleAuthClientId}
+                    clientId={configs.GOOGLE_AUTH_CLIENT_ID}
                     buttonText={'구글로 시작하기'}
                     onSuccess={onSuccessGoogleAuth}
                     onFailure={onFailedGoogleAuth}
@@ -80,7 +80,7 @@ function LoginButtons({ onSuccessGoogleAuth, onFailedGoogleAuth, onSuccessKakaoA
                     <img alt="img.." className="simbol" src={SimbolLoginWithKakao} width="18" height="18" />
                     <KakaoLogin
                         className="button-auth kakao"
-                        jsKey={kakaoAuthJSKey}
+                        jsKey={configs.KAKAO_AUTH_JS_KEY}
                         buttonText={'카카오로 시작하기'}
                         getProfile
                         onSuccess={onSuccessKakaoAuth}

@@ -2,7 +2,7 @@
 import Axios from 'axios';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { openAlertSnackbar } from '../../redux_modules/alertMaker';
 
 function LoginMobileAppRedirect({ match, history }) {
@@ -16,7 +16,7 @@ function LoginMobileAppRedirect({ match, history }) {
         const userType = urlSearchParams.get('userType');
 
         Axios.post(
-            apiUrl + '/auth/' + userType,
+            configs.SERVER_HOST + '/auth/' + userType,
             {
                 email: email || '',
                 authId: authId || '',

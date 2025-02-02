@@ -1,6 +1,6 @@
 /* eslint-disable no-control-regex */
 import Axios from 'axios';
-import { apiUrl } from '../configs/configs';
+import * as configs from '../configs/config.json';
 import moment from 'moment';
 
 /* 액션 타입 선언 */
@@ -40,7 +40,7 @@ export const getActived = (num) => async (dispatch) => {
     dispatch({ type: GET_ACTIVED }); // 요청이 시작됨
 
     try {
-        const activedes = await Axios.get(`${apiUrl}/assignment-actived/${num}`, { withCredentials: true }); // API 호출
+        const activedes = await Axios.get(`${configs.SERVER_HOST}/assignment-actived/${num}`, { withCredentials: true }); // API 호출
 
         let activedDatas = activedes.data.map((d) => {
             if (d.contents_data) {
@@ -100,7 +100,7 @@ export const postActived = (cardData, num, due_date) => async (dispatch) => {
         const { idx, title, time_limit, description, subject, eyetrack, contents_data, file_url } = cardData;
         const class_number = num;
         await Axios.post(
-            `${apiUrl}/assignment-actived`,
+            `${configs.SERVER_HOST}/assignment-actived`,
             {
                 assignment_number: idx,
                 class_number: class_number,
@@ -133,12 +133,12 @@ export const patchActived = (idx, date) => async (dispatch) => {
         if (date) {
             date = moment(date).format('YYYY-MM-DD HH:mm:ss');
 
-            await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: date }, { withCredentials: true }); // API 호출
+            await Axios.patch(`${configs.SERVER_HOST}/assignment-actived`, { idx: idx, now: date }, { withCredentials: true }); // API 호출
             patchData = { idx: idx, due_date: date };
         }
         //과제 완료하는 경우,
         else {
-            await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: now }, { withCredentials: true }); // API 호출
+            await Axios.patch(`${configs.SERVER_HOST}/assignment-actived`, { idx: idx, now: now }, { withCredentials: true }); // API 호출
             patchData = { idx: idx, due_date: now };
         }
 
@@ -158,12 +158,12 @@ export const patchActivedOnly = (idx, date) => async (dispatch) => {
         if (date) {
             date = moment(date).format('YYYY-MM-DD HH:mm:ss');
 
-            await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: date }, { withCredentials: true }); // API 호출
+            await Axios.patch(`${configs.SERVER_HOST}/assignment-actived`, { idx: idx, now: date }, { withCredentials: true }); // API 호출
             patchData = { idx: idx, due_date: date };
         }
         //과제 완료하는 경우,
         else {
-            await Axios.patch(`${apiUrl}/assignment-actived`, { idx: idx, now: now }, { withCredentials: true }); // API 호출
+            await Axios.patch(`${configs.SERVER_HOST}/assignment-actived`, { idx: idx, now: now }, { withCredentials: true }); // API 호출
             patchData = { idx: idx, due_date: now };
         }
 
@@ -176,7 +176,7 @@ export const deleteActived = (idx) => async (dispatch) => {
     dispatch({ type: DELETE_ACTIVED }); // 요청이 시작됨
 
     try {
-        await Axios.delete(`${apiUrl}/assignment-actived/${idx}`, { withCredentials: true }); // API 호출
+        await Axios.delete(`${configs.SERVER_HOST}/assignment-actived/${idx}`, { withCredentials: true }); // API 호출
 
         dispatch({ type: DELETE_ACTIVED_SUCCESS, idx }); // 성공
     } catch (e) {

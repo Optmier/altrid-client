@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Axios from 'axios';
 import SmartTOFELRender from '../../components/TOFELRenderer/SmartTOFELRender';
 import { variance } from 'mathjs';
-import { apiUrl, buildMode } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import EyetrackerCore from '../../components/essentials/EyetrackerCore';
 import { useSelector, useDispatch } from 'react-redux';
 import { startTimer, addSecond } from '../../redux_modules/timer';
@@ -72,7 +72,7 @@ function AssignmentDoItNow({ history, match }) {
     };
 
     const upCountTries = () => {
-        Axios.patch(`${apiUrl}/assignment-result/tries`, { activedNumber: match.params.assignmentid }, { withCredentials: true })
+        Axios.patch(`${configs.SERVER_HOST}/assignment-result/tries`, { activedNumber: match.params.assignmentid }, { withCredentials: true })
             .then((res) => {
                 // console.log(res);
             })
@@ -142,7 +142,7 @@ function AssignmentDoItNow({ history, match }) {
             100.0;
         const scorePoints = acquiredPoints;
         Axios.patch(
-            `${apiUrl}/assignment-result`,
+            `${configs.SERVER_HOST}/assignment-result`,
             {
                 activedNumber: activedNumber,
                 scorePercentage: scorePercentage,
@@ -196,7 +196,7 @@ function AssignmentDoItNow({ history, match }) {
     };
 
     const getConditionForData = (sessions, classnum) => {
-        return classnum == '14' || sessions.academyCode === 'optmier_pilot' || buildMode === 'dev';
+        return classnum == '14' || sessions.academyCode === 'optmier_pilot' || configs.SERVICE_MODE === 'dev';
     };
 
     const onEnd = (time, isSubmitted, metadata, vocas) => {
@@ -214,7 +214,7 @@ function AssignmentDoItNow({ history, match }) {
             if (originalDatas.eyetrack && getConditionForData(sessions, classnum)) {
                 // 여기에 분석용 데이터 보내기
                 Axios.post(
-                    `${apiUrl}/data-analytics`,
+                    `${configs.SERVER_HOST}/data-analytics`,
                     {
                         activedNumber: match.params.assignmentid,
                         userData: metadata,
@@ -232,7 +232,7 @@ function AssignmentDoItNow({ history, match }) {
             // 단어장 목록 저장
             if (vocas && vocas.length) {
                 Axios.post(
-                    `${apiUrl}/vocas`,
+                    `${configs.SERVER_HOST}/vocas`,
                     { vocas: vocas, assignmentNumber: assignmentid, classNumber: classnum },
                     { withCredentials: true },
                 )
@@ -281,7 +281,7 @@ function AssignmentDoItNow({ history, match }) {
         if (!serverdate.datetime || serverdate.loading) return;
         const { classnum, assignmentid } = match.params;
 
-        Axios.get(`${apiUrl}/assignment-actived/${classnum}/${assignmentid}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/assignment-actived/${classnum}/${assignmentid}`, { withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 if (!res.data) {
@@ -298,7 +298,7 @@ function AssignmentDoItNow({ history, match }) {
                     window.close();
                 } else {
                     Axios.post(
-                        `${apiUrl}/assignment-result`,
+                        `${configs.SERVER_HOST}/assignment-result`,
                         { activedNumber: res.data.idx, eyetrack: res.data.eyetrack },
                         { withCredentials: true },
                     )

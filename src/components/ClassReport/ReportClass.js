@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import ColumnChartProblem from '../essentials/ColumnChartProblem';
 import ColumnChartType from '../essentials/ColumnChartType';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import { useSelector, useDispatch } from 'react-redux';
@@ -457,7 +457,7 @@ function ReportClass({ match, history }) {
                 mainReportDataLoading: true,
             });
             ///// 1. 메인 리포트 데이터
-            const mainRes = await Axios.get(`${apiUrl}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, {
+            const mainRes = await Axios.get(`${configs.SERVER_HOST}/assignment-actived/${parseInt(num)}/${parseInt(activedNum)}`, {
                 withCredentials: true,
             });
             let unparsedContentsData = mainRes.data.contents_data;
@@ -479,7 +479,7 @@ function ReportClass({ match, history }) {
             setMainReportData({ ...mainRes.data, contents_data: JSON.parse(unparsedContentsData) });
 
             ///// 2. 학생별 정보 데이터
-            const studentsRes = await Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
+            const studentsRes = await Axios.get(`${configs.SERVER_HOST}/assignment-result/${parseInt(activedNum)}`, {
                 params: {
                     classNumber: num,
                 },

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-pascal-case */
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 /** https://github.com/jeanlescure/short-unique-id
@@ -174,7 +174,7 @@ function Profile({ history }) {
         const saveDB = (_imgsrc) => {
             // 1. db에 저장...
             Axios.put(
-                `${apiUrl}/my-page/profile`,
+                `${configs.SERVER_HOST}/my-page/profile`,
                 {
                     name: name,
                     image: _imgsrc ? _imgsrc : null,
@@ -184,7 +184,7 @@ function Profile({ history }) {
                 .then((res) => {
                     //2. 세션 처리...
                     Axios.patch(
-                        `${apiUrl}/auth`,
+                        `${configs.SERVER_HOST}/auth`,
                         {
                             userName: name,
                             image: _imgsrc ? _imgsrc : null,
@@ -214,9 +214,9 @@ function Profile({ history }) {
 
             profImageForm.append(randomFileName, imgBlob, randomFileName);
 
-            Axios.post(`${apiUrl}/files/profile-images`, profImageForm, { withCredentials: true })
+            Axios.post(`${configs.SERVER_HOST}/files/profile-images`, profImageForm, { withCredentials: true })
                 .then((res) => {
-                    saveDB(apiUrl + '/files/' + res.data.file_name);
+                    saveDB(configs.SERVER_HOST + '/files/' + res.data.file_name);
                 })
                 .catch((err) => {
                     dispatch(openAlertSnackbar('프로필 이미지를 저장하는 도중 오류가 발생했습니다.', 'error'));
@@ -285,7 +285,7 @@ function Profile({ history }) {
 
     useEffect(() => {
         if (sessions.userType) {
-            Axios.get(`${apiUrl}/my-page/profile`, { withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/my-page/profile`, { withCredentials: true })
                 .then((res) => {
                     const { auth_with } = res.data;
 
@@ -316,7 +316,7 @@ function Profile({ history }) {
                 'defaultClose',
                 () => {
                     dispatch(closeAlertDialog());
-                    Axios.delete(`${apiUrl}/my-page/profile`, { withCredentials: true })
+                    Axios.delete(`${configs.SERVER_HOST}/my-page/profile`, { withCredentials: true })
                         .then((res) => {
                             dispatch(openAlertSnackbar('회원 탈퇴가 완료되었습니다.'));
                             setTimeout(() => {

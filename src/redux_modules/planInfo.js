@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { apiUrl } from '../configs/configs'; /* 액션 타입 선언 */
+import * as configs from '../configs/config.json'; /* 액션 타입 선언 */
 import { put, takeLatest } from 'redux-saga/effects';
 import { POST_DRAFT_SUCCESS, DELETE_DRAFT_SUCCESS, PATCH_DRAFT_SUCCESS, COPY_DRAFT_SUCCESS } from './assignmentDraft';
 import { POST_ACTIVED_SUCCESS, DELETE_ACTIVED_SUCCESS } from './assignmentActived';
@@ -23,10 +23,10 @@ export const getPlanInfo = (update) => async (dispatch, getState) => {
 
         try {
             const arr = await Promise.all([
-                Axios.get(`${apiUrl}/plan-info/students-num`, { withCredentials: true }),
-                Axios.get(`${apiUrl}/plan-info/teachers-num`, { withCredentials: true }),
-                Axios.get(`${apiUrl}/plan-info/assignment-drafts`, { withCredentials: true }),
-                Axios.get(`${apiUrl}/plan-info/assignment-actived`, { withCredentials: true }),
+                Axios.get(`${configs.SERVER_HOST}/plan-info/students-num`, { withCredentials: true }),
+                Axios.get(`${configs.SERVER_HOST}/plan-info/teachers-num`, { withCredentials: true }),
+                Axios.get(`${configs.SERVER_HOST}/plan-info/assignment-drafts`, { withCredentials: true }),
+                Axios.get(`${configs.SERVER_HOST}/plan-info/assignment-actived`, { withCredentials: true }),
             ]);
 
             dispatch({

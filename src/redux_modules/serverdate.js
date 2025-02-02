@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { apiUrl } from '../configs/configs';
+import * as configs from '../configs/config.json';
 
 /** Action types */
 const GET = 'serverdate/GET';
@@ -12,7 +12,7 @@ const UPDATE = 'serverdate/UPDATE';
 export const getServerDate = () => async (dispatch) => {
     dispatch({ type: GET });
     try {
-        const datetime = await Axios.get(`${apiUrl}/auth/datetime`, { withCredentials: true });
+        const datetime = await Axios.get(`${configs.SERVER_HOST}/auth/datetime`, { withCredentials: true });
 
         dispatch({ type: GET_SUCCESS, datetime: datetime['data'] });
     } catch (e) {
@@ -24,7 +24,7 @@ export const getServerDate = () => async (dispatch) => {
 export const updateServerDate = () => async (dispatch) => {
     dispatch({ type: UPDATE });
     try {
-        const datetime = await Axios.get(`${apiUrl}/auth/datetime`, { withCredentials: true });
+        const datetime = await Axios.get(`${configs.SERVER_HOST}/auth/datetime`, { withCredentials: true });
         dispatch({ type: UPDATE, datetime: datetime['data'] });
     } catch (e) {
         console.error(e);

@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import HtmlParser from 'react-html-parser';
 import ReactQuill from 'react-quill';
 import styled from 'styled-components';
-import { apiUrl } from '../../../configs/configs';
+import * as configs from '../../../configs/config.json';
 
 // 루트 페이퍼 스타일
 const RootContainer = styled.div`
@@ -123,7 +123,7 @@ const updateTeacherFeedbackInterface = (
     callback = { onSuccess: (response) => {}, onFailure: (error) => {} },
 ) => {
     Axios.patch(
-        `${apiUrl}/assignment-result/teacher-feedback`,
+        `${configs.SERVER_HOST}/assignment-result/teacher-feedback`,
         { assignmentNum: assignmentNum, studentId: studentId, contentsData: JSON.stringify(contentsData) },
         { withCredentials: true },
     )
@@ -142,7 +142,7 @@ const updateTeacherFeedbackInterface = (
  * @param {function} callback.onFailure
  */
 const getTeacherFeedbackInterface = (assignmentNum, studentId, callback = { onSuccess: (response) => {}, onFailure: (error) => {} }) => {
-    Axios.get(`${apiUrl}/assignment-result/teacher-feedback/${parseInt(assignmentNum)}/${studentId}`, { withCredentials: true })
+    Axios.get(`${configs.SERVER_HOST}/assignment-result/teacher-feedback/${parseInt(assignmentNum)}/${studentId}`, { withCredentials: true })
         .then((response) => {
             let results = { renderContents: '', deltaContents: null };
             try {

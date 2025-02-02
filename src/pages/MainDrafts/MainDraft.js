@@ -8,7 +8,7 @@ import Button from '../../AltridUI/Button/Button';
 import { Drawer, Grid, withStyles } from '@material-ui/core';
 import DraftCardItem from './components/DraftCardItem';
 import { getDrafts } from '../../redux_modules/assignmentDraft';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { getClasses, getClassesError } from '../../redux_modules/classes';
 import Axios from 'axios';
 import * as $ from 'jquery';
@@ -254,7 +254,7 @@ function MainDraft({ match, history, cardData, children }) {
         if (sessions.userType === 'teachers') {
             dispatch(getDrafts());
 
-            Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/classes/current`, { withCredentials: true })
                 .then((res) => {
                     dispatch(getClasses(res.data));
                 })
@@ -270,7 +270,7 @@ function MainDraft({ match, history, cardData, children }) {
         //수정의 경우 : 학생 데이터 없는 경우-> delete만 진행 // 있는 경우 -> delete 후 post작업 진행
         //삭제의 경우 : 무조건 delete
 
-        Axios.delete(`${apiUrl}/assignment-draft/${sessions.authId}`, { withCredentials: true })
+        Axios.delete(`${configs.SERVER_HOST}/assignment-draft/${sessions.authId}`, { withCredentials: true })
             .then((res1) => {
                 // // 수정버튼 클릭시
                 // if (name === 'modify') {
@@ -279,7 +279,7 @@ function MainDraft({ match, history, cardData, children }) {
                 //         alert('클래스 정보 수정이 완료되었습니다!');
                 //     } else {
                 //         Axios.post(
-                //             `${apiUrl}/students-in-class`,
+                //             `${configs.SERVER_HOST}/students-in-class`,
                 //             {
                 //                 classNumber: num,
                 //                 students: inputState.entry_new_students,
@@ -309,7 +309,7 @@ function MainDraft({ match, history, cardData, children }) {
 
     /** 과제 데이터 삭제 */
     const handleClassDelete = (name) => {
-        Axios.delete(`${apiUrl}/assignment-draft/${sessions.authId}`, { withCredentials: true })
+        Axios.delete(`${configs.SERVER_HOST}/assignment-draft/${sessions.authId}`, { withCredentials: true })
             .then((res) => {
                 //class table - name, description 삭제 완료!
                 handleStudentInClass(name); //수강생 데이터 처리...

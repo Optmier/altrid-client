@@ -6,7 +6,7 @@ import Dday from './components/Dday';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { Link } from 'react-router-dom';
 import ReactApexChart from 'react-apexcharts';
 import Button from '../../AltridUI/Button/Button';
@@ -395,18 +395,18 @@ function Dashboard({ match, history }) {
     const [classInfo, setClassInfo] = useState({ class_code: '', class_day: '', name: '', description: '' });
 
     useEffect(() => {
-        Axios.get(`${apiUrl}/meeting-room/livelecture`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/meeting-room/livelecture`, { withCredentials: true })
             .then((result) => {
                 Setmeetingroom(result.data);
             })
             .catch((err) => console.log(err));
 
-        Axios.get(`${apiUrl}/meeting-room`, { params: { classNumber: classNum }, withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/meeting-room`, { params: { classNumber: classNum }, withCredentials: true })
             .then((result) => {})
             .catch((err) => console.log(err));
 
         // 클래스 정보 가져오기
-        Axios.get(`${apiUrl}/classes/infos/${classNum}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/classes/infos/${classNum}`, { withCredentials: true })
             .then((result) => {
                 if (!result || !result.data) return;
                 setClassInfo({ ...classInfo, ...result.data });
@@ -415,7 +415,7 @@ function Dashboard({ match, history }) {
             .catch((err) => console.log(err));
 
         // 진행중인 과제 목록 불러오기
-        Axios.get(`${apiUrl}/assignment-actived/${num}/last-three`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/assignment-actived/${num}/last-three`, { withCredentials: true })
             .then((result) => {
                 // console.log(result.data);
                 if (!result.data || !result.data.length) return;
@@ -424,12 +424,12 @@ function Dashboard({ match, history }) {
             .catch((err) => console.log(err));
 
         // 랜덤 단어 가져오기
-        Axios.get(`${apiUrl}/vocas/random`, { params: { classNum: classNum }, withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/vocas/random`, { params: { classNum: classNum }, withCredentials: true })
             .then((result) => setword(result.data.word))
             .catch((err) => console.log(err));
 
         // 단어 진행률 가져오기
-        Axios.get(`${apiUrl}/vocas/progress`, { params: { classNum: classNum }, withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/vocas/progress`, { params: { classNum: classNum }, withCredentials: true })
             .then((result) => {
                 // console.log(result.data);
                 settotal(result.data);
@@ -442,24 +442,24 @@ function Dashboard({ match, history }) {
             .catch((err) => console.log(err));
 
         // 캠 스터디 목록 가져오기
-        Axios.get(`${apiUrl}/cam-study/all`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/cam-study/all`, { withCredentials: true })
             .then((result) => {
                 setroom(result.data);
             })
             .catch((err) => console.log(err));
 
         // 오늘 할 일 가져오기
-        Axios.get(`${apiUrl}/calendar-events/my/${num}/current/last-three`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/calendar-events/my/${num}/current/last-three`, { withCredentials: true })
             .then((result) => {
                 setTodos(result.data);
             })
             .catch((err) => console.log(err));
 
         // 최근 과제 데이터 가져오기
-        Axios.get(`${apiUrl}/assignment-result/last-my-actived/${classNum}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/assignment-result/last-my-actived/${classNum}`, { withCredentials: true })
             .then((result) => {
                 if (!result.data) return;
-                Axios.get(`${apiUrl}/assignment-result/${result.data.actived_number}`, {
+                Axios.get(`${configs.SERVER_HOST}/assignment-result/${result.data.actived_number}`, {
                     params: {
                         classNumber: classNum,
                     },
@@ -476,7 +476,7 @@ function Dashboard({ match, history }) {
             .catch((err) => console.log(err));
 
         // 옵타이머 데이터
-        Axios.get(`${apiUrl}/optimer/${num}/${sessions.authId}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/optimer/${num}/${sessions.authId}`, { withCredentials: true })
             .then((result) => {
                 if (!result.data.time_mon) {
                     return;
