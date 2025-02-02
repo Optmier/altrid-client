@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { apiUrl } from '../configs/configs';
+import * as configs from '../configs/config.json';
 
 /** action types */
 const FETCH_VOCA_DATAS = 'vocaLearnings/FETCH_VOCA_DATAS';
@@ -13,7 +13,7 @@ const UPDATE_VOCA_DATAS_FAILED = 'vocaLearnings/UPDATE_VOCA_DATAS_FAILED';
 export const fetchVocaDatas = (limit, classNum) => async (dispatch) => {
     dispatch({ type: FETCH_VOCA_DATAS });
     try {
-        const vocaDatas = await Axios.get(`${apiUrl}/vocas/learning-list`, {
+        const vocaDatas = await Axios.get(`${configs.SERVER_HOST}/vocas/learning-list`, {
             params: { limit: limit, classNum: classNum },
             withCredentials: true,
         });
@@ -27,7 +27,7 @@ export const fetchVocaDatas = (limit, classNum) => async (dispatch) => {
 export const updateVocaDatas = (idx, classNum, data) => async (dispatch) => {
     dispatch({ type: UPDATE_VOCA_DATAS });
     try {
-        const updateResult = await Axios.patch(`${apiUrl}/vocas`, { ...data, idx: idx, classNum: classNum }, { withCredentials: true });
+        const updateResult = await Axios.patch(`${configs.SERVER_HOST}/vocas`, { ...data, idx: idx, classNum: classNum }, { withCredentials: true });
         dispatch({ type: UPDATE_VOCA_DATAS_SUCCESS });
     } catch (e) {
         console.error(e);

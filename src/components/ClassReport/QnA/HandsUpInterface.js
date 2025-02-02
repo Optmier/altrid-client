@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { apiUrl } from '../../../configs/configs';
+import * as configs from '../../../configs/config.json';
 
 /** 선생님께 궁금한 문제 손들기
  * @param {object[]} problemDatas
@@ -8,7 +8,7 @@ import { apiUrl } from '../../../configs/configs';
  */
 const handsUpProblems = (problemDatas, callback = { onSuccess: (response) => {}, onFailure: (error) => {} }) => {
     const data = problemDatas.map((d) => Object.keys(d).map((e) => d[e]));
-    Axios.post(`${apiUrl}/hands-up`, data, { withCredentials: true })
+    Axios.post(`${configs.SERVER_HOST}/hands-up`, data, { withCredentials: true })
         .then((response) => {
             callback.onSuccess(response);
         })
@@ -23,7 +23,7 @@ const handsUpProblems = (problemDatas, callback = { onSuccess: (response) => {},
  * @param {function} callback.onFailure
  */
 const deleteHandsUpProblems = (problemIds, callback = { onSuccess: (response) => {}, onFailure: (error) => {} }) => {
-    Axios.delete(`${apiUrl}/hands-up`, { data: { problemIds: problemIds.map((id) => `'${id}'`).join(',') }, withCredentials: true })
+    Axios.delete(`${configs.SERVER_HOST}/hands-up`, { data: { problemIds: problemIds.map((id) => `'${id}'`).join(',') }, withCredentials: true })
         .then((response) => {
             callback.onSuccess(response);
         })
@@ -38,7 +38,7 @@ const deleteHandsUpProblems = (problemIds, callback = { onSuccess: (response) =>
  * @param {function} callback.onFailure
  */
 const getHandsUpFromStudents = (assignmentNo, callback = { onSuccess: (response) => {}, onFailure: (error) => {} }) => {
-    Axios.get(`${apiUrl}/hands-up/${assignmentNo}`, { withCredentials: true })
+    Axios.get(`${configs.SERVER_HOST}/hands-up/${assignmentNo}`, { withCredentials: true })
         .then((response) => {
             callback.onSuccess(response);
         })
@@ -54,7 +54,7 @@ const getHandsUpFromStudents = (assignmentNo, callback = { onSuccess: (response)
  * @param {function} callback.onFailure
  */
 const getHandsUpProblems = (studentId, assignmentNo, callback = { onSuccess: (response) => {}, onFailure: (error) => {} }) => {
-    Axios.get(`${apiUrl}/hands-up/${studentId}/${assignmentNo}`, { withCredentials: true })
+    Axios.get(`${configs.SERVER_HOST}/hands-up/${studentId}/${assignmentNo}`, { withCredentials: true })
         .then((response) => {
             callback.onSuccess(response);
         })
@@ -68,7 +68,7 @@ const getHandsUpProblems = (studentId, assignmentNo, callback = { onSuccess: (re
  */
 const selectHansUpProblems = (problemIds) => {
     return Axios.patch(
-        `${apiUrl}/hands-up/selected`,
+        `${configs.SERVER_HOST}/hands-up/selected`,
         { selected: true, problemIds: problemIds.map((id) => `'${id}'`).join(',') },
         { withCredentials: true },
     );
@@ -79,7 +79,7 @@ const selectHansUpProblems = (problemIds) => {
  */
 const unselectHandsUpProblems = (problemIds) => {
     return Axios.patch(
-        `${apiUrl}/hands-up/selected`,
+        `${configs.SERVER_HOST}/hands-up/selected`,
         { selected: false, problemIds: problemIds.map((id) => `'${id}'`).join(',') },
         { withCredentials: true },
     );
@@ -91,7 +91,7 @@ const unselectHandsUpProblems = (problemIds) => {
  * @param {function} callback.onFailure
  */
 const getSelectedHandsUpProblems = (assignmentNo, callback = { onSuccess: (response) => {}, onFailure: (error) => {} }) => {
-    Axios.get(`${apiUrl}/hands-up/selected/${assignmentNo}`, { withCredentials: true })
+    Axios.get(`${configs.SERVER_HOST}/hands-up/selected/${assignmentNo}`, { withCredentials: true })
         .then((response) => {
             callback.onSuccess(response);
         })

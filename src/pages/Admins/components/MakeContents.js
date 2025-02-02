@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import TOFELEditor from '../../../components/TOFELEditor/TOFELEditor';
 import * as $ from 'jquery';
-import { apiUrl } from '../../../configs/configs';
+import * as configs from '../../../configs/config.json';
 import styled from 'styled-components';
 
 const InfoContainer = styled.div`
@@ -17,7 +17,7 @@ function MakeContents({ match, history }) {
     useEffect(() => {
         $('.tofel-editor-root').css({ 'z-index': 1111, position: 'relative' });
         const { id } = match.params;
-        Axios.get(`${apiUrl}/assignment-admin/${id}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/assignment-admin/${id}`, { withCredentials: true })
             .then((res) => {
                 const { title, time_limit, eyetrack, contents_data, file_url } = res.data;
                 let dataParsed = [

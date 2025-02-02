@@ -310,7 +310,7 @@ function TOFELEditor({
   };
 
   const handleSaveContents = () => {
-    if (id) axios__WEBPACK_IMPORTED_MODULE_12___default.a.patch(`${_configs_configs__WEBPACK_IMPORTED_MODULE_13__["apiUrl"]}/assignment-admin/${id}`, {
+    if (id) axios__WEBPACK_IMPORTED_MODULE_12___default.a.patch(`${_configs_configs__WEBPACK_IMPORTED_MODULE_13__["configs.SERVER_HOST"]}/assignment-admin/${id}`, {
       contentsData: JSON.stringify(metadata)
     }, {
       withCredentials: true
@@ -333,7 +333,7 @@ function TOFELEditor({
   const handleDeleteContents = () => {
     const conf = window.confirm('정말로 삭제하시겠습니까?\n삭제 후에는 복구가 불가합니다.');
     if (!conf) return;
-    if (id) axios__WEBPACK_IMPORTED_MODULE_12___default.a.delete(`${_configs_configs__WEBPACK_IMPORTED_MODULE_13__["apiUrl"]}/assignment-admin/${id}`, {
+    if (id) axios__WEBPACK_IMPORTED_MODULE_12___default.a.delete(`${_configs_configs__WEBPACK_IMPORTED_MODULE_13__["configs.SERVER_HOST"]}/assignment-admin/${id}`, {
       withCredentials: true
     }).then(res => {
       setAlertBarOption({
@@ -616,7 +616,7 @@ function TOFELEditor({
       columnNumber: 25
     }
   }), requestFile ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(_material_ui_core__WEBPACK_IMPORTED_MODULE_0__["Button"], {
-    href: `${_configs_configs__WEBPACK_IMPORTED_MODULE_13__["apiUrl"]}/files/${requestFile}`,
+    href: `${_configs_configs__WEBPACK_IMPORTED_MODULE_13__["configs.SERVER_HOST"]}/files/${requestFile}`,
     download: requestFile.substring(requestFile.indexOf('_') + 1).substring(requestFile.lastIndexOf('/') + 1),
     color: "inherit",
     style: {

@@ -34,7 +34,7 @@ import QuillEditorToolbarOption from './QuillEditorToolbarOption';
 import ProblemCard from './ProblemCard';
 import SmartTOFELRender from '../TOFELRenderer/SmartTOFELRender';
 import Axios from 'axios';
-import { apiUrl, gcvApiKey } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { withRouter } from 'react-router-dom';
 import { Alert } from '@material-ui/lab';
 import { useBeforeunload } from 'react-beforeunload';
@@ -442,7 +442,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
         console.log(id);
         if (id)
             Axios.patch(
-                `${apiUrl}/assignment-admin/${id}`,
+                `${configs.SERVER_HOST}/assignment-admin/${id}`,
                 {
                     contentsData: JSON.stringify(metadata),
                 },
@@ -471,7 +471,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
                 () => {
                     dispatch(closeAlertDialog());
                     if (id)
-                        Axios.delete(`${apiUrl}/assignment-admin/${id}`, { withCredentials: true })
+                        Axios.delete(`${configs.SERVER_HOST}/assignment-admin/${id}`, { withCredentials: true })
                             .then((res) => {
                                 dispatch(openAlertSnackbar('삭제되었습니다.'));
                                 setTimeout(() => {
@@ -899,7 +899,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
                             {requestFile ? (
                                 <EdToolbarButton
                                     className="normal"
-                                    href={`${apiUrl}/files/${requestFile}`}
+                                    href={`${configs.SERVER_HOST}/files/${requestFile}`}
                                     download={requestFile
                                         .substring(requestFile.indexOf('_') + 1)
                                         .substring(requestFile.lastIndexOf('/') + 1)}
@@ -908,7 +908,7 @@ function TOFELEditor({ id, datas, timeLimit, requestFile, mode, subject, onChang
                                     첨부파일(F)
                                 </EdToolbarButton>
                             ) : null}
-                            <GoogleCloudVisionOCR apiKey={gcvApiKey} applyButtonText="본문에 추가" onApply={applyGCV}>
+                            <GoogleCloudVisionOCR apiKey={configs.GOOGLE_CLOUD_VISION_API_KEY} applyButtonText="본문에 추가" onApply={applyGCV}>
                                 <EdToolbarButton className="normal" style={{ minWidth: 128, marginRight: 16, marginLeft: 16 }}>
                                     이미지로 추가
                                 </EdToolbarButton>

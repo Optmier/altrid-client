@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import EyeTrackPattern from './EyeTrackPattern';
 import EyetrackingPlayer from '../TOFELRenderer/EyetrackingPlayer';
 import { AccordionDetails, AccordionSummary, withStyles } from '@material-ui/core';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json'
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -184,7 +184,7 @@ function EyeTrackBox({
     };
 
     useEffect(() => {
-        Axios.get(`${apiUrl}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
+        Axios.get(`${configs.SERVER_HOST}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
             params: {
                 userId: userId,
             },

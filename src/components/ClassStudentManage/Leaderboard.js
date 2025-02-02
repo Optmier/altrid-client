@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 
 function createData(name: string, time: number, achive: number) {
     return { name, time: `${Math.floor(time / 60000)}분 ${Math.floor((time % 60000) / 1000)}초`, achive };
@@ -117,7 +117,7 @@ const NumberSpan = styled.span`
 function Leaderboard({ classNum }) {
     const [row, setRow] = useState([]);
     useEffect(() => {
-        Axios.get(`${apiUrl}/optimer/${classNum}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/optimer/${classNum}`, { withCredentials: true })
             .then((res) => {
                 if (!res.data || !res.data.length) return;
                 setRow(res.data.map((d) => createData(d.name, d.time_total)));

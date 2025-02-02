@@ -10,7 +10,7 @@ import EyeTrackBox from './EyeTrackBox';
 import { Link } from '@material-ui/core';
 import TimeTrackBox from './TimeTrackBox';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import moment from 'moment-timezone';
 import getAchieveValueForTypes from '../essentials/GetAchieveValueForTypes';
 import { useSelector, useDispatch } from 'react-redux';
@@ -461,7 +461,7 @@ function ReportStudent({ history, match }) {
             });
             return;
         }
-        Axios.post(`${apiUrl}/auth/check-email-self`, { email: eraseConfirmTeacherEmailField.current.value }, { withCredentials: true })
+        Axios.post(`${configs.SERVER_HOST}/auth/check-email-self`, { email: eraseConfirmTeacherEmailField.current.value }, { withCredentials: true })
             .then((res) => {
                 // console.log(res);
                 if (res.data.ok) {
@@ -478,7 +478,7 @@ function ReportStudent({ history, match }) {
                             'defaultClose',
                             () => {
                                 dispatch(closeAlertDialog());
-                                Axios.delete(`${apiUrl}/assignment-result/${activedNum}/${queryUserId}`, { withCredentials: true })
+                                Axios.delete(`${configs.SERVER_HOST}/assignment-result/${activedNum}/${queryUserId}`, { withCredentials: true })
                                     .then((res) => {
                                         // console.log(res);
                                         dispatch(openAlertSnackbar('리포트 초기화가 완료되었습니다.'));
@@ -560,7 +560,7 @@ function ReportStudent({ history, match }) {
     );
 
     useEffect(() => {
-        Axios.get(`${apiUrl}/assignment-result/${parseInt(activedNum)}`, {
+        Axios.get(`${configs.SERVER_HOST}/assignment-result/${parseInt(activedNum)}`, {
             params: {
                 classNumber: num,
             },
@@ -569,7 +569,7 @@ function ReportStudent({ history, match }) {
             .then((res) => {
                 if (!res.data) return;
                 setPrevStudentData(res.data['prev'].filter((p) => p.student_id === queryUserId)[0] || null);
-                Axios.get(`${apiUrl}/assignment-result/contents-data/${parseInt(activedNum)}`, {
+                Axios.get(`${configs.SERVER_HOST}/assignment-result/contents-data/${parseInt(activedNum)}`, {
                     params: {
                         classNumber: num,
                     },
@@ -868,7 +868,7 @@ function ReportStudent({ history, match }) {
                             onSuccess() {
                                 setHandsUpList(handsUpList.filter((idx) => idx !== index));
                                 Axios.patch(
-                                    `${apiUrl}/data-analytics/hands-up`,
+                                    `${configs.SERVER_HOST}/data-analytics/hands-up`,
                                     {
                                         assignmentNo: result.assignmentNo,
                                         questionIds: [result.questionId],
@@ -888,7 +888,7 @@ function ReportStudent({ history, match }) {
                             onSuccess() {
                                 setHandsUpList([...handsUpList, index]);
                                 Axios.patch(
-                                    `${apiUrl}/data-analytics/hands-up`,
+                                    `${configs.SERVER_HOST}/data-analytics/hands-up`,
                                     {
                                         assignmentNo: result.assignmentNo,
                                         questionIds: [result.questionId],

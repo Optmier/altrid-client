@@ -6,7 +6,7 @@ import queryString from 'query-string';
 import MenuData from '../../datas/MenuData.json';
 import { useDispatch, useSelector } from 'react-redux';
 import Axios from 'axios';
-import { apiUrl, tossPaymentsClientKey } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { loadTossPayments } from '@tosspayments/sdk';
 /** https://github.com/jeanlescure/short-unique-id
  * Copyright (c) 2018-2020 Short Unique ID Contributors.
@@ -122,7 +122,7 @@ function Confirm({ location, history }) {
             usedAfterUnits.push('m');
         }
         Axios.post(
-            `${apiUrl}/payments/coupon-history`,
+            `${configs.SERVER_HOST}/payments/coupon-history`,
             {
                 couponIds: couponIds,
                 orderNos: orderNos,
@@ -165,7 +165,7 @@ function Confirm({ location, history }) {
                         // 플랜 변경 신청을 취소하면 현재 플랜으로 업데이트 해서 원래 플랜으로 돌아감
                         const idx = currentPlans.idx;
                         Axios.patch(
-                            `${apiUrl}/payments/order-history/mod-next-plan`,
+                            `${configs.SERVER_HOST}/payments/order-history/mod-next-plan`,
                             {
                                 orderIdx: idx,
                                 nextPlanId: currentPlans.plan_id,
@@ -205,7 +205,7 @@ function Confirm({ location, history }) {
                                 // 유효한 플랜이 있으면 현재 유효한 플랜에서 다음 플랜을 변동시킴
                                 const idx = currentPlans.idx;
                                 Axios.patch(
-                                    `${apiUrl}/payments/order-history/mod-next-plan`,
+                                    `${configs.SERVER_HOST}/payments/order-history/mod-next-plan`,
                                     {
                                         orderIdx: idx,
                                         nextPlanId: productPlanId,
@@ -226,7 +226,7 @@ function Confirm({ location, history }) {
                                 // 다만 무료 플랜을 선택한 경우에는 원래 유효한 플랜이 있는 상태에서 변경 가능하므로, 없는 경우는 에러처리함.
                                 if (productPlan === 'Free') {
                                     // alert('오류 발생으로 관리자에게 문의 바랍니다!');
-                                    Axios.patch(`${apiUrl}/payments/plan-free`, {}, { withCredentials: true })
+                                    Axios.patch(`${configs.SERVER_HOST}/payments/plan-free`, {}, { withCredentials: true })
                                         .then((res) => {
                                             window.location.href = window.location.origin + '/pay-state/success';
                                         })
@@ -237,7 +237,7 @@ function Confirm({ location, history }) {
                                 }
                                 const newOrderNo = currentDate.getTime() + '_' + generateUid.current(11);
                                 Axios.post(
-                                    `${apiUrl}/payments/order-history`,
+                                    `${configs.SERVER_HOST}/payments/order-history`,
                                     {
                                         orderNo: newOrderNo,
                                         planId: productPlanId,
@@ -259,11 +259,11 @@ function Confirm({ location, history }) {
                                         console.error(orderErr);
                                     });
                             }
-                            // Axios.post(`${apiUrl}/payments/order-history`, {}, { withCredentials: true })
+                            // Axios.post(`${configs.SERVER_HOST}/payments/order-history`, {}, { withCredentials: true })
                             //     .then((orderResults) => {
                             //         console.log(orderResults);
 
-                            //         Axios.post(`${apiUrl}/payments/coupon-history`, {}, { withCredentials: true })
+                            //         Axios.post(`${configs.SERVER_HOST}/payments/coupon-history`, {}, { withCredentials: true })
                             //             .then((giveCouponResults) => {
                             //                 console.log(giveCouponResults);
                             //             })
@@ -316,7 +316,7 @@ function Confirm({ location, history }) {
             setAcademyApproved(sessions.academyApproved);
             setNowPlan(sessions.academyPlanId === 1 ? 'Free' : sessions.academyPlanId === 2 ? 'Standard' : 'Premium');
 
-            Axios.get(`${apiUrl}/payments/coupon-menus`, { params: { searchAll: false }, withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/payments/coupon-menus`, { params: { searchAll: false }, withCredentials: true })
                 .then((coupons) => {
                     //console.log(coupons.data);
                     setCouponMenus(coupons.data);
@@ -327,7 +327,7 @@ function Confirm({ location, history }) {
                 });
 
             // 현재 유효한 플랜이 있는지 검사
-            Axios.get(`${apiUrl}/payments/order-history/current-valid`, {
+            Axios.get(`${configs.SERVER_HOST}/payments/order-history/current-valid`, {
                 params: { planId: sessions.academyPlanId },
                 withCredentials: true,
             })
@@ -342,7 +342,7 @@ function Confirm({ location, history }) {
                     console.error('현재 유효한 플랜 정보를 불러오는데 오류가 발생했습니다.', validPlanError);
                 });
 
-            Axios.get(`${apiUrl}/payments/payment-info`, { withCredentials: true })
+            Axios.get(`${configs.SERVER_HOST}/payments/payment-info`, { withCredentials: true })
                 .then((res) => {
                     //console.log(res.data);
                     if (res.data && res.data.length > 0) {
@@ -356,7 +356,7 @@ function Confirm({ location, history }) {
                     setIsPaymentsExists(false);
                 });
 
-            loadTossPayments(tossPaymentsClientKey)
+            loadTossPayments(configs.TOSS_PAYMENTS_CLIENT_KEY)
                 .then((res) => {
                     tossPayments.current = res;
                 })

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/nav_left.scss';
 import { NavLink, withRouter } from 'react-router-dom';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentVideoLectures, setStudentsNum, updateLiveCounts } from '../../redux_modules/currentClass';
 import styled from 'styled-components';
@@ -303,7 +303,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     //     setAnchorEl(null);
     // };
     const fetchClassLists = () => {
-        Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/classes/current`, { withCredentials: true })
             .then((res) => {
                 dispatch(getClassLists(res.data));
             })
@@ -315,7 +315,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     useEffect(() => {
         if (!sessions || !sessions.userType || !sessions.academyName || !serverdate.datetime) return;
 
-        Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/students-in-class/${num}`, { withCredentials: true })
             .then((res) => {
                 setStudentData(res.data);
                 setStudentsNumber(res.data.length || 0);
@@ -324,7 +324,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                 console.error(err);
             });
 
-        Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/classes/class/${num}`, { withCredentials: true })
             .then((res) => {
                 setTeacherData(res.data[0]);
             })
@@ -335,7 +335,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
         fetchClassLists();
 
         if (id === 'vid-lecture') {
-            Axios.get(`${apiUrl}/meeting-room`, {
+            Axios.get(`${configs.SERVER_HOST}/meeting-room`, {
                 params: {
                     creatorId: sessions.userType === 'students' ? null : sessions.authId,
                     classNumber: num,
@@ -367,7 +367,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                         else {
                             if (!hasVideoLecture) setHasVideoLecture(true);
                             filteredList.current.push({ ...res.data[i], liveCounts: 0 });
-                            Axios.get(`${apiUrl}/meeting-room/live-counts/${res.data[i].room_id}`, { withCredentials: true })
+                            Axios.get(`${configs.SERVER_HOST}/meeting-room/live-counts/${res.data[i].room_id}`, { withCredentials: true })
                                 .then((counts) => {
                                     if (counts.data !== null || counts.data !== undefined) {
                                         updateVideoLiveCounts(res.data[i].room_id, counts.data);
@@ -379,7 +379,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
                             // 라이브 카운터 등록
                             if (!window.liveCountsInterval[res.data[i].room_id]) {
                                 window.liveCountsInterval[res.data[i].room_id] = setInterval(() => {
-                                    Axios.get(`${apiUrl}/meeting-room/live-counts/${res.data[i].room_id}`, { withCredentials: true })
+                                    Axios.get(`${configs.SERVER_HOST}/meeting-room/live-counts/${res.data[i].room_id}`, { withCredentials: true })
                                         .then((counts) => {
                                             if (counts.data !== null || counts.data !== undefined) {
                                                 updateVideoLiveCounts(res.data[i].room_id, counts.data);
@@ -423,7 +423,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
     }
 
     useEffect(() => {
-        Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/classes/class/${num}`, { withCredentials: true })
             .then((res1) => {
                 setCodeState(res1.data[0].class_code);
             })
@@ -432,7 +432,7 @@ function LeftNav({ match, history, leftNavState, handleLeftNav, setLeftNavState 
             });
     }, []);
     useEffect(() => {
-        Axios.get(`${apiUrl}/assignment-actived/${num}`, { withCredentials: true }).then((result) => setassignment(result.data));
+        Axios.get(`${configs.SERVER_HOST}/assignment-actived/${num}`, { withCredentials: true }).then((result) => setassignment(result.data));
     }, []);
 
     const [expanded, setExpanded] = useState('student-my-study-subs');

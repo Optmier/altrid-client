@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { apiUrl } from '../configs/configs';
+import * as configs from '../configs/config.json';
 
 // interface DashboardDDayInterface {
 //     save(callback): void;
@@ -24,7 +24,7 @@ export default class DashboardDDay {
         });
     }
     init(callback = function (resultMessage: string, response: object) {}) {
-        Axios.post(`${apiUrl}/personal-settings/my/${this.classNumber}/dday`, { value: '' }, { withCredentials: true })
+        Axios.post(`${configs.SERVER_HOST}/personal-settings/my/${this.classNumber}/dday`, { value: '' }, { withCredentials: true })
             .then((res) => {
                 callback('success', res);
             })
@@ -33,7 +33,7 @@ export default class DashboardDDay {
             });
     }
     save(dateStr, title, callback = function (resultMessage: string, response: object) {}) {
-        Axios.patch(`${apiUrl}/personal-settings/my/${this.classNumber}/dday`, { value: dateStr, title }, { withCredentials: true })
+        Axios.patch(`${configs.SERVER_HOST}/personal-settings/my/${this.classNumber}/dday`, { value: dateStr, title }, { withCredentials: true })
             .then((res) => {
                 callback('success', res);
             })
@@ -42,7 +42,7 @@ export default class DashboardDDay {
             });
     }
     fetch(callback = function (resultMessage: string, response: object) {}) {
-        Axios.get(`${apiUrl}/personal-settings/my/${this.classNumber}/dday`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/personal-settings/my/${this.classNumber}/dday`, { withCredentials: true })
             .then((res) => {
                 callback('success', res);
             })

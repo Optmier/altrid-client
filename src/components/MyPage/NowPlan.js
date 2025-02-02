@@ -4,7 +4,7 @@ import PlanInfo from '../../datas/PlanInfo.json';
 import { useDispatch, useSelector } from 'react-redux';
 import BackdropComponent from '../essentials/BackdropComponent';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import moment from 'moment-timezone';
 import { withRouter } from 'react-router';
 import '../../styles/mypage.scss';
@@ -124,7 +124,7 @@ function NowPlan({ history }) {
             setNowPlan(academyPlanId === 1 ? 'Free' : academyPlanId === 2 ? 'Standard' : 'Premium');
 
             // 현재 유효한 플랜이 있는지 검사
-            Axios.get(`${apiUrl}/payments/order-history/current-valid`, {
+            Axios.get(`${configs.SERVER_HOST}/payments/order-history/current-valid`, {
                 params: { planId: academyPlanId },
                 withCredentials: true,
             })

@@ -1,7 +1,7 @@
 /* eslint-disable no-control-regex */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import Axios from 'axios';
 import Chart from 'react-apexcharts';
 import styled from 'styled-components';
@@ -206,7 +206,7 @@ function EyeTrackChart({
 
     // console.log(activedNum);
     useEffect(() => {
-        Axios.get(`${apiUrl}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
+        Axios.get(`${configs.SERVER_HOST}/assignment-result/eyetrack-data/${parseInt(activedNum)}`, {
             params: {
                 userId: userId,
             },

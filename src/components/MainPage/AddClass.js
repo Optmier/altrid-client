@@ -4,7 +4,7 @@ import { Button, withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import * as $ from 'jquery';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { openAlertSnackbar } from '../../redux_modules/alertMaker';
@@ -45,8 +45,8 @@ function AddClass({ handleClose, history }) {
 
         try {
             const res = await Promise.all([
-                Axios.get(`${apiUrl}/classes/class-code/${inputState}`, { withCredentials: true }),
-                Axios.get(`${apiUrl}/plan-info/students-num`, { withCredentials: true }),
+                Axios.get(`${configs.SERVER_HOST}/classes/class-code/${inputState}`, { withCredentials: true }),
+                Axios.get(`${configs.SERVER_HOST}/plan-info/students-num`, { withCredentials: true }),
             ]);
 
             // 1. 해당 클래스 코드가 존재하는지 조회
@@ -66,7 +66,7 @@ function AddClass({ handleClose, history }) {
             } else {
                 /** acadamey code 값, token refresh */
                 Axios.patch(
-                    `${apiUrl}/auth`,
+                    `${configs.SERVER_HOST}/auth`,
                     {
                         academyCode: res[0].data[0]['academy_code'],
                     },
@@ -82,7 +82,7 @@ function AddClass({ handleClose, history }) {
 
                 /**  특정 학원생 academy code update */
                 Axios.put(
-                    `${apiUrl}/students/academy-code`,
+                    `${configs.SERVER_HOST}/students/academy-code`,
                     {
                         academyCode: res[0].data[0]['academy_code'],
                     },
@@ -98,7 +98,7 @@ function AddClass({ handleClose, history }) {
 
                 /** student-in-class table에 학생 정보 insert */
                 Axios.post(
-                    `${apiUrl}/students-in-class`,
+                    `${configs.SERVER_HOST}/students-in-class`,
                     {
                         class_number: res[0].data[0]['idx'],
                         student_id: sessions.authId,

@@ -3,12 +3,12 @@
 # dependencies
 /node_modules
 
-
 /.pnp
 .pnp.js
 
 # configs
 /src/configs
+/configs
 
 # testing
 /coverage
@@ -26,7 +26,5 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-src/configs.zip
 
 /.vscode
-src/components/ChannelIO/accessKeys.js

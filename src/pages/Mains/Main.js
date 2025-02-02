@@ -3,10 +3,10 @@ import { Drawer } from '@material-ui/core';
 import '../../styles/main_page.scss';
 import CreateNewEntry from '../../components/MainPage/CreateNewEntry';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { useSelector } from 'react-redux';
 import AddClass from '../../components/MainPage/AddClass';
-import { $_classDefault } from '../../configs/front_urls';
+import { $_classDefault } from '../../constants/front_urls';
 import { makeStyles } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
@@ -179,7 +179,7 @@ function Main({ history }) {
     // };
 
     const fetchCardData = () => {
-        Axios.get(`${apiUrl}/classes/current`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/classes/current`, { withCredentials: true })
             .then((res) => {
                 setCardDatas(res.data);
             })

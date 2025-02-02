@@ -2,7 +2,7 @@
 import Axios from 'axios';
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import EyetrackerCore from '../essentials/EyetrackerCore';
 import io from 'socket.io-client';
 import { useBeforeunload } from 'react-beforeunload';
@@ -29,7 +29,7 @@ function VideoLectureEyetracker({ match, history }) {
         window.vidLecEyetrackCablib = true;
         // otp 생성
         Axios.post(
-            `${apiUrl}/meeting-room/otp`,
+            `${configs.SERVER_HOST}/meeting-room/otp`,
             {
                 roomId: roomId,
                 username: sessions.userName,
@@ -123,7 +123,7 @@ function VideoLectureEyetracker({ match, history }) {
             window.close();
             return;
         }
-        socket.current = io.connect(`${apiUrl}/vid_lecture`);
+        socket.current = io.connect(`${configs.SERVER_HOST}/vid_lecture`);
         socket.current.on('connected', (id) => {});
         socket.current.on('joined', (msg) => {
             console.log('joined >> ', msg);

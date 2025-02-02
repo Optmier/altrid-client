@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import * as $ from 'jquery';
 import BackdropComponent2 from './BackdropComponent2';
 import styled from 'styled-components';
-import { buildMode } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import '../../styles/eyetracker_core.scss';
 import StepHome from '../EyetrackerStep/StepHome';
 import StepBox from '../EyetrackerStep/StepBox';
@@ -209,7 +209,7 @@ function EyetrackerCore({ step, userAnswer, onChange, onAfterCalib, onStop, onUp
         completedCalib = true;
         Webgazer.removeMouseEventListeners();
         Webgazer.setVideoViewerSize(0, 0);
-        if (buildMode === 'prod') Webgazer.showPredictionPoints(false);
+        if (configs.SERVICE_MODE === 'prod') Webgazer.showPredictionPoints(false);
         onAfterCalib();
     };
 

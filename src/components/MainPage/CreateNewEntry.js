@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames';
 import * as $ from 'jquery';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
-import { $_classDefault } from '../../configs/front_urls';
+import * as configs from '../../configs/config.json';
+import { $_classDefault } from '../../constants/front_urls';
 import styled from 'styled-components';
 import ShortUniqueId from 'short-unique-id';
 import DrawerGroupBox from '../../AltridUI/Drawer/DrawerGroupBox';
@@ -83,7 +83,7 @@ function CreateNewEntry({ history, handleClose }) {
             .map((i) => daysArr.push(i));
 
         Axios.post(
-            `${apiUrl}/classes`,
+            `${configs.SERVER_HOST}/classes`,
             {
                 name: inputState.entry_new_name,
                 description: inputState.entry_new_description,
@@ -95,7 +95,7 @@ function CreateNewEntry({ history, handleClose }) {
             .then((res1) => {
                 // if (inputState.entry_new_students.length > 0)
                 //     Axios.post(
-                //         `${apiUrl}/students-in-class`,
+                //         `${configs.SERVER_HOST}/students-in-class`,
                 //         {
                 //             classNumber: res1.data.insertId,
                 //             students: inputState.entry_new_students,
@@ -122,7 +122,7 @@ function CreateNewEntry({ history, handleClose }) {
 
     const fetchStudents = () => {
         setLoading(true);
-        Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/students-in-teacher/current`, { withCredentials: true })
             .then((res) => {
                 setStudentsData(res.data);
             })

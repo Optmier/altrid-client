@@ -3,7 +3,7 @@
 import Axios from 'axios';
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import MenuData from '../../datas/MenuData.json';
 /** https://github.com/jeanlescure/short-unique-id
  * Copyright (c) 2018-2020 Short Unique ID Contributors.
@@ -33,7 +33,7 @@ function PayGetBillingKey({ method, history }) {
         console.log(customerKey, authKey, productPlan, productPlanId, couponSelectId);
 
         // 빌링키 발급 메소드
-        const getBillingKey = Axios.get(`${apiUrl}/payments/billing-key?customerKey=${customerKey}&authKey=${authKey}`, {
+        const getBillingKey = Axios.get(`${configs.SERVER_HOST}/payments/billing-key?customerKey=${customerKey}&authKey=${authKey}`, {
             withCredentials: true,
         }).catch((err) => {
             console.error(err.response);
@@ -64,7 +64,7 @@ function PayGetBillingKey({ method, history }) {
                 usedAfterUnits.push('m');
             }
             Axios.post(
-                `${apiUrl}/payments/coupon-history`,
+                `${configs.SERVER_HOST}/payments/coupon-history`,
                 {
                     couponIds: couponIds,
                     orderNos: orderNos,
@@ -89,7 +89,7 @@ function PayGetBillingKey({ method, history }) {
         const updatePlanMethod = () => {
             const currentDate = new Date();
             // 현재 유효한 플랜이 있는지 검사
-            Axios.get(`${apiUrl}/payments/order-history/current-valid`, {
+            Axios.get(`${configs.SERVER_HOST}/payments/order-history/current-valid`, {
                 params: { planId: sessions.academyPlanId },
                 withCredentials: true,
             })
@@ -99,7 +99,7 @@ function PayGetBillingKey({ method, history }) {
                         // 유효한 플랜이 있으면 현재 유효한 플랜에서 다음 플랜을 변동시킴
                         const idx = currentPlans.idx;
                         Axios.patch(
-                            `${apiUrl}/payments/order-history/mod-next-plan`,
+                            `${configs.SERVER_HOST}/payments/order-history/mod-next-plan`,
                             {
                                 orderIdx: idx,
                                 nextPlanId: productPlanId,
@@ -117,7 +117,7 @@ function PayGetBillingKey({ method, history }) {
                         // 유효한 플랜이 없으면 새로 주문으로 플랜을 추가함
                         const newOrderNo = currentDate.getTime() + '_' + generateUid(11);
                         Axios.post(
-                            `${apiUrl}/payments/order-history`,
+                            `${configs.SERVER_HOST}/payments/order-history`,
                             {
                                 orderNo: newOrderNo,
                                 planId: productPlanId,
@@ -159,7 +159,7 @@ function PayGetBillingKey({ method, history }) {
                     if (res.data) {
                         // 결제 정보 추가하기
                         Axios.post(
-                            `${apiUrl}/payments/payment-info`,
+                            `${configs.SERVER_HOST}/payments/payment-info`,
                             {
                                 ...res.data,
                                 pgName: '토스페이먼츠',
@@ -187,7 +187,7 @@ function PayGetBillingKey({ method, history }) {
                     // 결제 정보 업데이트 하기
                     if (res.data) {
                         Axios.patch(
-                            `${apiUrl}/payments/payment-info`,
+                            `${configs.SERVER_HOST}/payments/payment-info`,
                             {
                                 ...res.data,
                                 pgName: '토스페이먼츠',

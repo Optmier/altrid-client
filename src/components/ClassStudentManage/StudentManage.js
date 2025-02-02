@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import '../../styles/student_manage_page.scss';
 import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import Axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -345,7 +345,7 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
     };
 
     useEffect(() => {
-        Axios.get(`${apiUrl}/assignment-result/report-students/${match.params.num}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/assignment-result/report-students/${match.params.num}`, { withCredentials: true })
             .then((res) => {
                 window.data = res.data;
 
@@ -404,7 +404,7 @@ function StudentManage({ onChangeStudentSelection, match, history }) {
 
     const updateStudentNotes = (studentId) => {
         Axios.patch(
-            `${apiUrl}/students-in-class/notes/${num}/${studentId}`,
+            `${configs.SERVER_HOST}/students-in-class/notes/${num}/${studentId}`,
             { notes: notes['notes-input-' + studentId] },
             { withCredentials: true },
         )

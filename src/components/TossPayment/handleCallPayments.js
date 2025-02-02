@@ -1,11 +1,11 @@
 import { loadTossPayments } from '@tosspayments/sdk';
-import { tossPaymentsClientKey } from '../../configs/configs';
+import * as configs from '../../configs/config.json'
 
 async function handleCallPayments() {
-    const tossPayments = await loadTossPayments(tossPaymentsClientKey);
+    const tossPayments = await loadTossPayments(configs.TOSS_PAYMENTS_CLIENT_KEY);
 
     tossPayments.requestBillingAuth('카드', {
-        customerKey: 'KeG4na-UOxik8VGJKgd-X',
+        customerKey: configs.TOSS_PAYMENTS_CUSTOMER_KEY,
         successUrl: window.location.origin + '/pay-state/success',
         failUrl: window.location.origin + '/pay-state/fail',
     });

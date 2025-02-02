@@ -373,7 +373,7 @@
 
                     window.logout = () => {
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
-                            .delete(`${_configs_configs__WEBPACK_IMPORTED_MODULE_15__['apiUrl']}/auth`, {
+                            .delete(`${_configs_configs__WEBPACK_IMPORTED_MODULE_15__['configs.SERVER_HOST']}/auth`, {
                                 withCredentials: true,
                             })
                             .then((res) => {
@@ -389,7 +389,7 @@
 
                     Object(react__WEBPACK_IMPORTED_MODULE_0__['useEffect'])(() => {
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
-                            .get(_configs_configs__WEBPACK_IMPORTED_MODULE_15__['apiUrl'] + '/auth', {
+                            .get(_configs_configs__WEBPACK_IMPORTED_MODULE_15__['configs.SERVER_HOST'] + '/auth', {
                                 withCredentials: true,
                             })
                             .then((res1) => {
@@ -424,7 +424,7 @@
                                 const { academyCode, exp, iat, iss, userName, userType } = res1.data;
                                 saveSessions(userName, userType, academyCode, null, iss, iat, exp);
                                 axios__WEBPACK_IMPORTED_MODULE_1___default.a
-                                    .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_15__['apiUrl']}/academies/current/name`, {
+                                    .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_15__['configs.SERVER_HOST']}/academies/current/name`, {
                                         withCredentials: true,
                                     })
                                     .then((res2) => {
@@ -1044,7 +1044,7 @@
 
                     const getRequestLists = () => {
                         axios__WEBPACK_IMPORTED_MODULE_3___default.a
-                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['apiUrl']}/assignment-admin`, {
+                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['configs.SERVER_HOST']}/assignment-admin`, {
                                 withCredentials: true,
                             })
                             .then((res) => {
@@ -1096,7 +1096,7 @@
                                 onClick: () => {
                                     axios__WEBPACK_IMPORTED_MODULE_3___default.a
                                         .post(
-                                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['apiUrl']}/files/requests-contents`,
+                                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['configs.SERVER_HOST']}/files/requests-contents`,
                                             attachFiles,
                                             {
                                                 withCredentials: true,
@@ -4584,7 +4584,7 @@
                         console.log(num, activedNum);
                         axios__WEBPACK_IMPORTED_MODULE_18___default.a
                             .get(
-                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_19__['apiUrl']}/assignment-actived/${parseInt(num)}/${parseInt(
+                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_19__['configs.SERVER_HOST']}/assignment-actived/${parseInt(num)}/${parseInt(
                                     activedNum,
                                 )}`,
                                 {
@@ -4617,7 +4617,7 @@
                             }); // 학생별 정보 불러오기
 
                         axios__WEBPACK_IMPORTED_MODULE_18___default.a
-                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_19__['apiUrl']}/assignment-result/${parseInt(activedNum)}`, {
+                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_19__['configs.SERVER_HOST']}/assignment-result/${parseInt(activedNum)}`, {
                                 params: {
                                     order: 1,
                                 },
@@ -6029,7 +6029,7 @@
                     const studentNum = '01';
                     Object(react__WEBPACK_IMPORTED_MODULE_0__['useEffect'])(() => {
                         axios__WEBPACK_IMPORTED_MODULE_13___default.a
-                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_14__['apiUrl']}/assignment-result/${parseInt(activedNum)}`, {
+                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_14__['configs.SERVER_HOST']}/assignment-result/${parseInt(activedNum)}`, {
                                 withCredentials: true,
                             })
                             .then((res) => {
@@ -8895,7 +8895,7 @@
                         }
 
                         axios__WEBPACK_IMPORTED_MODULE_6___default.a
-                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_7__['apiUrl']}/teachers/in-class/current/${inputState}`, {
+                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_7__['configs.SERVER_HOST']}/teachers/in-class/current/${inputState}`, {
                                 withCredentials: true,
                             })
                             .then((res) => {
@@ -8908,7 +8908,7 @@
                                     setInputError(false);
                                     axios__WEBPACK_IMPORTED_MODULE_6___default.a
                                         .post(
-                                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_7__['apiUrl']}/students-in-teacher`,
+                                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_7__['configs.SERVER_HOST']}/students-in-teacher`,
                                             {
                                                 teacherId: inputState,
                                             },
@@ -9334,7 +9334,7 @@
 
                         axios__WEBPACK_IMPORTED_MODULE_6___default.a
                             .post(
-                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_7__['apiUrl']}/classes`,
+                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_7__['configs.SERVER_HOST']}/classes`,
                                 {
                                     name: inputState.entry_new_name,
                                     description: inputState.entry_new_description,
@@ -9347,7 +9347,7 @@
                                 if (inputState.entry_new_students.length > 0)
                                     axios__WEBPACK_IMPORTED_MODULE_6___default.a
                                         .post(
-                                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_7__['apiUrl']}/students-in-class`,
+                                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_7__['configs.SERVER_HOST']}/students-in-class`,
                                             {
                                                 classNumber: res1.data.insertId,
                                                 students: inputState.entry_new_students,
@@ -9380,7 +9380,7 @@
                     const fetchStudents = () => {
                         setLoading(true);
                         axios__WEBPACK_IMPORTED_MODULE_6___default.a
-                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_7__['apiUrl']}/students-in-teacher/current`, {
+                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_7__['configs.SERVER_HOST']}/students-in-teacher/current`, {
                                 withCredentials: true,
                             })
                             .then((res) => {
@@ -11545,7 +11545,7 @@
                         if (id)
                             axios__WEBPACK_IMPORTED_MODULE_12___default.a
                                 .patch(
-                                    `${_configs_configs__WEBPACK_IMPORTED_MODULE_13__['apiUrl']}/assignment-admin/${id}`,
+                                    `${_configs_configs__WEBPACK_IMPORTED_MODULE_13__['configs.SERVER_HOST']}/assignment-admin/${id}`,
                                     {
                                         contentsData: JSON.stringify(metadata),
                                     },
@@ -11575,7 +11575,7 @@
                         if (!conf) return;
                         if (id)
                             axios__WEBPACK_IMPORTED_MODULE_12___default.a
-                                .delete(`${_configs_configs__WEBPACK_IMPORTED_MODULE_13__['apiUrl']}/assignment-admin/${id}`, {
+                                .delete(`${_configs_configs__WEBPACK_IMPORTED_MODULE_13__['configs.SERVER_HOST']}/assignment-admin/${id}`, {
                                     withCredentials: true,
                                 })
                                 .then((res) => {
@@ -11935,7 +11935,7 @@
                                         ? /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement(
                                               _material_ui_core__WEBPACK_IMPORTED_MODULE_0__['Button'],
                                               {
-                                                  href: `${_configs_configs__WEBPACK_IMPORTED_MODULE_13__['apiUrl']}/files/${requestFile}`,
+                                                  href: `${_configs_configs__WEBPACK_IMPORTED_MODULE_13__['configs.SERVER_HOST']}/files/${requestFile}`,
                                                   download: requestFile
                                                       .substring(requestFile.indexOf('_') + 1)
                                                       .substring(requestFile.lastIndexOf('/') + 1),
@@ -26991,7 +26991,7 @@
             /*!********************************!*\
   !*** ./src/configs/configs.js ***!
   \********************************/
-            /*! exports provided: buildMode, googleAuthClientId, kakaoAuthJSKey, apiUrl */
+            /*! exports provided: buildMode, googleAuthClientId, kakaoAuthJSKey, configs.SERVER_HOST */
             /***/ function (module, __webpack_exports__, __webpack_require__) {
                 'use strict';
                 __webpack_require__.r(__webpack_exports__);
@@ -27004,8 +27004,8 @@
                 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, 'kakaoAuthJSKey', function () {
                     return kakaoAuthJSKey;
                 });
-                /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, 'apiUrl', function () {
-                    return apiUrl;
+                /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, 'configs.SERVER_HOST', function () {
+                    return configs.SERVER_HOST;
                 });
                 /** DEV or Prod 모드 설정 */
                 const buildMode = 'dev';
@@ -27019,7 +27019,7 @@
                 const kakaoAuthJSKey = '4dab67c66e2874a2efd82496c42f60ea';
                 /** API 주소 */
 
-                const apiUrl = `${buildMode === 'prod' ? 'http://localhost:8080' : 'http://localhost:8080'}/altrid`;
+                const configs.SERVER_HOST = `${buildMode === 'prod' ? 'http://localhost:8080' : 'http://localhost:8080'}/altrid`;
 
                 /***/
             },
@@ -27690,7 +27690,7 @@
                     const upCountTries = () => {
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
                             .patch(
-                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['apiUrl']}/assignment-result/tries`,
+                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['configs.SERVER_HOST']}/assignment-result/tries`,
                                 {
                                     activedNumber: match.params.assignmentid,
                                 },
@@ -27776,7 +27776,7 @@
                         const scorePoints = metadata.selections.reduce((acc, cur) => acc + parseInt(cur.score), 0);
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
                             .patch(
-                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['apiUrl']}/assignment-result`,
+                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['configs.SERVER_HOST']}/assignment-result`,
                                 {
                                     activedNumber: activedNumber,
                                     scorePercentage: scorePercentage,
@@ -27862,7 +27862,7 @@
                         const { classnum, assignmentid } = match.params;
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
                             .get(
-                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['apiUrl']}/assignment-actived/${classnum}/${assignmentid}`,
+                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['configs.SERVER_HOST']}/assignment-actived/${classnum}/${assignmentid}`,
                                 {
                                     withCredentials: true,
                                 },
@@ -27877,7 +27877,7 @@
 
                                 axios__WEBPACK_IMPORTED_MODULE_1___default.a
                                     .post(
-                                        `${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['apiUrl']}/assignment-result`,
+                                        `${_configs_configs__WEBPACK_IMPORTED_MODULE_4__['configs.SERVER_HOST']}/assignment-result`,
                                         {
                                             activedNumber: res.data.idx,
                                             eyetrack: res.data.eyetrack,
@@ -28335,7 +28335,7 @@
                     const loginMethod = (email, authId) => {
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
                             .post(
-                                _configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl'] + '/auth/' + usertype,
+                                _configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST'] + '/auth/' + usertype,
                                 {
                                     email: email || '',
                                     authId: authId || '',
@@ -28369,7 +28369,7 @@
                     const issueTempToken = (email, authId) => {
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
                             .post(
-                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl']}/auth/temp`,
+                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST']}/auth/temp`,
                                 {
                                     email: email,
                                     authId: authId,
@@ -28396,7 +28396,7 @@
                             image: profileObj.imageUrl,
                         });
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
-                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl']}/${usertype}/exists/${profileObj.googleId}`, {
+                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST']}/${usertype}/exists/${profileObj.googleId}`, {
                                 withCredentials: true,
                             })
                             .then((res) => {
@@ -28433,7 +28433,7 @@
                             image: profile.properties.profile_image,
                         });
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
-                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl']}/${usertype}/exists/${profile.id}`, {
+                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST']}/${usertype}/exists/${profile.id}`, {
                                 withCredentials: true,
                             })
                             .then((res) => {
@@ -28506,7 +28506,7 @@
                         if (usertype === 'students') {
                             axios__WEBPACK_IMPORTED_MODULE_1___default.a
                                 .post(
-                                    `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl']}/students`,
+                                    `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST']}/students`,
                                     {
                                         email: email || '',
                                         name: name || '',
@@ -28524,7 +28524,7 @@
                                     if (teachers.length > 0)
                                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
                                             .post(
-                                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl']}/students-in-teacher/first`,
+                                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST']}/students-in-teacher/first`,
                                                 {
                                                     teachers: teachers,
                                                 },
@@ -28550,7 +28550,7 @@
                         } else if (usertype === 'teachers') {
                             axios__WEBPACK_IMPORTED_MODULE_1___default.a
                                 .post(
-                                    `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl']}/teachers`,
+                                    `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST']}/teachers`,
                                     {
                                         email: email || '',
                                         name: name || '',
@@ -28578,7 +28578,7 @@
 
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
                             .get(
-                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl']}/academies/exists/${inputState['academy_code']}`,
+                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST']}/academies/exists/${inputState['academy_code']}`,
                                 {
                                     withCredentials: true,
                                 },
@@ -28588,7 +28588,7 @@
                                     if (usertype === 'students') {
                                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
                                             .get(
-                                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl']}/teachers/in-class/${inputState.academy_code}`,
+                                                `${_configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST']}/teachers/in-class/${inputState.academy_code}`,
                                                 {
                                                     withCredentials: true,
                                                 },
@@ -29105,7 +29105,7 @@
                     const onSuccessGoogleAuth = ({ profileObj }) => {
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
                             .post(
-                                _configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl'] + '/auth/admins',
+                                _configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST'] + '/auth/admins',
                                 {
                                     email: profileObj.email,
                                     authId: profileObj.authId + '',
@@ -29141,7 +29141,7 @@
                     const onSuccessKakaoAuth = ({ profile }) => {
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
                             .post(
-                                _configs_configs__WEBPACK_IMPORTED_MODULE_6__['apiUrl'] + '/auth/admins',
+                                _configs_configs__WEBPACK_IMPORTED_MODULE_6__['configs.SERVER_HOST'] + '/auth/admins',
                                 {
                                     email: profile.kakao_account.email,
                                     authId: profile.id + '',
@@ -29433,7 +29433,7 @@
 
                     const fetchCardData = () => {
                         axios__WEBPACK_IMPORTED_MODULE_13___default.a
-                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_14__['apiUrl']}/classes/current`, {
+                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_14__['configs.SERVER_HOST']}/classes/current`, {
                                 withCredentials: true,
                             })
                             .then((res) => {
@@ -29918,7 +29918,7 @@
                         });
                         const { id } = match.params;
                         axios__WEBPACK_IMPORTED_MODULE_1___default.a
-                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_5__['apiUrl']}/assignment-admin/${id}`, {
+                            .get(`${_configs_configs__WEBPACK_IMPORTED_MODULE_5__['configs.SERVER_HOST']}/assignment-admin/${id}`, {
                                 withCredentials: true,
                             })
                             .then((res) => {
@@ -30054,7 +30054,7 @@
                 const getActived = () => async (dispatch) => {
                     // dispatch({ type: GET_ACTIVED }); // 요청이 시작됨
                     // try {
-                    //     const arr = await Axios.get(`${apiUrl}/assignment-actived`, { withCredentials: true }); // API 호출
+                    //     const arr = await Axios.get(`${configs.SERVER_HOST}/assignment-actived`, { withCredentials: true }); // API 호출
                     //     let activedData = arr.data;
                     //     dispatch({ type: GET_ACTIVED_SUCCESS, activedData }); // 성공
                     // } catch (e) {
@@ -30081,7 +30081,7 @@
                         const contents_data = null;
                         const file_url = null;
                         await axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(
-                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['apiUrl']}/assignment-actived`,
+                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['configs.SERVER_HOST']}/assignment-actived`,
                             {
                                 assignment_number: idx,
                                 class_number: class_number,
@@ -30123,7 +30123,7 @@
                     //     /** 나중에 json으로 받아올 데이터 !!*/
                     //     const { idx, contents_data, file_url } = cardData;
                     //     await Axios.patch(
-                    //         `${apiUrl}/assignment-actived`,
+                    //         `${configs.SERVER_HOST}/assignment-actived`,
                     //         {
                     //             idx: idx,
                     //             title: title,
@@ -30324,7 +30324,7 @@
 
                     try {
                         const drafts = await axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(
-                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['apiUrl']}/assignment-draft`,
+                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['configs.SERVER_HOST']}/assignment-draft`,
                             {
                                 withCredentials: true,
                             },
@@ -30370,7 +30370,7 @@
                         }
 
                         const result = await axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(
-                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['apiUrl']}/assignment-draft`,
+                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['configs.SERVER_HOST']}/assignment-draft`,
                             {
                                 title: title,
                                 description: description,
@@ -30388,7 +30388,7 @@
                         const academy_code = result['data']['academy_code'];
                         const teacher_id = result['data']['teacher_id'];
                         const { file_name } = await axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(
-                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['apiUrl']}/files/requests-contents/${idx}`,
+                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['configs.SERVER_HOST']}/files/requests-contents/${idx}`,
                             attachFiles,
                             {
                                 withCredentials: true,
@@ -30441,7 +30441,7 @@
 
                         const { contents_data, file_url } = cardData;
                         await axios__WEBPACK_IMPORTED_MODULE_0___default.a.patch(
-                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['apiUrl']}/assignment-draft`,
+                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['configs.SERVER_HOST']}/assignment-draft`,
                             {
                                 idx: idx,
                                 title: title,
@@ -30485,7 +30485,7 @@
 
                     try {
                         await axios__WEBPACK_IMPORTED_MODULE_0___default.a.delete(
-                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['apiUrl']}/assignment-draft/${idx}`,
+                            `${_configs_configs__WEBPACK_IMPORTED_MODULE_1__['configs.SERVER_HOST']}/assignment-draft/${idx}`,
                             {
                                 withCredentials: true,
                             },

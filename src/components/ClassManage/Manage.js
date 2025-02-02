@@ -4,7 +4,7 @@ import '../../styles/manage_page.scss';
 import classNames from 'classnames';
 import * as $ from 'jquery';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import StudentManage from '../ClassStudentManage/StudentManage';
@@ -181,7 +181,7 @@ function Manage({ match, history }) {
     };
 
     const fetchStudents = () => {
-        Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/students-in-teacher/current`, { withCredentials: true })
             .then((res) => {
                 // console.log('선생님의 학생들 : ', res.data);
                 setStudentsData(res.data);
@@ -202,7 +202,7 @@ function Manage({ match, history }) {
     }, [inputState]);
 
     useEffect(() => {
-        Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/classes/class/${num}`, { withCredentials: true })
             .then((res1) => {
                 setInputState({
                     ...inputState,
@@ -238,7 +238,7 @@ function Manage({ match, history }) {
     const handleStudentInClass = (name) => {
         //수정의 경우 : 학생 데이터 없는 경우-> delete만 진행 // 있는 경우 -> delete 후 post작업 진행
         //삭제의 경우 : 무조건 delete
-        Axios.delete(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
+        Axios.delete(`${configs.SERVER_HOST}/students-in-class/${num}`, { withCredentials: true })
             .then((res1) => {
                 dispatch(openAlertSnackbar('삭제 되었습니다.', 'success'));
                 history.replace('/');
@@ -251,7 +251,7 @@ function Manage({ match, history }) {
 
     /** 클래스 데이터 삭제 */
     const handleClassDelete = (name) => {
-        Axios.delete(`${apiUrl}/classes/${num}`, { withCredentials: true })
+        Axios.delete(`${configs.SERVER_HOST}/classes/${num}`, { withCredentials: true })
             .then((res) => {
                 //class table - name, description 삭제 완료!
                 handleStudentInClass(name); //수강생 데이터 처리...
@@ -283,7 +283,7 @@ function Manage({ match, history }) {
                 .map((i) => daysArr.push(i));
 
             Axios.patch(
-                `${apiUrl}/classes/${num}`,
+                `${configs.SERVER_HOST}/classes/${num}`,
                 {
                     name: inputState.entry_new_name,
                     description: inputState.entry_new_description,
@@ -378,7 +378,7 @@ function Manage({ match, history }) {
                 'defaultClose',
                 () => {
                     dispatch(closeAlertDialog());
-                    Axios.delete(`${apiUrl}/students-in-class/students/${num}`, {
+                    Axios.delete(`${configs.SERVER_HOST}/students-in-class/students/${num}`, {
                         data: {
                             students: arr.join(','),
                         },

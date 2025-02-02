@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 
 export class OpTimer {
     /** Init
@@ -23,11 +23,11 @@ export class OpTimer {
         const savedStudentId = localStorage.getItem('_optimer_saved_studentId');
         // 임시로 저장된 타임과 클래스 번호가 있는 경우에만 서버에 저장
         if (!savedTime || !savedClassNum || studentId !== savedStudentId) return;
-        Axios.get(`${apiUrl}/optimer/${savedClassNum}/${studentId}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/optimer/${savedClassNum}/${studentId}`, { withCredentials: true })
             .then((res) => {
                 // 데이터가 없는 경우 새로 추가
                 if (!res.data || !Object.keys(res.data).length) {
-                    Axios.post(`${apiUrl}/optimer`, { classNum: savedClassNum }, { withCredentials: true })
+                    Axios.post(`${configs.SERVER_HOST}/optimer`, { classNum: savedClassNum }, { withCredentials: true })
                         .then((res) => {
                             if (savedTime) this.save();
                         })
@@ -44,11 +44,11 @@ export class OpTimer {
     updateClassNumber(classNum) {
         if (classNum === this.classNum) return;
         this.classNum = classNum;
-        Axios.get(`${apiUrl}/optimer/${this.classNum}/${this.studentId}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/optimer/${this.classNum}/${this.studentId}`, { withCredentials: true })
             .then((res) => {
                 // 데이터가 없는 경우 새로 추가
                 if (!res.data || !Object.keys(res.data).length) {
-                    Axios.post(`${apiUrl}/optimer`, { classNum: this.classNum }, { withCredentials: true })
+                    Axios.post(`${configs.SERVER_HOST}/optimer`, { classNum: this.classNum }, { withCredentials: true })
                         .then((res) => {
                             // if (savedTime) this.save();
                         })
@@ -131,7 +131,7 @@ export class OpTimer {
         // Axios call
         if (!savedTime) return;
         Axios.patch(
-            `${apiUrl}/optimer`,
+            `${configs.SERVER_HOST}/optimer`,
             {
                 dayCode: dayCode,
                 studyTime: savedTime,
@@ -152,7 +152,7 @@ export class OpTimer {
     }
     /** Get optimer leaderboard */
     getLeaderBoard(callback = { onSuccess: (response) => {}, onFailure: (error) => {} }) {
-        Axios.get(`${apiUrl}/optimer/${this.classNum}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/optimer/${this.classNum}`, { withCredentials: true })
             .then((response) => callback.onSuccess(response))
             .catch((error) => callback.onFailure(error));
     }

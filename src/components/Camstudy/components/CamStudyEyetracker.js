@@ -3,7 +3,7 @@ import Axios from 'axios';
 import React, { useEffect, useRef } from 'react';
 import { useBeforeunload } from 'react-beforeunload';
 import { useDispatch, useSelector } from 'react-redux';
-import { apiUrl } from '../../../configs/configs';
+import * as configs from '../../../configs/config.json';
 import io from 'socket.io-client';
 import EyetrackerCore from '../../essentials/EyetrackerCore';
 import { openAlertSnackbar } from '../../../redux_modules/alertMaker';
@@ -32,7 +32,7 @@ function CamStudyEyetracker({ history, match }) {
         window.camStudyEyetrackCablib = true;
         // otp 생성
         Axios.post(
-            `${apiUrl}/cam-study/otp`,
+            `${configs.SERVER_HOST}/cam-study/otp`,
             {
                 roomId: roomId,
                 username: sessions.userName,
@@ -143,7 +143,7 @@ function CamStudyEyetracker({ history, match }) {
             window.close();
             return;
         }
-        socket.current = io.connect(`${apiUrl}/cam_study`);
+        socket.current = io.connect(`${configs.SERVER_HOST}/cam_study`);
         socket.current.on('connected', (id) => {});
         socket.current.on('joined', (msg) => {
             console.log('joined >> ', msg);

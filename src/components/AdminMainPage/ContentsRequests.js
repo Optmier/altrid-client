@@ -14,7 +14,7 @@ import {
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
@@ -260,7 +260,7 @@ function ContentsRequests({ history }) {
     };
 
     const getRequestLists = () => {
-        Axios.get(`${apiUrl}/assignment-admin`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/assignment-admin`, { withCredentials: true })
             .then((res) => {
                 setRowDatas(
                     res.data.map(({ idx, title, teacher_name, academy_name, contents_data, file_url, created, updated }) =>

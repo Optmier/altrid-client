@@ -5,7 +5,7 @@
 // import MultipleAutocomplete from '../essentials/MultipleAutocomplete';
 // import * as $ from 'jquery';
 // import Axios from 'axios';
-// import { apiUrl } from '../../configs/configs';
+// import * as configs from '../../configs/config.json';
 // import { withRouter } from 'react-router-dom';
 // import ClassDialogDelete from '../essentials/ClassDialogDelete';
 // import { Button, withStyles } from '@material-ui/core';
@@ -128,7 +128,7 @@ import classNames from 'classnames';
 import MultipleAutocomplete from '../essentials/MultipleAutocomplete';
 import * as $ from 'jquery';
 import Axios from 'axios';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { withRouter } from 'react-router-dom';
 import ClassDialogDelete from '../essentials/ClassDialogDelete';
 import { Button, withStyles } from '@material-ui/core';
@@ -208,7 +208,7 @@ function Classoption({ match, history }) {
     };
 
     const fetchStudents = () => {
-        Axios.get(`${apiUrl}/students-in-teacher/current`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/students-in-teacher/current`, { withCredentials: true })
             .then((res) => {
                 // console.log('선생님의 학생들 : ', res.data);
                 setStudentsData(res.data);
@@ -229,9 +229,9 @@ function Classoption({ match, history }) {
     }, [inputState]);
 
     useEffect(() => {
-        Axios.get(`${apiUrl}/classes/class/${num}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/classes/class/${num}`, { withCredentials: true })
             .then((res1) => {
-                // Axios.get(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
+                // Axios.get(`${configs.SERVER_HOST}/students-in-class/${num}`, { withCredentials: true })
                 //     .then((res2) => {
                 //         setInputState({
                 //             ...inputState,
@@ -303,7 +303,7 @@ function Classoption({ match, history }) {
         //수정의 경우 : 학생 데이터 없는 경우-> delete만 진행 // 있는 경우 -> delete 후 post작업 진행
         //삭제의 경우 : 무조건 delete
 
-        Axios.delete(`${apiUrl}/students-in-class/${num}`, { withCredentials: true })
+        Axios.delete(`${configs.SERVER_HOST}/students-in-class/${num}`, { withCredentials: true })
             .then((res1) => {
                 // // 수정버튼 클릭시
                 // if (name === 'modify') {
@@ -312,7 +312,7 @@ function Classoption({ match, history }) {
                 //         alert('클래스 정보 수정이 완료되었습니다!');
                 //     } else {
                 //         Axios.post(
-                //             `${apiUrl}/students-in-class`,
+                //             `${configs.SERVER_HOST}/students-in-class`,
                 //             {
                 //                 classNumber: num,
                 //                 students: inputState.entry_new_students,
@@ -341,7 +341,7 @@ function Classoption({ match, history }) {
 
     /** 클래스 데이터 삭제 */
     const handleClassDelete = (name) => {
-        Axios.delete(`${apiUrl}/classes/${num}`, { withCredentials: true })
+        Axios.delete(`${configs.SERVER_HOST}/classes/${num}`, { withCredentials: true })
             .then((res) => {
                 //class table - name, description 삭제 완료!
                 handleStudentInClass(name); //수강생 데이터 처리...
@@ -374,7 +374,7 @@ function Classoption({ match, history }) {
                 .map((i) => daysArr.push(i));
 
             Axios.patch(
-                `${apiUrl}/classes/${num}`,
+                `${configs.SERVER_HOST}/classes/${num}`,
                 {
                     name: inputState.entry_new_name,
                     description: inputState.entry_new_description,

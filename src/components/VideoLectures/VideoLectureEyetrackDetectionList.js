@@ -2,7 +2,7 @@
 import Axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { Helmet } from 'react-helmet';
 import { useBeforeunload } from 'react-beforeunload';
 import styled from 'styled-components';
@@ -122,7 +122,7 @@ function VideoLectureEyetrackDetectionList({ match, history }) {
     useEffect(() => {
         if (!sessions || !sessions.authId) return;
         // 학생 목록 가져오기
-        Axios.get(`${apiUrl}/students-in-class/${classNum}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/students-in-class/${classNum}`, { withCredentials: true })
             .then((res) => {
                 // console.log(res.data.map((d) => ({ stdId: d.student_id, stdName: d.name, statusCode: -1 })));
                 setStdList(res.data.map((d, i) => ({ stdId: d.student_id, stdName: d.name, statusCode: -1 })));
@@ -133,7 +133,7 @@ function VideoLectureEyetrackDetectionList({ match, history }) {
 
         // otp 생성
         Axios.post(
-            `${apiUrl}/meeting-room/otp`,
+            `${configs.SERVER_HOST}/meeting-room/otp`,
             {
                 roomId: roomId,
                 username: sessions.userName,
@@ -190,7 +190,7 @@ function VideoLectureEyetrackDetectionList({ match, history }) {
             window.close();
             return;
         }
-        socket.current = io.connect(`${apiUrl}/vid_lecture`);
+        socket.current = io.connect(`${configs.SERVER_HOST}/vid_lecture`);
         socket.current.on('connected', (id) => {
             socket.current.emit('join', {
                 groupId: groupId,

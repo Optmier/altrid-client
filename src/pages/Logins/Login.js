@@ -3,12 +3,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
 import LoginButtons from '../../components/Login/LoginButtons';
 import '../../styles/logins.scss';
-import { apiUrl } from '../../configs/configs';
+import * as configs from '../../configs/config.json';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from '@material-ui/core';
 import classNames from 'classnames';
 import * as $ from 'jquery';
-import { $_loginDefault, $_loginStudent, $_loginTeacher } from '../../configs/front_urls';
+import { $_loginDefault, $_loginStudent, $_loginTeacher } from '../../constants/front_urls';
 import Radio from '@material-ui/core/Radio';
 import styled from 'styled-components';
 /** https://github.com/jeanlescure/short-unique-id
@@ -277,7 +277,7 @@ function Login({ history }) {
 
     const loginMethod = (email, authId) => {
         Axios.post(
-            apiUrl + '/auth/' + usertype,
+            configs.SERVER_HOST + '/auth/' + usertype,
             {
                 email: email || '',
                 authId: authId || '',
@@ -312,7 +312,7 @@ function Login({ history }) {
     };
 
     const issueTempToken = (email, authId) => {
-        Axios.post(`${apiUrl}/auth/temp`, { email: email, authId: authId }, { withCredentials: true })
+        Axios.post(`${configs.SERVER_HOST}/auth/temp`, { email: email, authId: authId }, { withCredentials: true })
             .then((res) => {
                 // console.log(res);
             })
@@ -329,7 +329,7 @@ function Login({ history }) {
             authWith: 'google',
             image: profileObj.imageUrl,
         });
-        Axios.get(`${apiUrl}/${usertype}/exists/${profileObj.googleId}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/${usertype}/exists/${profileObj.googleId}`, { withCredentials: true })
             .then((res) => {
                 const isExists = res.data;
                 // 존재하면 로그인
@@ -370,7 +370,7 @@ function Login({ history }) {
             authWith: 'kakao',
             image: profile.properties.profile_image,
         });
-        Axios.get(`${apiUrl}/${usertype}/exists/${profile.id}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/${usertype}/exists/${profile.id}`, { withCredentials: true })
             .then((res) => {
                 const isExists = res.data;
                 // console.log(res);
@@ -455,7 +455,7 @@ function Login({ history }) {
 
         if (usertype === 'students') {
             Axios.post(
-                `${apiUrl}/students`,
+                `${configs.SERVER_HOST}/students`,
                 {
                     email: email || '',
                     name: name || '',
@@ -471,7 +471,7 @@ function Login({ history }) {
                 .then((res1) => {
                     // console.log(res1);
                     // if (teachers.length > 0)
-                    //     Axios.post(`${apiUrl}/students-in-teacher/first`, { teachers: teachers }, { withCredentials: true })
+                    //     Axios.post(`${configs.SERVER_HOST}/students-in-teacher/first`, { teachers: teachers }, { withCredentials: true })
                     //         .then((res2) => {
                     //             alert('계정 등록이 완료 되었습니다.\n선생님이 클래스를 생성 할때까지 기다려 주세요 :)');
                     //             loginMethod(email, authId);
@@ -494,7 +494,7 @@ function Login({ history }) {
         } else if (usertype === 'teachers') {
             const addTeacherMethod = () => {
                 Axios.post(
-                    `${apiUrl}/teachers`,
+                    `${configs.SERVER_HOST}/teachers`,
                     {
                         email: email || '',
                         name: name || '',
@@ -520,7 +520,7 @@ function Login({ history }) {
 
             if (createOrEntrance === 'create') {
                 Axios.post(
-                    `${apiUrl}/academies`,
+                    `${configs.SERVER_HOST}/academies`,
                     {
                         code: academyCode,
                         name: academyName,
@@ -539,7 +539,7 @@ function Login({ history }) {
                         console.error(errorAcademyCreation);
                     });
             } else {
-                Axios.get(`${apiUrl}/plan-info/login-planId/${academyCode}`, { academyCode: academyCode }, { withCredentials: true })
+                Axios.get(`${configs.SERVER_HOST}/plan-info/login-planId/${academyCode}`, { academyCode: academyCode }, { withCredentials: true })
                     .then((res) => {
                         const { teacherNums, planId } = res.data[0];
 
@@ -564,7 +564,7 @@ function Login({ history }) {
     // const handleCheckDuplicateAcademyName = ({ target }) => {
     //     const { value } = target;
     //     console.log(value);
-    //     Axios.get(`${apiUrl}/academies/exists-name/${inputState['academy_name']}`, { withCredentials: true })
+    //     Axios.get(`${configs.SERVER_HOST}/academies/exists-name/${inputState['academy_name']}`, { withCredentials: true })
     //         .then((res) => {
     //             console.log(res.data);
     //             setInputError({ ...inputError, academy_name: res.data.is_exists });
@@ -579,11 +579,11 @@ function Login({ history }) {
     useEffect(() => {
         if (!inputState.academy_code.trim()) return;
         // 학원 코드 조회 및 검증하기
-        Axios.get(`${apiUrl}/academies/exists/${inputState['academy_code']}`, { withCredentials: true })
+        Axios.get(`${configs.SERVER_HOST}/academies/exists/${inputState['academy_code']}`, { withCredentials: true })
             .then((res1) => {
                 setUsertype((usertype) => {
                     if (usertype === 'students') {
-                        Axios.get(`${apiUrl}/teachers/in-class/${inputState.academy_code}`, { withCredentials: true })
+                        Axios.get(`${configs.SERVER_HOST}/teachers/in-class/${inputState.academy_code}`, { withCredentials: true })
                             .then((res2) => {
                                 setAcademyInfo({
                                     ...academyInfo,
