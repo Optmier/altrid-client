@@ -13,8 +13,8 @@ function LoginAdmin({ history }) {
             configs.SERVER_HOST + '/auth/admins',
             {
                 email: profileObj.email,
-                authId: profileObj.authId + '',
-                image: profileObj.image,
+                authId: profileObj.googleId + '',
+                image: profileObj.imageUrl,
             },
             { withCredentials: true },
         )
