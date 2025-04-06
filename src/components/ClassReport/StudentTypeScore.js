@@ -72,7 +72,7 @@ const StyleStudentTypeScore = styled.div`
 
 function StudentTypeScore({ enabled, subject, current, total, typeSelectState, handleTypeSelect, achieveValue }) {
     const [sortedEnableCategories] = useState(enabled.sort((a, b) => a.category - b.category));
-    console.log(sortedEnableCategories);
+    
     return (
         <StyleStudentTypeScore>
             <div className="chart-header-wrapper">
