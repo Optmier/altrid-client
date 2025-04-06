@@ -209,7 +209,7 @@ function AlertDialog({
                 <Typography type="label" size="xl">
                     {((message) => {
                         if (typeof message === 'object') {
-                            // return message;
+                            return message;
                         }
                         const messageArr = message.split('\n');
                         const returnArr = [messageArr[0]];
