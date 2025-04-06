@@ -239,6 +239,10 @@ const RequestButton = styled.button`
     }
 `;
 
+const AcademyCodeResult = styled.div`
+    margin-bottom: 16px;
+`;
+
 function Login({ history }) {
     const [usertype, setUsertype] = useState('students');
     const [payment, setPayment] = useState(false);
@@ -461,7 +465,7 @@ function Login({ history }) {
                     name: name || '',
                     authId: authId,
                     authWith: authWith,
-                    academyCode: '',
+                    academyCode,
                     approved: approved,
                     image: image,
                     phone: phone,
@@ -539,7 +543,11 @@ function Login({ history }) {
                         console.error(errorAcademyCreation);
                     });
             } else {
-                Axios.get(`${configs.SERVER_HOST}/plan-info/login-planId/${academyCode}`, { academyCode: academyCode }, { withCredentials: true })
+                Axios.get(
+                    `${configs.SERVER_HOST}/plan-info/login-planId/${academyCode}`,
+                    { academyCode: academyCode },
+                    { withCredentials: true },
+                )
                     .then((res) => {
                         const { teacherNums, planId } = res.data[0];
 
@@ -618,10 +626,18 @@ function Login({ history }) {
             case 0:
                 break;
             case 1:
-                if (!inputState['real_name'].trim()) {
-                    setRequestButtonEnable(false);
+                if (usertype === 'students') {
+                    if (!inputState['real_name'].trim() || !inputState['academy_code'].trim() || !academyInfo.name) {
+                        setRequestButtonEnable(false);
+                    } else {
+                        setRequestButtonEnable(true);
+                    }
                 } else {
-                    setRequestButtonEnable(true);
+                    if (!inputState['real_name'].trim()) {
+                        setRequestButtonEnable(false);
+                    } else {
+                        setRequestButtonEnable(true);
+                    }
                 }
                 break;
             case 2:
@@ -833,7 +849,7 @@ function Login({ history }) {
                     <>
                         <AddName>
                             {usertype === 'students' ? (
-                                <h3>학생의 이름을 정확히 입력해주세요</h3>
+                                <h3>이름과 학원코드를 정확히 입력해주세요</h3>
                             ) : (
                                 <h3>본인의 이름을 정확히 입력해주세요</h3>
                             )}
@@ -848,7 +864,28 @@ function Login({ history }) {
                                 placeholder="이름"
                                 onChange={handleInputChange}
                                 value={inputState['real_name']}
-                            ></input>
+                            />
+                            {usertype === 'students' && (
+                                <>
+                                    <input
+                                        className={classNames('default', inputError.academy_code ? 'error' : '')}
+                                        type="text"
+                                        name="academy_code"
+                                        id="academy_code"
+                                        placeholder="학원 코드"
+                                        onChange={handleInputChange}
+                                        value={inputState['academy_code']}
+                                    />
+                                    {academyInfo.name ? (
+                                        <AcademyCodeResult className="academy-search-results">
+                                            <p className="name">{academyInfo.name}</p>
+                                            <p className="address">{academyInfo.address}</p>
+                                        </AcademyCodeResult>
+                                    ) : (
+                                        ''
+                                    )}
+                                </>
+                            )}
 
                             <div className="nextButton">
                                 {usertype === 'students' ? (
