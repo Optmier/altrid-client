@@ -208,6 +208,9 @@ function AlertDialog({
             <AltridAlertDialogContent>
                 <Typography type="label" size="xl">
                     {((message) => {
+                        if (typeof message === 'object') {
+                            return message;
+                        }
                         const messageArr = message.split('\n');
                         const returnArr = [messageArr[0]];
                         for (let i = 1; i < messageArr.length; i++) {
